@@ -81,6 +81,28 @@ jobs:
             --data-urlencode chat_id="${TELEGRAM_CHAT_ID}" \
             --data-urlencode text="${TEXT}"
 
+  # ARC-077: не настоящее line coverage (для GDScript/GUT такого инструмента нет —
+  # см. tools/coverage_report.py), а по-функциональная эвристика — какие функции
+  # ядра (core/*.gd, AI-стратегии) вообще не упомянуты ни в одном tests/*.gd.
+  # Только источник + python3 (в ubuntu-latest уже есть) — Godot не нужен.
+  coverage-report:
+    name: Отчёт о покрытии тестами (эвристика)
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Сгенерировать отчёт
+        run: python3 tools/coverage_report.py --out coverage_report.txt
+
+      - name: Приложить отчёт
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage_report.txt
+          retention-days: 30
+
   export-web:
     name: Build Web export
     runs-on: ubuntu-latest
