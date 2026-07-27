@@ -382,17 +382,19 @@ HP, 300 ресурсов), сброс карты в патовой ситуац�
 **Критерии приёмки:**
 - [x] CI-джоб открывает собранный Web-билд в headless Chromium и падает при JS/WASM-ошибках в консоли.
 
-> ⚠️ Частично реализовано: `tools/web_smoke_test.mjs` (Playwright, без `@playwright/test` —
+> ✅ Реализовано и проверено: `tools/web_smoke_test.mjs` (Playwright, без `@playwright/test` —
 > напрямую через `chromium.launch()`) поднимает `web/` локальным Node-сервером (`node:http`, без
 > сторонних пакетов), открывает `index.html` в headless Chromium с флагами `--use-gl=swiftshader`
 > (в headless-раннере нет GPU — без software-рендерера Godot падает на создании WebGL-контекста ещё до
 > отрисовки меню), ждёт 20с загрузки/старта движка, ловит `console`(error)/`pageerror`/`requestfailed`
 > и падает при любой ошибке; дополнительно проверяет, что `<canvas>` есть в DOM и имеет ненулевой
-> размер. Новый джоб `smoke-test-web` в `.github/workflows/ci.yml` (`needs: export-web`) гоняет его на
-> каждый push/PR — так же, как остальные обязательные проверки. Скриншот прикладывается как artifact
-> при падении для диагностики. Не проверено вживую из песочницы (`npm install` заблокирован сетевой
-> политикой) — статическая раздача файлов (`node:http` часть, без Playwright) протестирована локально
-> отдельно и работает; сам прогон в headless Chromium нужно один раз увидеть зелёным в реальном CI.
+> размер. Джоб `smoke-test-web` в `.github/workflows/ci.yml` (`needs: export-web`) гоняет его на каждый
+> push/PR. Уже с первого реального прогона поймал настоящий баг: `core/yandex_sdk.gd` вызывал
+> `_window.has_method("ysdk")` на `JavaScriptObject` — на нём неизвестные вызовы методов проксируются
+> в настоящий JS, поэтому это превращалось в `window.has_method(...)` и падало с `TypeError: obj[method]
+> is not a function` в консоли браузера при каждом запуске Web-билда. Юнит-тесты это в принципе не
+> ловили: `JavaScriptBridge` работает только на Web-платформе. Пофикшено (читаем `_window.ysdk`
+> напрямую), прогон подтверждён зелёным.
 
 ---
 

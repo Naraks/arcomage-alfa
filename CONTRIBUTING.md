@@ -250,8 +250,9 @@ npx playwright install --with-deps chromium
 node tools/web_smoke_test.mjs web 8060
 ```
 
-> ⚠️ Частично реализовано: код готов, реальный прогон в CI не проверен из песочницы (нет доступа к
-> npm/GitHub Actions).
+> ✅ Реализовано и проверено: с первого прогона поймал настоящий баг в `core/yandex_sdk.gd`
+> (`has_method()` на `JavaScriptObject`, падал с `TypeError` в консоли браузера) — пофикшено, прогон
+> зелёный.
 
 ## Что дальше по этому эпику
 
