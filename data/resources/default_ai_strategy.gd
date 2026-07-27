@@ -42,11 +42,11 @@ func calculate_card_priority(card: CardData, actor: Resource, enemy: Resource) -
 		if type == "direct_damage":
 			priority += value * (100.0 / max(1.0, player_enemy.tower_hp)) * 1.5
 
-		# Приоритет защиты
-		if type == "build_wall" or (type == "build" and effect.get("target") == "self_wall"):
+		# Приоритет защиты (ARC-005: generic-тип "build" убран, остались только build_wall/build_tower)
+		if type == "build_wall":
 			priority += value * (1.0 - (player_actor.wall_hp / 50.0))
 
-		if type == "build_tower" or (type == "build" and effect.get("target") == "self_tower"):
+		if type == "build_tower":
 			priority += value * (0.5 + (player_actor.tower_hp / 100.0))
 
 		# Приоритет экономики

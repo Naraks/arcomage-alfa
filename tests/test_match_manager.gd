@@ -137,7 +137,7 @@ func test_play_card_by_index_applies_direct_damage_effect() -> void:
 	assert_eq(enemy.tower_hp, 16, "direct_damage должен уйти врагу напрямую в башню, игнорируя стену")
 
 
-# --- resolve_target / generic "build" (ARC-005) ---
+# --- resolve_target (ARC-005) ---
 
 
 func test_resolve_target_self_prefix_returns_actor() -> void:
@@ -156,33 +156,18 @@ func test_resolve_target_non_self_returns_enemy() -> void:
 	)
 
 
-func test_apply_card_effects_build_type_supports_enemy_wall_target() -> void:
-	# Регрессия: раньше generic "build" сравнивал target буквально с "self_wall"/
-	# "self_tower", поэтому "enemy_wall"/"enemy_tower" тихо не делали ничего.
+func test_apply_card_effects_build_wall_targets_enemy() -> void:
+	# build_wall/build_tower уже поддерживают любой target (self/enemy) через
+	# resolve_target() — отдельный generic "build" тип был избыточен и убран (ARC-005),
+	# т.к. использовался ровно одной картой (wall_card.tres) и дублировал build_wall.
 	var card := TestFixtures.make_card(
-		1, CardData.ResourceType.BRICKS, [{"type": "build", "value": 3, "target": "enemy_wall"}]
+		1, CardData.ResourceType.BRICKS, [{"type": "build_wall", "value": 3, "target": "enemy_wall"}]
 	)
 	MatchManager.player_hand = [card]
 	var enemy_wall_before: int = enemy.wall_hp
 	MatchManager.play_card_by_index(0, player)
 	assert_eq(
-		enemy.wall_hp,
-		enemy_wall_before + 3,
-		"generic build с target=enemy_wall должен прибавлять wall_hp врагу, а не игнорироваться"
-	)
-
-
-func test_apply_card_effects_build_type_supports_self_tower_target() -> void:
-	var card := TestFixtures.make_card(
-		1, CardData.ResourceType.BRICKS, [{"type": "build", "value": 5, "target": "self_tower"}]
-	)
-	MatchManager.player_hand = [card]
-	var player_tower_before: int = player.tower_hp
-	MatchManager.play_card_by_index(0, player)
-	assert_eq(
-		player.tower_hp,
-		player_tower_before + 5,
-		"generic build с target=self_tower должен прибавлять tower_hp актёру"
+		enemy.wall_hp, enemy_wall_before + 3, "build_wall с target=enemy_wall должен прибавлять wall_hp врагу"
 	)
 
 

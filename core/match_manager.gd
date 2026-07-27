@@ -263,16 +263,6 @@ func apply_card_effects(card: CardData, actor: PlayerData) -> void:
 				target_player.magic += value
 			"mod_dungeon":
 				target_player.dungeon += value
-			"build":  # Универсальный эффект из примера в CardData
-				# ARC-005: раньше сравнивалось буквально с "self_wall"/"self_tower", поэтому
-				# "enemy_wall"/"enemy_tower" тихо не делали ничего. Часть self/enemy уже
-				# учтена в target_player через resolve_target() — здесь смотрим только суффикс.
-				if target_str.ends_with("_wall"):
-					target_player.wall_hp += value
-					GameEvents.value_built.emit(target_player, value, "wall")
-				elif target_str.ends_with("_tower"):
-					target_player.tower_hp += value
-					GameEvents.value_built.emit(target_player, value, "tower")
 
 	GameEvents.resource_changed.emit(actor, "all", 0)
 	GameEvents.resource_changed.emit(enemy, "all", 0)

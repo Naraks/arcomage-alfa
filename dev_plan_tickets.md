@@ -602,14 +602,14 @@ HP, 300 ресурсов), сброс карты в патовой ситуац�
 
 > ⚠️ Частично реализовано: добавлена `MatchManager.resolve_target(actor, enemy, target_str) -> PlayerData` —
 > единая точка резолва (используется только префикс `self`/`enemy`), `apply_card_effects()` переведён на неё.
-> Написан `effects_reference.md` — таблица по всем `type` эффектов карт, где реально участвует суффикс
-> `_wall`/`_tower` (только generic `"build"`), плюс формат эффектов артефактов (`trigger` вместо `target`).
-> Все 34 карты и 1 артефакт проверены построчно — ни одна не противоречит реальному поведению.
-> Попутно найден и исправлен баг: generic `"build"` сравнивал `target` буквально с `"self_wall"`/`"self_tower"`,
-> поэтому `"enemy_wall"`/`"enemy_tower"` тихо ничего не делали (сейчас в контенте таких карт нет, но AI/будущий
-> контент мог на это напороться) — переведено на проверку суффикса через `ends_with()`, работает симметрично для
-> self и enemy. Добавлены тесты-регрессии в `tests/test_match_manager.gd`
-> (`test_resolve_target_*`, `test_apply_card_effects_build_type_supports_*`). Не проверено вживую: полный прогон
+> Написан `effects_reference.md` — таблица по всем `type` эффектов карт и формат эффектов артефактов (`trigger`
+> вместо `target`). Все 34 карты и 1 артефакт проверены построчно — ни одна не противоречит реальному поведению.
+> По ходу аудита выяснилось, что generic-тип `"build"` (решал wall/tower по суффиксу `target`) использовала ровно
+> одна карта (`wall_card.tres`) и дублировал `build_wall`/`build_tower` — убран целиком: `wall_card.tres`
+> переведена на `build_wall`, ветка `"build"` убрана из `match_manager.gd`, мёртвые упоминания `type == "build"`
+> вычищены из `default_ai_strategy.gd`/`aggressive_ai_strategy.gd`. Добавлены тесты-регрессии в
+> `tests/test_match_manager.gd` (`test_resolve_target_*`, `test_apply_card_effects_build_wall_targets_enemy`).
+> Не проверено вживую: полный прогон
 > GUT-тестов в редакторе Godot.
 
 ---
