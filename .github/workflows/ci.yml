@@ -70,6 +70,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           lfs: true
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Cache Godot binary
         id: cache-godot
@@ -111,6 +113,22 @@ jobs:
         run: |
           "$GODOT_DIR/godot" --headless --editor --quit --path . || true
 
+      # ARC-069: версия сборки для BuildVersion (core/build_version.gd), читается
+      # рантаймом из res://build_version.json и показывается в главном меню.
+      - name: Записать build_version.json
+        run: |
+          VERSION=$(git describe --tags --always --dirty --match 'v[0-9]*.[0-9]*.[0-9]*' 2>/dev/null || echo "dev")
+          COMMIT=$(git rev-parse --short HEAD)
+          BUILT_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          cat > build_version.json << EOF
+          {
+            "version": "$VERSION",
+            "commit": "$COMMIT",
+            "built_at": "$BUILT_AT"
+          }
+          EOF
+          cat build_version.json
+
       - name: Export Web build
         run: |
           mkdir -p web
@@ -135,6 +153,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           lfs: true
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Cache Godot binary
         id: cache-godot
@@ -173,6 +193,22 @@ jobs:
       - name: Import project (warm .godot/ cache)
         run: |
           "$GODOT_DIR/godot" --headless --editor --quit --path . || true
+
+      # ARC-069: версия сборки для BuildVersion (core/build_version.gd), читается
+      # рантаймом из res://build_version.json и показывается в главном меню.
+      - name: Записать build_version.json
+        run: |
+          VERSION=$(git describe --tags --always --dirty --match 'v[0-9]*.[0-9]*.[0-9]*' 2>/dev/null || echo "dev")
+          COMMIT=$(git rev-parse --short HEAD)
+          BUILT_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          cat > build_version.json << EOF
+          {
+            "version": "$VERSION",
+            "commit": "$COMMIT",
+            "built_at": "$BUILT_AT"
+          }
+          EOF
+          cat build_version.json
 
       - name: Export Windows build
         run: |

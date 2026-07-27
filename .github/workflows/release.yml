@@ -1,0 +1,76 @@
+name: Release
+
+# Тег вида vX.Y.Z — точка входа релизного процесса (ARC-069).
+# main защищён от прямого пуша, поэтому CHANGELOG.md обновляется через
+# авто-PR (peter-evans/create-pull-request), а не прямым коммитом.
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  changelog-pr:
+    name: Обновить CHANGELOG.md (PR)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Сгенерировать CHANGELOG.md
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: cliff.toml
+          args: --verbose
+        env:
+          OUTPUT: CHANGELOG.md
+          GITHUB_REPO: ${{ github.repository }}
+
+      - name: Открыть PR с обновлённым CHANGELOG.md
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: обновить CHANGELOG.md для ${{ github.ref_name }}"
+          title: "chore: CHANGELOG.md для ${{ github.ref_name }}"
+          body: |
+            Автоматическое обновление `CHANGELOG.md` после публикации тега `${{ github.ref_name }}`.
+
+            Сгенерировано [git-cliff](https://git-cliff.org/) по `cliff.toml`,
+            см. `.github/workflows/release.yml`.
+          branch: changelog/${{ github.ref_name }}
+          base: main
+          add-paths: CHANGELOG.md
+          delete-branch: true
+
+  github-release:
+    name: Создать GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Сгенерировать release notes для этого тега
+        uses: orhun/git-cliff-action@v4
+        id: git-cliff
+        with:
+          config: cliff.toml
+          args: --verbose --latest --strip header
+        env:
+          OUTPUT: RELEASE_NOTES.md
+          GITHUB_REPO: ${{ github.repository }}
+
+      - name: Создать GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          body_path: RELEASE_NOTES.md
+          generate_release_notes: false

@@ -167,9 +167,34 @@ pre-commit run --all-files
 
 > ✅ Реализовано и проверено.
 
+## Версия сборки и CHANGELOG
+
+Реализует **ARC-069**. Версия — это git-тег вида `vX.Y.Z` (семвер). Тегов трогать вручную не нужно
+для обычной разработки: они нужны только для релиза/плейтест-сборки с версией.
+
+- Синглтон `BuildVersion` (`core/build_version.gd`) в рантайме читает `res://build_version.json` и
+  показывает версию в главном меню (`ui/main_menu.tscn`, `VersionLabel`). В редакторе и локальных
+  запусках файла нет — отображается `dev`.
+- `.github/workflows/ci.yml` перед экспортом (джобы `export-web`, `build-windows-playtest`) пишет
+  `build_version.json` из `git describe --tags --always --dirty --match 'v*.*.*'` и короткого SHA.
+- `CHANGELOG.md` генерируется из истории коммитов по `cliff.toml` ([git-cliff](https://git-cliff.org/)),
+  без Conventional Commits — группировка идёт по соглашению этого репозитория (`ARC-XXX: ...` /
+  `chore: ...`, см. «Формат сообщений коммитов» выше).
+- При пуше тега `vX.Y.Z` срабатывает `.github/workflows/release.yml`:
+  - джоб `changelog-pr` прогоняет git-cliff и открывает PR с обновлённым `CHANGELOG.md` в `main` (не
+    коммитит напрямую — ветка защищена, см. выше);
+  - джоб `github-release` публикует GitHub Release с release-notes для этого тега.
+
+Чтобы выпустить релиз: `git tag v0.2.0 && git push origin v0.2.0`, затем смержить открывшийся
+авто-PR с CHANGELOG.md.
+
+> ⚠️ Частично реализовано: код и workflow'ы готовы, но не проверены вживую (нет доступа к GitHub
+> Actions из песочницы) — см. статус в `dev_plan_tickets.md`.
+
 ## Что дальше по этому эпику
 
 Этот файл покрывает весь процесс разработки для эпика J: ветвление и коммиты (ARC-060), Git LFS
 (ARC-061), стиль GDScript (ARC-062), шаблоны PR/issue (ARC-063), защиту `main` (ARC-064), тесты на GUT
-(ARC-072/073) и CI (ARC-066). Остальные тикеты эпика J (ARC-065, ARC-067–071, ARC-074–077) касаются
-экспорта, релизных ассетов и расширения тестового покрытия — см. `dev_plan_tickets.md`.
+(ARC-072/073), CI (ARC-066) и версионирование/CHANGELOG (ARC-069). Остальные тикеты эпика J (ARC-065,
+ARC-067–071, ARC-074–077) касаются экспорта, релизных ассетов и расширения тестового покрытия — см.
+`dev_plan_tickets.md`.

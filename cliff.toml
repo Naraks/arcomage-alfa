@@ -1,0 +1,46 @@
+## Конфигурация git-cliff (ARC-069).
+## Коммиты в этом репозитории оформляются не по Conventional Commits, а по
+## внутреннему соглашению: "ARC-XXX: описание" или "chore: описание"
+## (см. CONTRIBUTING.md), поэтому conventional_commits выключен и группировка
+## идёт через commit_parsers по этим префиксам.
+
+[changelog]
+header = """
+# Changelog\n
+Все заметные изменения проекта фиксируются в этом файле.\n
+"""
+body = """
+{% if version %}\
+    ## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
+{% else %}\
+    ## [Unreleased]
+{% endif %}\
+{% for group, commits in commits | group_by(attribute="group") %}
+    ### {{ group | upper_first }}
+    {% for commit in commits %}
+        - {% if commit.scope %}**{{ commit.scope }}:** {% endif %}\
+            {{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}]({{ commit.id }}))
+    {% endfor %}
+{% endfor %}\n
+"""
+trim = true
+footer = ""
+postprocessors = []
+
+[git]
+conventional_commits = false
+filter_unconventional = false
+require_conventional = false
+split_commits = false
+protect_breaking_commits = false
+filter_commits = false
+commit_parsers = [
+    { message = "^ARC-[0-9]+", group = "Тикеты" },
+    { message = "^chore", group = "Прочее" },
+    { message = ".*", group = "Прочее" },
+]
+tag_pattern = "v[0-9]+\\.[0-9]+\\.[0-9]+"
+skip_tags = ""
+ignore_tags = ""
+topo_order = false
+sort_commits = "oldest"

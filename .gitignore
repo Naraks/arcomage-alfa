@@ -15,6 +15,10 @@
 .gut_editor_config.json
 /gut_results.xml
 
+# Версия сборки (ARC-069): пишется в CI перед экспортом из `git describe`,
+# в репозитории не хранится — см. core/build_version.gd.
+/build_version.json
+
 # OS
 .DS_Store
 Thumbs.db

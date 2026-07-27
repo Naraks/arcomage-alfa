@@ -4,6 +4,10 @@ const WorldMapData = preload("res://data/resources/world_map_data.gd")
 const MapNodeData = preload("res://data/resources/map_node_data.gd")
 
 
+func _ready() -> void:
+	$VersionLabel.text = BuildVersion.get_display_string()
+
+
 func _on_continue_pressed():
 	print("Continue pressed - functionality not yet implemented")
 
