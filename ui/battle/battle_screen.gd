@@ -29,7 +29,8 @@ func _ready() -> void:
 	GameEvents.match_started.connect(_on_match_started)
 	GameEvents.resource_changed.connect(_on_resource_changed)
 	GameEvents.turn_started.connect(_on_turn_started)
-	GameEvents.health_changed.connect(self._on_health_changed)
+	GameEvents.damage_applied.connect(_on_damage_applied)
+	GameEvents.value_built.connect(_on_value_built)
 	GameEvents.match_ended.connect(_on_match_ended)
 
 	# Тестовый запуск матча, если мы в этой сцене напрямую
@@ -175,14 +176,19 @@ func _on_turn_started(player: PlayerData) -> void:
 		status_label.text = "ENEMY TURN"
 
 
-func _on_health_changed(_player: Resource, amount: int) -> void:
+func _on_damage_applied(_target: Resource, _amount: int, _hit_wall: bool) -> void:
 	update_all_ui()
-	if amount < 0:  # Тряска при получении урона
-		var original_position = position
-		var tween = create_tween()
-		tween.tween_property(self, "position", original_position + Vector2(10, 0), 0.05)
-		tween.tween_property(self, "position", original_position - Vector2(10, 0), 0.05)
-		tween.tween_property(self, "position", original_position, 0.05)
+	# Тряска экрана при получении урона (ARC-004: раньше определялась по знаку
+	# amount у health_changed; теперь damage_applied сам по себе — только урон).
+	var original_position = position
+	var tween = create_tween()
+	tween.tween_property(self, "position", original_position + Vector2(10, 0), 0.05)
+	tween.tween_property(self, "position", original_position - Vector2(10, 0), 0.05)
+	tween.tween_property(self, "position", original_position, 0.05)
+
+
+func _on_value_built(_target: Resource, _amount: int, _part: String) -> void:
+	update_all_ui()
 
 
 func update_all_ui() -> void:

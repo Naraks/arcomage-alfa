@@ -35,12 +35,13 @@ func apply_artifact_effect(artifact: ArtifactData, effect: Dictionary, player: P
 			player.dungeon += value
 		"build_wall":
 			player.wall_hp += value
+			GameEvents.value_built.emit(player, value, "wall")
 		"build_tower":
 			player.tower_hp += value
+			GameEvents.value_built.emit(player, value, "tower")
 
 	# Обновляем UI, если нужно
 	GameEvents.resource_changed.emit(player, "all", 0)
-	GameEvents.health_changed.emit(player, value)
 
 	GameEvents.artifact_triggered.emit(artifact, player)
 	print("[DEBUG] Artifact triggered: ", artifact.artifact_name, " effect: ", type)

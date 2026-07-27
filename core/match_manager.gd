@@ -255,10 +255,10 @@ func apply_card_effects(card: CardData, actor: PlayerData) -> void:
 				apply_damage(value, target_player, true)
 			"build_wall":
 				target_player.wall_hp += value
-				GameEvents.health_changed.emit(target_player, value)
+				GameEvents.value_built.emit(target_player, value, "wall")
 			"build_tower":
 				target_player.tower_hp += value
-				GameEvents.health_changed.emit(target_player, value)
+				GameEvents.value_built.emit(target_player, value, "tower")
 			"mod_quarry":
 				target_player.quarry += value
 			"mod_magic":
@@ -268,9 +268,10 @@ func apply_card_effects(card: CardData, actor: PlayerData) -> void:
 			"build":  # Универсальный эффект из примера в CardData
 				if target_str == "self_wall":
 					target_player.wall_hp += value
+					GameEvents.value_built.emit(target_player, value, "wall")
 				elif target_str == "self_tower":
 					target_player.tower_hp += value
-				GameEvents.health_changed.emit(target_player, value)
+					GameEvents.value_built.emit(target_player, value, "tower")
 
 	GameEvents.resource_changed.emit(actor, "all", 0)
 	GameEvents.resource_changed.emit(enemy, "all", 0)
@@ -285,7 +286,10 @@ func apply_damage(amount: int, target: PlayerData, ignore_wall: bool) -> void:
 		if overflow > 0:
 			target.tower_hp -= overflow
 
-	GameEvents.health_changed.emit(target, -amount)
+	# ARC-004: damage_applied несёт положительный amount — знак больше не нужен,
+	# т.к. само имя сигнала уже говорит "это урон".
+	var hit_wall = not ignore_wall
+	GameEvents.damage_applied.emit(target, amount, hit_wall)
 
 
 func check_win() -> bool:
