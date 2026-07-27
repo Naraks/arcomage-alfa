@@ -3,8 +3,10 @@ name: CI
 on:
   push:
     branches: [main]
+    tags: ["playtest-*"]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 env:
   GODOT_VERSION: 4.7.1-stable
@@ -119,3 +121,66 @@ jobs:
         with:
           name: web-build
           path: web/
+
+  build-windows-playtest:
+    name: Build Windows playtest
+    runs-on: ubuntu-latest
+    needs: tests
+    # Только по тегу playtest-YYYYMMDD или вручную из вкладки Actions — не на каждый push/PR
+    # (см. ARC-068). godotengine/godot экспортирует Windows-бинарник кросс-компиляцией даже
+    # с ubuntu-latest, отдельного Windows-раннера не нужно.
+    if: startsWith(github.ref, 'refs/tags/playtest-') || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout (with LFS)
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Cache Godot binary
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.GODOT_DIR }}
+          key: godot-${{ env.GODOT_VERSION }}-linux-x86_64
+
+      - name: Download Godot ${{ env.GODOT_VERSION }}
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p "$GODOT_DIR"
+          curl -fsSL -o /tmp/godot.zip \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip"
+          unzip -q /tmp/godot.zip -d /tmp/godot-extracted
+          mv /tmp/godot-extracted/Godot_v${GODOT_VERSION}_linux.x86_64 "$GODOT_DIR/godot"
+          chmod +x "$GODOT_DIR/godot"
+
+      - name: Cache export templates
+        id: cache-templates
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/godot/export_templates
+          key: godot-templates-${{ env.GODOT_VERSION }}
+
+      - name: Download export templates
+        if: steps.cache-templates.outputs.cache-hit != 'true'
+        run: |
+          TEMPLATE_DIR="${GODOT_VERSION/-/.}"
+          mkdir -p "$HOME/.local/share/godot/export_templates"
+          curl -fsSL -o /tmp/templates.tpz \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz"
+          unzip -q /tmp/templates.tpz -d /tmp/templates-extracted
+          mv /tmp/templates-extracted/templates "$HOME/.local/share/godot/export_templates/${TEMPLATE_DIR}"
+
+      - name: Import project (warm .godot/ cache)
+        run: |
+          "$GODOT_DIR/godot" --headless --editor --quit --path . || true
+
+      - name: Export Windows build
+        run: |
+          mkdir -p builds/alfa-windows
+          "$GODOT_DIR/godot" --headless --path . --export-release "Windows Desktop" ./builds/alfa-windows/Alfa.exe
+
+      - name: Upload Windows build
+        uses: actions/upload-artifact@v4
+        with:
+          name: alfa-windows-playtest
+          path: builds/alfa-windows/
