@@ -1,5 +1,5 @@
-extends Resource
 class_name MapNodeData
+extends Resource
 
 enum NodeType { BATTLE, ELITE_BATTLE, SHOP, REST }
 

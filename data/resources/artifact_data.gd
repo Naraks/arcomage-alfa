@@ -1,5 +1,5 @@
-extends Resource
 class_name ArtifactData
+extends Resource
 
 @export var artifact_name: String = "New Artifact"
 @export_multiline var description: String = ""

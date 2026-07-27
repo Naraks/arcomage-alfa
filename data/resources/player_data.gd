@@ -1,5 +1,5 @@
-extends Resource
 class_name PlayerData
+extends Resource
 
 @export_group("Logic")
 @export var tower_hp: int = 20

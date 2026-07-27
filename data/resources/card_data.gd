@@ -1,5 +1,5 @@
-extends Resource
 class_name CardData
+extends Resource
 
 enum ResourceType { BRICKS, GEMS, BEASTS }
 

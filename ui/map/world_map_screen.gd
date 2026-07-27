@@ -5,13 +5,15 @@ const MapNodeData = preload("res://data/resources/map_node_data.gd")
 
 @export var map_data: Resource
 
+
 func _ready() -> void:
 	print("WorldMapScreen _ready")
 	if not map_data:
 		map_data = MatchSettings.world_map_data
-		
+
 	if map_data:
 		_generate_map_ui()
+
 
 func _generate_map_ui() -> void:
 	print("Generating map UI, nodes count: ", map_data.map_nodes.size())
@@ -35,13 +37,14 @@ func _generate_map_ui() -> void:
 		add_child(button)
 		print("Added button at: ", node.position)
 
+
 func _on_node_pressed(node: Resource) -> void:
 	print("Node pressed: ", node.node_type)
-	
+
 	if node.node_type == MapNodeData.NodeType.BATTLE:
 		# Сохраняем информацию о том, какой узел мы выбрали
 		# В будущем это поможет отметить его как пройденный
-		
+
 		# Заглушка для PlayerData
 		var p_data = PlayerData.new()
 		var e_data = PlayerData.new()
