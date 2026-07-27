@@ -28,22 +28,12 @@ func setup_match(p_player: PlayerData, p_enemy: PlayerData) -> void:
 	player_data = p_player
 	enemy_data = p_enemy
 
-	# Баг: экраны, создающие enemy_data "на лету" (world_map_screen.gd, main_menu.gd),
-	# не назначают ai_strategy. Без неё execute_ai_turn() печатал ошибку и выходил,
-	# ни разу не вызвав end_turn() — матч навсегда зависал в AI_TURN. Подстраховываемся
-	# здесь, в единой точке входа для всех боевых сценариев.
+	# enemy_data может прийти без ai_strategy (world_map_screen.gd, main_menu.gd) —
+	# подстраховываемся здесь, в единой точке входа для всех боевых сценариев (ARC-078).
 	if not enemy_data.ai_strategy:
 		enemy_data.ai_strategy = load("res://data/resources/default_ai_strategy.gd").new()
 
-	# Применение бонусов мета-прогрессии, если ProfileManager доступен (ARC-001).
-	# Раньше: ProfileManager не был зарегистрирован в [autoload], поэтому
-	# get_node_or_null() всегда возвращал null и весь блок молча не выполнялся —
-	# бонусы никогда не применялись, без единой ошибки в логе. Заодно был второй,
-	# скрытый этим багом баг: profile_manager.has("profile") — has() не метод
-	# базового Object/Node (это не Dictionary/Array), такой вызов упал бы с
-	# "Nonexistent function 'has'", если бы когда-либо реально выполнился. profile —
-	# обычное поле скрипта с дефолтным значением, всегда существует, когда узел
-	# существует, поэтому отдельная проверка не нужна вовсе.
+	# Бонусы мета-прогрессии, если ProfileManager доступен (ARC-001).
 	var profile_manager = get_node_or_null("/root/ProfileManager")
 	if profile_manager:
 		player_data.tower_hp += profile_manager.profile.player_stats.tower_hp_bonus

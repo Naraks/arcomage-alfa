@@ -148,13 +148,7 @@ func test_check_win_true_when_resource_target_reached() -> void:
 	assert_true(MatchManager.check_win())
 
 
-# --- setup_match / execute_ai_turn ---
-# Регрессия: в реальной игре enemy_data создаётся "на лету" (world_map_screen.gd,
-# main_menu.gd) без ai_strategy. execute_ai_turn() падал на проверке ai_strategy и
-# выходил, ни разу не вызвав end_turn() — ход навсегда зависал в AI_TURN, игрок не
-# мог продолжить матч. Тесты ниже покрывают и исходную причину (setup_match теперь
-# сам назначает стратегию по умолчанию), и саму execute_ai_turn как страховку на
-# случай, если её вызовут в обход setup_match.
+# --- setup_match / execute_ai_turn (регрессия ARC-078: зависающий ход ИИ) ---
 
 
 func test_setup_match_assigns_default_ai_strategy_when_missing() -> void:
@@ -198,13 +192,7 @@ func test_execute_ai_turn_returns_turn_to_player_when_hand_empty() -> void:
 	)
 
 
-# --- setup_match / ProfileManager (ARC-001) ---
-# Регрессия: ProfileManager не был зарегистрирован в [autoload] в project.godot,
-# поэтому get_node_or_null("/root/ProfileManager") в setup_match() всегда
-# возвращал null и бонусы мета-прогрессии никогда не применялись — молча, без
-# единой ошибки. Заодно там же был скрытый этим багом второй баг:
-# profile_manager.has("profile") падал бы с "Nonexistent function 'has'", если
-# бы условие когда-либо дошло до вычисления (has() — не метод Object/Node).
+# --- setup_match / ProfileManager (регрессия ARC-001: непримененные бонусы) ---
 
 
 func test_setup_match_applies_profile_manager_bonuses() -> void:
