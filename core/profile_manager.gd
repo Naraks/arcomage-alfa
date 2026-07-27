@@ -1,7 +1,10 @@
-class_name ProfileManager
 extends Node
-
-## ProfileManager: Управляет мета-прогрессией и сохранениями
+## ProfileManager (ARC-001): управляет мета-прогрессией и сохранениями.
+## Автозагружен под именем ProfileManager (см. [autoload] в project.godot) —
+## этого достаточно для глобального доступа, поэтому class_name здесь не
+## ставим: он конфликтует с именем автозагрузки и роняет её загрузку с
+## "hides an autoload singleton" (тот же баг уже был и починен в
+## core/build_version.gd, см. ARC-069).
 
 var profile: Dictionary = {
 	"total_wins": 0,

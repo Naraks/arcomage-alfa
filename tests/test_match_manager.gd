@@ -196,3 +196,34 @@ func test_execute_ai_turn_returns_turn_to_player_when_hand_empty() -> void:
 		MatchManager.State.PLAYER_TURN,
 		"Пустая рука ИИ не должна вешать ход — он обязан вернуться к игроку"
 	)
+
+
+# --- setup_match / ProfileManager (ARC-001) ---
+# Регрессия: ProfileManager не был зарегистрирован в [autoload] в project.godot,
+# поэтому get_node_or_null("/root/ProfileManager") в setup_match() всегда
+# возвращал null и бонусы мета-прогрессии никогда не применялись — молча, без
+# единой ошибки. Заодно там же был скрытый этим багом второй баг:
+# profile_manager.has("profile") падал бы с "Nonexistent function 'has'", если
+# бы условие когда-либо дошло до вычисления (has() — не метод Object/Node).
+
+
+func test_setup_match_applies_profile_manager_bonuses() -> void:
+	var p := TestFixtures.make_player()
+	var e := TestFixtures.make_player()
+	var orig_tower_hp: int = p.tower_hp
+	var orig_quarry: int = p.quarry
+	var tower_hp_bonus: int = ProfileManager.profile.player_stats.tower_hp_bonus
+	var resource_gain_bonus: int = ProfileManager.profile.player_stats.resource_gain_bonus
+
+	MatchManager.setup_match(p, e)
+
+	assert_eq(
+		MatchManager.player_data.tower_hp,
+		orig_tower_hp + tower_hp_bonus,
+		"setup_match должен прибавить tower_hp_bonus из профиля к tower_hp игрока"
+	)
+	assert_eq(
+		MatchManager.player_data.quarry,
+		orig_quarry + resource_gain_bonus,
+		"setup_match должен прибавить resource_gain_bonus из профиля к quarry игрока"
+	)

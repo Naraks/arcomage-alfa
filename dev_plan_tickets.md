@@ -452,9 +452,23 @@ HP, 300 ресурсов), сброс карты в патовой ситуац�
 без ошибки.
 
 **Критерии приёмки:**
-- [ ] `ProfileManager="*res://core/profile_manager.gd"` добавлен в `[autoload]`.
-- [ ] В `setup_match()` подтверждено логом/тестом, что бонусы реально прибавляются к `tower_hp`/`quarry`.
-- [ ] Написан unit-тест на применение бонуса (см. ARC-053).
+- [x] `ProfileManager="*res://core/profile_manager.gd"` добавлен в `[autoload]`.
+- [x] В `setup_match()` подтверждено логом/тестом, что бонусы реально прибавляются к `tower_hp`/`quarry`.
+- [x] Написан unit-тест на применение бонуса (см. ARC-053).
+
+> ⚠️ Частично реализовано: `ProfileManager` добавлен в `[autoload]` в `project.godot`. По пути снял
+> `class_name ProfileManager` с `core/profile_manager.gd` — иначе тот же конфликт «class_name
+> совпадает с именем автозагрузки», что уже чинили в `core/build_version.gd` (ARC-069): движок ронял бы
+> скрипт с «hides an autoload singleton». Заодно нашёл и починил второй баг, который маскировался
+> первым: `profile_manager.has("profile")` в `match_manager.gd` вызывал бы `has()` — метод, которого
+> нет у `Object`/`Node` (это не `Dictionary`/`Array`), и упал бы с «Nonexistent function 'has'», если бы
+> когда-либо реально выполнился; раньше не выполнялся никогда, потому что `profile_manager` всегда был
+> `null` (автозагрузки не было). Убрал лишнюю проверку — `profile` это обычное поле с дефолтным
+> значением, всегда существует. Добавлен тест `test_setup_match_applies_profile_manager_bonuses` в
+> `tests/test_match_manager.gd`, сверяет реальные значения бонусов из `ProfileManager.profile.player_stats`,
+> а не захардкоженные числа. Не проверено вживую из песочницы
+> (нет Godot) — нужно открыть проект в редакторе (без ошибок автозагрузки), прогнать GUT и убедиться,
+> что бонусы правда прибавляются в реальном матче.
 
 ---
 

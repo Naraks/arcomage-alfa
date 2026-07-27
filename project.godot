@@ -26,6 +26,7 @@ GameEvents="*res://core/game_events.gd"
 MatchManager="*res://core/match_manager.gd"
 MatchSettings="*res://core/match_settings.gd"
 BuildVersion="*res://core/build_version.gd"
+ProfileManager="*res://core/profile_manager.gd"
 
 [display]
 

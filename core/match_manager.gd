@@ -35,9 +35,17 @@ func setup_match(p_player: PlayerData, p_enemy: PlayerData) -> void:
 	if not enemy_data.ai_strategy:
 		enemy_data.ai_strategy = load("res://data/resources/default_ai_strategy.gd").new()
 
-	# Применение бонусов мета-прогрессии, если ProfileManager доступен
+	# Применение бонусов мета-прогрессии, если ProfileManager доступен (ARC-001).
+	# Раньше: ProfileManager не был зарегистрирован в [autoload], поэтому
+	# get_node_or_null() всегда возвращал null и весь блок молча не выполнялся —
+	# бонусы никогда не применялись, без единой ошибки в логе. Заодно был второй,
+	# скрытый этим багом баг: profile_manager.has("profile") — has() не метод
+	# базового Object/Node (это не Dictionary/Array), такой вызов упал бы с
+	# "Nonexistent function 'has'", если бы когда-либо реально выполнился. profile —
+	# обычное поле скрипта с дефолтным значением, всегда существует, когда узел
+	# существует, поэтому отдельная проверка не нужна вовсе.
 	var profile_manager = get_node_or_null("/root/ProfileManager")
-	if profile_manager and profile_manager.has("profile"):
+	if profile_manager:
 		player_data.tower_hp += profile_manager.profile.player_stats.tower_hp_bonus
 		player_data.quarry += profile_manager.profile.player_stats.resource_gain_bonus
 		print("[DEBUG] Meta-progression bonuses applied")
