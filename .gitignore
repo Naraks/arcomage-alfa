@@ -1,0 +1,12 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Экспортные бандлы и бинарники (не должны попадать в репозиторий, см. ARC-008/ARC-065)
+*.exe
+*.pck
+*.console.exe
+/web/
+/builds/
+/_to_delete/
+/_to_delete/

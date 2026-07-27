@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+[ext_resource type="Script" uid="uid://cmnf4fc3mdeqd" path="res://data/resources/card_data.gd" id="1_x1y2z"]
+[resource]
+script = ExtResource("1_x1y2z")
+card_name = "Грифон"
+description = "Наносит 7 урона башне врага."
+cost = 4
+type = 2
+effects = Array[Dictionary]([{"target": "enemy", "type": "direct_damage", "value": 7}])

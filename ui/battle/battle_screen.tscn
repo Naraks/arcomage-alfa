@@ -1,0 +1,196 @@
+[gd_scene load_steps=2 format=3 uid="uid://df7x8h2n3r6p1"]
+
+[ext_resource type="Script" path="res://ui/battle/battle_screen.gd" id="1_battle"]
+
+[node name="BattleScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_battle")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.15, 0.15, 0.2, 1)
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="StatsHBox" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="PlayerStats" type="MarginContainer" parent="VBox/StatsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="VBox" type="VBoxContainer" parent="VBox/StatsHBox/PlayerStats"]
+layout_mode = 2
+
+[node name="ResourcesHBox" type="HBoxContainer" parent="VBox/StatsHBox/PlayerStats/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="BricksLabel" type="Label" parent="VBox/StatsHBox/PlayerStats/VBox/ResourcesHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Bricks: 5"
+horizontal_alignment = 1
+
+[node name="GemsLabel" type="Label" parent="VBox/StatsHBox/PlayerStats/VBox/ResourcesHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Gems: 5"
+horizontal_alignment = 1
+
+[node name="BeastsLabel" type="Label" parent="VBox/StatsHBox/PlayerStats/VBox/ResourcesHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Beasts: 5"
+horizontal_alignment = 1
+
+[node name="HBox" type="HBoxContainer" parent="VBox/StatsHBox/PlayerStats/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="VBox" type="VBoxContainer" parent="VBox/StatsHBox/PlayerStats/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PlayerWallBar" type="ProgressBar" parent="VBox/StatsHBox/PlayerStats/VBox/HBox/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 0)
+value = 5.0
+
+[node name="PlayerTowerBar" type="ProgressBar" parent="VBox/StatsHBox/PlayerStats/VBox/HBox/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+value = 20.0
+
+[node name="Label" type="Label" parent="VBox/StatsHBox/PlayerStats/VBox/HBox/VBox"]
+layout_mode = 2
+text = "Your Tower"
+horizontal_alignment = 1
+
+[node name="EnemyStats" type="MarginContainer" parent="VBox/StatsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+
+[node name="HBox" type="HBoxContainer" parent="VBox/StatsHBox/EnemyStats"]
+layout_mode = 2
+alignment = 1
+
+[node name="VBox" type="VBoxContainer" parent="VBox/StatsHBox/EnemyStats/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EnemyResourcesHBox" type="HBoxContainer" parent="VBox/StatsHBox/EnemyStats/HBox/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="EnemyBricksLabel" type="Label" parent="VBox/StatsHBox/EnemyStats/HBox/VBox/EnemyResourcesHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Bricks: 0"
+horizontal_alignment = 1
+
+[node name="EnemyGemsLabel" type="Label" parent="VBox/StatsHBox/EnemyStats/HBox/VBox/EnemyResourcesHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Gems: 0"
+horizontal_alignment = 1
+
+[node name="EnemyBeastsLabel" type="Label" parent="VBox/StatsHBox/EnemyStats/HBox/VBox/EnemyResourcesHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Beasts: 0"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="VBox/StatsHBox/EnemyStats/HBox/VBox"]
+layout_mode = 2
+text = "Enemy Tower"
+horizontal_alignment = 1
+
+[node name="EnemyTowerBar" type="ProgressBar" parent="VBox/StatsHBox/EnemyStats/HBox/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+value = 20.0
+
+[node name="EnemyWallBar" type="ProgressBar" parent="VBox/StatsHBox/EnemyStats/HBox/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 0)
+value = 5.0
+
+[node name="CenterPlaceholder" type="Control" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="StatusLabel" type="Label" parent="VBox/CenterPlaceholder"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_top = 20.0
+offset_right = 50.0
+offset_bottom = 43.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+text = "WAITING..."
+horizontal_alignment = 1
+
+
+
+[node name="HandArea" type="MarginContainer" parent="VBox"]
+custom_minimum_size = Vector2(0, 240)
+layout_mode = 2
+mouse_filter = 1
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBox/HandArea"]
+layout_mode = 2
+mouse_filter = 1
+vertical_scroll_mode = 0
+
+[node name="HandContainer" type="HBoxContainer" parent="VBox/HandArea/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+theme_override_constants/separation = 10
+alignment = 1

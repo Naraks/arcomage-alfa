@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+[ext_resource type="Script" uid="uid://cmnf4fc3mdeqd" path="res://data/resources/card_data.gd" id="1_x1y2z"]
+[resource]
+script = ExtResource("1_x1y2z")
+card_name = "Кирпичный завод"
+description = "Увеличивает добычу кирпича на 2."
+cost = 2
+type = 0
+effects = Array[Dictionary]([{"target": "self", "type": "mod_quarry", "value": 2}])
