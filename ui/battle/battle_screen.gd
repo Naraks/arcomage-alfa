@@ -144,10 +144,15 @@ func _on_match_ended(winner: PlayerData) -> void:
 
 
 func _test_setup() -> void:
-	var p = MatchSettings.player_data if MatchSettings.player_data else PlayerData.new()
-	var e = MatchSettings.enemy_data if MatchSettings.enemy_data else PlayerData.new()
-	if not e.ai_strategy:
-		e.ai_strategy = load("res://data/resources/aggressive_ai_strategy.gd").new()
+	# Баг: раньше переиспользовал MatchSettings.player_data/enemy_data, если они
+	# были заданы — на Restart после поражения это были те же самые, уже
+	# побитые PlayerData из проигранного матча (tower_hp/wall_hp не сбрасывались,
+	# только рука). _test_setup() вызывается либо для прямого дебаг-запуска сцены
+	# (тогда MatchSettings.player_data и так null), либо из Restart — в обоих
+	# случаях нужны свежие данные, а не то, что осталось от предыдущего боя.
+	var p := PlayerData.new()
+	var e := PlayerData.new()
+	e.ai_strategy = load("res://data/resources/aggressive_ai_strategy.gd").new()
 	MatchManager.setup_match(p, e)
 
 
