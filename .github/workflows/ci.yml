@@ -50,8 +50,7 @@ jobs:
           "$GODOT_DIR/godot" --headless --path . \
             -s addons/gut/gut_cmdln.gd \
             -gexit \
-            -gjunit_xml_file=res://gut_results.xml \
-            -gjunit_xml_timestamp=false
+            -gjunit_xml_file=res://gut_results.xml
 
       - name: Upload test results
         if: always()
