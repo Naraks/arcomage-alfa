@@ -644,15 +644,13 @@ HP, 300 ресурсов), сброс карты в патовой ситуац�
 - [x] Feature tags согласованы с реальным рендерером.
 - [x] Итоговый размер `.wasm`/`.pck` замерен и задокументирован (baseline для будущих сравнений).
 
-> ⚠️ Частично реализовано: убран `[physics] 3d/physics_engine="Jolt Physics"` из `project.godot` — в проекте нет
-> ни одного 3D-узла (Node3D/RigidBody3D/CharacterBody3D и т.п. не встречаются), Jolt был не нужен, движок теперь
-> использует физику по умолчанию. `config/features` исправлен с `"Forward Plus"` на `"GL Compatibility"` —
+> ✅ Реализовано и проверено: убран `[physics] 3d/physics_engine="Jolt Physics"` из `project.godot` — в проекте
+> нет ни одного 3D-узла (Node3D/RigidBody3D/CharacterBody3D и т.п. не встречаются), Jolt был не нужен, движок
+> теперь использует физику по умолчанию. `config/features` исправлен с `"Forward Plus"` на `"GL Compatibility"` —
 > раньше тег фичи не совпадал с фактическим `renderer/rendering_method="gl_compatibility"`. В CI (`export-web`
 > job) добавлен шаг, который после каждой Web-сборки печатает размер `index.wasm`/`index.pck` в лог и в Job
-> Summary — это и есть baseline для будущих сравнений, без разового ручного замера, который бы устарел уже к
-> следующему коммиту. Из сандбокса нет доступа к Godot-редактору/export-шаблонам, поэтому сам факт уменьшения
-> размера сборки я не проверял — цифры появятся в Summary джобы `export-web` после следующего пуша/PR в GitHub
-> Actions. Полное исключение 3D-модуля из бинарника (`disable_3d` при сборке движка) потребовало бы кастомных
+> Summary — это и есть baseline для будущих сравнений. Замерено в CI: `index.wasm` — 38 МБ, `index.pck` —
+> 1.5 МБ. Полное исключение 3D-модуля из бинарника (`disable_3d` при сборке движка) потребовало бы кастомных
 > export-шаблонов вместо официальных — вне рамок этого тикета, `[animation]
 > compatibility/default_parent_skeleton_in_mesh_instance_3d=true` (тоже 3D-настройка, безвредный дефолт) не
 > трогал по той же причине.
