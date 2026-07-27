@@ -51,7 +51,7 @@ jobs:
             -s addons/gut/gut_cmdln.gd \
             -gexit \
             -gjunit_xml_file=res://gut_results.xml \
-            -gjunit_xml_timestamp=true
+            -gjunit_xml_timestamp=false
 
       - name: Upload test results
         if: always()
