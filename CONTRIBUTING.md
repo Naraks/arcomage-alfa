@@ -77,7 +77,9 @@ Battle screen теперь читает MatchSettings.came_from_map и возв�
 
 * Критерии приёмки тикета в `dev_plan_tickets.md` выполнены — отмечены галочками в самом тикете.
 * Если тикет добавляет/меняет логику `match_manager.gd`/`artifact_manager.gd` — есть тест в
-  `tests/test_*.gd` (GUT, см. ARC-072/073).
+  `tests/test_*.gd` (GUT, см. ARC-072/073). Тестовые `PlayerData`/`CardData`/`ArtifactData` — через
+  `TestFixtures` (`tests/fixtures.gd`, ARC-074), не через `load()`/`preload()` реального контента из
+  `data/cards/*.tres` (тот часто меняется из-за баланса — Эпик C — и не должен ломать тесты логики).
 * Тесты зелёные: `<путь до Godot.exe> --headless -s addons/gut/gut_cmdln.gd --path .`
 * Ветка собирается и запускается локально хотя бы один раз перед мержем.
 
