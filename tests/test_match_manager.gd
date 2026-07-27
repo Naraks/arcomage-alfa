@@ -44,6 +44,34 @@ func test_apply_damage_ignore_wall_hits_tower_directly() -> void:
 	assert_eq(player.tower_hp, 15, "Весь урон должен уйти напрямую в башню")
 
 
+# --- draw_card / max_hand_size (ARC-003) ---
+
+
+func test_draw_card_does_not_exceed_max_hand_size() -> void:
+	player.max_hand_size = 2
+	MatchManager.player_hand = [
+		TestFixtures.make_card(1, CardData.ResourceType.BRICKS),
+		TestFixtures.make_card(1, CardData.ResourceType.BRICKS),
+	]
+	MatchManager.deck = [TestFixtures.make_card(1, CardData.ResourceType.BRICKS)]
+
+	MatchManager.draw_card(player)
+
+	assert_eq(MatchManager.player_hand.size(), 2, "Рука не должна превышать max_hand_size")
+	assert_eq(MatchManager.deck.size(), 1, "Карта должна остаться в колоде, а не потеряться")
+
+
+func test_draw_card_draws_normally_below_max_hand_size() -> void:
+	player.max_hand_size = 2
+	MatchManager.player_hand = [TestFixtures.make_card(1, CardData.ResourceType.BRICKS)]
+	MatchManager.deck = [TestFixtures.make_card(1, CardData.ResourceType.BRICKS)]
+
+	MatchManager.draw_card(player)
+
+	assert_eq(MatchManager.player_hand.size(), 2, "Рука ниже лимита должна пополняться как обычно")
+	assert_eq(MatchManager.deck.size(), 0, "Карта должна уйти из колоды в руку")
+
+
 # --- can_afford ---
 
 
@@ -229,7 +257,8 @@ func test_setup_match_resets_hands_from_previous_match() -> void:
 
 	MatchManager.setup_match(TestFixtures.make_player(), TestFixtures.make_player())
 
-	# 5 карт из начальной раздачи + 1 доборная в start_turn(player_data) в конце
-	# setup_match() (только игроку — сейчас его ход, ИИ добирает при своём ходе).
-	assert_eq(MatchManager.player_hand.size(), 6, "Рука игрока должна начинаться с нуля, а не копиться")
+	# 5 карт из начальной раздачи заполняют руку до max_hand_size (ARC-003);
+	# доборная карта в start_turn(player_data) в конце setup_match() блокируется
+	# лимитом руки, поэтому обе руки останавливаются на 5, а не копятся выше.
+	assert_eq(MatchManager.player_hand.size(), 5, "Рука игрока должна начинаться с нуля, а не копиться")
 	assert_eq(MatchManager.enemy_hand.size(), 5, "Рука ИИ должна начинаться с нуля, а не копиться")

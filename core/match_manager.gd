@@ -89,6 +89,14 @@ func _initialize_test_deck() -> void:
 
 
 func draw_card(player: PlayerData) -> void:
+	var hand = player_hand if player == player_data else enemy_hand
+
+	# ARC-003: рука ограничена max_hand_size — карта остаётся в колоде, а не
+	# тянется "про запас" (ближе к оригинальным правилам Arcomage, чем
+	# автосброс лишней карты).
+	if hand.size() >= player.max_hand_size:
+		return
+
 	if deck.is_empty():
 		_initialize_test_deck()
 
@@ -97,10 +105,7 @@ func draw_card(player: PlayerData) -> void:
 		print("[ERROR] Drew a null card!")
 		return
 
-	if player == player_data:
-		player_hand.append(card)
-	else:
-		enemy_hand.append(card)
+	hand.append(card)
 
 
 func start_turn(player: PlayerData) -> void:

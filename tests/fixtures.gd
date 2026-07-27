@@ -33,6 +33,7 @@ static func make_player(overrides: Dictionary = {}) -> PlayerData:
 	player.quarry = 1
 	player.magic = 1
 	player.dungeon = 1
+	player.max_hand_size = 5
 	for key in overrides:
 		player.set(key, overrides[key])
 	return player
