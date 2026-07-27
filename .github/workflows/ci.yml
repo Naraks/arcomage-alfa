@@ -61,6 +61,26 @@ jobs:
           name: gut-test-results
           path: gut_results.xml
 
+      # ARC-071: обязательная проверка на main упала — шлём уведомление в Telegram,
+      # чтобы не нужно было заходить во вкладку Actions. Тихо пропускается, если
+      # TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID ещё не заведены в Settings -> Secrets.
+      - name: Уведомить в Telegram о падении CI на main
+        if: failure() && github.ref == 'refs/heads/main' && github.event_name == 'push'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+            echo "TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID не заданы в Secrets — пропускаю уведомление."
+            exit 0
+          fi
+          SHORT_SHA="${GITHUB_SHA:0:7}"
+          TEXT="❌ CI упал на main (джоб tests), commit ${SHORT_SHA}"$'\n'"${RUN_URL}"
+          curl -sS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode chat_id="${TELEGRAM_CHAT_ID}" \
+            --data-urlencode text="${TEXT}"
+
   export-web:
     name: Build Web export
     runs-on: ubuntu-latest
@@ -172,6 +192,23 @@ jobs:
       - name: Задеплоить на GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      # ARC-071: новая играбельная сборка готова — уведомляем, чтобы не проверять
+      # вручную. Шаг просто не выполнится, если деплой выше упал (см. ARC-071).
+      - name: Уведомить в Telegram о готовой Web-сборке
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+            echo "TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID не заданы в Secrets — пропускаю уведомление."
+            exit 0
+          fi
+          SHORT_SHA="${GITHUB_SHA:0:7}"
+          TEXT="✅ Новая Web-сборка готова (commit ${SHORT_SHA})"$'\n'"https://naraks.github.io/arcomage-alfa/"
+          curl -sS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode chat_id="${TELEGRAM_CHAT_ID}" \
+            --data-urlencode text="${TEXT}"
 
   build-windows-playtest:
     name: Build Windows playtest
