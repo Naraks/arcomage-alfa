@@ -4,12 +4,6 @@ const WorldMapData = preload("res://data/resources/world_map_data.gd")
 const MapNodeData = preload("res://data/resources/map_node_data.gd")
 
 
-func _ready():
-	# Temporary test runner
-	if OS.is_debug_build():
-		load("res://tests/test_runner.gd").new().run_tests()
-
-
 func _on_continue_pressed():
 	print("Continue pressed - functionality not yet implemented")
 

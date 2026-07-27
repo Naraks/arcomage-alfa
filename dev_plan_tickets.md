@@ -255,9 +255,17 @@ headless-запуска и XML/JUnit-отчётов для CI.
 HP, 300 ресурсов), сброс карты в патовой ситуации у ИИ.
 
 **Критерии приёмки:**
-- [ ] Старый `test_runner.gd` удалён, вызов из `main_menu.gd._ready()` тоже.
-- [ ] Минимум 15 unit-тестов покрывают `match_manager.gd` и `artifact_manager.gd`.
-- [ ] Каждый новый тикет из Эпиков B–E, добавляющий логику в `match_manager`/`artifact_manager`, обязан приходить с тестом в том же PR.
+- [x] Старый `test_runner.gd` удалён, вызов из `main_menu.gd._ready()` тоже.
+- [x] Минимум 15 unit-тестов покрывают `match_manager.gd` и `artifact_manager.gd`.
+- [x] Каждый новый тикет из Эпиков B–E, добавляющий логику в `match_manager`/`artifact_manager`, обязан приходить с тестом в том же PR (правило уже зафиксировано в чеклисте ревью `CONTRIBUTING.md`).
+
+> ✅ Реализовано: `tests/test_match_manager.gd` (17 тестов: `apply_damage`, `can_afford`,
+> `play_card_by_index`, `discard_card_by_index`, `check_win` по всем сценариям) и
+> `tests/test_artifact_manager.gd` (7 тестов: `apply_artifact_effect`, `_check_artifacts` с
+> совпадающим/несовпадающим триггером) — 24 теста суммарно. `test_runner.gd` и вызов из
+> `main_menu.gd._ready()` удалены. Прогон командой `godot --headless -s addons/gut/gut_cmdln.gd`
+> и её exit-код (заодно закрывает второй критерий ARC-072) не проверен — нет бинарника Godot и сети в
+> песочнице агента. Нужно прогнать вручную и подтвердить.
 
 ---
 
