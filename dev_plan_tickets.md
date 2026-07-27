@@ -817,16 +817,22 @@ Games. При локальном запуске (`python -m http.server`), в CI
 `web_smoke_test.mjs` валит тест на любой `pageerror`.
 
 **Критерии приёмки:**
-- [x] `YaGames.init()` вызывается только когда страница реально встроена в iframe (`window.self !== window.top`).
+- [x] Скрипт SDK (`https://yandex.ru/games/sdk/v2`) вообще не загружается, если страница не встроена в
+      чужой iframe (`window.self !== window.top`), а не только `YaGames.init()`.
 - [ ] `node tools/web_smoke_test.mjs web 8060` проходит без ошибок на локальной сборке.
 - [ ] CI-джоб `smoke-test-web` зелёный на следующем пуше.
 
-> ⚠️ Частично реализовано: в `export_presets.cfg` (`html/head_include` Web-пресета) вызов `YaGames.init()`
-> обёрнут в проверку `window.self !== window.top` — вне iframe `window.ysdk` остаётся `null`, как и раньше
-> в локальном/дебаг-режиме (см. `core/yandex_sdk.gd` — там уже была ветка на `null` из-за ARC-075). На
-> реальной площадке Yandex Games (где страница действительно во фрейме) поведение не меняется. Не проверено
-> вживую: нужно пересобрать Web-экспорт и прогнать `node tools/web_smoke_test.mjs web 8060` — из сандбокса
-> нет Godot для экспорта.
+> ⚠️ Частично реализовано: первая попытка (обернуть только `YaGames.init()` в проверку `window.self !==
+> window.top`) снизила число ошибок с 12 до 5, но не убрала целиком — сама библиотека
+> `https://yandex.ru/games/sdk/v2` при обычной загрузке через `<script src>` уже пытается достучаться до
+> родителя через `postMessage`, независимо от того, вызываем ли мы `init()`. Исправлено: в
+> `export_presets.cfg` (`html/head_include` Web-пресета) тег `<script src=...>` заменён на динамическое
+> `document.createElement("script")`, добавляемое в `<head>` только внутри `if (window.self !== window.top)`
+> — вне iframe скрипт SDK вообще не запрашивается и не выполняется, `window.ysdk` остаётся `null` как и
+> раньше в локальном/дебаг-режиме (`core/yandex_sdk.gd` уже обрабатывает `null`, см. ARC-075). На реальной
+> площадке Yandex Games поведение не меняется — SDK как загружался, так и загружается, только теперь через
+> `s.onload` перед `init()`. Не проверено вживую: нужно пересобрать Web-экспорт и прогнать
+> `node tools/web_smoke_test.mjs web 8060` — из сандбокса нет Godot для экспорта.
 
 ---
 
