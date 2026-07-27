@@ -69,16 +69,24 @@ func _setup_visual_containers() -> void:
 	player_visuals_hbox.add_child(p_wall_visuals)
 
 
+## ARC-080: раньше рендерился один Panel(20x10) на каждую единицу HP без
+## ограничения сверху. wall_hp ничем не капается в бою (build_wall копится
+## весь матч) — колонка блоков разрасталась на сотни пикселей, раздувала
+## верхний StatsHBox и выталкивала остальной UI (в т.ч. ресурсы игрока) за
+## пределы экрана. Теперь высота колонки жёстко ограничена MAX_VISUAL_BLOCKS.
+const MAX_VISUAL_BLOCKS := 20
+
+
 func _update_visuals(container: VBoxContainer, amount: int, color: Color) -> void:
-	amount = max(0, amount)
+	var visible_amount = clampi(amount, 0, MAX_VISUAL_BLOCKS)
 	# Ensure count is correct: Remove panels from the TOP (Index 0)
-	while container.get_child_count() > amount:
+	while container.get_child_count() > visible_amount:
 		var child = container.get_child(0)
 		container.remove_child(child)
 		child.free()
 
 	# Add new panels at the BOTTOM if we don't have enough
-	while container.get_child_count() < amount:
+	while container.get_child_count() < visible_amount:
 		var panel = Panel.new()
 		panel.custom_minimum_size = Vector2(20, 10)
 		container.add_child(panel)
