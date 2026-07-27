@@ -49,7 +49,7 @@ jobs:
         run: |
           "$GODOT_DIR/godot" --headless --path . \
             -s addons/gut/gut_cmdln.gd \
-            -gexit -gexit_on_success \
+            -gexit \
             -gjunit_xml_file=res://gut_results.xml \
             -gjunit_xml_timestamp=true
 
