@@ -28,6 +28,13 @@ func setup_match(p_player: PlayerData, p_enemy: PlayerData) -> void:
 	player_data = p_player
 	enemy_data = p_enemy
 
+	# Баг: экраны, создающие enemy_data "на лету" (world_map_screen.gd, main_menu.gd),
+	# не назначают ai_strategy. Без неё execute_ai_turn() печатал ошибку и выходил,
+	# ни разу не вызвав end_turn() — матч навсегда зависал в AI_TURN. Подстраховываемся
+	# здесь, в единой точке входа для всех боевых сценариев.
+	if not enemy_data.ai_strategy:
+		enemy_data.ai_strategy = load("res://data/resources/default_ai_strategy.gd").new()
+
 	# Применение бонусов мета-прогрессии, если ProfileManager доступен
 	var profile_manager = get_node_or_null("/root/ProfileManager")
 	if profile_manager and profile_manager.has("profile"):
@@ -115,9 +122,11 @@ func execute_ai_turn() -> void:
 	# Небольшая задержка для визуального комфорта
 	await get_tree().create_timer(1.0).timeout
 
+	# Подстраховка: setup_match() всегда назначает стратегию по умолчанию, но если этот
+	# метод вызвали в обход неё, отсутствие стратегии не должно вешать ход навсегда.
 	if not enemy_data.ai_strategy:
-		print("[ERROR] AI Strategy not set!")
-		return
+		print("[ERROR] AI Strategy not set! Falling back to default_ai_strategy.gd")
+		enemy_data.ai_strategy = load("res://data/resources/default_ai_strategy.gd").new()
 
 	var best_card = enemy_data.ai_strategy.get_best_card(enemy_hand, enemy_data, player_data)
 
@@ -125,15 +134,17 @@ func execute_ai_turn() -> void:
 		print("AI plays: ", best_card.card_name)
 		var index = enemy_hand.find(best_card)
 		play_card_by_index(index, enemy_data)
-	else:
+	elif not enemy_hand.is_empty():
 		# Если нечего играть, сбрасываем случайную карту (Arcomage rules)
-		if not enemy_hand.is_empty():
-			var index = randi() % enemy_hand.size()
-			var card_to_discard = enemy_hand[index]
-			print("AI discards: ", card_to_discard.card_name)
-			discard_card_by_index(index, enemy_data)
-		else:
-			print("[DEBUG] AI has no cards to discard")
+		var index = randi() % enemy_hand.size()
+		var card_to_discard = enemy_hand[index]
+		print("AI discards: ", card_to_discard.card_name)
+		discard_card_by_index(index, enemy_data)
+	else:
+		# Рука пуста (крайний случай) — всё равно возвращаем ход игроку, а не подвешиваем матч.
+		print("[DEBUG] AI has no cards to discard, passing turn")
+		if not check_win():
+			end_turn(enemy_data)
 
 
 func play_card(card: CardData, actor: PlayerData) -> void:
