@@ -139,6 +139,39 @@ jobs:
         with:
           name: web-build
           path: web/
+          retention-days: 30
+
+  # ARC-070: последняя Web-сборка с main доступна по прямой ссылке (GitHub Pages),
+  # без скачивания артефакта и без локальной сборки в Godot — можно открыть с телефона.
+  deploy-web-pages:
+    name: Опубликовать Web-сборку на GitHub Pages
+    runs-on: ubuntu-latest
+    needs: export-web
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - name: Скачать артефакт Web-сборки
+        uses: actions/download-artifact@v4
+        with:
+          name: web-build
+          path: web/
+
+      - name: Упаковать артефакт для Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/
+
+      - name: Задеплоить на GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
   build-windows-playtest:
     name: Build Windows playtest
@@ -220,3 +253,4 @@ jobs:
         with:
           name: alfa-windows-playtest
           path: builds/alfa-windows/
+          retention-days: 30
