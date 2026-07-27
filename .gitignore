@@ -9,4 +9,12 @@
 /web/
 /builds/
 /_to_delete/
-/_to_delete/
+
+# GUT (ARC-072): служебные файлы, которые движок/плагин пишет в корень res://
+# при работе с панелью тестов в редакторе или при локальном прогоне с JUnit-отчётом.
+.gut_editor_config.json
+/gut_results.xml
+
+# OS
+.DS_Store
+Thumbs.db
