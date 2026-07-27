@@ -6,11 +6,14 @@ var _ysdk
 
 func _ready():
 	if _window:
-		# В реальной среде здесь будет ожидание инициализации SDK
-		# Для заглушки имитируем наличие объекта
-		if _window.has_method("ysdk"):
-			_ysdk = _window.ysdk
-		else:
+		# _window — это JavaScriptObject (обёртка над реальным window из браузера),
+		# а не обычный GDScript Object: has_method() на нём пытается вызвать
+		# одноимённый метод в самом JS ("window.has_method(...)"), которого не
+		# существует, и падает с "obj[method] is not a function" (баг, пойманный
+		# смоук-тестом ARC-075). Проверка наличия свойства — просто чтение самого
+		# свойства: для отсутствующего в JS оно вернётся null/undefined без ошибки.
+		_ysdk = _window.ysdk
+		if not _ysdk:
 			print("[YandexSDK] Running in debug/local mode (stub active)")
 
 
