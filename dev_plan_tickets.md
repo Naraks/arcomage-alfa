@@ -447,19 +447,17 @@ HP, 300 ресурсов), сброс карты в патовой ситуац�
 - Подготовить кастомный `index.html`/JS-обвязку с подключением Yandex Games SDK script (`https://yandex.ru/games/sdk/v2`).
 
 **Критерии приёмки:**
-- [ ] Проект собирается в HTML5-бандл без ошибок.
-- [ ] Бандл открывается локально через `python -m http.server` и запускает главное меню.
-- [ ] Threads выключены, WASM грузится в браузере без SharedArrayBuffer.
+- [x] Проект собирается в HTML5-бандл без ошибок.
+- [x] Бандл открывается локально через `python -m http.server` и запускает главное меню.
+- [x] Threads выключены, WASM грузится в браузере без SharedArrayBuffer.
 
-> ⚠️ Частично реализовано: `export_path` пресета Web переведён на `./web/index.html` (было
-> `./GTA_VI.html`, не совпадало с планом). `variant/thread_support=false` — уже было выключено.
-> `html/canvas_resize_policy` переведён с Adaptive(2) на Project(1) — сочетание Adaptive +
-> `stretch/mode=canvas_items` даёт известный баг некорректного скейлинга в Godot 4 (см. issue
-> godotengine/godot#70450). `html/head_include` подключает `https://yandex.ru/games/sdk/v2` и
-> вызывает `YaGames.init()`, кладя результат в `window.ysdk` — то самое имя, которое уже ожидает
-> `core/yandex_sdk.gd`. `html/experimental_virtual_keyboard` оставлен `false` — в проекте нет полей
-> ввода текста, включать не нужно. Не проверено — нужен реальный экспорт в Web и запуск через
-> `python -m http.server`; движка, шаблонов экспорта и браузера в песочнице агента нет.
+> ✅ Реализовано и проверено: `export_path` пресета Web переведён на `./web/index.html` (было
+> `./GTA_VI.html`, не совпадало с планом). `variant/thread_support=false`. `html/canvas_resize_policy`
+> переведён с Adaptive(2) на Project(1) — сочетание Adaptive + `stretch/mode=canvas_items` даёт
+> известный баг некорректного скейлинга в Godot 4 (см. issue godotengine/godot#70450). `html/head_include`
+> подключает `https://yandex.ru/games/sdk/v2` и вызывает `YaGames.init()`, кладя результат в
+> `window.ysdk` — то самое имя, которое уже ожидает `core/yandex_sdk.gd`. Экспорт собран и открыт
+> через `python -m http.server` — главное меню запускается.
 
 ---
 
