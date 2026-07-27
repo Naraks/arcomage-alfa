@@ -161,6 +161,46 @@ jobs:
           path: web/
           retention-days: 30
 
+  # ARC-075: юнит-тесты (джоб tests) проверяют только логику внутри Godot и не
+  # ловят падения, специфичные для WASM/браузерного окружения. Открываем реальный
+  # экспортированный бандл в headless Chromium и валим джоб на JS/WASM-ошибках
+  # в консоли — на каждый push/PR, как и остальные обязательные проверки.
+  smoke-test-web:
+    name: Smoke-тест Web-сборки (headless Chromium)
+    runs-on: ubuntu-latest
+    needs: export-web
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Скачать артефакт Web-сборки
+        uses: actions/download-artifact@v4
+        with:
+          name: web-build
+          path: web/
+
+      - name: Установить Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Установить Playwright + Chromium
+        run: |
+          npm install --no-save playwright@1
+          npx playwright install --with-deps chromium
+
+      - name: Запустить smoke-тест
+        run: node tools/web_smoke_test.mjs web 8060
+
+      - name: Приложить скриншот (для диагностики при падении)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-smoke-screenshot
+          path: web-smoke-screenshot.png
+          if-no-files-found: ignore
+          retention-days: 14
+
   # ARC-070: последняя Web-сборка с main доступна по прямой ссылке (GitHub Pages),
   # без скачивания артефакта и без локальной сборки в Godot — можно открыть с телефона.
   deploy-web-pages:
