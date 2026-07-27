@@ -221,7 +221,7 @@ func test_setup_match_applies_profile_manager_bonuses() -> void:
 
 
 func test_setup_match_resets_hands_from_previous_match() -> void:
-	# Раньше setup_match() дописывал 5 новых карт поверх текущей руки, не очищая
+	# Раньше setup_match() дописывал новые карты поверх текущей руки, не очищая
 	# её. Пока карту мира нельзя было пройти больше одного боя за сессию (сам
 	# баг ARC-002), это было незаметно — теперь несколько боёв подряд реальны.
 	MatchManager.player_hand = [TestFixtures.make_card(1, CardData.ResourceType.BRICKS)]
@@ -229,5 +229,7 @@ func test_setup_match_resets_hands_from_previous_match() -> void:
 
 	MatchManager.setup_match(TestFixtures.make_player(), TestFixtures.make_player())
 
-	assert_eq(MatchManager.player_hand.size(), 5, "Рука игрока должна начинаться с нуля, а не копиться")
+	# 5 карт из начальной раздачи + 1 доборная в start_turn(player_data) в конце
+	# setup_match() (только игроку — сейчас его ход, ИИ добирает при своём ходе).
+	assert_eq(MatchManager.player_hand.size(), 6, "Рука игрока должна начинаться с нуля, а не копиться")
 	assert_eq(MatchManager.enemy_hand.size(), 5, "Рука ИИ должна начинаться с нуля, а не копиться")
