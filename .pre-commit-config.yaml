@@ -1,0 +1,9 @@
+# Реализует ARC-062: единый стиль GDScript через gdtoolkit (gdformat/gdlint).
+# Установка: pip3 install pre-commit "gdtoolkit==4.*"  (или pipx install "gdtoolkit==4.*")
+#            pre-commit install   # один раз в корне репозитория
+repos:
+  - repo: https://github.com/Scony/godot-gdscript-toolkit
+    rev: 4.5.0
+    hooks:
+      - id: gdformat
+      - id: gdlint

@@ -2,3 +2,10 @@ root = true
 
 [*]
 charset = utf-8
+
+[*.gd]
+indent_style = tab
+indent_size = 4
+
+[*.{tscn,tres,godot,cfg,import}]
+indent_style = tab
