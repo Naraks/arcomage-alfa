@@ -236,8 +236,12 @@ suite/test case, без отчёта в формате, понятном CI (п�
 headless-запуска и XML/JUnit-отчётов для CI.
 
 **Критерии приёмки:**
-- [ ] Плагин GUT установлен и настроен (`addons/gut`), есть `.gutconfig.json`.
+- [x] Плагин GUT установлен и настроен (`addons/gut`), есть `.gutconfig.json`.
 - [ ] Тесты запускаются командой `godot --headless -s addons/gut/gut_cmdln.gd` с ненулевым exit-кодом при провале.
+
+> ⚠️ Частично реализовано: GUT 9.7.1 установлен в `addons/gut`, плагин включён в Project Settings,
+> `.gutconfig.json` настроен на `res://tests`. Второй критерий (ненулевой exit-код при провале)
+> проверим вместе с ARC-073 — сейчас в `tests/` ещё нет ни одного теста в формате GUT.
 
 ---
 
