@@ -251,6 +251,13 @@ ARC-073 — через GUT в headless-режиме с ненулевым exit-�
 > `build_version.json` из `git describe --tags --always --dirty --match 'v*.*.*'` + короткий SHA.
 > Прогон подтверждён на реальном теге: PR с CHANGELOG.md и GitHub Release создались, версия
 > отображается в собранной игре.
+>
+> Постфактум найден и исправлен баг: `core/build_version.gd` объявлял и `class_name BuildVersion`,
+> и был автозагрузкой под тем же именем — Godot 4 не даёт им совпадать («hides an autoload
+> singleton»), скрипт не инстанцировался, `main_menu.gd` падал на `BuildVersion.get_display_string()`.
+> `class_name` убран (автозагрузка и так даёт глобальный доступ по имени); дополнительно потребовалось
+> удалить локальный кеш `.godot/` в редакторе — до этого он ещё резолвил `BuildVersion` как класс
+> скрипта из старого кеша. Подтверждено рабочим в редакторе.
 
 ---
 
@@ -266,14 +273,12 @@ ARC-073 — через GUT в headless-режиме с ненулевым exit-�
 - [x] Любой участник команды может скачать последнюю успешную сборку без локальной сборки в Godot.
 - [x] Web-сборка доступна по прямой ссылке для проверки в браузере (в т.ч. на мобильном).
 
-> ⚠️ Частично реализовано: Web- и Windows-артефакты (`web-build`, `alfa-windows-playtest`) уже
-> скачивались из вкладки Actions (ARC-067/068) — явно выставлен `retention-days: 30`. Добавлен новый
-> джоб `deploy-web-pages` в `.github/workflows/ci.yml`: после `export-web` на каждый push в `main`
-> публикует `web/` на GitHub Pages (`actions/upload-pages-artifact` + `actions/deploy-pages`) — сборка
-> открывается по прямой ссылке `https://naraks.github.io/arcomage-alfa/` без скачивания, в т.ч. с
-> телефона. Не проверено вживую из песочницы — требуется один раз включить в Settings → Pages →
-> Source: "GitHub Actions" (пока это не сделано, джоб будет падать), затем смержить в `main` и
-> убедиться, что страница открывается и игра запускается в браузере.
+> ✅ Реализовано и проверено: Web- и Windows-артефакты (`web-build`, `alfa-windows-playtest`) скачиваются
+> из вкладки Actions (ARC-067/068), `retention-days: 30`. Джоб `deploy-web-pages` в `ci.yml` после
+> `export-web` на каждый push в `main` публикует `web/` на GitHub Pages
+> (`actions/upload-pages-artifact` + `actions/deploy-pages`) — сборка открывается по прямой ссылке
+> `https://naraks.github.io/arcomage-alfa/` без скачивания, в т.ч. с телефона. Settings → Pages →
+> Source: "GitHub Actions" включён, деплой подтверждён рабочим.
 
 ---
 
