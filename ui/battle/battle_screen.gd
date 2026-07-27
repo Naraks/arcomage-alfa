@@ -108,20 +108,38 @@ func _on_match_ended(winner: PlayerData) -> void:
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	panel.add_child(vbox)
 
+	var is_victory = winner == MatchManager.player_data
+
 	var label = Label.new()
-	label.text = "Victory!" if winner == MatchManager.player_data else "Defeat!"
+	label.text = "Victory!" if is_victory else "Defeat!"
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(label)
 
 	var button = Button.new()
-	button.text = "Restart"
-	button.pressed.connect(
-		func():
-			layer.queue_free()
-			MatchManager.player_hand = []
-			MatchManager.enemy_hand = []
-			_test_setup()
-	)
+
+	if MatchSettings.came_from_map:
+		# ARC-002: бой начат с карты мира — возвращаемся туда вместо локального
+		# Restart. Победа помечает узел пройденным; поражение просто возвращает
+		# на карту, узел остаётся доступен для повторной попытки.
+		button.text = "Вернуться на карту"
+		button.pressed.connect(
+			func():
+				if is_victory and MatchSettings.current_map_node:
+					MatchSettings.current_map_node.is_completed = true
+				MatchSettings.came_from_map = false
+				MatchSettings.current_map_node = null
+				get_tree().change_scene_to_file("res://ui/map/world_map_screen.tscn")
+		)
+	else:
+		button.text = "Restart"
+		button.pressed.connect(
+			func():
+				layer.queue_free()
+				MatchManager.player_hand = []
+				MatchManager.enemy_hand = []
+				_test_setup()
+		)
+
 	vbox.add_child(button)
 
 

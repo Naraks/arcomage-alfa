@@ -42,14 +42,17 @@ func _on_node_pressed(node: Resource) -> void:
 	print("Node pressed: ", node.node_type)
 
 	if node.node_type == MapNodeData.NodeType.BATTLE:
-		# Сохраняем информацию о том, какой узел мы выбрали
-		# В будущем это поможет отметить его как пройденный
-
 		# Заглушка для PlayerData
 		var p_data = PlayerData.new()
 		var e_data = PlayerData.new()
 		MatchSettings.player_data = p_data
 		MatchSettings.enemy_data = e_data
+
+		# ARC-002: помечаем, что бой начат с карты — battle_screen прочитает это
+		# в _on_match_ended(), чтобы вернуть игрока сюда и отметить узел пройденным.
+		MatchSettings.came_from_map = true
+		MatchSettings.current_map_node = node
+
 		get_tree().change_scene_to_file("res://ui/battle/battle_screen.tscn")
 	else:
 		print("Other node types not yet implemented: ", node.node_type)

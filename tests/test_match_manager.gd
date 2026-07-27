@@ -215,3 +215,19 @@ func test_setup_match_applies_profile_manager_bonuses() -> void:
 		orig_quarry + resource_gain_bonus,
 		"setup_match должен прибавить resource_gain_bonus из профиля к quarry игрока"
 	)
+
+
+# --- setup_match / повторный вызов (регрессия ARC-002: карта -> бой -> карта -> бой) ---
+
+
+func test_setup_match_resets_hands_from_previous_match() -> void:
+	# Раньше setup_match() дописывал 5 новых карт поверх текущей руки, не очищая
+	# её. Пока карту мира нельзя было пройти больше одного боя за сессию (сам
+	# баг ARC-002), это было незаметно — теперь несколько боёв подряд реальны.
+	MatchManager.player_hand = [TestFixtures.make_card(1, CardData.ResourceType.BRICKS)]
+	MatchManager.enemy_hand = [TestFixtures.make_card(1, CardData.ResourceType.BRICKS)]
+
+	MatchManager.setup_match(TestFixtures.make_player(), TestFixtures.make_player())
+
+	assert_eq(MatchManager.player_hand.size(), 5, "Рука игрока должна начинаться с нуля, а не копиться")
+	assert_eq(MatchManager.enemy_hand.size(), 5, "Рука ИИ должна начинаться с нуля, а не копиться")

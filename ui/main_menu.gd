@@ -43,6 +43,12 @@ func _on_battle_pressed():
 	var e_data = PlayerData.new()
 	MatchSettings.player_data = p_data
 	MatchSettings.enemy_data = e_data
+
+	# ARC-002: прямой тестовый бой из меню, не с карты — на случай, если
+	# came_from_map остался true после предыдущего боя, начатого с карты.
+	MatchSettings.came_from_map = false
+	MatchSettings.current_map_node = null
+
 	get_tree().change_scene_to_file("res://ui/battle/battle_screen.tscn")
 
 

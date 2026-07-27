@@ -28,6 +28,12 @@ func setup_match(p_player: PlayerData, p_enemy: PlayerData) -> void:
 	player_data = p_player
 	enemy_data = p_enemy
 
+	# ARC-002: setup_match() теперь может вызываться повторно за сессию (карта
+	# мира -> бой -> карта -> следующий бой) — без сброса сюда бы утекали карты
+	# из руки предыдущего матча.
+	player_hand = []
+	enemy_hand = []
+
 	# enemy_data может прийти без ai_strategy (world_map_screen.gd, main_menu.gd) —
 	# подстраховываемся здесь, в единой точке входа для всех боевых сценариев (ARC-078).
 	if not enemy_data.ai_strategy:
