@@ -59,3 +59,64 @@ jobs:
         with:
           name: gut-test-results
           path: gut_results.xml
+
+  export-web:
+    name: Build Web export
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+      - name: Checkout (with LFS)
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Cache Godot binary
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.GODOT_DIR }}
+          key: godot-${{ env.GODOT_VERSION }}-linux-x86_64
+
+      - name: Download Godot ${{ env.GODOT_VERSION }}
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p "$GODOT_DIR"
+          curl -fsSL -o /tmp/godot.zip \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip"
+          unzip -q /tmp/godot.zip -d /tmp/godot-extracted
+          mv /tmp/godot-extracted/Godot_v${GODOT_VERSION}_linux.x86_64 "$GODOT_DIR/godot"
+          chmod +x "$GODOT_DIR/godot"
+
+      # Каталог версии шаблонов экспорта, который ожидает Godot, — это версия с точками
+      # вместо дефиса перед статусом релиза (4.7.1-stable -> 4.7.1.stable).
+      - name: Cache export templates
+        id: cache-templates
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/godot/export_templates
+          key: godot-templates-${{ env.GODOT_VERSION }}
+
+      - name: Download export templates
+        if: steps.cache-templates.outputs.cache-hit != 'true'
+        run: |
+          TEMPLATE_DIR="${GODOT_VERSION/-/.}"
+          mkdir -p "$HOME/.local/share/godot/export_templates"
+          curl -fsSL -o /tmp/templates.tpz \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz"
+          unzip -q /tmp/templates.tpz -d /tmp/templates-extracted
+          mv /tmp/templates-extracted/templates "$HOME/.local/share/godot/export_templates/${TEMPLATE_DIR}"
+
+      - name: Import project (warm .godot/ cache)
+        run: |
+          "$GODOT_DIR/godot" --headless --editor --quit --path . || true
+
+      - name: Export Web build
+        run: |
+          mkdir -p web
+          "$GODOT_DIR/godot" --headless --path . --export-release "Web" ./web/index.html
+
+      - name: Upload Web build
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: web/
