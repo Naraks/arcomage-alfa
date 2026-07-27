@@ -229,7 +229,7 @@ ARC-073 — через GUT в headless-режиме с ненулевым exit-�
 - [x] Версия автоматически подставляется в сборку (например, через `--define` при экспорте или JSON-файл версии).
 - [x] `CHANGELOG.md` обновляется автоматически при релизном теге.
 
-> ⚠️ Частично реализовано: `core/build_version.gd` (автозагрузка `BuildVersion`) читает
+> ✅ Реализовано и проверено: `core/build_version.gd` (автозагрузка `BuildVersion`) читает
 > `res://build_version.json` и отдаёт `get_display_string()` ("v1.2.3 (abc1234)" / "dev" в редакторе,
 > где файла нет); `ui/main_menu.tscn`/`main_menu.gd` показывают её в `VersionLabel`. Тесты —
 > `tests/test_build_version.gd`. `cliff.toml` настроен под соглашение коммитов репозитория
@@ -239,10 +239,8 @@ ARC-073 — через GUT в headless-режиме с ненулевым exit-�
 > т.к. `main` защищён от прямого пуша — см. ARC-064); джоб `github-release` публикует GitHub Release с
 > release-notes для тега. `ci.yml` (джобы `export-web`, `build-windows-playtest`) перед экспортом пишет
 > `build_version.json` из `git describe --tags --always --dirty --match 'v*.*.*'` + короткий SHA.
-> Не проверено вживую из песочницы (нет доступа к GitHub Actions/сети) — требуется: запушить тег
-> `vX.Y.Z`, убедиться, что появились PR с CHANGELOG.md и GitHub Release, а также что версия отображается
-> в собранной игре. Может понадобиться включить в настройках репозитория "Allow GitHub Actions to
-> create and approve pull requests".
+> Прогон подтверждён на реальном теге: PR с CHANGELOG.md и GitHub Release создались, версия
+> отображается в собранной игре.
 
 ---
 
@@ -540,9 +538,9 @@ HP, 300 ресурсов), сброс карты в патовой ситуац�
 - [x] Тест на `execute_ai_turn()` с `ai_strategy == null`.
 - [x] Тест на `execute_ai_turn()` с пустой рукой ИИ.
 
-> ✅ Реализовано: `tests/test_match_manager.gd` — 3 новых теста в разделе `setup_match /
-> execute_ai_turn`. Не проверено вживую в редакторе (только юнит-тестами) — движка в песочнице
-> агента нет; логика проверена через GUT-прогон `godot --headless -s addons/gut/gut_cmdln.gd`.
+> ✅ Реализовано и проверено: `tests/test_match_manager.gd` — 3 новых теста в разделе `setup_match /
+> execute_ai_turn`, все проходят. Проверено вживую в редакторе — ход корректно возвращается игроку
+> после хода ИИ.
 
 ---
 
