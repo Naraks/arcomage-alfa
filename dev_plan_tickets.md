@@ -600,7 +600,7 @@ HP, 300 ресурсов), сброс карты в патовой ситуац�
 - [x] Обновлена документация эффектов (короткий `effects_reference.md`).
 - [x] Все существующие карты проверены на соответствие реальному поведению.
 
-> ⚠️ Частично реализовано: добавлена `MatchManager.resolve_target(actor, enemy, target_str) -> PlayerData` —
+> ✅ Реализовано и проверено: добавлена `MatchManager.resolve_target(actor, enemy, target_str) -> PlayerData` —
 > единая точка резолва (используется только префикс `self`/`enemy`), `apply_card_effects()` переведён на неё.
 > Написан `effects_reference.md` — таблица по всем `type` эффектов карт и формат эффектов артефактов (`trigger`
 > вместо `target`). Все 34 карты и 1 артефакт проверены построчно — ни одна не противоречит реальному поведению.
@@ -609,8 +609,7 @@ HP, 300 ресурсов), сброс карты в патовой ситуац�
 > переведена на `build_wall`, ветка `"build"` убрана из `match_manager.gd`, мёртвые упоминания `type == "build"`
 > вычищены из `default_ai_strategy.gd`/`aggressive_ai_strategy.gd`. Добавлены тесты-регрессии в
 > `tests/test_match_manager.gd` (`test_resolve_target_*`, `test_apply_card_effects_build_wall_targets_enemy`).
-> Не проверено вживую: полный прогон
-> GUT-тестов в редакторе Godot.
+> Проверено в редакторе Godot: карта «Стена» строит стену, GUT-тесты проходят.
 
 ---
 
