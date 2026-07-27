@@ -137,6 +137,55 @@ func test_play_card_by_index_applies_direct_damage_effect() -> void:
 	assert_eq(enemy.tower_hp, 16, "direct_damage должен уйти врагу напрямую в башню, игнорируя стену")
 
 
+# --- resolve_target / generic "build" (ARC-005) ---
+
+
+func test_resolve_target_self_prefix_returns_actor() -> void:
+	assert_eq(
+		MatchManager.resolve_target(player, enemy, "self_wall"),
+		player,
+		"Префикс self (в т.ч. self_wall) должен резолвиться в actor"
+	)
+
+
+func test_resolve_target_non_self_returns_enemy() -> void:
+	assert_eq(
+		MatchManager.resolve_target(player, enemy, "enemy_wall"),
+		enemy,
+		"Всё, что не начинается с self, должно резолвиться в enemy"
+	)
+
+
+func test_apply_card_effects_build_type_supports_enemy_wall_target() -> void:
+	# Регрессия: раньше generic "build" сравнивал target буквально с "self_wall"/
+	# "self_tower", поэтому "enemy_wall"/"enemy_tower" тихо не делали ничего.
+	var card := TestFixtures.make_card(
+		1, CardData.ResourceType.BRICKS, [{"type": "build", "value": 3, "target": "enemy_wall"}]
+	)
+	MatchManager.player_hand = [card]
+	var enemy_wall_before: int = enemy.wall_hp
+	MatchManager.play_card_by_index(0, player)
+	assert_eq(
+		enemy.wall_hp,
+		enemy_wall_before + 3,
+		"generic build с target=enemy_wall должен прибавлять wall_hp врагу, а не игнорироваться"
+	)
+
+
+func test_apply_card_effects_build_type_supports_self_tower_target() -> void:
+	var card := TestFixtures.make_card(
+		1, CardData.ResourceType.BRICKS, [{"type": "build", "value": 5, "target": "self_tower"}]
+	)
+	MatchManager.player_hand = [card]
+	var player_tower_before: int = player.tower_hp
+	MatchManager.play_card_by_index(0, player)
+	assert_eq(
+		player.tower_hp,
+		player_tower_before + 5,
+		"generic build с target=self_tower должен прибавлять tower_hp актёру"
+	)
+
+
 # --- discard_card_by_index ---
 
 

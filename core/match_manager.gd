@@ -244,9 +244,7 @@ func apply_card_effects(card: CardData, actor: PlayerData) -> void:
 		var value = effect.get("value", 0)
 		var target_str = effect.get("target", "enemy")
 
-		var target_player = enemy
-		if target_str.begins_with("self"):
-			target_player = actor
+		var target_player = resolve_target(actor, enemy, target_str)
 
 		match type:
 			"damage":
@@ -266,15 +264,28 @@ func apply_card_effects(card: CardData, actor: PlayerData) -> void:
 			"mod_dungeon":
 				target_player.dungeon += value
 			"build":  # Универсальный эффект из примера в CardData
-				if target_str == "self_wall":
+				# ARC-005: раньше сравнивалось буквально с "self_wall"/"self_tower", поэтому
+				# "enemy_wall"/"enemy_tower" тихо не делали ничего. Часть self/enemy уже
+				# учтена в target_player через resolve_target() — здесь смотрим только суффикс.
+				if target_str.ends_with("_wall"):
 					target_player.wall_hp += value
 					GameEvents.value_built.emit(target_player, value, "wall")
-				elif target_str == "self_tower":
+				elif target_str.ends_with("_tower"):
 					target_player.tower_hp += value
 					GameEvents.value_built.emit(target_player, value, "tower")
 
 	GameEvents.resource_changed.emit(actor, "all", 0)
 	GameEvents.resource_changed.emit(enemy, "all", 0)
+
+
+## ARC-005: единая точка резолва `target` из словаря эффекта карты/артефакта в
+## конкретного PlayerData. Учитывается только префикс "self"/"enemy" — суффикс
+## `_wall`/`_tower` (например, "enemy_wall") ни на что здесь не влияет и для
+## большинства типов эффекта чисто описательный, см. effects_reference.md.
+func resolve_target(actor: PlayerData, enemy: PlayerData, target_str: String) -> PlayerData:
+	if target_str.begins_with("self"):
+		return actor
+	return enemy
 
 
 func apply_damage(amount: int, target: PlayerData, ignore_wall: bool) -> void:
