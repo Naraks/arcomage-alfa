@@ -172,9 +172,12 @@ ARC-073 — через GUT в headless-режиме с ненулевым exit-�
 - [x] Время выполнения зафиксировано как baseline (для контроля деградации CI по мере роста тестов).
 
 > ✅ Реализовано: `.github/workflows/ci.yml` (checkout+LFS → скачать Godot 4.7.1 → прогреть импорт →
-> `gut_cmdln.gd -gexit -gexit_on_success` → JUnit-отчёт как artifact). Первый прогон на GitHub Actions
-> прошёл успешно на push в `main`; длительность этого прогона видна во вкладке Actions и служит
-> baseline — отдельно фиксировать число в документе не нужно, GitHub хранит историю прогонов сам.
+> `gut_cmdln.gd -gexit` → JUnit-отчёт как artifact). По пути поймали и починили баг с булевыми
+> CLI-флагами GUT (`optparse.gd` игнорирует значение после `=` у bool-опций — любое присутствие
+> флага инвертирует дефолт; `-gexit_on_success` и `-gjunit_xml_timestamp=false` из-за этого либо
+> мешали, либо делали обратное задуманному, оба убраны). Прогон на GitHub Actions зелёный, оба
+> artifact'а (`gut-test-results`, `web-build`) приезжают корректно. Длительность прогона видна во
+> вкладке Actions и служит baseline — отдельно фиксировать число в документе не нужно.
 
 ---
 
@@ -186,18 +189,13 @@ ARC-073 — через GUT в headless-режиме с ненулевым exit-�
 если чьи-то изменения ломают веб-сборку.
 
 **Критерии приёмки:**
-- [ ] Джоб собирает Web-бандл в CI без ошибок на текущем `main`.
-- [ ] Собранный бандл прикрепляется как build artifact (см. ARC-070).
+- [x] Джоб собирает Web-бандл в CI без ошибок на текущем `main`.
+- [x] Собранный бандл прикрепляется как build artifact (см. ARC-070).
 
-> ⚠️ Частично реализовано: новый джоб `export-web` в `.github/workflows/ci.yml` (запускается после
-> `tests`, `needs: tests`) — скачивает Godot и export-шаблоны (`Godot_v4.7.1-stable_export_templates.tpz`,
-> кладёт в `~/.local/share/godot/export_templates/4.7.1.stable/`, оба кэшируются отдельно от бинарника
-> движка), прогревает импорт, гонит `godot --headless --export-release "Web" ./web/index.html` и
-> прикладывает `web/` как build artifact `web-build`. Не проверено — GitHub Actions недоступен из
-> песочницы агента, а это самый рискованный шаг из всех CI-джобов: не проверены ни точное имя
-> ассета `_export_templates.tpz`, ни то, что каталог версии шаблонов назван правильно
-> (`4.7.1.stable`), ни сам факт, что headless-экспорт пройдёт без GPU/дисплея. Нужно запушить и
-> посмотреть прогон во вкладке Actions — с высокой вероятностью потребуется минимум одна правка.
+> ✅ Реализовано и проверено: джоб `export-web` в `.github/workflows/ci.yml` (запускается после
+> `tests`, `needs: tests`) — скачивает Godot и export-шаблоны, прогревает импорт, гонит
+> `godot --headless --export-release "Web" ./web/index.html` и прикладывает `web/` как build artifact
+> `web-build`. Прогон зелёный, artifact собирается.
 
 ---
 
