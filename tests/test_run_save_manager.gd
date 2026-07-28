@@ -57,20 +57,24 @@ func test_build_save_data_copies_all_run_fields() -> void:
 
 func test_build_save_data_duplicates_arrays_not_same_reference() -> void:
 	# run_deck/run_artifacts должны копироваться (duplicate()), а не шариться
-	# по ссылке — иначе игра/дальнейшие изменения run_deck после сохранения
-	# незаметно "просочились" бы в уже сохранённый снимок.
+	# по ссылке — иначе дальнейшие изменения MatchSettings.run_deck/
+	# run_artifacts после сохранения незаметно "просочились" бы в уже
+	# сохранённый снимок. (Array == сравнивает содержимое, а не ссылку, так
+	# что тут проверяем эффект мутации, а не assert_ne по значению.)
 	MatchSettings.run_deck = [TestFixtures.make_card(1, CardData.ResourceType.BRICKS)]
 	MatchSettings.run_artifacts = [TestFixtures.make_artifact()]
 
 	var data := RunSaveManager.build_save_data()
+	MatchSettings.run_deck.append(TestFixtures.make_card(2, CardData.ResourceType.GEMS))
+	MatchSettings.run_artifacts.append(TestFixtures.make_artifact())
 
-	assert_ne(
-		data.run_deck, MatchSettings.run_deck, "run_deck должен быть отдельным массивом (duplicate())"
+	assert_eq(
+		data.run_deck.size(), 1, "Снимок run_deck не должен расти при мутации MatchSettings.run_deck после сохранения"
 	)
-	assert_ne(
-		data.run_artifacts,
-		MatchSettings.run_artifacts,
-		"run_artifacts должен быть отдельным массивом (duplicate())"
+	assert_eq(
+		data.run_artifacts.size(),
+		1,
+		"Снимок run_artifacts не должен расти при мутации MatchSettings.run_artifacts после сохранения"
 	)
 
 
