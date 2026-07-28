@@ -14,6 +14,9 @@ func _ready() -> void:
 	if map_data:
 		_generate_map_ui()
 
+	if OS.is_debug_build():
+		_generate_debug_node_bar()
+
 
 func _generate_map_ui() -> void:
 	print("Generating map UI, nodes count: ", map_data.map_nodes.size())
@@ -88,6 +91,35 @@ func _style_node_button(button: Button, node: Resource, is_available: bool) -> v
 	else:
 		button.modulate = Color(0.45, 0.45, 0.45, 1.0)
 		button.text = "🔒 " + button.text
+
+
+## Панель отладки: по одной всегда доступной кнопке на каждый NodeType, не
+## привязанной к основному пути (узлы синтетические, не входят в
+## map_data.map_nodes — клик по ним не может испортить прохождение забега,
+## см. guard'ы на .find() в battle_screen/shop_screen/rest_screen). Только в
+## debug-сборках — не попадёт в релизный экспорт для Яндекс Игр.
+func _generate_debug_node_bar() -> void:
+	var layer := CanvasLayer.new()
+	add_child(layer)
+
+	var row := HBoxContainer.new()
+	row.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	row.offset_top = -44
+	row.offset_bottom = 0
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 8)
+	layer.add_child(row)
+
+	var type_names: Array = MapNodeData.NodeType.keys()
+	for node_type in range(type_names.size()):
+		var debug_node := MapNodeData.new()
+		debug_node.node_type = node_type
+
+		var button := Button.new()
+		button.text = "DBG: %s" % type_names[node_type]
+		button.modulate = Color(1.0, 0.85, 0.3)
+		button.pressed.connect(_on_node_pressed.bind(debug_node))
+		row.add_child(button)
 
 
 func _on_node_pressed(node: Resource) -> void:
