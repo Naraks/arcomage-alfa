@@ -8,4 +8,4 @@ card_name = "Звериный питомник"
 description = "Увеличивает добычу зверей на 4."
 cost = 4
 type = 2
-effects = Array[Dictionary]([{"target": "self", "type": "mod_dungeon", "value": 4}])
+effects = Array[Dictionary]([{"target": "self", "type": "mod_dungeon", "value": 6}])

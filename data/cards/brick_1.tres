@@ -8,4 +8,4 @@ card_name = "Каменоломня"
 description = "Увеличивает добычу кирпича на 1."
 cost = 1
 type = 0
-effects = Array[Dictionary]([{"target": "self", "type": "mod_quarry", "value": 1}])
+effects = Array[Dictionary]([{"target": "self", "type": "mod_quarry", "value": 2}])
