@@ -1,9 +1,11 @@
 [gd_resource type="Resource" script_class="CardData" format=3 uid="uid://c7w1utddwe4ud"]
 
 [ext_resource type="Script" path="res://data/resources/card_data.gd" id="1_attack"]
+[ext_resource type="Texture2D" path="res://assets/icons/beast_icon.svg" id="2_icon"]
 
 [resource]
 script = ExtResource("1_attack")
+icon = ExtResource("2_icon")
 card_name = "Рыцарь"
 description = "Наносит 5 урона противнику."
 cost = 2

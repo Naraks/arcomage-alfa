@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+	<!-- ARC-022: временный плейсхолдер-арт для CardData.icon (GEMS) до прихода
+	     полноценного арта — простой ограненный самоцвет. -->
+	<rect width="64" height="64" fill="#2f3540"/>
+	<polygon points="32,6 50,24 32,58 14,24" fill="#4a6fd4" stroke="#1f2e63" stroke-width="2"/>
+	<polygon points="32,6 50,24 32,24" fill="#7ea0ff"/>
+	<polygon points="14,24 32,24 32,58" fill="#33478f"/>
+	<line x1="14" y1="24" x2="50" y2="24" stroke="#1f2e63" stroke-width="2"/>
+</svg>

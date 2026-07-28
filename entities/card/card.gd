@@ -12,6 +12,7 @@ signal card_right_clicked(card_node: Node)
 @onready var cost_label: Label = $CostLabel
 @onready var description_label: Label = $DescriptionLabel
 @onready var background: ColorRect = $Background
+@onready var icon_texture: TextureRect = $IconTexture
 
 
 func _ready() -> void:
@@ -39,6 +40,10 @@ func update_ui() -> void:
 	name_label.text = card_data.card_name
 	cost_label.text = str(card_data.cost)
 	description_label.text = card_data.description
+	# ARC-022: icon — плейсхолдер-арт по типу ресурса (может отсутствовать у
+	# карт, добавленных до этого тикета, — тогда просто ничего не показываем).
+	icon_texture.texture = card_data.icon
+	icon_texture.visible = card_data.icon != null
 
 	# Меняем цвет фона в зависимости от типа ресурса
 	match card_data.type:

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+	<!-- ARC-022: временный плейсхолдер-арт для CardData.icon (BEASTS) до прихода
+	     полноценного арта — простой звериный след (лапа). -->
+	<rect width="64" height="64" fill="#2a3a2a"/>
+	<g fill="#4caf50" stroke="#2e6b30" stroke-width="1.5">
+		<ellipse cx="32" cy="40" rx="16" ry="13"/>
+		<circle cx="16" cy="22" r="7"/>
+		<circle cx="30" cy="14" r="7.5"/>
+		<circle cx="46" cy="20" r="7"/>
+	</g>
+</svg>

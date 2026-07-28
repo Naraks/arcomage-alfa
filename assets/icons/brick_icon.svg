@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+	<!-- ARC-022: временный плейсхолдер-арт для CardData.icon (BRICKS) до прихода
+	     полноценного арта — простая стилизованная кирпичная кладка. -->
+	<rect width="64" height="64" fill="#8a4a33"/>
+	<g fill="none" stroke="#5c2f1f" stroke-width="2">
+		<rect x="1" y="9" width="30" height="12"/>
+		<rect x="33" y="9" width="30" height="12"/>
+		<rect x="-15" y="21" width="30" height="12"/>
+		<rect x="17" y="21" width="30" height="12"/>
+		<rect x="49" y="21" width="30" height="12"/>
+		<rect x="1" y="33" width="30" height="12"/>
+		<rect x="33" y="33" width="30" height="12"/>
+		<rect x="-15" y="45" width="30" height="12"/>
+		<rect x="17" y="45" width="30" height="12"/>
+		<rect x="49" y="45" width="30" height="12"/>
+	</g>
+</svg>
