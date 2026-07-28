@@ -1686,7 +1686,7 @@ Games. При локальном запуске (`python -m http.server`), в CI
 **Критерии приёмки:**
 - [x] `ArtifactManager` подписан на новый сигнал урона (после ARC-004) и вызывает эффекты с `trigger = "on_damage_taken"`.
 
-> ⚠️ **Частично реализовано** (ждёт проверки — не могу запустить Godot в этой песочнице). `ArtifactManager` уже
+> ✅ **Реализовано и проверено.** `ArtifactManager` уже
 > был подключён в реальной игре — но не как autoload, а как child-нода, создаваемая вручную в
 > `MatchManager._ready()` (`artifact_manager = load(...).new(); add_child(artifact_manager)`); раз `MatchManager`
 > сам autoload, этот паттерн тоже работал (child получает `_ready()` сразу при `add_child()`), просто был не
@@ -1723,7 +1723,7 @@ Games. При локальном запуске (`python -m http.server`), в CI
 **Критерии приёмки:**
 - [x] При ударе по стене владельца артефакта атакующий получает 2 урона.
 
-> ⚠️ **Частично реализовано** (ждёт проверки). `data/artifacts/spiky_wall.tres` — эффект
+> ✅ **Реализовано и проверено.** `data/artifacts/spiky_wall.tres` — эффект
 > `{"trigger": "on_damage_taken", "type": "reflect_damage", "value": 2}`. Новый тип `reflect_damage` в
 > `apply_artifact_effect()`: срабатывает только если `context.hit_wall` истинно (не на `direct_damage` мимо
 > стены — буквально "при ударе по стене" из акцептанс-критерия), берёт атакующего из `context.attacker`
@@ -1755,7 +1755,7 @@ Games. При локальном запуске (`python -m http.server`), в CI
 **Критерии приёмки:**
 - [x] При розыгрыше карты-гема владелец получает +1 гем сверх обычного дохода.
 
-> ⚠️ **Частично реализовано** (ждёт проверки). `data/artifacts/mana_sphere.tres` — эффект
+> ✅ **Реализовано и проверено.** `data/artifacts/mana_sphere.tres` — эффект
 > `{"trigger": "card_played", "type": "gain_resource", "resource": "gems", "value": 1,
 > "requires_card_type": 1}` (`1` = `CardData.ResourceType.GEMS` — тот же порядок enum, что уже используют
 > `.tres` карт, см. `data/cards/*.tres` поле `type`; артефакты хранят его тем же способом — сырым числом, без
@@ -1779,7 +1779,7 @@ Games. При локальном запуске (`python -m http.server`), в CI
 **Критерии приёмки:**
 - [x] `ArtifactManager` подписывается на `match_started` и применяет эффект один раз в начале боя.
 
-> ⚠️ **Частично реализовано** (ждёт проверки). `data/artifacts/horn_of_plenty.tres` — эффект
+> ✅ **Реализовано и проверено.** `data/artifacts/horn_of_plenty.tres` — эффект
 > `{"trigger": "match_started", "type": "set_generator_level", "value": 2}`. `ArtifactManager._on_match_started
 > (player, enemy)` подписан на `GameEvents.match_started` (сигнал несёт обе стороны сразу — сработавший один
 > раз при старте боя, как и просит акцептанс-критерий) и проверяет артефакты у ОБЕИХ сторон (`enemy_data` в
@@ -1801,7 +1801,7 @@ Games. При локальном запуске (`python -m http.server`), в CI
 **Критерии приёмки:**
 - [x] Владелец артефакта имеет `max_hand_size = 6` вместо 5.
 
-> ⚠️ **Частично реализовано** (ждёт проверки). `data/artifacts/book_of_wisdom.tres` — эффект
+> ✅ **Реализовано и проверено.** `data/artifacts/book_of_wisdom.tres` — эффект
 > `{"trigger": "match_started", "type": "set_max_hand_size", "value": 6}`. Тикет описывает эффект как
 > "пассивный" (без явного триггера), но специально заводить под это отдельный механизм ("проверяется при
 > каждом чтении max_hand_size") избыточно — переиспользован `match_started` (та же инфраструктура, что и
@@ -1824,7 +1824,7 @@ Games. При локальном запуске (`python -m http.server`), в CI
 - [x] Добавлен pre-play хук в `match_manager.play_card_by_index()`.
 - [x] С вероятностью 10% ресурсы не списываются (проверяется тестом с фиксированным seed рандома).
 
-> ⚠️ **Частично реализовано** (ждёт проверки). `data/artifacts/lucky_coin.tres` — эффект
+> ✅ **Реализовано и проверено.** `data/artifacts/lucky_coin.tres` — эффект
 > `{"trigger": "pre_play", "type": "skip_payment_chance", "value": 0.1}`. Новый метод
 > `ArtifactManager.should_skip_payment(player) -> bool` (не через `_check_artifacts()`/`apply_artifact_effect()`
 > — этому хуку нужно синхронно вернуть `bool` ДО списания, а не просто применить эффект постфактум, как
