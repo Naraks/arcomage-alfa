@@ -1,11 +1,11 @@
 extends Node
 ## ArtifactManager (autoload, ARC-030): роутер эффектов артефактов по триггерам.
 ##
-## ARC-030: раньше не был autoload и НИГДЕ не создавался в реальной игре
-## (ни в одной .tscn, ни в project.godot) — GUT-тесты создавали свои экземпляры
-## напрямую через ArtifactManager.new() (тогда у скрипта был class_name), но
-## в самой игре ни один артефакт не мог сработать: `_ready()` (где происходит
-## GameEvents.*.connect(...)) никогда не вызывался. Сделан autoload (project.godot),
+## ARC-030: раньше не был публичным autoload — создавался вручную как
+## приватная child-нода в MatchManager._ready() (add_child без публичного
+## имени; работало, MatchManager сам autoload). Сделан отдельным autoload
+## (project.godot) ради ARC-035: MatchManager.play_card_by_index() должен
+## СИНХРОННО спросить его до списания ресурсов, что требует публичного имени.
 ## class_name убран — конфликтует с именем автозагрузки (тот же паттерн, что у
 ## MatchManager/GameEvents/MatchSettings/ProfileManager/RunSaveManager, ни один
 ## из них не объявляет class_name). Тесты (tests/test_artifact_manager.gd)
