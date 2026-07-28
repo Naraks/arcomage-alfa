@@ -3,10 +3,15 @@ extends Control
 
 func _ready() -> void:
 	$VersionLabel.text = BuildVersion.get_display_string()
+	# ARC-018: «Продолжить» имеет смысл, только если есть сохранённый забег.
+	$VBoxContainer/ContinueButton.disabled = not RunSaveManager.has_saved_run()
 
 
 func _on_continue_pressed():
-	print("Continue pressed - functionality not yet implemented")
+	if not RunSaveManager.load_run():
+		print("[ERROR] Continue pressed but no valid saved run found")
+		return
+	get_tree().change_scene_to_file("res://ui/map/world_map_screen.tscn")
 
 
 func _on_campaign_pressed():

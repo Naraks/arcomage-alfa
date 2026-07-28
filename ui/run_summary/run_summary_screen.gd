@@ -111,4 +111,8 @@ func _add_stat_label(parent: VBoxContainer, text: String) -> void:
 
 
 func _on_menu_pressed() -> void:
+	# ARC-018: run_summary_screen — единственная точка выхода после боя с
+	# боссом (победа или поражение), т.е. забег гарантированно закончен —
+	# автосейв (ARC-018) больше не должен предлагать "Продолжить" его.
+	RunSaveManager.clear_run()
 	get_tree().change_scene_to_file("res://ui/main_menu.tscn")

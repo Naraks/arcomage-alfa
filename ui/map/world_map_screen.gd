@@ -15,6 +15,11 @@ func _ready() -> void:
 
 	if map_data:
 		_generate_map_ui()
+		# ARC-018: единая точка автосохранения — сюда возвращаются после любого
+		# узла (shop/rest/event/reward уже успели проставить is_completed/
+		# current_node_index до перехода), и сюда же попадают сразу после
+		# генерации нового забега.
+		RunSaveManager.save_run()
 
 	if OS.is_debug_build():
 		_generate_debug_node_bar()

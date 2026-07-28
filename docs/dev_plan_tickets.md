@@ -1139,8 +1139,46 @@ Games. При локальном запуске (`python -m http.server`), в CI
 см. ARC-040), чтобы «Продолжить» в главном меню (сейчас — заглушка, см. ARC-041) реально работало.
 
 **Критерии приёмки:**
-- [ ] Состояние забега сохраняется после каждого узла карты.
-- [ ] При перезапуске игры кнопка «Продолжить» восстанавливает забег с того же места.
+- [x] Состояние забега сохраняется после каждого узла карты.
+- [x] При перезапуске игры кнопка «Продолжить» восстанавливает забег с того же места.
+
+> ⚠️ **Частично реализовано** (не проверено вручную в редакторе). Добавлены:
+> - `data/resources/run_save_data.gd`: `RunSaveData extends Resource` — снимок состояния забега
+>   (`world_map_data`, `run_deck`, `run_gold`, `run_tower_bonus`/`run_quarry_bonus`/`run_magic_bonus`/
+>   `run_dungeon_bonus`, `run_artifacts`). Прямое зеркало подмножества `MatchSettings`, которое переживает
+>   переход между узлами карты; `player_data`/`enemy_data`/`came_from_map`/`current_map_node` намеренно не
+>   входят — сохранение делается только между узлами, когда боя нет и `current_map_node` уже `null`.
+> - `core/run_save_manager.gd` — новый автозагруз `RunSaveManager`. Сохраняет через `ResourceSaver.save()` в
+>   `user://run_save.tres`, **не** через JSON (в отличие от `ProfileManager`): состояние забега — граф
+>   Resource-ов (`WorldMapData.map_nodes` с перекрёстными `connected_nodes`, включая узлы, на которые ссылаются
+>   сразу несколько других узлов) плюс уже загруженные как Resource карты/артефакты. `ResourceSaver`
+>   сериализует оба случая штатно: процедурно созданные `MapNodeData` (без `resource_path`) сохраняются как
+>   вложенные под-ресурсы прямо в `run_save.tres` с сохранением разделяемых ссылок между `connected_nodes`, а
+>   карты/артефакты (у них `resource_path` уже указывает на `res://data/...`) сохраняются как ссылка на
+>   исходный файл, а не дублируются. Ручной JSON-сериализатор графа узлов был бы существенно сложнее ради того
+>   же результата. `build_save_data()`/`apply_save_data()` — маппинг в/из `MatchSettings` вынесен в чистые
+>   функции отдельно от `save_run()`/`load_run()`/`clear_run()` (диск), чтобы маппинг был тестируем без
+>   файлового I/O (`tests/test_run_save_manager.gd`).
+> - `ui/map/world_map_screen.gd._ready()`: `RunSaveManager.save_run()` вызывается всегда, когда есть
+>   `map_data` — единая точка автосохранения вместо дублирования вызова в каждом из 4 screen'ов (shop/rest/
+>   event/reward), которые все возвращают на `world_map_screen.tscn` уже проставив `is_completed`/
+>   `current_node_index` и сбросив `current_map_node` в `null`. Это же покрывает сохранение сразу после
+>   генерации нового забега (первый заход на карту).
+> - `ui/main_menu.gd`: `_ready()` дизейблит `ContinueButton`, если `RunSaveManager.has_saved_run()` — false;
+>   `_on_continue_pressed()` теперь реально грузит сейв (`RunSaveManager.load_run()`) и переходит на
+>   `world_map_screen.tscn` вместо заглушки-принта.
+> - `ui/run_summary/run_summary_screen.gd._on_menu_pressed()`: `RunSaveManager.clear_run()` перед выходом в
+>   главное меню — это единственная точка выхода после боя с боссом (победа или поражение), т.е. забег
+>   гарантированно закончен, и сейв больше не должен предлагаться «Продолжить».
+> - Юнит-тесты (GUT, `tests/test_run_save_manager.gd`): `build_save_data()` копирует все поля и делает
+>   `duplicate()` массивов (не шарит ссылку с `MatchSettings.run_deck`/`run_artifacts`), `apply_save_data()`
+>   раскладывает снимок обратно, round-trip build→apply сохраняет состояние. Реальный файловый I/O
+>   (`save_run`/`load_run`/`clear_run`, `ResourceSaver`/`ResourceLoader`/`FileAccess` в `user://`) тестами не
+>   покрыт — штатно работает в реальном Godot, но не тестировался в GUT ни для одного из существующих
+>   сохранений (`ProfileManager` тоже не тестирует свой файловый I/O, только `add_fame()`), нужна ручная
+>   проверка в редакторе.
+> - Yandex Player Data (упомянут в описании тикета как следующий шаг) не реализован — это ARC-040, отдельная
+>   задача; сейчас сохранение только в `user://`.
 
 ---
 

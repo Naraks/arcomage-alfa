@@ -27,6 +27,7 @@ MatchManager="*res://core/match_manager.gd"
 MatchSettings="*res://core/match_settings.gd"
 BuildVersion="*res://core/build_version.gd"
 ProfileManager="*res://core/profile_manager.gd"
+RunSaveManager="*res://core/run_save_manager.gd"
 
 [display]
 
