@@ -110,13 +110,27 @@ func _update_visuals(container: VBoxContainer, amount: int, color: Color) -> voi
 		panel.add_theme_stylebox_override("panel", style)
 
 
+## ARC-016: set_anchors_preset(PRESET_CENTER) на control, у которого ещё нет
+## реального size (создан только что через .new(), в дерево не добавлен),
+## считает офсеты от нулевого size — сам center-якорь (0.5/0.5) становится
+## ЛЕВЫМ ВЕРХНИМ углом попапа, а не его центром, и попап уезжает вправо-вниз.
+## Явно выставляем офсеты под половину нужного размера, чтобы центр совпадал
+## с центром якоря независимо от текущего size в момент вызова.
+func _center_control(control: Control, target_size: Vector2) -> void:
+	control.set_anchors_preset(Control.PRESET_CENTER)
+	control.custom_minimum_size = target_size
+	control.offset_left = -target_size.x / 2.0
+	control.offset_top = -target_size.y / 2.0
+	control.offset_right = target_size.x / 2.0
+	control.offset_bottom = target_size.y / 2.0
+
+
 func _on_match_ended(winner: PlayerData) -> void:
 	var layer = CanvasLayer.new()
 	add_child(layer)
 
 	var panel = Panel.new()
-	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.custom_minimum_size = Vector2(300, 200)
+	_center_control(panel, Vector2(300, 200))
 	layer.add_child(panel)
 
 	var vbox = VBoxContainer.new()
@@ -196,8 +210,7 @@ func _show_card_list_popup(title_text: String, cards: Array) -> void:
 	layer.add_child(backdrop)
 
 	var panel = Panel.new()
-	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.custom_minimum_size = Vector2(720, 520)
+	_center_control(panel, Vector2(720, 520))
 	backdrop.add_child(panel)
 
 	var root_margin = MarginContainer.new()
