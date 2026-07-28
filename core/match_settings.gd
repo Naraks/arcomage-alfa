@@ -29,3 +29,9 @@ var run_tower_bonus: int = 0
 var run_quarry_bonus: int = 0
 var run_magic_bonus: int = 0
 var run_dungeon_bonus: int = 0
+
+## ARC-015: артефакты, собранные за забег (награда за бой, ARC-014 упоминал
+## этот пробел — до этого тикета их некуда было выдавать). match_manager
+## .setup_match() копирует их в player_data.active_artifacts при старте
+## каждого боя; core/artifact_manager.gd сам следит за триггерами.
+var run_artifacts: Array[ArtifactData] = []

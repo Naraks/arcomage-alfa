@@ -31,6 +31,9 @@ func _on_campaign_pressed():
 	MatchSettings.run_magic_bonus = 0
 	MatchSettings.run_dungeon_bonus = 0
 
+	# ARC-015: новый забег начинается без артефактов прошлой кампании.
+	MatchSettings.run_artifacts = []
+
 	var err = get_tree().change_scene_to_file("res://ui/map/world_map_screen.tscn")
 	print("Change scene result: ", err)
 
@@ -51,12 +54,13 @@ func _on_battle_pressed():
 	# отдельный тестовый бой, не часть забега, setup_match() должен взять
 	# старую тестовую колоду.
 	MatchSettings.run_deck = []
-	# ARC-012/013: аналогично — не должны протечь золото/бонусы прошлой кампании.
+	# ARC-012/013/015: аналогично — не должны протечь золото/бонусы/артефакты прошлой кампании.
 	MatchSettings.run_gold = 0
 	MatchSettings.run_tower_bonus = 0
 	MatchSettings.run_quarry_bonus = 0
 	MatchSettings.run_magic_bonus = 0
 	MatchSettings.run_dungeon_bonus = 0
+	MatchSettings.run_artifacts = []
 
 	get_tree().change_scene_to_file("res://ui/battle/battle_screen.tscn")
 

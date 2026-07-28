@@ -125,7 +125,16 @@ func _generate_debug_node_bar() -> void:
 func _on_node_pressed(node: Resource) -> void:
 	print("Node pressed: ", node.node_type)
 
-	if node.node_type == MapNodeData.NodeType.BATTLE:
+	# ARC-015: ELITE_BATTLE/BOSS запускают тот же battle_screen, что и обычный
+	# BATTLE — отличается только пул наград после победы (reward_screen.gd
+	# читает node_type из current_map_node). Усиление самого противника для
+	# элиты/босса (docs/game_design_doc.md 6) — отдельная, ещё не заведённая
+	# задача, здесь намеренно не трогается.
+	if (
+		node.node_type == MapNodeData.NodeType.BATTLE
+		or node.node_type == MapNodeData.NodeType.ELITE_BATTLE
+		or node.node_type == MapNodeData.NodeType.BOSS
+	):
 		# Заглушка для PlayerData
 		var p_data = PlayerData.new()
 		var e_data = PlayerData.new()
@@ -133,7 +142,8 @@ func _on_node_pressed(node: Resource) -> void:
 		MatchSettings.enemy_data = e_data
 
 		# ARC-002: помечаем, что бой начат с карты — battle_screen прочитает это
-		# в _on_match_ended(), чтобы вернуть игрока сюда и отметить узел пройденным.
+		# в _on_match_ended(), чтобы при победе увести на экран награды (ARC-015),
+		# а при поражении вернуть сюда без отметки узла пройденным.
 		MatchSettings.came_from_map = true
 		MatchSettings.current_map_node = node
 

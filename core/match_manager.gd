@@ -65,6 +65,10 @@ func setup_match(
 	player_data.magic += MatchSettings.run_magic_bonus
 	player_data.dungeon += MatchSettings.run_dungeon_bonus
 
+	# ARC-015: артефакты забега (награда за бой) — копия, не сама run_artifacts,
+	# по аналогии с run_deck ниже.
+	player_data.active_artifacts = MatchSettings.run_artifacts.duplicate()
+
 	# ARC-016: в match_manager.deck кладём ШУФЛ-КОПИЮ run_deck, а не саму
 	# run_deck — карты, разыгранные/сброшенные за бой, не должны пропадать из
 	# забега навсегда (discard/reshuffle внутри одного боя — вне рамок этого

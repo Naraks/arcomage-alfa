@@ -147,24 +147,21 @@ func _on_match_ended(winner: PlayerData) -> void:
 
 	var button = Button.new()
 
-	if MatchSettings.came_from_map:
-		# ARC-002: бой начат с карты мира — возвращаемся туда вместо локального
-		# Restart. Победа помечает узел пройденным; поражение просто возвращает
-		# на карту, узел остаётся доступен для повторной попытки.
+	if MatchSettings.came_from_map and is_victory:
+		# ARC-015: победа с карты ведёт на экран награды, а не сразу на карту —
+		# is_completed/current_node_index (раньше выставлялись прямо здесь,
+		# ARC-002/011) теперь выставляет сам reward_screen.gd при возврате на
+		# карту, came_from_map/current_map_node остаются как есть до тех пор.
+		button.text = "Забрать награду"
+		button.pressed.connect(
+			func(): get_tree().change_scene_to_file("res://ui/reward/reward_screen.tscn")
+		)
+	elif MatchSettings.came_from_map:
+		# ARC-002: поражение просто возвращает на карту, узел остаётся доступен
+		# для повторной попытки — наград не бывает.
 		button.text = "Вернуться на карту"
 		button.pressed.connect(
 			func():
-				if is_victory and MatchSettings.current_map_node:
-					MatchSettings.current_map_node.is_completed = true
-					# ARC-011: world_map_screen считает доступные для клика узлы от
-					# current_node_index — без этого обновления игрок так и остался
-					# бы "запертым" на первом этаже после первой же победы.
-					if MatchSettings.world_map_data:
-						var node_index: int = MatchSettings.world_map_data.map_nodes.find(
-							MatchSettings.current_map_node
-						)
-						if node_index != -1:
-							MatchSettings.world_map_data.current_node_index = node_index
 				MatchSettings.came_from_map = false
 				MatchSettings.current_map_node = null
 				get_tree().change_scene_to_file("res://ui/map/world_map_screen.tscn")

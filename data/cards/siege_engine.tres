@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://data/resources/card_data.gd" id="1_x1y2z"]
+
+[resource]
+script = ExtResource("1_x1y2z")
+card_name = "Осадное орудие"
+description = "Пробивает Стену: 4 урона напрямую по Башне противника."
+cost = 3
+type = 0
+rarity = 1
+effects = Array[Dictionary]([{"target": "enemy", "type": "direct_damage", "value": 4}])

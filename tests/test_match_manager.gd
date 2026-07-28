@@ -330,6 +330,35 @@ func test_setup_match_does_not_apply_rest_bonuses_to_enemy() -> void:
 	MatchSettings.run_tower_bonus = 0
 
 
+# --- setup_match / run_artifacts (ARC-015: артефакты как награда за бой) ---
+
+
+func test_setup_match_applies_run_artifacts_to_player() -> void:
+	var p := TestFixtures.make_player()
+	var e := TestFixtures.make_player()
+	var artifact: ArtifactData = load("res://data/artifacts/dwarf_pickaxe.tres")
+	MatchSettings.run_artifacts = [artifact]
+
+	MatchManager.setup_match(p, e)
+
+	assert_eq(MatchManager.player_data.active_artifacts, [artifact])
+
+	MatchSettings.run_artifacts = []
+
+
+func test_setup_match_does_not_apply_run_artifacts_to_enemy() -> void:
+	var p := TestFixtures.make_player()
+	var e := TestFixtures.make_player()
+	var artifact: ArtifactData = load("res://data/artifacts/dwarf_pickaxe.tres")
+	MatchSettings.run_artifacts = [artifact]
+
+	MatchManager.setup_match(p, e)
+
+	assert_true(MatchManager.enemy_data.active_artifacts.is_empty())
+
+	MatchSettings.run_artifacts = []
+
+
 # --- setup_match / повторный вызов (регрессия ARC-002: карта -> бой -> карта -> бой) ---
 
 
