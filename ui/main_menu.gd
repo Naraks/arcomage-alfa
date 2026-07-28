@@ -22,6 +22,10 @@ func _on_campaign_pressed():
 	# бою этой кампании, и которая будет расти от наград/магазина.
 	MatchSettings.run_deck = MatchManager.build_starting_run_deck()
 
+	# ARC-012: стартовое золото забега — см. комментарий у
+	# MatchManager.STARTING_RUN_GOLD (заглушка до реальных источников золота).
+	MatchSettings.run_gold = MatchManager.STARTING_RUN_GOLD
+
 	var err = get_tree().change_scene_to_file("res://ui/map/world_map_screen.tscn")
 	print("Change scene result: ", err)
 
@@ -42,6 +46,10 @@ func _on_battle_pressed():
 	# отдельный тестовый бой, не часть забега, setup_match() должен взять
 	# старую тестовую колоду.
 	MatchSettings.run_deck = []
+	# ARC-012: аналогично — не тестовый бой не должен унаследовать золото
+	# предыдущей кампании (магазин здесь не задействован, но лучше не оставлять
+	# протёкшее состояние).
+	MatchSettings.run_gold = 0
 
 	get_tree().change_scene_to_file("res://ui/battle/battle_screen.tscn")
 

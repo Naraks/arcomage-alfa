@@ -17,3 +17,10 @@ var current_map_node: MapNodeData
 ## этом не расходуется. Пустой массив = тестовый бой не из забега (main_menu
 ## "Битва") — тогда setup_match() использует старую тестовую колоду.
 var run_deck: Array[CardData] = []
+
+## ARC-012: золото забега (docs/game_design_doc.md 9.1 — временная валюта
+## одного забега, НЕ мета-валюта "Слава" из Эпика F). Тратится в узле
+## «Магазин» (ui/shop/shop_screen.gd) на покупку карт и удаление карт из
+## run_deck. main_menu.gd задаёт стартовое значение в начале кампании
+## (MatchManager.STARTING_RUN_GOLD — заглушка, см. её комментарий).
+var run_gold: int = 0

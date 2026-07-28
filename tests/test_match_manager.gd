@@ -388,3 +388,32 @@ func test_build_starting_run_deck_survives_initial_draw() -> void:
 		10,
 		"Стартовая колода должна пережить начальную раздачу (5 игроку + 5 ИИ) с запасом"
 	)
+
+
+# ARC-012: предложение магазина (MatchManager.build_shop_offer).
+
+
+func test_build_shop_offer_returns_requested_count() -> void:
+	var offer: Array[CardData] = MatchManager.build_shop_offer(4)
+
+	assert_eq(offer.size(), 4, "Магазин должен предложить ровно запрошенное число карт")
+
+
+func test_build_shop_offer_has_no_duplicate_cards() -> void:
+	var offer: Array[CardData] = MatchManager.build_shop_offer(5)
+
+	var seen := {}
+	for card in offer:
+		assert_false(seen.has(card), "Предложение магазина не должно повторять одну и ту же карту")
+		seen[card] = true
+
+
+func test_build_shop_offer_clamps_to_pool_size_without_error() -> void:
+	var huge_count: int = MatchManager.ALL_CARD_PATHS.size() + 10
+	var offer: Array[CardData] = MatchManager.build_shop_offer(huge_count)
+
+	assert_eq(
+		offer.size(),
+		MatchManager.ALL_CARD_PATHS.size(),
+		"Запрос больше размера пула должен просто вернуть весь пул без ошибок и без повторов"
+	)

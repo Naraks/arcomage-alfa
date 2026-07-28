@@ -139,6 +139,77 @@ static func build_starting_run_deck() -> Array[CardData]:
 	return _build_generic_card_pool()
 
 
+## ARC-012: стартовое золото забега (main_menu.gd._on_campaign_pressed()).
+## Заглушка-плейсхолдер: сейчас в игре ещё нет ни одного реального источника
+## золота (Событие/Отдых — ARC-013/014, награда за бой — ARC-015 — не
+## реализованы), поэтому без стартовой суммы магазин (ARC-012) нельзя было бы
+## протестировать вручную вообще — узел открывается, но покупать не на что.
+## Когда появятся реальные источники золота, эту заглушку стоит пересмотреть.
+const STARTING_RUN_GOLD := 20
+
+## ARC-012: полный список путей ко ВСЕМ картам игры — в отличие от
+## STARTER_DECK_CARD_PATHS выше (сознательно урезанный набор для тестовой и
+## стартовой колоды), это источник предложений магазина: там должны попадаться
+## и карты, которых нет в стартовом наборе.
+const ALL_CARD_PATHS := [
+	"res://data/cards/wall_card.tres",
+	"res://data/cards/knight_card.tres",
+	"res://data/cards/brick_1.tres",
+	"res://data/cards/brick_2.tres",
+	"res://data/cards/brick_3.tres",
+	"res://data/cards/brick_4.tres",
+	"res://data/cards/brick_5.tres",
+	"res://data/cards/brick_6.tres",
+	"res://data/cards/brick_7.tres",
+	"res://data/cards/brick_8.tres",
+	"res://data/cards/brick_9.tres",
+	"res://data/cards/brick_10.tres",
+	"res://data/cards/brick_11.tres",
+	"res://data/cards/gem_1.tres",
+	"res://data/cards/gem_2.tres",
+	"res://data/cards/gem_3.tres",
+	"res://data/cards/gem_4.tres",
+	"res://data/cards/gem_5.tres",
+	"res://data/cards/gem_6.tres",
+	"res://data/cards/gem_7.tres",
+	"res://data/cards/gem_8.tres",
+	"res://data/cards/gem_9.tres",
+	"res://data/cards/gem_10.tres",
+	"res://data/cards/gem_11.tres",
+	"res://data/cards/beast_1.tres",
+	"res://data/cards/beast_2.tres",
+	"res://data/cards/beast_3.tres",
+	"res://data/cards/beast_4.tres",
+	"res://data/cards/beast_5.tres",
+	"res://data/cards/beast_6.tres",
+	"res://data/cards/beast_7.tres",
+	"res://data/cards/beast_8.tres",
+	"res://data/cards/beast_9.tres",
+	"res://data/cards/beast_10.tres",
+]
+
+
+## ARC-012: card_count РАЗНЫХ карт (без повторов), случайно выбранных из
+## ALL_CARD_PATHS — предложение магазина на один визит узла. static, как и
+## остальные card-pool функции — вызывается как MatchManager.build_shop_offer(...).
+## Если card_count больше размера ALL_CARD_PATHS, просто возвращает весь пул
+## (без ошибки и без повторов).
+static func build_shop_offer(card_count: int) -> Array[CardData]:
+	var paths := ALL_CARD_PATHS.duplicate()
+	paths.shuffle()
+
+	var offer: Array[CardData] = []
+	for path in paths:
+		if offer.size() >= card_count:
+			break
+		var card = load(path)
+		if card:
+			offer.append(card)
+		else:
+			print("[ERROR] Failed to load card: ", path)
+	return offer
+
+
 func draw_card(player: PlayerData) -> void:
 	var hand = player_hand if player == player_data else enemy_hand
 
