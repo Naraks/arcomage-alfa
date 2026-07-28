@@ -175,34 +175,48 @@ const BOSS_GENERATOR_BONUS := 2
 ##   переключается между Aggressive/Builder по угрозе поражения/окну для
 ##   добивания — именно то, что в ARC-017 было отложено как "отдельная, более
 ##   крупная задача про ИИ").
-const REGULAR_STRATEGY_CLASSES: Array = [
-	DefaultAIStrategy, AggressiveAIStrategy, BuilderAIStrategy, EconomistAIStrategy
+##
+## Массивы держат сами GDScript-объекты через preload() (гарантированно
+## константное выражение), а не bare class_name-идентификаторы вроде
+## DefaultAIStrategy — компилятор не считает их константным выражением внутри
+## const-массива (`Assigned value for constant "..." isn't a constant
+## expression`), несмотря на то, что вне const-контекста (`enemy.ai_strategy =
+## AggressiveAIStrategy.new()`, как было до ARC-027) обращение к ним работает
+## нормально.
+const DefaultAIStrategyScript = preload("res://data/resources/default_ai_strategy.gd")
+const AggressiveAIStrategyScript = preload("res://data/resources/aggressive_ai_strategy.gd")
+const BuilderAIStrategyScript = preload("res://data/resources/builder_ai_strategy.gd")
+const EconomistAIStrategyScript = preload("res://data/resources/economist_ai_strategy.gd")
+const BossAIStrategyScript = preload("res://data/resources/boss_ai_strategy.gd")
+
+const REGULAR_STRATEGY_SCRIPTS: Array = [
+	DefaultAIStrategyScript, AggressiveAIStrategyScript, BuilderAIStrategyScript, EconomistAIStrategyScript
 ]
-const ELITE_STRATEGY_CLASSES: Array = [AggressiveAIStrategy, BuilderAIStrategy]
+const ELITE_STRATEGY_SCRIPTS: Array = [AggressiveAIStrategyScript, BuilderAIStrategyScript]
 
 
-func _pick_random_strategy(classes: Array) -> AIStrategy:
-	return classes[randi() % classes.size()].new()
+func _pick_random_strategy(scripts: Array) -> AIStrategy:
+	return scripts[randi() % scripts.size()].new()
 
 
 func _apply_node_difficulty(enemy: PlayerData, node_type: int) -> void:
 	match node_type:
 		MapNodeData.NodeType.BATTLE:
-			enemy.ai_strategy = _pick_random_strategy(REGULAR_STRATEGY_CLASSES)
+			enemy.ai_strategy = _pick_random_strategy(REGULAR_STRATEGY_SCRIPTS)
 		MapNodeData.NodeType.ELITE_BATTLE:
 			enemy.tower_hp += ELITE_TOWER_BONUS
 			enemy.wall_hp += ELITE_WALL_BONUS
 			enemy.quarry += ELITE_GENERATOR_BONUS
 			enemy.magic += ELITE_GENERATOR_BONUS
 			enemy.dungeon += ELITE_GENERATOR_BONUS
-			enemy.ai_strategy = _pick_random_strategy(ELITE_STRATEGY_CLASSES)
+			enemy.ai_strategy = _pick_random_strategy(ELITE_STRATEGY_SCRIPTS)
 		MapNodeData.NodeType.BOSS:
 			enemy.tower_hp += BOSS_TOWER_BONUS
 			enemy.wall_hp += BOSS_WALL_BONUS
 			enemy.quarry += BOSS_GENERATOR_BONUS
 			enemy.magic += BOSS_GENERATOR_BONUS
 			enemy.dungeon += BOSS_GENERATOR_BONUS
-			enemy.ai_strategy = BossAIStrategy.new()
+			enemy.ai_strategy = BossAIStrategyScript.new()
 
 
 func _on_node_pressed(node: Resource) -> void:
