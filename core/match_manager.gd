@@ -271,7 +271,7 @@ func apply_card_effects(card: CardData, actor: PlayerData) -> void:
 ## ARC-005: единая точка резолва `target` из словаря эффекта карты/артефакта в
 ## конкретного PlayerData. Учитывается только префикс "self"/"enemy" — суффикс
 ## `_wall`/`_tower` (например, "enemy_wall") ни на что здесь не влияет и для
-## большинства типов эффекта чисто описательный, см. effects_reference.md.
+## большинства типов эффекта чисто описательный, см. docs/effects_reference.md.
 func resolve_target(actor: PlayerData, enemy: PlayerData, target_str: String) -> PlayerData:
 	if target_str.begins_with("self"):
 		return actor

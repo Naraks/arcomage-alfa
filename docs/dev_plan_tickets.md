@@ -850,10 +850,15 @@ Games. При локальном запуске (`python -m http.server`), в CI
 сколько узлов на этаже, где стоит босс) до написания генератора.
 
 **Критерии приёмки:**
-- [ ] `NodeType` расширен до `BATTLE, ELITE_BATTLE, SHOP, REST, EVENT, BOSS`.
-- [ ] Зафиксирован документ `docs/world_map_design.md`: количество этажей (рекомендация: 12–15), распределение
+- [x] `NodeType` расширен до `BATTLE, ELITE_BATTLE, SHOP, REST, EVENT, BOSS`.
+- [x] Зафиксирован документ `docs/world_map_design.md`: количество этажей (рекомендация: 12–15), распределение
       типов узлов по вероятности, правило «на одном этаже 2–4 узла с ветвлением/схождением путей».
-- [ ] `WorldMapData` расширен полями `floor_count`, `seed`.
+- [x] `WorldMapData` расширен полями `floor_count`, `seed`.
+
+> ✅ Реализовано и проверено: `data/resources/map_node_data.gd` содержит расширенный `NodeType`;
+> `data/resources/world_map_data.gd` содержит `floor_count`/`seed`; `docs/world_map_design.md`
+> фиксирует 12–15 этажей, 2–4 узла на этаж и веса распределения типов узлов (включая исключения
+> для первого этажа и этажа перед боссом) — основа для генератора ARC-010.
 
 ---
 
