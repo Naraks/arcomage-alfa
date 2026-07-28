@@ -149,11 +149,7 @@ func _generate_debug_node_bar() -> void:
 
 ## ARC-017: "выше стартовые HP/генераторы, чуть агрессивнее" (design doc,
 ## раздел 6) для элиты/босса — конкретные числа нигде не заданы, взяты как
-## разумная прогрессия (босс вдвое злее элиты). AggressiveAIStrategy уже
-## существовала в проекте, но раньше нигде не назначалась — берём её как
-## приближение "агрессивнее", а не буквальный скриптованный гибрид из доков
-## (переключение архетипа по угрозе поражения — отдельная, более крупная
-## задача про ИИ, не входит в этот тикет).
+## разумная прогрессия (босс вдвое злее элиты).
 const ELITE_TOWER_BONUS := 10
 const ELITE_WALL_BONUS := 5
 const ELITE_GENERATOR_BONUS := 1
@@ -161,23 +157,52 @@ const BOSS_TOWER_BONUS := 20
 const BOSS_WALL_BONUS := 10
 const BOSS_GENERATOR_BONUS := 2
 
+## ARC-027: тип узла определяет не только бонусы к статам (ARC-017), но и то,
+## какой ai_strategy достаётся противнику.
+## - BATTLE: без бонусов к статам, случайный профиль из всех четырёх — обычный
+##   бой не должен ощущаться усиленным, но должен давать разнообразие
+##   ("случайный/сбалансированный профиль" из описания тикета). До этого
+##   тикета BATTLE вообще не выставлял ai_strategy — MatchManager._resolve_ai_turn
+##   молча подставлял DefaultAIStrategy с [ERROR]-принтом в консоль на каждый
+##   ход ИИ; теперь это явное и разнообразное назначение, принт больше не
+##   появляется.
+## - ELITE_BATTLE: бонусы к статам как раньше, но профиль теперь случайно
+##   Aggressive ИЛИ Builder — буквально "усиленная версия (Aggressive/Builder)"
+##   из описания тикета, а не всегда фиксированный Aggressive, как было
+##   временным приближением в ARC-017.
+## - BOSS: свои (более высокие) бонусы, всегда BossAIStrategy — "отдельная
+##   скриптованная гибридная стратегия" (data/resources/boss_ai_strategy.gd:
+##   переключается между Aggressive/Builder по угрозе поражения/окну для
+##   добивания — именно то, что в ARC-017 было отложено как "отдельная, более
+##   крупная задача про ИИ").
+const REGULAR_STRATEGY_CLASSES: Array = [
+	DefaultAIStrategy, AggressiveAIStrategy, BuilderAIStrategy, EconomistAIStrategy
+]
+const ELITE_STRATEGY_CLASSES: Array = [AggressiveAIStrategy, BuilderAIStrategy]
+
+
+func _pick_random_strategy(classes: Array) -> AIStrategy:
+	return classes[randi() % classes.size()].new()
+
 
 func _apply_node_difficulty(enemy: PlayerData, node_type: int) -> void:
 	match node_type:
+		MapNodeData.NodeType.BATTLE:
+			enemy.ai_strategy = _pick_random_strategy(REGULAR_STRATEGY_CLASSES)
 		MapNodeData.NodeType.ELITE_BATTLE:
 			enemy.tower_hp += ELITE_TOWER_BONUS
 			enemy.wall_hp += ELITE_WALL_BONUS
 			enemy.quarry += ELITE_GENERATOR_BONUS
 			enemy.magic += ELITE_GENERATOR_BONUS
 			enemy.dungeon += ELITE_GENERATOR_BONUS
-			enemy.ai_strategy = AggressiveAIStrategy.new()
+			enemy.ai_strategy = _pick_random_strategy(ELITE_STRATEGY_CLASSES)
 		MapNodeData.NodeType.BOSS:
 			enemy.tower_hp += BOSS_TOWER_BONUS
 			enemy.wall_hp += BOSS_WALL_BONUS
 			enemy.quarry += BOSS_GENERATOR_BONUS
 			enemy.magic += BOSS_GENERATOR_BONUS
 			enemy.dungeon += BOSS_GENERATOR_BONUS
-			enemy.ai_strategy = AggressiveAIStrategy.new()
+			enemy.ai_strategy = BossAIStrategy.new()
 
 
 func _on_node_pressed(node: Resource) -> void:

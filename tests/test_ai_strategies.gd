@@ -6,6 +6,7 @@ extends GutTest
 
 const BuilderAIStrategy = preload("res://data/resources/builder_ai_strategy.gd")
 const EconomistAIStrategy = preload("res://data/resources/economist_ai_strategy.gd")
+const BossAIStrategy = preload("res://data/resources/boss_ai_strategy.gd")
 
 var player: PlayerData
 var enemy: PlayerData
@@ -205,3 +206,79 @@ func test_economist_differs_from_builder_on_mod_magic_vs_mod_quarry() -> void:
 
 	assert_eq(economist.get_best_card(hand, player, enemy), magic_card, "Экономист — про Гемы, не Кирпичи")
 	assert_eq(builder.get_best_card(hand, player, enemy), quarry_card, "Строитель — про Кирпичи, не Гемы")
+
+
+# --- BossAIStrategy (ARC-027) ---
+#
+# Aggressive не оценивает build_tower вовсе (calculate_card_priority без ветки
+# "build_tower" в aggressive_ai_strategy.gd) — при равном value damage_card
+# всегда выигрывает у tower_card, поэтому этой парой удобно проверять, какой
+# из двух делегатов (_aggressive/_builder) реально выбрал ход.
+
+
+func _boss_hand() -> Array[CardData]:
+	var tower_card := TestFixtures.make_card(
+		1, CardData.ResourceType.BRICKS, [{"type": "build_tower", "target": "self", "value": 4}]
+	)
+	var damage_card := TestFixtures.make_card(
+		1, CardData.ResourceType.BRICKS, [{"type": "damage", "target": "enemy", "value": 4}]
+	)
+	return [tower_card, damage_card]
+
+
+func test_boss_plays_aggressive_when_enemy_tower_is_lethally_low() -> void:
+	var strategy := BossAIStrategy.new()
+	var hand := _boss_hand()
+	enemy.tower_hp = BossAIStrategy.LETHAL_ENEMY_TOWER_HP  # на грани — уже "добивать"
+
+	assert_eq(
+		strategy.get_best_card(hand, player, enemy),
+		hand[1],
+		"Врага почти добили — Босс должен добивать (Aggressive), а не растить свою Башню"
+	)
+
+
+func test_boss_plays_aggressive_when_own_tower_in_danger() -> void:
+	var strategy := BossAIStrategy.new()
+	var hand := _boss_hand()
+	enemy.tower_hp = 20  # враг не при смерти — не режим добивания
+	player.tower_hp = BossAIStrategy.DANGER_OWN_TOWER_HP  # но сам Босс под угрозой
+
+	assert_eq(
+		strategy.get_best_card(hand, player, enemy),
+		hand[1],
+		"Сам Босс под угрозой поражения — должен биться в ответ (Aggressive), а не копить экономику"
+	)
+
+
+func test_boss_plays_builder_when_safe() -> void:
+	var strategy := BossAIStrategy.new()
+	var hand := _boss_hand()
+	enemy.tower_hp = 20  # не при смерти
+	player.tower_hp = 20  # сам Босс не под угрозой
+
+	assert_eq(
+		strategy.get_best_card(hand, player, enemy),
+		hand[0],
+		"Ни угрозы, ни лёгкой добычи — Босс должен играть в долгую (Builder), растить свою Башню"
+	)
+
+
+func test_boss_switches_mode_within_same_instance_as_state_changes() -> void:
+	# ARC-027 требует именно динамическую реакцию "по угрозе поражения", а не
+	# фиксированный на момент создания режим — один и тот же экземпляр должен
+	# менять выбор при изменении tower_hp между вызовами.
+	var strategy := BossAIStrategy.new()
+	var hand := _boss_hand()
+	enemy.tower_hp = 20
+	player.tower_hp = 20
+
+	assert_eq(strategy.get_best_card(hand, player, enemy), hand[0], "Пока всё безопасно — режим Builder")
+
+	enemy.tower_hp = BossAIStrategy.LETHAL_ENEMY_TOWER_HP
+
+	assert_eq(
+		strategy.get_best_card(hand, player, enemy),
+		hand[1],
+		"Тот же экземпляр должен переключиться на Aggressive, как только враг оказался при смерти"
+	)

@@ -73,7 +73,7 @@ func test_available_nodes_are_connected_to_current_and_not_completed() -> void:
 # --- _apply_node_difficulty (ARC-017: усиленный противник на элите/боссе) ---
 
 
-func test_apply_node_difficulty_battle_leaves_enemy_unchanged() -> void:
+func test_apply_node_difficulty_battle_leaves_enemy_stats_unchanged() -> void:
 	var screen = WorldMapScreenScript.new()
 	var enemy := TestFixtures.make_player()
 	var orig_tower_hp := enemy.tower_hp
@@ -85,7 +85,36 @@ func test_apply_node_difficulty_battle_leaves_enemy_unchanged() -> void:
 	screen.free()
 
 
-func test_apply_node_difficulty_elite_boosts_stats_and_ai() -> void:
+## ARC-027: обычный бой получает случайный профиль ИИ из всех четырёх — раньше
+## (до ARC-027) ai_strategy для BATTLE вообще не выставлялся. Проверяем много
+## раз подряд: (а) результат всегда один из четырёх ожидаемых классов, (б) за
+## достаточное число попыток встречается больше одного класса — иначе это не
+## "случайный", а один захардкоженный тип, который просто прошёл проверку (a).
+func test_apply_node_difficulty_battle_assigns_random_strategy_from_all_four() -> void:
+	var screen = WorldMapScreenScript.new()
+	var seen_types := {}
+
+	for i in range(200):
+		var enemy := TestFixtures.make_player()
+		screen._apply_node_difficulty(enemy, MapNodeData.NodeType.BATTLE)
+		var strategy = enemy.ai_strategy
+		assert_true(
+			(
+				strategy is DefaultAIStrategy
+				or strategy is AggressiveAIStrategy
+				or strategy is BuilderAIStrategy
+				or strategy is EconomistAIStrategy
+			),
+			"BATTLE должен назначать один из четырёх известных профилей ИИ"
+		)
+		seen_types[strategy.get_script()] = true
+
+	assert_true(seen_types.size() > 1, "За 200 попыток должно встретиться больше одного типа стратегии")
+
+	screen.free()
+
+
+func test_apply_node_difficulty_elite_boosts_stats() -> void:
 	var screen = WorldMapScreenScript.new()
 	var enemy := TestFixtures.make_player()
 	var orig_tower_hp := enemy.tower_hp
@@ -97,7 +126,28 @@ func test_apply_node_difficulty_elite_boosts_stats_and_ai() -> void:
 	assert_eq(enemy.tower_hp, orig_tower_hp + WorldMapScreenScript.ELITE_TOWER_BONUS)
 	assert_eq(enemy.wall_hp, orig_wall_hp + WorldMapScreenScript.ELITE_WALL_BONUS)
 	assert_eq(enemy.quarry, orig_quarry + WorldMapScreenScript.ELITE_GENERATOR_BONUS)
-	assert_true(enemy.ai_strategy is AggressiveAIStrategy)
+
+	screen.free()
+
+
+## ARC-027: элита — случайно Aggressive ИЛИ Builder (буквально "усиленная
+## версия (Aggressive/Builder)" из описания тикета), не всегда один и тот же
+## класс, как было временным приближением в ARC-017.
+func test_apply_node_difficulty_elite_assigns_random_strategy_from_aggressive_or_builder() -> void:
+	var screen = WorldMapScreenScript.new()
+	var seen_types := {}
+
+	for i in range(100):
+		var enemy := TestFixtures.make_player()
+		screen._apply_node_difficulty(enemy, MapNodeData.NodeType.ELITE_BATTLE)
+		var strategy = enemy.ai_strategy
+		assert_true(
+			strategy is AggressiveAIStrategy or strategy is BuilderAIStrategy,
+			"ELITE_BATTLE должен назначать только Aggressive или Builder"
+		)
+		seen_types[strategy.get_script()] = true
+
+	assert_true(seen_types.size() > 1, "За 100 попыток должны встретиться оба класса")
 
 	screen.free()
 
@@ -111,7 +161,10 @@ func test_apply_node_difficulty_boss_is_stronger_than_elite() -> void:
 
 	assert_eq(enemy.tower_hp, orig_tower_hp + WorldMapScreenScript.BOSS_TOWER_BONUS)
 	assert_true(WorldMapScreenScript.BOSS_TOWER_BONUS > WorldMapScreenScript.ELITE_TOWER_BONUS)
-	assert_true(enemy.ai_strategy is AggressiveAIStrategy)
+	assert_true(
+		enemy.ai_strategy is BossAIStrategy,
+		"ARC-027: босс всегда получает гибридную BossAIStrategy, не Aggressive напрямую"
+	)
 
 	screen.free()
 
