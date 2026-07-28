@@ -19,6 +19,15 @@
 # в репозитории не хранится — см. core/build_version.gd.
 /build_version.json
 
+# Отчёты tools/battle_simulator.gd (ARC-054/ARC-023): CSV пишутся по умолчанию
+# в res:// (project root), Godot-редактор тут же импортирует .csv как файл
+# перевода (.import + *.<колонка>.translation на каждую колонку) — мусор,
+# который не должен попадать в репозиторий и путается под ногами в
+# FileSystem-панели редактора.
+/balance_report*.csv
+/balance_report*.csv.import
+/balance_report*.translation
+
 # OS
 .DS_Store
 Thumbs.db
