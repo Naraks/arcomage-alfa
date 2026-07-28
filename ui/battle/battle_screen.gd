@@ -36,7 +36,10 @@ func _ready() -> void:
 	# Тестовый запуск матча, если мы в этой сцене напрямую
 	_setup_visual_containers()
 	if MatchSettings.player_data:
-		MatchManager.setup_match(MatchSettings.player_data, MatchSettings.enemy_data)
+		# ARC-016: run_deck пуст для тестового боя из главного меню (main_menu.gd
+		# явно сбрасывает его) — setup_match() тогда сама уйдёт на старую
+		# тестовую колоду.
+		MatchManager.setup_match(MatchSettings.player_data, MatchSettings.enemy_data, MatchSettings.run_deck)
 	else:
 		_test_setup()
 

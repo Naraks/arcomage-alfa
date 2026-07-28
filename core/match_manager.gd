@@ -24,7 +24,13 @@ func _ready() -> void:
 	add_child(artifact_manager)
 
 
-func setup_match(p_player: PlayerData, p_enemy: PlayerData) -> void:
+## ARC-016: p_run_deck — колода забега (MatchSettings.run_deck), собственность
+## игрока на весь роглик-забег, растёт от наград/магазина (ARC-015/012).
+## Пустой массив (дефолт) — тестовый бой из главного меню, без забега: тогда
+## используется старый _initialize_test_deck() как и раньше.
+func setup_match(
+	p_player: PlayerData, p_enemy: PlayerData, p_run_deck: Array[CardData] = []
+) -> void:
 	player_data = p_player
 	enemy_data = p_enemy
 
@@ -46,8 +52,18 @@ func setup_match(p_player: PlayerData, p_enemy: PlayerData) -> void:
 		player_data.quarry += profile_manager.profile.player_stats.resource_gain_bonus
 		print("[DEBUG] Meta-progression bonuses applied")
 
-	# Инициализация колоды и рук (заглушка)
-	_initialize_test_deck()
+	# ARC-016: в match_manager.deck кладём ШУФЛ-КОПИЮ run_deck, а не саму
+	# run_deck — карты, разыгранные/сброшенные за бой, не должны пропадать из
+	# забега навсегда (discard/reshuffle внутри одного боя — вне рамок этого
+	# тикета). Колода общая на игрока и ИИ, как и раньше ("для простоты
+	# прототипа") — ИИ тоже будет тянуть карты из run_deck игрока, это
+	# существовавшее упрощение, а не то, что вводит ARC-016.
+	if not p_run_deck.is_empty():
+		deck = p_run_deck.duplicate()
+		deck.shuffle()
+	else:
+		_initialize_test_deck()
+
 	for i in range(5):
 		draw_card(player_data)
 		draw_card(enemy_data)
@@ -57,23 +73,27 @@ func setup_match(p_player: PlayerData, p_enemy: PlayerData) -> void:
 	start_turn(player_data)
 
 
-func _initialize_test_deck() -> void:
-	var card_paths = [
-		"res://data/cards/wall_card.tres",
-		"res://data/cards/knight_card.tres",
-		"res://data/cards/brick_1.tres",
-		"res://data/cards/brick_2.tres",
-		"res://data/cards/brick_3.tres",
-		"res://data/cards/gem_1.tres",
-		"res://data/cards/gem_2.tres",
-		"res://data/cards/gem_3.tres",
-		"res://data/cards/beast_1.tres",
-		"res://data/cards/beast_2.tres",
-		"res://data/cards/beast_3.tres"
-	]
+## Базовый пул карт, общий для тестовой колоды (_initialize_test_deck, ниже) и
+## стартовой колоды забега (build_starting_run_deck) — единственное место, где
+## перечислены пути .tres.
+const STARTER_DECK_CARD_PATHS := [
+	"res://data/cards/wall_card.tres",
+	"res://data/cards/knight_card.tres",
+	"res://data/cards/brick_1.tres",
+	"res://data/cards/brick_2.tres",
+	"res://data/cards/brick_3.tres",
+	"res://data/cards/gem_1.tres",
+	"res://data/cards/gem_2.tres",
+	"res://data/cards/gem_3.tres",
+	"res://data/cards/beast_1.tres",
+	"res://data/cards/beast_2.tres",
+	"res://data/cards/beast_3.tres",
+]
 
+
+func _initialize_test_deck() -> void:
 	deck = []
-	for path in card_paths:
+	for path in STARTER_DECK_CARD_PATHS:
 		var card = load(path)
 		if card:
 			deck.append(card)
@@ -86,6 +106,21 @@ func _initialize_test_deck() -> void:
 
 	deck.shuffle()
 	print("[DEBUG] Deck initialized with ", deck.size(), " cards")
+
+
+## ARC-016: стартовая колода нового забега (main_menu.gd._on_campaign_pressed()).
+## Тот же базовый пул, что и у тестовой колоды, но БЕЗ случайного паддинга до
+## 20 — колода забега должна начинаться маленькой (~11 карт) и расти за счёт
+## наград/магазина, а не стартовать уже "раздутой" случайными повторами.
+## Настоящая система разблокировки стартовых колод — ARC-038 (мета-прогрессия),
+## пока это единственный доступный набор.
+static func build_starting_run_deck() -> Array[CardData]:
+	var starting_deck: Array[CardData] = []
+	for path in STARTER_DECK_CARD_PATHS:
+		var card = load(path)
+		if card:
+			starting_deck.append(card)
+	return starting_deck
 
 
 func draw_card(player: PlayerData) -> void:

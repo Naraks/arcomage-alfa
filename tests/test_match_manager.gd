@@ -296,3 +296,48 @@ func test_setup_match_resets_hands_from_previous_match() -> void:
 	# лимитом руки, поэтому обе руки останавливаются на 5, а не копятся выше.
 	assert_eq(MatchManager.player_hand.size(), 5, "Рука игрока должна начинаться с нуля, а не копиться")
 	assert_eq(MatchManager.enemy_hand.size(), 5, "Рука ИИ должна начинаться с нуля, а не копиться")
+
+
+# --- setup_match / run_deck (ARC-016: колода забега как отдельная сущность) ---
+
+
+func test_setup_match_uses_run_deck_when_provided() -> void:
+	var marker_card := TestFixtures.make_card(1, CardData.ResourceType.BRICKS)
+	var run_deck: Array[CardData] = [marker_card]
+	for i in range(11):
+		run_deck.append(TestFixtures.make_card(1, CardData.ResourceType.BRICKS))
+
+	MatchManager.setup_match(TestFixtures.make_player(), TestFixtures.make_player(), run_deck)
+
+	var everywhere: Array = MatchManager.deck + MatchManager.player_hand + MatchManager.enemy_hand
+	assert_true(
+		everywhere.has(marker_card),
+		"Карта из run_deck должна оказаться в бою — в колоде или в чьей-то руке после раздачи"
+	)
+
+
+func test_setup_match_falls_back_to_test_deck_when_run_deck_empty() -> void:
+	MatchManager.setup_match(TestFixtures.make_player(), TestFixtures.make_player())
+
+	assert_false(MatchManager.deck.is_empty(), "Без run_deck (дефолт []) должна использоваться тестовая колода")
+
+
+func test_setup_match_does_not_mutate_caller_run_deck() -> void:
+	var run_deck: Array[CardData] = []
+	for i in range(12):
+		run_deck.append(TestFixtures.make_card(1, CardData.ResourceType.BRICKS))
+	var original_size: int = run_deck.size()
+
+	MatchManager.setup_match(TestFixtures.make_player(), TestFixtures.make_player(), run_deck)
+
+	assert_eq(
+		run_deck.size(),
+		original_size,
+		"setup_match кладёт в бой шафл-копию run_deck — сама run_deck не должна расходоваться за бой"
+	)
+
+
+func test_build_starting_run_deck_is_not_empty() -> void:
+	var starting_deck: Array[CardData] = MatchManager.build_starting_run_deck()
+
+	assert_false(starting_deck.is_empty(), "Стартовая колода забега не должна быть пустой")

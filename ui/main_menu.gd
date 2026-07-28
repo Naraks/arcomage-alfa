@@ -17,6 +17,11 @@ func _on_campaign_pressed():
 	# новую карту; фиксированный сид (для "дневных забегов") — задел на будущее.
 	MatchSettings.world_map_data = WorldMapGenerator.generate_map(randi())
 
+	# ARC-016: новый забег начинается со стартовой колоды — она же и есть
+	# "колода забега", которую увидит match_manager.setup_match() в каждом
+	# бою этой кампании, и которая будет расти от наград/магазина.
+	MatchSettings.run_deck = MatchManager.build_starting_run_deck()
+
 	var err = get_tree().change_scene_to_file("res://ui/map/world_map_screen.tscn")
 	print("Change scene result: ", err)
 
@@ -33,6 +38,10 @@ func _on_battle_pressed():
 	# came_from_map остался true после предыдущего боя, начатого с карты.
 	MatchSettings.came_from_map = false
 	MatchSettings.current_map_node = null
+	# ARC-016: не должна протечь колода забега из предыдущей кампании — это
+	# отдельный тестовый бой, не часть забега, setup_match() должен взять
+	# старую тестовую колоду.
+	MatchSettings.run_deck = []
 
 	get_tree().change_scene_to_file("res://ui/battle/battle_screen.tscn")
 
