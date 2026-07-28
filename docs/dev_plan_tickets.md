@@ -1598,7 +1598,12 @@ Games. При локальном запуске (`python -m http.server`), в CI
 > **Не проверено вживую**: не запускал реальный бой в редакторе, чтобы увидеть, что `ai_strategy` реально
 > ведёт себя по-разному на карте (визуальное подтверждение), только юнит-тесты на чистой логике
 > `_apply_node_difficulty()`/`BossAIStrategy` — как и с остальными тикетами, я не могу запустить Godot в
-> этой песочнице.
+> этой песочнице. Это и вскрылось: реальная загрузка сцены дала `Assigned value for constant
+> "REGULAR_STRATEGY_CLASSES" isn't a constant expression"` — bare class_name-идентификаторы
+> (`DefaultAIStrategy` и т.п.) не считаются константным выражением компилятором GDScript внутри `const
+> Array`, хотя вне const-контекста (`enemy.ai_strategy = AggressiveAIStrategy.new()`, как было до этого
+> тикета) обращение к ним компилируется нормально. Исправлено: массивы теперь держат результаты `preload()`
+> (`DefaultAIStrategyScript` и т.п.) — тот гарантированно константен.
 
 ---
 
