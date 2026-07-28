@@ -312,10 +312,27 @@ func _on_resource_changed(_player: PlayerData, _type: String, _amount: int) -> v
 func _on_turn_started(player: PlayerData) -> void:
 	update_all_ui()
 	if player == MatchManager.player_data:
-		status_label.text = "YOUR TURN"
 		refresh_hand()
+		# ARC-028: play_card_by_index()/discard_card_by_index() оба безусловно
+		# завершают ход (см. match_manager.gd) — рука не меняется в течение
+		# одного PLAYER_TURN без завершения хода, поэтому достаточно проверить
+		# играбельность один раз здесь, а не отслеживать её по ходу.
+		if not MatchManager.player_hand.is_empty() and not _has_playable_card():
+			status_label.text = "Нет доступных карт — сбросьте одну (ПКМ по карте)"
+		else:
+			status_label.text = "YOUR TURN"
 	else:
 		status_label.text = "ENEMY TURN"
+
+
+## ARC-028: у ИИ авто-сброс в патовой ситуации уже был (execute_ai_turn), у
+## игрока — нет: без подсказки непонятно, что делать, если ни одна карта в
+## руке не по карману (в интерфейсе просто ничего не происходит по клику).
+func _has_playable_card() -> bool:
+	for card in MatchManager.player_hand:
+		if MatchManager.can_afford(card, MatchManager.player_data):
+			return true
+	return false
 
 
 func _on_damage_applied(_target: Resource, _amount: int, _hit_wall: bool) -> void:
