@@ -1942,7 +1942,7 @@ Games. При локальном запуске (`python -m http.server`), в CI
 - [x] Минимум 6 покупаемых улучшений, реально влияющих на `setup_match()`/пул наград.
 - [x] UI показывает текущий баланс и стоимость следующего уровня улучшения.
 
-> ⚠️ **Частично реализовано.** `ui/meta_shop/meta_shop_screen.gd`/`.tscn` — новый экран, открывается из
+> ✅ **Реализовано и проверено.** `ui/meta_shop/meta_shop_screen.gd`/`.tscn` — новый экран, открывается из
 > главного меню (кнопка «Прокачка», `ui/main_menu.tscn`/`.gd`, `_on_upgrades_pressed()`), не привязан к
 > конкретному забегу. `ProfileManager.UPGRADE_CATALOG` (6 улучшений) + `get_upgrade_level()`/
 > `get_upgrade_bonus()`/`get_upgrade_next_cost()`/`can_afford_upgrade()`/`purchase_upgrade()` —
