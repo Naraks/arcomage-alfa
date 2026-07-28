@@ -169,6 +169,83 @@ func test_apply_node_difficulty_boss_is_stronger_than_elite() -> void:
 	screen.free()
 
 
+# --- ARC-029: рост сложности от floor_index, независимо от типа узла ---
+
+
+func test_apply_node_difficulty_floor_zero_matches_old_behavior() -> void:
+	# floor_index по умолчанию (0, как у любого узла не из генератора) не
+	# должен ничего менять — совместимость со старыми вызовами/тестами.
+	var screen = WorldMapScreenScript.new()
+	var enemy := TestFixtures.make_player()
+	var orig_tower_hp := enemy.tower_hp
+
+	screen._apply_node_difficulty(enemy, MapNodeData.NodeType.BATTLE, 0)
+
+	assert_eq(enemy.tower_hp, orig_tower_hp, "floor_index=0 не должен усиливать противника")
+
+	screen.free()
+
+
+func test_apply_node_difficulty_battle_scales_with_floor_index() -> void:
+	var screen = WorldMapScreenScript.new()
+	var enemy := TestFixtures.make_player()
+	var orig_tower_hp := enemy.tower_hp
+	var orig_wall_hp := enemy.wall_hp
+	var orig_quarry := enemy.quarry
+	var floor_index := 9
+
+	screen._apply_node_difficulty(enemy, MapNodeData.NodeType.BATTLE, floor_index)
+
+	assert_eq(
+		enemy.tower_hp,
+		orig_tower_hp + floor_index * WorldMapScreenScript.FLOOR_TOWER_HP_PER_FLOOR,
+		"Даже обычный BATTLE должен масштабироваться от глубины карты (ARC-029)"
+	)
+	assert_eq(enemy.wall_hp, orig_wall_hp + floor_index * WorldMapScreenScript.FLOOR_WALL_HP_PER_FLOOR)
+	assert_eq(
+		enemy.quarry, orig_quarry + int(floor_index / WorldMapScreenScript.FLOOR_GENERATOR_INTERVAL)
+	)
+
+	screen.free()
+
+
+## ARC-029 складывается АДДИТИВНО поверх ELITE/BOSS-бонусов (ARC-017) — не
+## подменяет их и не пересчитывает заново.
+func test_apply_node_difficulty_elite_combines_floor_and_elite_bonus() -> void:
+	var screen = WorldMapScreenScript.new()
+	var enemy := TestFixtures.make_player()
+	var orig_tower_hp := enemy.tower_hp
+	var floor_index := 6
+
+	screen._apply_node_difficulty(enemy, MapNodeData.NodeType.ELITE_BATTLE, floor_index)
+
+	assert_eq(
+		enemy.tower_hp,
+		orig_tower_hp
+		+ floor_index * WorldMapScreenScript.FLOOR_TOWER_HP_PER_FLOOR
+		+ WorldMapScreenScript.ELITE_TOWER_BONUS,
+		"Бонус за этаж должен складываться с фиксированным бонусом ELITE_BATTLE, а не заменять его"
+	)
+
+	screen.free()
+
+
+func test_apply_node_difficulty_deeper_floor_is_strictly_stronger() -> void:
+	var screen = WorldMapScreenScript.new()
+	var shallow := TestFixtures.make_player()
+	var deep := TestFixtures.make_player()
+
+	screen._apply_node_difficulty(shallow, MapNodeData.NodeType.BATTLE, 1)
+	screen._apply_node_difficulty(deep, MapNodeData.NodeType.BATTLE, 12)
+
+	assert_true(
+		deep.tower_hp > shallow.tower_hp,
+		"Противник на дальнем этаже должен быть сильнее, чем на ближнем (акцептанс-критерий ARC-029)"
+	)
+
+	screen.free()
+
+
 func test_available_nodes_empty_when_current_index_out_of_range() -> void:
 	var map := WorldMapData.new()
 	map.map_nodes = [_make_node(MapNodeData.NodeType.BATTLE)]

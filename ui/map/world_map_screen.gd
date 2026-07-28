@@ -199,7 +199,35 @@ func _pick_random_strategy(scripts: Array) -> AIStrategy:
 	return scripts[randi() % scripts.size()].new()
 
 
-func _apply_node_difficulty(enemy: PlayerData, node_type: int) -> void:
+## ARC-029: рост сложности от глубины карты (MapNodeData.floor_index,
+## 0-based) — НЕЗАВИСИМО от типа узла, поверх бонусов ELITE/BOSS (ARC-017):
+## дальний обычный BATTLE должен быть ощутимо опаснее самого первого, а не
+## только элита/босс, у которых до этого тикета сложность вообще не зависела
+## от того, на каком этаже они встретились. floor_index=0 (первый этаж, а
+## также любой узел, созданный не через генератор — тестовые/отладочные)
+## даёт нулевой бонус — старое поведение ELITE/BOSS-тестов не меняется.
+##
+## tower_hp/wall_hp растут линейно на каждый этаж; генераторы — раз в
+## FLOOR_GENERATOR_INTERVAL этажей, а не на каждый: базовый генератор = 1,
+## линейный рост на каждый из 12-15 этажей карты (WorldMapGenerator) был бы
+## взрывным (генератор x12+ к последнему этажу).
+const FLOOR_TOWER_HP_PER_FLOOR := 2
+const FLOOR_WALL_HP_PER_FLOOR := 1
+const FLOOR_GENERATOR_INTERVAL := 3
+
+
+func _apply_floor_difficulty(enemy: PlayerData, floor_index: int) -> void:
+	enemy.tower_hp += floor_index * FLOOR_TOWER_HP_PER_FLOOR
+	enemy.wall_hp += floor_index * FLOOR_WALL_HP_PER_FLOOR
+	var generator_bonus: int = floor_index / FLOOR_GENERATOR_INTERVAL
+	enemy.quarry += generator_bonus
+	enemy.magic += generator_bonus
+	enemy.dungeon += generator_bonus
+
+
+func _apply_node_difficulty(enemy: PlayerData, node_type: int, floor_index: int = 0) -> void:
+	_apply_floor_difficulty(enemy, floor_index)
+
 	match node_type:
 		MapNodeData.NodeType.BATTLE:
 			enemy.ai_strategy = _pick_random_strategy(REGULAR_STRATEGY_SCRIPTS)
@@ -234,7 +262,7 @@ func _on_node_pressed(node: Resource) -> void:
 		# Заглушка для PlayerData
 		var p_data = PlayerData.new()
 		var e_data = PlayerData.new()
-		_apply_node_difficulty(e_data, node.node_type)
+		_apply_node_difficulty(e_data, node.node_type, node.floor_index)
 		MatchSettings.player_data = p_data
 		MatchSettings.enemy_data = e_data
 

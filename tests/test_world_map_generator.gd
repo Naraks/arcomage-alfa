@@ -62,6 +62,19 @@ func _assert_map_is_valid(map, seed_value: int) -> void:
 			"seed %d: последний узел карты должен быть BOSS" % seed_value
 		)
 
+	# ARC-029: node.floor_index должен совпадать с реальным этажом узла,
+	# независимо реконструированным выше через BFS по graph-у — иначе
+	# масштабирование сложности по этажам (world_map_screen.gd) считало бы
+	# неверную глубину.
+	for i in range(floors.size()):
+		for node in floors[i]:
+			assert_eq(
+				node.floor_index,
+				i,
+				"seed %d: floor_index узла (%d) не совпадает с реальным этажом (%d)"
+				% [seed_value, node.floor_index, i]
+			)
+
 	for i in range(floors.size() - 1):
 		var floor_nodes: Array = floors[i]
 		assert_between(

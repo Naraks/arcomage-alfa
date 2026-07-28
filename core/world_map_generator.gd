@@ -60,6 +60,7 @@ static func generate_map(seed_value: int) -> Resource:
 	var boss_node := MapNodeData.new()
 	boss_node.node_type = MapNodeData.NodeType.BOSS
 	boss_node.position = Vector2(CENTER_X, TOP_MARGIN_Y + (floor_count - 1) * FLOOR_SPACING_Y)
+	boss_node.floor_index = floor_count - 1
 	floors.append([boss_node])
 
 	for floor_index in range(floors.size() - 1):
@@ -90,6 +91,7 @@ static func _build_floor(
 		var node := MapNodeData.new()
 		node.node_type = _pick_weighted_type(rng, weights)
 		node.position = _lane_position(floor_index, lane, node_count)
+		node.floor_index = floor_index
 		floor_nodes.append(node)
 
 	_ensure_has_battle(rng, floor_nodes)
