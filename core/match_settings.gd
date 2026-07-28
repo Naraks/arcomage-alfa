@@ -35,3 +35,11 @@ var run_dungeon_bonus: int = 0
 ## .setup_match() копирует их в player_data.active_artifacts при старте
 ## каждого боя; core/artifact_manager.gd сам следит за триггерами.
 var run_artifacts: Array[ArtifactData] = []
+
+## ARC-017: победа или поражение в бою с боссом — единственный триггер конца
+## забега (design doc: "Проигрыш = конец забега" сформулирован для BOSS явно;
+## для обычных/элитных узлов оставлено прежнее поведение — узел доступен для
+## повторной попытки, ARC-002). Выставляется тем, кто ведёт на
+## ui/run_summary/run_summary_screen.tscn (battle_screen.gd при поражении,
+## reward_screen.gd при победе), сразу перед переходом.
+var run_victory: bool = false

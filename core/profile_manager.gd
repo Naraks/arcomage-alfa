@@ -9,12 +9,22 @@ extends Node
 var profile: Dictionary = {
 	"total_wins": 0,
 	"unlocked_artifacts": [],
-	"player_stats": {"tower_hp_bonus": 5, "resource_gain_bonus": 1}
+	"player_stats": {"tower_hp_bonus": 5, "resource_gain_bonus": 1},
+	"fame": 0,
 }
 
 
 func _ready() -> void:
 	load_profile()
+
+
+## ARC-017: Слава — постоянная мета-валюта (design doc 9.1), начисляется по
+## итогам каждого забега (ui/run_summary/run_summary_screen.gd). profile.get()
+## с дефолтом — на случай старого save-файла без ключа "fame" (load_profile()
+## целиком заменяет profile содержимым JSON, см. ниже).
+func add_fame(amount: int) -> void:
+	profile["fame"] = profile.get("fame", 0) + amount
+	save_profile()
 
 
 func save_profile() -> void:

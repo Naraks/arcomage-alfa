@@ -70,6 +70,52 @@ func test_available_nodes_are_connected_to_current_and_not_completed() -> void:
 	screen.free()
 
 
+# --- _apply_node_difficulty (ARC-017: усиленный противник на элите/боссе) ---
+
+
+func test_apply_node_difficulty_battle_leaves_enemy_unchanged() -> void:
+	var screen = WorldMapScreenScript.new()
+	var enemy := TestFixtures.make_player()
+	var orig_tower_hp := enemy.tower_hp
+
+	screen._apply_node_difficulty(enemy, MapNodeData.NodeType.BATTLE)
+
+	assert_eq(enemy.tower_hp, orig_tower_hp, "Обычный бой не должен усиливать противника")
+
+	screen.free()
+
+
+func test_apply_node_difficulty_elite_boosts_stats_and_ai() -> void:
+	var screen = WorldMapScreenScript.new()
+	var enemy := TestFixtures.make_player()
+	var orig_tower_hp := enemy.tower_hp
+	var orig_wall_hp := enemy.wall_hp
+	var orig_quarry := enemy.quarry
+
+	screen._apply_node_difficulty(enemy, MapNodeData.NodeType.ELITE_BATTLE)
+
+	assert_eq(enemy.tower_hp, orig_tower_hp + WorldMapScreenScript.ELITE_TOWER_BONUS)
+	assert_eq(enemy.wall_hp, orig_wall_hp + WorldMapScreenScript.ELITE_WALL_BONUS)
+	assert_eq(enemy.quarry, orig_quarry + WorldMapScreenScript.ELITE_GENERATOR_BONUS)
+	assert_true(enemy.ai_strategy is AggressiveAIStrategy)
+
+	screen.free()
+
+
+func test_apply_node_difficulty_boss_is_stronger_than_elite() -> void:
+	var screen = WorldMapScreenScript.new()
+	var enemy := TestFixtures.make_player()
+	var orig_tower_hp := enemy.tower_hp
+
+	screen._apply_node_difficulty(enemy, MapNodeData.NodeType.BOSS)
+
+	assert_eq(enemy.tower_hp, orig_tower_hp + WorldMapScreenScript.BOSS_TOWER_BONUS)
+	assert_true(WorldMapScreenScript.BOSS_TOWER_BONUS > WorldMapScreenScript.ELITE_TOWER_BONUS)
+	assert_true(enemy.ai_strategy is AggressiveAIStrategy)
+
+	screen.free()
+
+
 func test_available_nodes_empty_when_current_index_out_of_range() -> void:
 	var map := WorldMapData.new()
 	map.map_nodes = [_make_node(MapNodeData.NodeType.BATTLE)]

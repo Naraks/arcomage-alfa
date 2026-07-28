@@ -1,5 +1,7 @@
 extends Control
 
+const MapNodeData = preload("res://data/resources/map_node_data.gd")
+
 @export var card_scene: PackedScene = preload("res://entities/card/card.tscn")
 
 var e_tower_visuals: VBoxContainer
@@ -158,13 +160,25 @@ func _on_match_ended(winner: PlayerData) -> void:
 		)
 	elif MatchSettings.came_from_map:
 		# ARC-002: поражение просто возвращает на карту, узел остаётся доступен
-		# для повторной попытки — наград не бывает.
-		button.text = "Вернуться на карту"
+		# для повторной попытки — наград не бывает. ARC-017: кроме босса —
+		# поражение от него завершает забег (design doc формулирует "проигрыш =
+		# конец забега" явно для BOSS). Обычные/элитные поражения этот тикет не
+		# трогает — design doc на самом деле требует того же для любого боя, но
+		# менять уже подтверждённое поведение ARC-002 без явного запроса не стал.
+		var is_boss_defeat: bool = (
+			MatchSettings.current_map_node != null
+			and MatchSettings.current_map_node.node_type == MapNodeData.NodeType.BOSS
+		)
+		button.text = "Итог забега" if is_boss_defeat else "Вернуться на карту"
 		button.pressed.connect(
 			func():
 				MatchSettings.came_from_map = false
 				MatchSettings.current_map_node = null
-				get_tree().change_scene_to_file("res://ui/map/world_map_screen.tscn")
+				if is_boss_defeat:
+					MatchSettings.run_victory = false
+					get_tree().change_scene_to_file("res://ui/run_summary/run_summary_screen.tscn")
+				else:
+					get_tree().change_scene_to_file("res://ui/map/world_map_screen.tscn")
 		)
 	else:
 		button.text = "Restart"

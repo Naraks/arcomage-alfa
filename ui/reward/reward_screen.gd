@@ -250,6 +250,13 @@ func _on_skip_pressed() -> void:
 ## current_node_index, иначе соседние узлы не откроются. Раньше (до ARC-015)
 ## это делал battle_screen сразу по победе — теперь после экрана награды.
 func _return_to_map() -> void:
+	# ARC-017: победа над боссом — это не просто "открыть соседний узел", а
+	# конец забега, см. MatchSettings.run_victory.
+	var was_boss: bool = (
+		MatchSettings.current_map_node != null
+		and MatchSettings.current_map_node.node_type == MapNodeData.NodeType.BOSS
+	)
+
 	if MatchSettings.current_map_node:
 		MatchSettings.current_map_node.is_completed = true
 		if MatchSettings.world_map_data:
@@ -260,4 +267,9 @@ func _return_to_map() -> void:
 				MatchSettings.world_map_data.current_node_index = node_index
 	MatchSettings.came_from_map = false
 	MatchSettings.current_map_node = null
-	get_tree().change_scene_to_file("res://ui/map/world_map_screen.tscn")
+
+	if was_boss:
+		MatchSettings.run_victory = true
+		get_tree().change_scene_to_file("res://ui/run_summary/run_summary_screen.tscn")
+	else:
+		get_tree().change_scene_to_file("res://ui/map/world_map_screen.tscn")

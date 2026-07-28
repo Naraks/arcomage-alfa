@@ -122,14 +122,46 @@ func _generate_debug_node_bar() -> void:
 		row.add_child(button)
 
 
+## ARC-017: "выше стартовые HP/генераторы, чуть агрессивнее" (design doc,
+## раздел 6) для элиты/босса — конкретные числа нигде не заданы, взяты как
+## разумная прогрессия (босс вдвое злее элиты). AggressiveAIStrategy уже
+## существовала в проекте, но раньше нигде не назначалась — берём её как
+## приближение "агрессивнее", а не буквальный скриптованный гибрид из доков
+## (переключение архетипа по угрозе поражения — отдельная, более крупная
+## задача про ИИ, не входит в этот тикет).
+const ELITE_TOWER_BONUS := 10
+const ELITE_WALL_BONUS := 5
+const ELITE_GENERATOR_BONUS := 1
+const BOSS_TOWER_BONUS := 20
+const BOSS_WALL_BONUS := 10
+const BOSS_GENERATOR_BONUS := 2
+
+
+func _apply_node_difficulty(enemy: PlayerData, node_type: int) -> void:
+	match node_type:
+		MapNodeData.NodeType.ELITE_BATTLE:
+			enemy.tower_hp += ELITE_TOWER_BONUS
+			enemy.wall_hp += ELITE_WALL_BONUS
+			enemy.quarry += ELITE_GENERATOR_BONUS
+			enemy.magic += ELITE_GENERATOR_BONUS
+			enemy.dungeon += ELITE_GENERATOR_BONUS
+			enemy.ai_strategy = AggressiveAIStrategy.new()
+		MapNodeData.NodeType.BOSS:
+			enemy.tower_hp += BOSS_TOWER_BONUS
+			enemy.wall_hp += BOSS_WALL_BONUS
+			enemy.quarry += BOSS_GENERATOR_BONUS
+			enemy.magic += BOSS_GENERATOR_BONUS
+			enemy.dungeon += BOSS_GENERATOR_BONUS
+			enemy.ai_strategy = AggressiveAIStrategy.new()
+
+
 func _on_node_pressed(node: Resource) -> void:
 	print("Node pressed: ", node.node_type)
 
 	# ARC-015: ELITE_BATTLE/BOSS запускают тот же battle_screen, что и обычный
-	# BATTLE — отличается только пул наград после победы (reward_screen.gd
-	# читает node_type из current_map_node). Усиление самого противника для
-	# элиты/босса (docs/game_design_doc.md 6) — отдельная, ещё не заведённая
-	# задача, здесь намеренно не трогается.
+	# BATTLE — отличается пул наград после победы (reward_screen.gd читает
+	# node_type из current_map_node) и, с ARC-017, характеристики противника
+	# (_apply_node_difficulty).
 	if (
 		node.node_type == MapNodeData.NodeType.BATTLE
 		or node.node_type == MapNodeData.NodeType.ELITE_BATTLE
@@ -138,6 +170,7 @@ func _on_node_pressed(node: Resource) -> void:
 		# Заглушка для PlayerData
 		var p_data = PlayerData.new()
 		var e_data = PlayerData.new()
+		_apply_node_difficulty(e_data, node.node_type)
 		MatchSettings.player_data = p_data
 		MatchSettings.enemy_data = e_data
 
