@@ -1,7 +1,9 @@
 class_name MapNodeData
 extends Resource
 
-enum NodeType { BATTLE, ELITE_BATTLE, SHOP, REST }
+## Порядок значений синхронизирован с распределением вероятностей в
+## docs/world_map_design.md — при добавлении нового типа обновить и документ.
+enum NodeType { BATTLE, ELITE_BATTLE, SHOP, REST, EVENT, BOSS }
 
 @export var node_type: NodeType
 @export var position: Vector2
