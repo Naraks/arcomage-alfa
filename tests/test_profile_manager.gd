@@ -172,3 +172,109 @@ func test_purchase_upgrade_next_cost_increases_after_purchase() -> void:
 	ProfileManager.purchase_upgrade("tower")
 
 	assert_eq(ProfileManager.get_upgrade_next_cost("tower"), cost_before + def["cost_step"])
+
+
+# --- ARC-038: is_card_unlocked / get_card_unlock_cost / unlock_card ---
+
+
+func _make_card(rarity: int, path: String = "") -> CardData:
+	var card := CardData.new()
+	card.rarity = rarity
+	card.card_name = "Тестовая карта"
+	card.resource_path = path
+	return card
+
+
+func test_is_card_unlocked_true_for_non_rare_by_default() -> void:
+	var card := _make_card(CardData.Rarity.COMMON)
+
+	assert_true(ProfileManager.is_card_unlocked(card))
+
+
+func test_is_card_unlocked_false_for_rare_by_default() -> void:
+	var card := _make_card(CardData.Rarity.RARE, "res://data/cards/gem_10.tres")
+
+	assert_false(ProfileManager.is_card_unlocked(card))
+
+
+func test_is_card_unlocked_true_for_rare_after_being_added_to_unlocked_cards() -> void:
+	var card := _make_card(CardData.Rarity.RARE, "res://data/cards/gem_10.tres")
+	ProfileManager.profile["unlocked_cards"] = ["res://data/cards/gem_10.tres"]
+
+	assert_true(ProfileManager.is_card_unlocked(card))
+
+
+func test_get_card_unlock_cost_negative_one_for_non_rare() -> void:
+	var card := _make_card(CardData.Rarity.UNCOMMON)
+
+	assert_eq(ProfileManager.get_card_unlock_cost(card), -1)
+
+
+func test_get_card_unlock_cost_is_rare_unlock_cost_for_locked_rare() -> void:
+	var card := _make_card(CardData.Rarity.RARE, "res://data/cards/gem_10.tres")
+
+	assert_eq(ProfileManager.get_card_unlock_cost(card), ProfileManager.RARE_CARD_UNLOCK_COST)
+
+
+func test_get_card_unlock_cost_negative_one_for_already_unlocked_rare() -> void:
+	var card := _make_card(CardData.Rarity.RARE, "res://data/cards/gem_10.tres")
+	ProfileManager.profile["unlocked_cards"] = ["res://data/cards/gem_10.tres"]
+
+	assert_eq(ProfileManager.get_card_unlock_cost(card), -1)
+
+
+func test_can_afford_card_unlock_false_without_enough_fame() -> void:
+	var card := _make_card(CardData.Rarity.RARE, "res://data/cards/gem_10.tres")
+	ProfileManager.profile["fame"] = 0
+
+	assert_false(ProfileManager.can_afford_card_unlock(card))
+
+
+func test_can_afford_card_unlock_true_with_enough_fame() -> void:
+	var card := _make_card(CardData.Rarity.RARE, "res://data/cards/gem_10.tres")
+	ProfileManager.profile["fame"] = ProfileManager.RARE_CARD_UNLOCK_COST
+
+	assert_true(ProfileManager.can_afford_card_unlock(card))
+
+
+func test_unlock_card_deducts_fame_and_adds_to_unlocked_cards() -> void:
+	var card := _make_card(CardData.Rarity.RARE, "res://data/cards/gem_10.tres")
+	ProfileManager.profile["fame"] = ProfileManager.RARE_CARD_UNLOCK_COST + 5
+
+	var result := ProfileManager.unlock_card(card)
+
+	assert_true(result)
+	assert_eq(ProfileManager.profile["fame"], 5)
+	assert_true(ProfileManager.is_card_unlocked(card))
+
+
+func test_unlock_card_fails_without_enough_fame() -> void:
+	var card := _make_card(CardData.Rarity.RARE, "res://data/cards/gem_10.tres")
+	ProfileManager.profile["fame"] = 0
+
+	var result := ProfileManager.unlock_card(card)
+
+	assert_false(result)
+	assert_eq(ProfileManager.profile["fame"], 0)
+	assert_false(ProfileManager.is_card_unlocked(card))
+
+
+func test_unlock_card_fails_for_non_rare_card() -> void:
+	var card := _make_card(CardData.Rarity.COMMON, "res://data/cards/brick_1.tres")
+	ProfileManager.profile["fame"] = 999999
+
+	var result := ProfileManager.unlock_card(card)
+
+	assert_false(result, "Не-RARE карта уже 'разблокирована' — покупать нечего")
+
+
+func test_unlock_card_fails_when_already_unlocked() -> void:
+	var card := _make_card(CardData.Rarity.RARE, "res://data/cards/gem_10.tres")
+	ProfileManager.profile["unlocked_cards"] = ["res://data/cards/gem_10.tres"]
+	ProfileManager.profile["fame"] = 999999
+	var fame_before: int = ProfileManager.profile["fame"]
+
+	var result := ProfileManager.unlock_card(card)
+
+	assert_false(result)
+	assert_eq(ProfileManager.profile["fame"], fame_before, "Повторная покупка не должна списывать Славу")

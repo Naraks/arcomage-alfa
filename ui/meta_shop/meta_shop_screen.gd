@@ -1,10 +1,15 @@
 extends Control
 ## ARC-037: экран мета-магазина — тратит постоянную Славу (ProfileManager.
-## profile.fame) на уровни из ProfileManager.UPGRADE_CATALOG. Открывается из
-## главного меню (ui/main_menu.gd/.tscn), не из забега — прокачка не
-## привязана к конкретной кампании. Разметка строится кодом в _ready(), как
-## и в ui/shop/shop_screen.gd (тот же паттерн этого проекта для экранов без
+## profile.fame) на уровни из ProfileManager.UPGRADE_CATALOG, и (ARC-038) на
+## разблокировку конкретных RARE-карт. Открывается из главного меню
+## (ui/main_menu.gd/.tscn), не из забега — прокачка не привязана к
+## конкретной кампании. Разметка строится кодом в _ready(), как и в
+## ui/shop/shop_screen.gd (тот же паттерн этого проекта для экранов без
 ## сложной вёрстки).
+##
+## ARC-038: секция "ОТКРЫТИЯ" ниже — та самая категория, отложенная в
+## блокквоте ARC-037 ("нет тикетов на unlock-систему на тот момент"). Теперь
+## есть — ProfileManager.is_card_unlocked()/unlock_card().
 
 ## Порядок отображения строк — фиксированный, не порядок ключей в
 ## ProfileManager.UPGRADE_CATALOG (Dictionary в GDScript не гарантирует
@@ -16,6 +21,7 @@ const UPGRADE_ORDER := ["tower", "wall", "quarry", "magic", "dungeon", "hand_siz
 
 var _fame_label: Label
 var _upgrade_list: VBoxContainer
+var _unlock_list: VBoxContainer
 
 
 func _ready() -> void:
@@ -46,7 +52,7 @@ func _build_ui() -> void:
 	root_vbox.add_child(header)
 
 	var title := Label.new()
-	title.text = "ПРОКАЧКА"
+	title.text = "МАГАЗИН ПРОКАЧКИ"
 	title.add_theme_font_size_override("font_size", 28)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
@@ -60,10 +66,30 @@ func _build_ui() -> void:
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root_vbox.add_child(scroll)
 
+	var scroll_vbox := VBoxContainer.new()
+	scroll_vbox.add_theme_constant_override("separation", 20)
+	scroll_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(scroll_vbox)
+
+	var upgrades_title := Label.new()
+	upgrades_title.text = "ПРОКАЧКА"
+	upgrades_title.add_theme_font_size_override("font_size", 18)
+	scroll_vbox.add_child(upgrades_title)
+
 	_upgrade_list = VBoxContainer.new()
 	_upgrade_list.add_theme_constant_override("separation", 8)
 	_upgrade_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(_upgrade_list)
+	scroll_vbox.add_child(_upgrade_list)
+
+	var unlocks_title := Label.new()
+	unlocks_title.text = "ОТКРЫТИЯ"
+	unlocks_title.add_theme_font_size_override("font_size", 18)
+	scroll_vbox.add_child(unlocks_title)
+
+	_unlock_list = VBoxContainer.new()
+	_unlock_list.add_theme_constant_override("separation", 8)
+	_unlock_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll_vbox.add_child(_unlock_list)
 
 	var back_button := Button.new()
 	back_button.text = "Назад в меню"
@@ -71,6 +97,7 @@ func _build_ui() -> void:
 	root_vbox.add_child(back_button)
 
 	_refresh_upgrade_list()
+	_refresh_unlock_list()
 
 
 func _update_fame_label() -> void:
@@ -133,6 +160,84 @@ func _on_buy_pressed(key: String) -> void:
 		return
 	_update_fame_label()
 	_refresh_upgrade_list()
+
+
+## ARC-038: пути всех RARE-карт игры — источник для секции "ОТКРЫТИЯ".
+## MatchManager.ALL_CARD_PATHS — тот же пул, что фильтрует
+## ProfileManager.is_card_unlocked() в build_shop_offer()/reward_screen.gd,
+## так что здесь показываются ровно те карты, которые реально имеет смысл
+## разблокировать (появятся в магазине/награде обычного боя/элиты после
+## покупки). Загружать и проверять rarity каждой карты — не идеально быстро,
+## но пул небольшой (десятки, не тысячи путей) и этот экран открывается не
+## каждый кадр, а по нажатию кнопки в главном меню.
+func _rare_card_paths() -> Array:
+	var result: Array = []
+	for path in MatchManager.ALL_CARD_PATHS:
+		var card: CardData = load(path)
+		if card and card.rarity == CardData.Rarity.RARE:
+			result.append(path)
+	return result
+
+
+func _unlock_row_text(path: String) -> String:
+	var card: CardData = load(path)
+	if not card:
+		return ""
+	var status := "разблокирована" if ProfileManager.is_card_unlocked(card) else "заблокирована"
+	return "%s (cost %d, %s)" % [card.card_name, card.cost, status]
+
+
+func _unlock_button_text(path: String) -> String:
+	var card: CardData = load(path)
+	var cost := ProfileManager.get_card_unlock_cost(card)
+	if cost < 0:
+		return "Открыто"
+	return "Открыть за %d" % cost
+
+
+func _refresh_unlock_list() -> void:
+	for child in _unlock_list.get_children():
+		child.queue_free()
+
+	var paths := _rare_card_paths()
+	if paths.is_empty():
+		var empty_label := Label.new()
+		empty_label.text = "Нет редких карт для разблокировки"
+		_unlock_list.add_child(empty_label)
+		return
+
+	for path in paths:
+		_unlock_list.add_child(_make_unlock_row(path))
+
+
+func _make_unlock_row(path: String) -> HBoxContainer:
+	var card: CardData = load(path)
+
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 12)
+
+	var label := Label.new()
+	label.text = _unlock_row_text(path)
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(label)
+
+	var buy_button := Button.new()
+	buy_button.name = "UnlockButton"
+	buy_button.text = _unlock_button_text(path)
+	var cost := ProfileManager.get_card_unlock_cost(card)
+	buy_button.disabled = cost < 0 or not ProfileManager.can_afford_card_unlock(card)
+	buy_button.pressed.connect(_on_unlock_pressed.bind(path))
+	row.add_child(buy_button)
+
+	return row
+
+
+func _on_unlock_pressed(path: String) -> void:
+	var card: CardData = load(path)
+	if not ProfileManager.unlock_card(card):
+		return
+	_update_fame_label()
+	_refresh_unlock_list()
 
 
 func _on_back_pressed() -> void:

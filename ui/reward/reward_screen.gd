@@ -11,9 +11,20 @@ const MapNodeData = preload("res://data/resources/map_node_data.gd")
 const REGULAR_SLOT_COUNT := 3
 const ELITE_ARTIFACT_CHANCE := 30
 
-## Карты выше стартового набора (MatchManager.ALL_CARD_PATHS) — только для
-## наград элиты/босса, не входят в стартовую колоду/магазин (design doc 5.3:
-## редкие карты не должны быть в магазине).
+## Гарантированные редкие карты награды элиты/босса — независимо от
+## разблокировки (design doc §5.3: "награда за элитный бой/босса,
+## мета-разблокировки" — оба пути равноправны, см. ARC-038/_unlocked_paths()).
+##
+## ARC-038: несмотря на комментарий, который тут был раньше ("не входят в
+## магазин") — оба пути ФАКТИЧЕСКИ есть и в MatchManager.ALL_CARD_PATHS тоже
+## (общий пул для всей игры, ARC-012/020). gem_10.tres (Армагеддон) при этом
+## настоящая RARE (rarity=2) — до ARC-038 могла случайно выпасть в награду
+## обычного боя/магазин наравне с обычными картами (тот самый отложенный баг
+## из комментария у ALL_CARD_PATHS), теперь это исключено фильтром
+## is_card_unlocked(). brick_6.tres (Осадное орудие) при этом на деле
+## rarity=1 (Необычная, не RARE) — просто конкретно выбранная карта для
+## гарантированного слота элиты/босса кирпичного типа, не "редкая" в смысле
+## enum; фильтром ARC-038 не затрагивается и не должна.
 const HIGH_RARITY_CARD_PATHS := [
 	"res://data/cards/brick_6.tres",
 	"res://data/cards/gem_10.tres",
@@ -58,7 +69,7 @@ func _build_reward_slots(node_type: int) -> Array[Dictionary]:
 
 
 func _build_battle_slots() -> Array[Dictionary]:
-	var paths := MatchManager.ALL_CARD_PATHS.duplicate()
+	var paths := _unlocked_paths(MatchManager.ALL_CARD_PATHS)
 	paths.shuffle()
 
 	var slots: Array[Dictionary] = []
@@ -68,7 +79,7 @@ func _build_battle_slots() -> Array[Dictionary]:
 
 
 func _build_elite_slots() -> Array[Dictionary]:
-	var common_paths := MatchManager.ALL_CARD_PATHS.duplicate()
+	var common_paths := _unlocked_paths(MatchManager.ALL_CARD_PATHS)
 	common_paths.shuffle()
 
 	var slots: Array[Dictionary] = [
@@ -98,11 +109,26 @@ func _build_boss_slots() -> Array[Dictionary]:
 	else:
 		# Все артефакты уже собраны — добиваем обычной картой, чтобы слотов
 		# осталось 3, а не 2.
-		var common_paths := MatchManager.ALL_CARD_PATHS.duplicate()
+		var common_paths := _unlocked_paths(MatchManager.ALL_CARD_PATHS)
 		common_paths.shuffle()
 		slots.append(_card_slot(common_paths[0]))
 
 	return slots
+
+
+## ARC-038: убирает из пула карты, которые ещё не разблокированы (RARE, не
+## купленные за Славу в MetaShopScreen — см. ProfileManager.is_card_unlocked()).
+## HIGH_RARITY_CARD_PATHS ниже НЕ фильтруется этой функцией и не должен —
+## гарантированная редкая карта в награде элиты/босса это ВТОРОЙ, независимый
+## от мета-разблокировки путь получить RARE-карту (design doc §5.3: "награда
+## за элитный бой/босса, МЕТА-разблокировки" — оба варианта равноправны).
+func _unlocked_paths(paths: Array) -> Array:
+	var result: Array = []
+	for path in paths:
+		var card: CardData = load(path)
+		if card and ProfileManager.is_card_unlocked(card):
+			result.append(path)
+	return result
 
 
 func _card_slot(path: String) -> Dictionary:

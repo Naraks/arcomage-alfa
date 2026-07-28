@@ -28,7 +28,25 @@ var profile: Dictionary = {
 	"unlocked_artifacts": [],
 	"fame": 0,
 	"upgrades": {},
+	"unlocked_cards": [],
 }
+
+## ARC-038: правило блокировки — просто CardData.rarity == RARE. Никакого
+## отдельного списка "какие пути залочены" не заводим (ещё один список,
+## который надо было бы вручную поддерживать в синхроне с data/cards/*.tres —
+## именно та болезнь, что чинили в ARC-024): редкость уже читается прямо из
+## ресурса карты, единственного источника истины. profile.unlocked_cards
+## хранит resource_path уже купленных RARE-карт; всё, что НЕ RARE, всегда
+## доступно и никогда не появляется в этом списке.
+##
+## Заодно закрывает пробел, отмеченный (но отложенный) в комментарии у
+## MatchManager.ALL_CARD_PATHS ещё с ARC-020: пул карт был общим для всех
+## редкостей, и RARE-карты могли выпасть в награду обычного боя/магазин
+## наравне с Common/Uncommon, хотя design doc §5.3 явно резервирует RARE за
+## "награда за элитный бой/босса, мета-разблокировки". С фильтром по
+## is_card_unlocked() (см. MatchManager.build_shop_offer(),
+## ui/reward/reward_screen.gd) это по конструкции больше не может произойти.
+const RARE_CARD_UNLOCK_COST := 150
 
 ## ARC-037: каталог покупаемых мета-улучшений — общий источник и для
 ## MetaShopScreen (что показывать и почём), и для MatchManager.setup_match()
@@ -155,6 +173,47 @@ func purchase_upgrade(key: String) -> bool:
 	var upgrades: Dictionary = profile.get("upgrades", {})
 	upgrades[key] = upgrades.get(key, 0) + 1
 	profile["upgrades"] = upgrades
+	save_profile()
+	return true
+
+
+## ARC-038: не-RARE карты всегда разблокированы (никогда не требуют
+## покупки). RARE — только если её resource_path уже в profile.unlocked_cards.
+## card без resource_path (напр. CardData.new() в тестах, без .tres-файла)
+## никогда не будет найден в unlocked_cards — для RARE это "всегда
+## заблокирована", что нормально: у синтетических тестовых карт нет
+## реального пути для разблокировки, но обычно они и не RARE (rarity по
+## умолчанию COMMON), так что на практике это не мешает.
+func is_card_unlocked(card: CardData) -> bool:
+	if card.rarity != CardData.Rarity.RARE:
+		return true
+	return profile.get("unlocked_cards", []).has(card.resource_path)
+
+
+## Цена разблокировки card: RARE_CARD_UNLOCK_COST, если она RARE и ещё не
+## куплена; -1, если её вообще не нужно (не RARE) или уже куплена — "нечего
+## покупать", тот же контракт по -1, что и у get_upgrade_next_cost().
+func get_card_unlock_cost(card: CardData) -> int:
+	if is_card_unlocked(card):
+		return -1
+	return RARE_CARD_UNLOCK_COST
+
+
+func can_afford_card_unlock(card: CardData) -> bool:
+	var cost := get_card_unlock_cost(card)
+	return cost >= 0 and profile.get("fame", 0) >= cost
+
+
+## Покупка разблокировки card: списывает Славу, добавляет resource_path в
+## profile.unlocked_cards, сохраняет профиль. false и ничего не меняет, если
+## нечего покупать (не RARE/уже разблокирована) или не хватает Славы.
+func unlock_card(card: CardData) -> bool:
+	if not can_afford_card_unlock(card):
+		return false
+	profile["fame"] = profile.get("fame", 0) - RARE_CARD_UNLOCK_COST
+	var unlocked: Array = profile.get("unlocked_cards", [])
+	unlocked.append(card.resource_path)
+	profile["unlocked_cards"] = unlocked
 	save_profile()
 	return true
 

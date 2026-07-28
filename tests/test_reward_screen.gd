@@ -6,10 +6,21 @@ extends GutTest
 
 const RewardScreenScript = preload("res://ui/reward/reward_screen.gd")
 
+var _saved_unlocked_cards: Array
+
 
 func before_each() -> void:
 	MatchSettings.run_deck = []
 	MatchSettings.run_artifacts = []
+	# ARC-038: ProfileManager — общий синглтон с другими тестовыми файлами;
+	# фиксируем известное состояние (ничего не разблокировано) и восстанавливаем
+	# после, как test_profile_manager.gd делает для всего profile.
+	_saved_unlocked_cards = ProfileManager.profile.get("unlocked_cards", []).duplicate()
+	ProfileManager.profile["unlocked_cards"] = []
+
+
+func after_each() -> void:
+	ProfileManager.profile["unlocked_cards"] = _saved_unlocked_cards
 
 
 # --- обычный бой ---
@@ -136,5 +147,47 @@ func test_apply_slot_artifact_appends_to_run_artifacts() -> void:
 	screen._apply_slot({"kind": "artifact", "artifact": artifact})
 
 	assert_eq(MatchSettings.run_artifacts, [artifact])
+
+	screen.free()
+
+
+# --- ARC-038: _unlocked_paths() / фильтрация RARE-карт по разблокировке ---
+
+
+func test_unlocked_paths_excludes_locked_rare_cards() -> void:
+	var screen = RewardScreenScript.new()
+
+	# gem_10.tres = "Армагеддон", rarity RARE (см. data/cards/gem_10.tres) —
+	# по умолчанию (before_each сбрасывает unlocked_cards в []) заблокирована.
+	var filtered := screen._unlocked_paths(["res://data/cards/gem_10.tres", "res://data/cards/brick_1.tres"])
+
+	assert_eq(filtered, ["res://data/cards/brick_1.tres"])
+
+	screen.free()
+
+
+func test_unlocked_paths_includes_rare_card_once_unlocked() -> void:
+	var screen = RewardScreenScript.new()
+	ProfileManager.profile["unlocked_cards"] = ["res://data/cards/gem_10.tres"]
+
+	var filtered := screen._unlocked_paths(["res://data/cards/gem_10.tres", "res://data/cards/brick_1.tres"])
+
+	assert_eq(filtered.size(), 2)
+	assert_true(filtered.has("res://data/cards/gem_10.tres"))
+
+	screen.free()
+
+
+func test_build_battle_slots_never_offers_locked_rare_card() -> void:
+	var screen = RewardScreenScript.new()
+
+	for i in range(20):
+		var slots := screen._build_battle_slots()
+		for slot in slots:
+			var card: CardData = slot["card"]
+			assert_true(
+				ProfileManager.is_card_unlocked(card),
+				"Награда обычного боя не должна предлагать заблокированную RARE-карту: %s" % card.card_name
+			)
 
 	screen.free()

@@ -157,13 +157,15 @@ static func build_starting_run_deck() -> Array[CardData]:
 const STARTING_RUN_GOLD := 20
 
 ## ARC-012: все карты игры — источник предложений магазина (в отличие от
-## урезанного STARTER_DECK_CARD_PATHS выше). ARC-020 добавил сюда 32 новые
-## карты (включая 12 RARE) — это заметно расширяет проблему, отмеченную ещё в
-## ARC-019 как отложенная: RARE-карты не должны попадать в магазин/награду
-## обычного боя (design doc 5.3), но пул сейчас общий и rarity никак не
-## фильтруется. Раньше это было 3 карты, теперь 15 — приоритет разделить пул
-## на common+uncommon (магазин/награда обычного боя) и rare (награда элиты/
-## босса) вырос, но сама правка вне рамок ARC-020 (контент), см. блокквот.
+## урезанного STARTER_DECK_CARD_PATHS выше), включая RARE (пул общий по
+## редкости, фильтрация по редкости — не здесь). ARC-020 добавил сюда 32
+## новые карты (включая 12 RARE) и отметил как отложенную проблему: RARE не
+## должны попадать в магазин/награду обычного боя (design doc §5.3). ARC-038
+## её закрыл — build_shop_offer() ниже и ui/reward/reward_screen.gd
+## (_unlocked_paths()) фильтруют RARE-карты через
+## ProfileManager.is_card_unlocked(), так что в этом массиве по-прежнему
+## перечислены ВСЕ карты (это по-прежнему полный пул), но заблокированные
+## RARE отсеиваются на этапе построения предложения, а не здесь.
 const ALL_CARD_PATHS := [
 	"res://data/cards/wall_card.tres",
 	"res://data/cards/knight_card.tres",
@@ -235,7 +237,8 @@ const ALL_CARD_PATHS := [
 
 
 ## card_count РАЗНЫХ карт (без повторов) из ALL_CARD_PATHS — предложение
-## магазина на визит. Если card_count больше размера пула, возвращает весь пул.
+## магазина на визит. Если card_count больше размера пула (после фильтра
+## ARC-038 ниже), возвращает весь доступный пул.
 static func build_shop_offer(card_count: int) -> Array[CardData]:
 	var paths := ALL_CARD_PATHS.duplicate()
 	paths.shuffle()
@@ -245,10 +248,15 @@ static func build_shop_offer(card_count: int) -> Array[CardData]:
 		if offer.size() >= card_count:
 			break
 		var card = load(path)
-		if card:
-			offer.append(card)
-		else:
+		if not card:
 			print("[ERROR] Failed to load card: ", path)
+			continue
+		# ARC-038: RARE-карты не должны попадать в магазин, пока не куплены за
+		# Славу (design doc §5.3) — раньше пул был общим для всех редкостей
+		# (см. комментарий у ALL_CARD_PATHS), это и есть та отложенная правка.
+		if not ProfileManager.is_card_unlocked(card):
+			continue
+		offer.append(card)
 	return offer
 
 

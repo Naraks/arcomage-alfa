@@ -834,6 +834,15 @@ func test_build_shop_offer_has_no_duplicate_cards() -> void:
 
 
 func test_build_shop_offer_clamps_to_pool_size_without_error() -> void:
+	# ARC-038: build_shop_offer() теперь фильтрует RARE-карты, не купленные за
+	# Славу (ProfileManager.is_card_unlocked()) — без этого при 0 разблокировок
+	# по умолчанию фактически доступный пул меньше ALL_CARD_PATHS.size(), и
+	# сравнение ниже сломалось бы ещё до проверки самого клэмпа. Разблокируем
+	# всё явно, чтобы тест проверял именно клэмп, а не фильтр (у фильтра свои
+	# тесты в test_profile_manager.gd/test_reward_screen.gd).
+	var saved_unlocked: Array = ProfileManager.profile.get("unlocked_cards", []).duplicate()
+	ProfileManager.profile["unlocked_cards"] = MatchManager.ALL_CARD_PATHS.duplicate()
+
 	var huge_count: int = MatchManager.ALL_CARD_PATHS.size() + 10
 	var offer: Array[CardData] = MatchManager.build_shop_offer(huge_count)
 
@@ -842,3 +851,5 @@ func test_build_shop_offer_clamps_to_pool_size_without_error() -> void:
 		MatchManager.ALL_CARD_PATHS.size(),
 		"Запрос больше размера пула должен просто вернуть весь пул без ошибок и без повторов"
 	)
+
+	ProfileManager.profile["unlocked_cards"] = saved_unlocked

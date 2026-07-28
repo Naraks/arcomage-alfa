@@ -144,3 +144,123 @@ func test_on_buy_pressed_purchases_and_updates_fame_label_via_profile_manager() 
 	assert_eq(ProfileManager.profile["fame"], 0)
 
 	screen.free()
+
+
+# --- ARC-038: "ОТКРЫТИЯ" — разблокировка RARE-карт ---
+
+
+func test_rare_card_paths_only_contains_rare_cards() -> void:
+	var screen = MetaShopScreenScript.new()
+
+	var paths := screen._rare_card_paths()
+
+	assert_false(paths.is_empty(), "В ALL_CARD_PATHS должна быть хотя бы одна RARE-карта")
+	for path in paths:
+		var card: CardData = load(path)
+		assert_eq(card.rarity, CardData.Rarity.RARE, "%s не RARE, не место в списке разблокировок" % path)
+
+	screen.free()
+
+
+func test_unlock_row_text_shows_locked_status_by_default() -> void:
+	var screen = MetaShopScreenScript.new()
+	ProfileManager.profile["unlocked_cards"] = []
+	var path: String = screen._rare_card_paths()[0]
+
+	var text := screen._unlock_row_text(path)
+
+	assert_true(text.contains("заблокирована"))
+
+	screen.free()
+
+
+func test_unlock_row_text_shows_unlocked_status_after_unlock() -> void:
+	var screen = MetaShopScreenScript.new()
+	var path: String = screen._rare_card_paths()[0]
+	ProfileManager.profile["unlocked_cards"] = [path]
+
+	var text := screen._unlock_row_text(path)
+
+	assert_true(text.contains("разблокирована"))
+
+	screen.free()
+
+
+func test_unlock_button_text_shows_cost_when_locked() -> void:
+	var screen = MetaShopScreenScript.new()
+	ProfileManager.profile["unlocked_cards"] = []
+	var path: String = screen._rare_card_paths()[0]
+
+	assert_eq(screen._unlock_button_text(path), "Открыть за %d" % ProfileManager.RARE_CARD_UNLOCK_COST)
+
+	screen.free()
+
+
+func test_unlock_button_text_shows_open_when_already_unlocked() -> void:
+	var screen = MetaShopScreenScript.new()
+	var path: String = screen._rare_card_paths()[0]
+	ProfileManager.profile["unlocked_cards"] = [path]
+
+	assert_eq(screen._unlock_button_text(path), "Открыто")
+
+	screen.free()
+
+
+func test_make_unlock_row_disables_button_without_enough_fame() -> void:
+	var screen = MetaShopScreenScript.new()
+	ProfileManager.profile["fame"] = 0
+	var path: String = screen._rare_card_paths()[0]
+
+	var row := screen._make_unlock_row(path)
+	var unlock_button: Button = row.get_node("UnlockButton")
+
+	assert_true(unlock_button.disabled)
+
+	row.free()
+	screen.free()
+
+
+func test_make_unlock_row_enables_button_with_enough_fame() -> void:
+	var screen = MetaShopScreenScript.new()
+	ProfileManager.profile["fame"] = ProfileManager.RARE_CARD_UNLOCK_COST
+	var path: String = screen._rare_card_paths()[0]
+
+	var row := screen._make_unlock_row(path)
+	var unlock_button: Button = row.get_node("UnlockButton")
+
+	assert_false(unlock_button.disabled)
+
+	row.free()
+	screen.free()
+
+
+func test_make_unlock_row_disables_button_when_already_unlocked() -> void:
+	var screen = MetaShopScreenScript.new()
+	var path: String = screen._rare_card_paths()[0]
+	ProfileManager.profile["unlocked_cards"] = [path]
+	ProfileManager.profile["fame"] = 999999
+
+	var row := screen._make_unlock_row(path)
+	var unlock_button: Button = row.get_node("UnlockButton")
+
+	assert_true(unlock_button.disabled, "Уже открытую карту нельзя купить повторно")
+
+	row.free()
+	screen.free()
+
+
+func test_on_unlock_pressed_unlocks_and_updates_fame() -> void:
+	var screen = MetaShopScreenScript.new()
+	var path: String = screen._rare_card_paths()[0]
+	ProfileManager.profile["fame"] = ProfileManager.RARE_CARD_UNLOCK_COST
+
+	# Как test_on_buy_pressed_..._via_profile_manager выше — _on_unlock_pressed()
+	# зовёт _update_fame_label()/_refresh_unlock_list(), нужен реальный UI.
+	screen._build_ui()
+
+	screen._on_unlock_pressed(path)
+
+	assert_eq(ProfileManager.profile["fame"], 0)
+	assert_true(ProfileManager.is_card_unlocked(load(path)))
+
+	screen.free()
