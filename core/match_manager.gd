@@ -302,30 +302,44 @@ func start_turn(player: PlayerData) -> void:
 func execute_ai_turn() -> void:
 	# Небольшая задержка для визуального комфорта
 	await get_tree().create_timer(1.0).timeout
+	_resolve_ai_turn(enemy_data)
 
-	# Подстраховка: setup_match() всегда назначает стратегию по умолчанию, но если этот
-	# метод вызвали в обход неё, отсутствие стратегии не должно вешать ход навсегда.
-	if not enemy_data.ai_strategy:
+
+## ARC-054: чистая логика "сходить за actor'а его ai_strategy" без await/
+## задержки — вынесена из execute_ai_turn(), чтобы её мог напрямую вызывать
+## tools/battle_simulator.gd (сотни автобоёв без искусственной секундной паузы,
+## которая нужна только реальному battle_screen.gd для комфорта игрока-человека).
+## Обобщена на любого actor (не только enemy_data) — симулятору ИИ-против-ИИ
+## нужно так же прогонять ход и за player_data, если ему тоже назначена
+## ai_strategy (в обычном UI-бою за player_data всегда ходит человек, эта
+## ветка там не используется).
+func _resolve_ai_turn(actor: PlayerData) -> void:
+	var opponent = enemy_data if actor == player_data else player_data
+	var hand = player_hand if actor == player_data else enemy_hand
+
+	# Та же подстраховка, что раньше была только для enemy_data в execute_ai_turn():
+	# отсутствие стратегии не должно вешать ход навсегда.
+	if not actor.ai_strategy:
 		print("[ERROR] AI Strategy not set! Falling back to default_ai_strategy.gd")
-		enemy_data.ai_strategy = load("res://data/resources/default_ai_strategy.gd").new()
+		actor.ai_strategy = load("res://data/resources/default_ai_strategy.gd").new()
 
-	var best_card = enemy_data.ai_strategy.get_best_card(enemy_hand, enemy_data, player_data)
+	var best_card = actor.ai_strategy.get_best_card(hand, actor, opponent)
 
 	if best_card:
 		print("AI plays: ", best_card.card_name)
-		var index = enemy_hand.find(best_card)
-		play_card_by_index(index, enemy_data)
-	elif not enemy_hand.is_empty():
+		var index = hand.find(best_card)
+		play_card_by_index(index, actor)
+	elif not hand.is_empty():
 		# Если нечего играть, сбрасываем случайную карту (Arcomage rules)
-		var index = randi() % enemy_hand.size()
-		var card_to_discard = enemy_hand[index]
+		var index = randi() % hand.size()
+		var card_to_discard = hand[index]
 		print("AI discards: ", card_to_discard.card_name)
-		discard_card_by_index(index, enemy_data)
+		discard_card_by_index(index, actor)
 	else:
-		# Рука пуста (крайний случай) — всё равно возвращаем ход игроку, а не подвешиваем матч.
+		# Рука пуста (крайний случай) — всё равно возвращаем ход, а не подвешиваем матч.
 		print("[DEBUG] AI has no cards to discard, passing turn")
 		if not check_win():
-			end_turn(enemy_data)
+			end_turn(actor)
 
 
 func play_card(card: CardData, actor: PlayerData) -> void:

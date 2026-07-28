@@ -497,6 +497,49 @@ func test_execute_ai_turn_returns_turn_to_player_when_hand_empty() -> void:
 	)
 
 
+# --- _resolve_ai_turn (ARC-054: обобщена на любого actor, не только enemy_data,
+# --- чтобы её мог использовать tools/battle_simulator.gd для обеих сторон) ---
+
+
+func test_resolve_ai_turn_plays_best_card_for_player_actor_too() -> void:
+	# execute_ai_turn() всегда ведёт enemy_data — _resolve_ai_turn() должна уметь
+	# то же самое и для player_data (симулятору нужны обе стороны под ИИ).
+	player.ai_strategy = load("res://data/resources/default_ai_strategy.gd").new()
+	var card := TestFixtures.make_card(
+		1, CardData.ResourceType.BRICKS, [{"type": "build_wall", "target": "self", "value": 3}]
+	)
+	MatchManager.player_hand = [card]
+	MatchManager.current_state = MatchManager.State.PLAYER_TURN
+
+	MatchManager._resolve_ai_turn(player)
+
+	assert_false(MatchManager.player_hand.has(card), "Карта должна быть разыграна и уйти из руки")
+
+
+func test_resolve_ai_turn_falls_back_to_default_strategy_for_any_actor() -> void:
+	player.ai_strategy = null
+	MatchManager.player_hand = [TestFixtures.make_card(1, CardData.ResourceType.BRICKS)]
+	MatchManager.current_state = MatchManager.State.PLAYER_TURN
+
+	MatchManager._resolve_ai_turn(player)
+
+	assert_not_null(player.ai_strategy, "Отсутствие стратегии у actor'а не должно ронять ход")
+
+
+func test_resolve_ai_turn_ends_player_turn_and_hands_off_to_enemy_when_hand_empty() -> void:
+	player.ai_strategy = load("res://data/resources/default_ai_strategy.gd").new()
+	MatchManager.player_hand = []
+	MatchManager.current_state = MatchManager.State.PLAYER_TURN
+
+	MatchManager._resolve_ai_turn(player)
+
+	assert_eq(
+		MatchManager.current_state,
+		MatchManager.State.AI_TURN,
+		"Пустая рука игрока должна передать ход ИИ (AI_TURN), а не зависнуть"
+	)
+
+
 # --- setup_match / ProfileManager (регрессия ARC-001: непримененные бонусы) ---
 
 
