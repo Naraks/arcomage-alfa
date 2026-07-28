@@ -41,6 +41,10 @@ text = "Битва"
 layout_mode = 2
 text = "Колода"
 
+[node name="UpgradesButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Прокачка"
+
 [node name="VersionLabel" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 3
@@ -62,3 +66,4 @@ text = "dev"
 [connection signal="pressed" from="VBoxContainer/CampaignButton" to="." method="_on_campaign_pressed"]
 [connection signal="pressed" from="VBoxContainer/BattleButton" to="." method="_on_battle_pressed"]
 [connection signal="pressed" from="VBoxContainer/DeckButton" to="." method="_on_deck_pressed"]
+[connection signal="pressed" from="VBoxContainer/UpgradesButton" to="." method="_on_upgrades_pressed"]

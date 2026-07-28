@@ -45,10 +45,19 @@ func setup_match(
 		enemy_data.ai_strategy = load("res://data/resources/default_ai_strategy.gd").new()
 
 	# Бонусы мета-прогрессии, если ProfileManager доступен (ARC-001).
+	# ARC-037: раньше здесь было два хардкодных плоских бонуса
+	# (player_stats.tower_hp_bonus/resource_gain_bonus, всегда включены) —
+	# теперь все шесть читаются из настоящего каталога прокачки
+	# (ProfileManager.UPGRADE_CATALOG), покупаются за Славу в MetaShopScreen,
+	# по умолчанию 0 (см. комментарий в profile_manager.gd).
 	var profile_manager = get_node_or_null("/root/ProfileManager")
 	if profile_manager:
-		player_data.tower_hp += profile_manager.profile.player_stats.tower_hp_bonus
-		player_data.quarry += profile_manager.profile.player_stats.resource_gain_bonus
+		player_data.tower_hp += profile_manager.get_upgrade_bonus("tower")
+		player_data.wall_hp += profile_manager.get_upgrade_bonus("wall")
+		player_data.quarry += profile_manager.get_upgrade_bonus("quarry")
+		player_data.magic += profile_manager.get_upgrade_bonus("magic")
+		player_data.dungeon += profile_manager.get_upgrade_bonus("dungeon")
+		player_data.max_hand_size += profile_manager.get_upgrade_bonus("hand_size")
 		print("[DEBUG] Meta-progression bonuses applied")
 
 	# ARC-013: постоянные усиления забега с узлов «Отдых» — тем же механизмом,

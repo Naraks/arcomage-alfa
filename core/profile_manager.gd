@@ -12,14 +12,88 @@ extends Node
 ## принципиально отдельна от золота забега"); заводить второе, параллельное
 ## поле currency с тем же смыслом под именем из черновика тикета ("Золото/
 ## Эссенция", устарело — дизайн-док впоследствии остановился на "Слава") —
-## неоправданное дублирование. upgrades — новое поле, реально отсутствовавшее:
-## структура под будущее дерево прокачки (ARC-037), пока всегда пустой словарь.
+## неоправданное дублирование. upgrades — теперь реально используемое поле
+## (ARC-037): {upgrade_key: level}, level по умолчанию 0 для любого ключа
+## (см. get_upgrade_level ниже).
+##
+## ARC-037: "player_stats" (tower_hp_bonus=5, resource_gain_bonus=1) убран —
+## это был плоский, всегда включённый бонус-заглушка ещё с ARC-001, до того
+## как появился настоящий магазин прокачки. Теперь тот же бонус (и ещё 4
+## новых) — часть UPGRADE_CATALOG ниже, покупается за Славу, начинается с
+## уровня 0 (без бонуса). Сознательный даунгрейд "бесплатного" стартового
+## бонуса в "заработанный" — так и задуман прогресс-магазин; см. блокквот
+## ARC-037 в dev_plan_tickets.md.
 var profile: Dictionary = {
 	"total_wins": 0,
 	"unlocked_artifacts": [],
-	"player_stats": {"tower_hp_bonus": 5, "resource_gain_bonus": 1},
 	"fame": 0,
 	"upgrades": {},
+}
+
+## ARC-037: каталог покупаемых мета-улучшений — общий источник и для
+## MetaShopScreen (что показывать и почём), и для MatchManager.setup_match()
+## (какой бонус применить к PlayerData). "per_level" — прибавка за один
+## купленный уровень; "max_level" — сколько уровней всего можно купить;
+## цена уровня (level+1) = base_cost + level*cost_step (линейный рост, не
+## экспонента — с base_cost/cost_step/max_level ниже цена макс. уровня
+## остаётся в разумных пределах десятка забегов, а не сотен).
+##
+## "quarry"/"magic"/"dungeon" — конкретная реализация категории "Мастерство
+## ресурсов" из game_design_doc.md §9.2 (там пример — "+10% урона картам
+## определённого типа"). Выбрал бонус генератора вместо множителя урона:
+## это то же самое "усилить всё, что связано с ресурсом X" по духу, но не
+## требует трогать интерпретатор эффектов карт (apply_card_effects) —
+## осознанно меньший объём работы при сохранении сути критерия приёмки
+## ("реально влияющих на setup_match()").
+const UPGRADE_CATALOG := {
+	"tower": {
+		"name": "Прочный Фундамент",
+		"desc": "Стартовая Башня +%d",
+		"per_level": 3,
+		"max_level": 5,
+		"base_cost": 60,
+		"cost_step": 40,
+	},
+	"wall": {
+		"name": "Крепостная Стена",
+		"desc": "Стартовая Стена +%d",
+		"per_level": 3,
+		"max_level": 5,
+		"base_cost": 60,
+		"cost_step": 40,
+	},
+	"quarry": {
+		"name": "Мастерство Кирпичей",
+		"desc": "Генератор Кирпичей +%d",
+		"per_level": 1,
+		"max_level": 5,
+		"base_cost": 80,
+		"cost_step": 50,
+	},
+	"magic": {
+		"name": "Мастерство Гемов",
+		"desc": "Генератор Гемов +%d",
+		"per_level": 1,
+		"max_level": 5,
+		"base_cost": 80,
+		"cost_step": 50,
+	},
+	"dungeon": {
+		"name": "Мастерство Зверей",
+		"desc": "Генератор Зверей +%d",
+		"per_level": 1,
+		"max_level": 5,
+		"base_cost": 80,
+		"cost_step": 50,
+	},
+	"hand_size": {
+		"name": "Вместительная Рука",
+		"desc": "Лимит карт в руке +%d",
+		"per_level": 1,
+		"max_level": 3,
+		"base_cost": 100,
+		"cost_step": 80,
+	},
 }
 
 
@@ -34,6 +108,55 @@ func _ready() -> void:
 func add_fame(amount: int) -> void:
 	profile["fame"] = profile.get("fame", 0) + amount
 	save_profile()
+
+
+## ARC-037: текущий купленный уровень улучшения key (0, если ни разу не
+## покупалось, или ключ вообще не из UPGRADE_CATALOG — тот же дефолтный "0",
+## что и для отсутствующего ключа, разницы вызывающему коду не нужно).
+func get_upgrade_level(key: String) -> int:
+	return profile.get("upgrades", {}).get(key, 0)
+
+
+## Бонус к соответствующему полю PlayerData, который должен применить
+## MatchManager.setup_match() — уровень * per_level. 0 для неизвестного key.
+func get_upgrade_bonus(key: String) -> int:
+	if not UPGRADE_CATALOG.has(key):
+		return 0
+	return get_upgrade_level(key) * UPGRADE_CATALOG[key]["per_level"]
+
+
+## Цена СЛЕДУЮЩЕГО уровня (перехода level -> level+1); -1, если key не из
+## каталога или уже на максимальном уровне — "покупать больше нечего".
+func get_upgrade_next_cost(key: String) -> int:
+	var def: Dictionary = UPGRADE_CATALOG.get(key, {})
+	if def.is_empty():
+		return -1
+	var level := get_upgrade_level(key)
+	if level >= def["max_level"]:
+		return -1
+	return def["base_cost"] + level * def["cost_step"]
+
+
+func can_afford_upgrade(key: String) -> bool:
+	var cost := get_upgrade_next_cost(key)
+	return cost >= 0 and profile.get("fame", 0) >= cost
+
+
+## Покупка следующего уровня улучшения key: списывает Славу, поднимает
+## profile.upgrades[key] на 1, сохраняет профиль. Возвращает false и НИЧЕГО
+## не меняет, если key неизвестен каталогу, уже на максимуме или не хватает
+## Славы (can_afford_upgrade() покрывает оба случая через get_upgrade_next_cost()
+## == -1).
+func purchase_upgrade(key: String) -> bool:
+	if not can_afford_upgrade(key):
+		return false
+	var cost := get_upgrade_next_cost(key)
+	profile["fame"] = profile.get("fame", 0) - cost
+	var upgrades: Dictionary = profile.get("upgrades", {})
+	upgrades[key] = upgrades.get(key, 0) + 1
+	profile["upgrades"] = upgrades
+	save_profile()
+	return true
 
 
 func save_profile() -> void:

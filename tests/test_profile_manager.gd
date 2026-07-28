@@ -65,3 +65,110 @@ func test_save_and_load_round_trip_preserves_fame_and_upgrades() -> void:
 
 	assert_eq(ProfileManager.profile["fame"], 42)
 	assert_eq(ProfileManager.profile["upgrades"], {"wall_tier": 2, "unlock_dragon": true})
+
+
+# --- ARC-037: UPGRADE_CATALOG / get_upgrade_* / purchase_upgrade ---
+
+
+func test_get_upgrade_level_defaults_to_zero_without_purchases() -> void:
+	assert_eq(ProfileManager.get_upgrade_level("tower"), 0)
+
+
+func test_get_upgrade_level_reads_from_profile_upgrades() -> void:
+	ProfileManager.profile["upgrades"] = {"tower": 3}
+
+	assert_eq(ProfileManager.get_upgrade_level("tower"), 3)
+
+
+func test_get_upgrade_bonus_is_level_times_per_level() -> void:
+	ProfileManager.profile["upgrades"] = {"quarry": 2}
+
+	assert_eq(ProfileManager.get_upgrade_bonus("quarry"), 2 * ProfileManager.UPGRADE_CATALOG["quarry"]["per_level"])
+
+
+func test_get_upgrade_bonus_unknown_key_is_zero() -> void:
+	assert_eq(ProfileManager.get_upgrade_bonus("not_a_real_upgrade"), 0)
+
+
+func test_get_upgrade_next_cost_at_level_zero_is_base_cost() -> void:
+	assert_eq(ProfileManager.get_upgrade_next_cost("wall"), ProfileManager.UPGRADE_CATALOG["wall"]["base_cost"])
+
+
+func test_get_upgrade_next_cost_grows_with_level() -> void:
+	var def: Dictionary = ProfileManager.UPGRADE_CATALOG["wall"]
+	ProfileManager.profile["upgrades"] = {"wall": 2}
+
+	assert_eq(ProfileManager.get_upgrade_next_cost("wall"), def["base_cost"] + 2 * def["cost_step"])
+
+
+func test_get_upgrade_next_cost_is_negative_one_at_max_level() -> void:
+	var def: Dictionary = ProfileManager.UPGRADE_CATALOG["hand_size"]
+	ProfileManager.profile["upgrades"] = {"hand_size": def["max_level"]}
+
+	assert_eq(ProfileManager.get_upgrade_next_cost("hand_size"), -1)
+
+
+func test_get_upgrade_next_cost_unknown_key_is_negative_one() -> void:
+	assert_eq(ProfileManager.get_upgrade_next_cost("not_a_real_upgrade"), -1)
+
+
+func test_can_afford_upgrade_false_when_not_enough_fame() -> void:
+	ProfileManager.profile["fame"] = 0
+
+	assert_false(ProfileManager.can_afford_upgrade("tower"))
+
+
+func test_can_afford_upgrade_true_when_enough_fame() -> void:
+	ProfileManager.profile["fame"] = ProfileManager.UPGRADE_CATALOG["tower"]["base_cost"]
+
+	assert_true(ProfileManager.can_afford_upgrade("tower"))
+
+
+func test_can_afford_upgrade_false_at_max_level_even_with_fame() -> void:
+	var def: Dictionary = ProfileManager.UPGRADE_CATALOG["hand_size"]
+	ProfileManager.profile["upgrades"] = {"hand_size": def["max_level"]}
+	ProfileManager.profile["fame"] = 999999
+
+	assert_false(ProfileManager.can_afford_upgrade("hand_size"))
+
+
+func test_purchase_upgrade_deducts_fame_and_increments_level() -> void:
+	var cost: int = ProfileManager.UPGRADE_CATALOG["tower"]["base_cost"]
+	ProfileManager.profile["fame"] = cost + 10
+
+	var result := ProfileManager.purchase_upgrade("tower")
+
+	assert_true(result)
+	assert_eq(ProfileManager.profile["fame"], 10)
+	assert_eq(ProfileManager.get_upgrade_level("tower"), 1)
+
+
+func test_purchase_upgrade_fails_and_changes_nothing_without_enough_fame() -> void:
+	ProfileManager.profile["fame"] = 0
+
+	var result := ProfileManager.purchase_upgrade("tower")
+
+	assert_false(result)
+	assert_eq(ProfileManager.profile["fame"], 0)
+	assert_eq(ProfileManager.get_upgrade_level("tower"), 0)
+
+
+func test_purchase_upgrade_fails_at_max_level() -> void:
+	var def: Dictionary = ProfileManager.UPGRADE_CATALOG["hand_size"]
+	ProfileManager.profile["upgrades"] = {"hand_size": def["max_level"]}
+	ProfileManager.profile["fame"] = 999999
+
+	var result := ProfileManager.purchase_upgrade("hand_size")
+
+	assert_false(result)
+	assert_eq(ProfileManager.get_upgrade_level("hand_size"), def["max_level"])
+
+
+func test_purchase_upgrade_next_cost_increases_after_purchase() -> void:
+	var def: Dictionary = ProfileManager.UPGRADE_CATALOG["tower"]
+	ProfileManager.profile["fame"] = def["base_cost"]
+	var cost_before := ProfileManager.get_upgrade_next_cost("tower")
+
+	ProfileManager.purchase_upgrade("tower")
+
+	assert_eq(ProfileManager.get_upgrade_next_cost("tower"), cost_before + def["cost_step"])

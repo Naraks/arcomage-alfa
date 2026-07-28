@@ -586,25 +586,38 @@ func test_resolve_ai_turn_ends_player_turn_and_hands_off_to_enemy_when_hand_empt
 
 
 func test_setup_match_applies_profile_manager_bonuses() -> void:
+	# ARC-037: раньше bonuses читались из плоского profile.player_stats
+	# (убран), теперь — из ProfileManager.UPGRADE_CATALOG через
+	# get_upgrade_bonus(), с уровнями из profile.upgrades. Ставим известные
+	# уровни явно (не полагаемся на то, что случайно накопилось в синглтоне
+	# от других тестов) и восстанавливаем после — ProfileManager делится
+	# состоянием со всеми тестовыми файлами.
 	var p := TestFixtures.make_player()
 	var e := TestFixtures.make_player()
 	var orig_tower_hp: int = p.tower_hp
+	var orig_wall_hp: int = p.wall_hp
 	var orig_quarry: int = p.quarry
-	var tower_hp_bonus: int = ProfileManager.profile.player_stats.tower_hp_bonus
-	var resource_gain_bonus: int = ProfileManager.profile.player_stats.resource_gain_bonus
+	var orig_magic: int = p.magic
+	var orig_dungeon: int = p.dungeon
+	var orig_hand_size: int = p.max_hand_size
+
+	var saved_upgrades: Dictionary = ProfileManager.profile.get("upgrades", {}).duplicate()
+	ProfileManager.profile["upgrades"] = {
+		"tower": 2, "wall": 1, "quarry": 3, "magic": 1, "dungeon": 2, "hand_size": 1
+	}
 
 	MatchManager.setup_match(p, e)
 
+	assert_eq(MatchManager.player_data.tower_hp, orig_tower_hp + 2 * 3, "tower: уровень 2 * per_level 3")
+	assert_eq(MatchManager.player_data.wall_hp, orig_wall_hp + 1 * 3, "wall: уровень 1 * per_level 3")
+	assert_eq(MatchManager.player_data.quarry, orig_quarry + 3 * 1, "quarry: уровень 3 * per_level 1")
+	assert_eq(MatchManager.player_data.magic, orig_magic + 1 * 1, "magic: уровень 1 * per_level 1")
+	assert_eq(MatchManager.player_data.dungeon, orig_dungeon + 2 * 1, "dungeon: уровень 2 * per_level 1")
 	assert_eq(
-		MatchManager.player_data.tower_hp,
-		orig_tower_hp + tower_hp_bonus,
-		"setup_match должен прибавить tower_hp_bonus из профиля к tower_hp игрока"
+		MatchManager.player_data.max_hand_size, orig_hand_size + 1 * 1, "hand_size: уровень 1 * per_level 1"
 	)
-	assert_eq(
-		MatchManager.player_data.quarry,
-		orig_quarry + resource_gain_bonus,
-		"setup_match должен прибавить resource_gain_bonus из профиля к quarry игрока"
-	)
+
+	ProfileManager.profile["upgrades"] = saved_upgrades
 
 
 # --- setup_match / run_*_bonus (ARC-013: постоянные усиления с узлов «Отдых») ---
@@ -617,9 +630,11 @@ func test_setup_match_applies_rest_run_bonuses() -> void:
 	var orig_quarry: int = p.quarry
 	var orig_magic: int = p.magic
 	var orig_dungeon: int = p.dungeon
-	# setup_match также прибавляет бонусы ProfileManager к tower_hp/quarry.
-	var profile_tower_bonus: int = ProfileManager.profile.player_stats.tower_hp_bonus
-	var profile_quarry_bonus: int = ProfileManager.profile.player_stats.resource_gain_bonus
+
+	# Изолируем от бонусов ProfileManager (ARC-037) — этот тест только про
+	# run_*_bonus с узлов «Отдых», не про магазин прокачки.
+	var saved_upgrades: Dictionary = ProfileManager.profile.get("upgrades", {}).duplicate()
+	ProfileManager.profile["upgrades"] = {}
 
 	MatchSettings.run_tower_bonus = 5
 	MatchSettings.run_quarry_bonus = 1
@@ -628,10 +643,12 @@ func test_setup_match_applies_rest_run_bonuses() -> void:
 
 	MatchManager.setup_match(p, e)
 
-	assert_eq(MatchManager.player_data.tower_hp, orig_tower_hp + profile_tower_bonus + 5)
-	assert_eq(MatchManager.player_data.quarry, orig_quarry + profile_quarry_bonus + 1)
+	assert_eq(MatchManager.player_data.tower_hp, orig_tower_hp + 5)
+	assert_eq(MatchManager.player_data.quarry, orig_quarry + 1)
 	assert_eq(MatchManager.player_data.magic, orig_magic + 2)
 	assert_eq(MatchManager.player_data.dungeon, orig_dungeon + 3)
+
+	ProfileManager.profile["upgrades"] = saved_upgrades
 
 	MatchSettings.run_tower_bonus = 0
 	MatchSettings.run_quarry_bonus = 0

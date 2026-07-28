@@ -72,3 +72,7 @@ func _on_battle_pressed():
 
 func _on_deck_pressed():
 	print("Deck pressed - functionality not yet implemented")
+
+
+func _on_upgrades_pressed():
+	get_tree().change_scene_to_file("res://ui/meta_shop/meta_shop_screen.tscn")
