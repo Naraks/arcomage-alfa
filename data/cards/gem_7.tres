@@ -3,7 +3,8 @@
 [resource]
 script = ExtResource("1_x1y2z")
 card_name = "Метеорит"
-description = "Наносит 6 урона башне врага."
+description = "Наносит 8 урона башне врага (игнорирует стену)."
 cost = 4
 type = 1
-effects = Array[Dictionary]([{"target": "enemy", "type": "damage", "value": 6}])
+rarity = 1
+effects = Array[Dictionary]([{"target": "enemy", "type": "direct_damage", "value": 8}])

@@ -15,8 +15,8 @@ const ELITE_ARTIFACT_CHANCE := 30
 ## наград элиты/босса, не входят в стартовую колоду/магазин (design doc 5.3:
 ## редкие карты не должны быть в магазине).
 const HIGH_RARITY_CARD_PATHS := [
-	"res://data/cards/siege_engine.tres",
-	"res://data/cards/meteor.tres",
+	"res://data/cards/brick_6.tres",
+	"res://data/cards/gem_10.tres",
 ]
 
 ## Все артефакты игры. Пока только один (ARC-015 — первый реальный источник

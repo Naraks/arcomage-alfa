@@ -2,8 +2,8 @@
 [ext_resource type="Script" uid="uid://cmnf4fc3mdeqd" path="res://data/resources/card_data.gd" id="1_x1y2z"]
 [resource]
 script = ExtResource("1_x1y2z")
-card_name = "Рыцарь"
-description = "Наносит 5 урона стене врага."
-cost = 2
+card_name = "Гоблин"
+description = "Наносит 2 урона врагу."
+cost = 1
 type = 2
-effects = Array[Dictionary]([{"target": "enemy", "type": "damage", "value": 5}])
+effects = Array[Dictionary]([{"target": "enemy", "type": "damage", "value": 2}])

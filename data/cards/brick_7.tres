@@ -4,6 +4,7 @@
 script = ExtResource("1_x1y2z")
 card_name = "Большой кирпичный завод"
 description = "Увеличивает добычу кирпича на 3."
-cost = 4
+cost = 3
 type = 0
+rarity = 1
 effects = Array[Dictionary]([{"target": "self", "type": "mod_quarry", "value": 3}])

@@ -106,7 +106,7 @@ func test_available_artifacts_excludes_owned() -> void:
 
 func test_apply_slot_card_appends_to_run_deck() -> void:
 	var screen = RewardScreenScript.new()
-	var card := load("res://data/cards/meteor.tres")
+	var card := load("res://data/cards/brick_4.tres")
 
 	screen._apply_slot({"kind": "card", "card": card})
 

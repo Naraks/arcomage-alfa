@@ -6,4 +6,5 @@ card_name = "Звериная ферма"
 description = "Увеличивает добычу зверей на 3."
 cost = 3
 type = 2
+rarity = 1
 effects = Array[Dictionary]([{"target": "self", "type": "mod_dungeon", "value": 3}])

@@ -3,7 +3,7 @@
 [resource]
 script = ExtResource("1_x1y2z")
 card_name = "Бур"
-description = "Наносит 2 урона стене врага."
+description = "Наносит 3 урона стене врага."
 cost = 2
 type = 0
-effects = Array[Dictionary]([{"target": "enemy_wall", "type": "damage", "value": 2}])
+effects = Array[Dictionary]([{"target": "enemy_wall", "type": "damage", "value": 3}])

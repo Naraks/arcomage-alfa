@@ -3,7 +3,8 @@
 [resource]
 script = ExtResource("1_x1y2z")
 card_name = "Грифон"
-description = "Наносит 7 урона башне врага."
+description = "Наносит 9 урона врагу."
 cost = 4
 type = 2
-effects = Array[Dictionary]([{"target": "enemy", "type": "direct_damage", "value": 7}])
+rarity = 1
+effects = Array[Dictionary]([{"target": "enemy", "type": "damage", "value": 9}])

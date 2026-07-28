@@ -3,7 +3,8 @@
 [resource]
 script = ExtResource("1_x1y2z")
 card_name = "Укрепление"
-description = "Строит стену на 6."
+description = "Строит стену на 8."
 cost = 3
 type = 0
-effects = Array[Dictionary]([{"target": "self_wall", "type": "build_wall", "value": 6}])
+rarity = 1
+effects = Array[Dictionary]([{"target": "self_wall", "type": "build_wall", "value": 8}])
