@@ -1142,7 +1142,7 @@ Games. При локальном запуске (`python -m http.server`), в CI
 - [x] Состояние забега сохраняется после каждого узла карты.
 - [x] При перезапуске игры кнопка «Продолжить» восстанавливает забег с того же места.
 
-> ⚠️ **Частично реализовано** (не проверено вручную в редакторе). Добавлены:
+> ✅ **Реализовано и проверено.** Добавлены:
 > - `data/resources/run_save_data.gd`: `RunSaveData extends Resource` — снимок состояния забега
 >   (`world_map_data`, `run_deck`, `run_gold`, `run_tower_bonus`/`run_quarry_bonus`/`run_magic_bonus`/
 >   `run_dungeon_bonus`, `run_artifacts`). Прямое зеркало подмножества `MatchSettings`, которое переживает
