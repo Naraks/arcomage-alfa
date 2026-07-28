@@ -58,6 +58,18 @@ func setup_match(
 		player_data.quarry += profile_manager.profile.player_stats.resource_gain_bonus
 		print("[DEBUG] Meta-progression bonuses applied")
 
+	# ARC-013: постоянные на этот забег усиления с узлов «Отдых» (design doc
+	# 4.5/7.1) — НЕ состояние player_data (player_data пересоздаётся с нуля
+	# перед каждым боем, см. world_map_screen.gd), а модификаторы в
+	# MatchSettings, применяемые здесь поверх базовых значений при старте
+	# каждого следующего боя забега — тем же механизмом, что и бонусы
+	# ProfileManager чуть выше. По умолчанию все 0, если Отдых ни разу не
+	# посещался.
+	player_data.tower_hp += MatchSettings.run_tower_bonus
+	player_data.quarry += MatchSettings.run_quarry_bonus
+	player_data.magic += MatchSettings.run_magic_bonus
+	player_data.dungeon += MatchSettings.run_dungeon_bonus
+
 	# ARC-016: в match_manager.deck кладём ШУФЛ-КОПИЮ run_deck, а не саму
 	# run_deck — карты, разыгранные/сброшенные за бой, не должны пропадать из
 	# забега навсегда (discard/reshuffle внутри одного боя — вне рамок этого

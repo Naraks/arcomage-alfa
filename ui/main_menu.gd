@@ -26,6 +26,14 @@ func _on_campaign_pressed():
 	# MatchManager.STARTING_RUN_GOLD (заглушка до реальных источников золота).
 	MatchSettings.run_gold = MatchManager.STARTING_RUN_GOLD
 
+	# ARC-013: новый забег начинается без бонусов с узлов «Отдых» — иначе
+	# бонусы предыдущей кампании (MatchSettings — autoload, переживает смену
+	# сцен) протекли бы в новую.
+	MatchSettings.run_tower_bonus = 0
+	MatchSettings.run_quarry_bonus = 0
+	MatchSettings.run_magic_bonus = 0
+	MatchSettings.run_dungeon_bonus = 0
+
 	var err = get_tree().change_scene_to_file("res://ui/map/world_map_screen.tscn")
 	print("Change scene result: ", err)
 
@@ -50,6 +58,11 @@ func _on_battle_pressed():
 	# предыдущей кампании (магазин здесь не задействован, но лучше не оставлять
 	# протёкшее состояние).
 	MatchSettings.run_gold = 0
+	# ARC-013: аналогично для бонусов с «Отдыха».
+	MatchSettings.run_tower_bonus = 0
+	MatchSettings.run_quarry_bonus = 0
+	MatchSettings.run_magic_bonus = 0
+	MatchSettings.run_dungeon_bonus = 0
 
 	get_tree().change_scene_to_file("res://ui/battle/battle_screen.tscn")
 

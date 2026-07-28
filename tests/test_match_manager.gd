@@ -279,6 +279,58 @@ func test_setup_match_applies_profile_manager_bonuses() -> void:
 	)
 
 
+# --- setup_match / run_*_bonus (ARC-013: постоянные усиления с узлов «Отдых») ---
+
+
+func test_setup_match_applies_rest_run_bonuses() -> void:
+	var p := TestFixtures.make_player()
+	var e := TestFixtures.make_player()
+	var orig_tower_hp: int = p.tower_hp
+	var orig_quarry: int = p.quarry
+	var orig_magic: int = p.magic
+	var orig_dungeon: int = p.dungeon
+	# setup_match также прибавляет бонусы ProfileManager (ARC-001) к tower_hp/
+	# quarry — учитываем их, чтобы тест не зависел от того, обнулён ли профиль.
+	var profile_tower_bonus: int = ProfileManager.profile.player_stats.tower_hp_bonus
+	var profile_quarry_bonus: int = ProfileManager.profile.player_stats.resource_gain_bonus
+
+	MatchSettings.run_tower_bonus = 5
+	MatchSettings.run_quarry_bonus = 1
+	MatchSettings.run_magic_bonus = 2
+	MatchSettings.run_dungeon_bonus = 3
+
+	MatchManager.setup_match(p, e)
+
+	assert_eq(MatchManager.player_data.tower_hp, orig_tower_hp + profile_tower_bonus + 5)
+	assert_eq(MatchManager.player_data.quarry, orig_quarry + profile_quarry_bonus + 1)
+	assert_eq(MatchManager.player_data.magic, orig_magic + 2)
+	assert_eq(MatchManager.player_data.dungeon, orig_dungeon + 3)
+
+	MatchSettings.run_tower_bonus = 0
+	MatchSettings.run_quarry_bonus = 0
+	MatchSettings.run_magic_bonus = 0
+	MatchSettings.run_dungeon_bonus = 0
+
+
+func test_setup_match_does_not_apply_rest_bonuses_to_enemy() -> void:
+	# Бонусы с «Отдыха» — экипировка ИГРОКА забега, у ИИ нет run_deck/run_gold/
+	# run_*_bonus (см. ARC-016) — только своя независимая колода на каждый бой.
+	var p := TestFixtures.make_player()
+	var e := TestFixtures.make_player()
+	var orig_enemy_tower_hp: int = e.tower_hp
+
+	MatchSettings.run_tower_bonus = 5
+	MatchManager.setup_match(p, e)
+
+	assert_eq(
+		MatchManager.enemy_data.tower_hp,
+		orig_enemy_tower_hp,
+		"Бонусы забега с «Отдыха» не должны применяться к ИИ"
+	)
+
+	MatchSettings.run_tower_bonus = 0
+
+
 # --- setup_match / повторный вызов (регрессия ARC-002: карта -> бой -> карта -> бой) ---
 
 

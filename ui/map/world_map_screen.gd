@@ -114,5 +114,9 @@ func _on_node_pressed(node: Resource) -> void:
 		# это по победе.
 		MatchSettings.current_map_node = node
 		get_tree().change_scene_to_file("res://ui/shop/shop_screen.tscn")
+	elif node.node_type == MapNodeData.NodeType.REST:
+		# ARC-013: узел «Отдых» — тоже не боевой, тот же переход, что и Магазин.
+		MatchSettings.current_map_node = node
+		get_tree().change_scene_to_file("res://ui/rest/rest_screen.tscn")
 	else:
 		print("Other node types not yet implemented: ", node.node_type)
