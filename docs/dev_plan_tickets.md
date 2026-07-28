@@ -1228,7 +1228,7 @@ Games. При локальном запуске (`python -m http.server`), в CI
 - [x] Добавлены обработчики `draw_card`, `steal_resource`, `conditional` (с вложенным под-эффектом).
 - [x] На каждый новый тип эффекта — юнит-тест в `tests/`.
 
-> ⚠️ **Частично реализовано** (не проверено вручную в редакторе). `match_manager.gd::apply_card_effects()`
+> ✅ **Реализовано и проверено.** `match_manager.gd::apply_card_effects()`
 > разобран на `apply_card_effects()` (цикл по `card.effects`) + новую `_apply_effect(effect, actor, enemy)`
 > (обработка одного словаря эффекта) — вынесение понадобилось, чтобы `conditional` мог рекурсивно применить
 > вложенный под-эффект (`then`/`else`) той же функцией, без дублирования `match`. Добавлены три новых `type`:
