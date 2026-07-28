@@ -1566,7 +1566,7 @@ Games. При локальном запуске (`python -m http.server`), в CI
 **Критерии приёмки:**
 - [x] Тип узла определяет, какой `ai_strategy` и с какими стартовыми бонусами получает противник.
 
-> ⚠️ **Частично реализовано** (ждёт проверки в игре). `ui/map/world_map_screen.gd::_apply_node_difficulty()`:
+> ✅ **Реализовано и проверено.** `ui/map/world_map_screen.gd::_apply_node_difficulty()`:
 > - `BATTLE`: без бонусов к статам (как раньше), но теперь явно назначает случайный `ai_strategy` из всех
 >   четырёх известных профилей (`Default`/`Aggressive`/`Builder`/`Economist`, через новый
 >   `_pick_random_strategy()`) — "случайный/сбалансированный профиль" из описания. Раньше для `BATTLE`
