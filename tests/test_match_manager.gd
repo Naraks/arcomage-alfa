@@ -289,8 +289,7 @@ func test_setup_match_applies_rest_run_bonuses() -> void:
 	var orig_quarry: int = p.quarry
 	var orig_magic: int = p.magic
 	var orig_dungeon: int = p.dungeon
-	# setup_match также прибавляет бонусы ProfileManager (ARC-001) к tower_hp/
-	# quarry — учитываем их, чтобы тест не зависел от того, обнулён ли профиль.
+	# setup_match также прибавляет бонусы ProfileManager к tower_hp/quarry.
 	var profile_tower_bonus: int = ProfileManager.profile.player_stats.tower_hp_bonus
 	var profile_quarry_bonus: int = ProfileManager.profile.player_stats.resource_gain_bonus
 

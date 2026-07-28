@@ -1,13 +1,8 @@
 extends GutTest
-## Юнит-тесты RestScreen (ARC-013): выбор случайного генератора для
-## предложения, подпись генератора и применение бонусов к MatchSettings.
-##
-## rest_screen.gd — обычный Control-скрипт сцены (без class_name), поэтому
-## экземпляр создаётся через load().new() и НЕ добавляется в дерево сцены, как
-## и в tests/test_shop_screen.gd. _apply_tower_bonus()/_apply_generator_bonus()
-## трогают только MatchSettings (autoload-синглтон, доступен без дерева сцены)
-## — специально вынесены из _on_*_chosen() отдельно от _return_to_map(),
-## которая обращается к get_tree() и потому не тестируется здесь напрямую.
+## Юнит-тесты RestScreen (ARC-013): выбор генератора и применение бонусов к
+## MatchSettings. Экземпляр создаётся через load().new() без добавления в
+## дерево сцены, как в tests/test_shop_screen.gd — _return_to_map() (трогает
+## get_tree()) здесь не тестируется.
 
 const RestScreenScript = preload("res://ui/rest/rest_screen.gd")
 

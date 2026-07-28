@@ -58,13 +58,8 @@ func setup_match(
 		player_data.quarry += profile_manager.profile.player_stats.resource_gain_bonus
 		print("[DEBUG] Meta-progression bonuses applied")
 
-	# ARC-013: постоянные на этот забег усиления с узлов «Отдых» (design doc
-	# 4.5/7.1) — НЕ состояние player_data (player_data пересоздаётся с нуля
-	# перед каждым боем, см. world_map_screen.gd), а модификаторы в
-	# MatchSettings, применяемые здесь поверх базовых значений при старте
-	# каждого следующего боя забега — тем же механизмом, что и бонусы
-	# ProfileManager чуть выше. По умолчанию все 0, если Отдых ни разу не
-	# посещался.
+	# ARC-013: постоянные усиления забега с узлов «Отдых» — тем же механизмом,
+	# что и бонусы ProfileManager чуть выше.
 	player_data.tower_hp += MatchSettings.run_tower_bonus
 	player_data.quarry += MatchSettings.run_quarry_bonus
 	player_data.magic += MatchSettings.run_magic_bonus
@@ -151,18 +146,12 @@ static func build_starting_run_deck() -> Array[CardData]:
 	return _build_generic_card_pool()
 
 
-## ARC-012: стартовое золото забега (main_menu.gd._on_campaign_pressed()).
-## Заглушка-плейсхолдер: сейчас в игре ещё нет ни одного реального источника
-## золота (Событие/Отдых — ARC-013/014, награда за бой — ARC-015 — не
-## реализованы), поэтому без стартовой суммы магазин (ARC-012) нельзя было бы
-## протестировать вручную вообще — узел открывается, но покупать не на что.
-## Когда появятся реальные источники золота, эту заглушку стоит пересмотреть.
+## ARC-012: стартовое золото забега — заглушка, пока в игре нет реальных
+## источников золота (ARC-013/014/015).
 const STARTING_RUN_GOLD := 20
 
-## ARC-012: полный список путей ко ВСЕМ картам игры — в отличие от
-## STARTER_DECK_CARD_PATHS выше (сознательно урезанный набор для тестовой и
-## стартовой колоды), это источник предложений магазина: там должны попадаться
-## и карты, которых нет в стартовом наборе.
+## ARC-012: все карты игры — источник предложений магазина (в отличие от
+## урезанного STARTER_DECK_CARD_PATHS выше).
 const ALL_CARD_PATHS := [
 	"res://data/cards/wall_card.tres",
 	"res://data/cards/knight_card.tres",
@@ -201,11 +190,8 @@ const ALL_CARD_PATHS := [
 ]
 
 
-## ARC-012: card_count РАЗНЫХ карт (без повторов), случайно выбранных из
-## ALL_CARD_PATHS — предложение магазина на один визит узла. static, как и
-## остальные card-pool функции — вызывается как MatchManager.build_shop_offer(...).
-## Если card_count больше размера ALL_CARD_PATHS, просто возвращает весь пул
-## (без ошибки и без повторов).
+## card_count РАЗНЫХ карт (без повторов) из ALL_CARD_PATHS — предложение
+## магазина на визит. Если card_count больше размера пула, возвращает весь пул.
 static func build_shop_offer(card_count: int) -> Array[CardData]:
 	var paths := ALL_CARD_PATHS.duplicate()
 	paths.shuffle()

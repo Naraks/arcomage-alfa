@@ -107,15 +107,12 @@ func _on_node_pressed(node: Resource) -> void:
 
 		get_tree().change_scene_to_file("res://ui/battle/battle_screen.tscn")
 	elif node.node_type == MapNodeData.NodeType.SHOP:
-		# ARC-012: узел «Магазин» не боевой — сразу переходим на shop_screen,
-		# без came_from_map/player_data/enemy_data (это только для battle_screen).
-		# Завершение узла (is_completed + current_node_index) делает сам
-		# shop_screen.gd по кнопке "Уйти на карту", как battle_screen делает
-		# это по победе.
+		# ARC-012: небоевой узел — завершение (is_completed) делает сам
+		# shop_screen.gd по кнопке "Уйти на карту".
 		MatchSettings.current_map_node = node
 		get_tree().change_scene_to_file("res://ui/shop/shop_screen.tscn")
 	elif node.node_type == MapNodeData.NodeType.REST:
-		# ARC-013: узел «Отдых» — тоже не боевой, тот же переход, что и Магазин.
+		# ARC-013: тот же переход, что и у Магазина.
 		MatchSettings.current_map_node = node
 		get_tree().change_scene_to_file("res://ui/rest/rest_screen.tscn")
 	else:

@@ -22,13 +22,10 @@ func _on_campaign_pressed():
 	# бою этой кампании, и которая будет расти от наград/магазина.
 	MatchSettings.run_deck = MatchManager.build_starting_run_deck()
 
-	# ARC-012: стартовое золото забега — см. комментарий у
-	# MatchManager.STARTING_RUN_GOLD (заглушка до реальных источников золота).
+	# ARC-012: стартовое золото забега.
 	MatchSettings.run_gold = MatchManager.STARTING_RUN_GOLD
 
-	# ARC-013: новый забег начинается без бонусов с узлов «Отдых» — иначе
-	# бонусы предыдущей кампании (MatchSettings — autoload, переживает смену
-	# сцен) протекли бы в новую.
+	# ARC-013: сброс бонусов с «Отдыха» — иначе протекли бы из прошлой кампании.
 	MatchSettings.run_tower_bonus = 0
 	MatchSettings.run_quarry_bonus = 0
 	MatchSettings.run_magic_bonus = 0
@@ -54,11 +51,8 @@ func _on_battle_pressed():
 	# отдельный тестовый бой, не часть забега, setup_match() должен взять
 	# старую тестовую колоду.
 	MatchSettings.run_deck = []
-	# ARC-012: аналогично — не тестовый бой не должен унаследовать золото
-	# предыдущей кампании (магазин здесь не задействован, но лучше не оставлять
-	# протёкшее состояние).
+	# ARC-012/013: аналогично — не должны протечь золото/бонусы прошлой кампании.
 	MatchSettings.run_gold = 0
-	# ARC-013: аналогично для бонусов с «Отдыха».
 	MatchSettings.run_tower_bonus = 0
 	MatchSettings.run_quarry_bonus = 0
 	MatchSettings.run_magic_bonus = 0

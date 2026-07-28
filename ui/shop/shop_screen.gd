@@ -1,21 +1,10 @@
 extends Control
-## ARC-012: узел «Магазин» — docs/game_design_doc.md 7.1/10.5. Один экран, два
-## раздела на нём (без вкладок, как в мокапе docs/ui_wireframes.html#shop-screen):
-## "Купить карты" (3-5 предложений за визит) и "Удалить карту из колоды" (вся
-## текущая MatchSettings.run_deck, клик = плата за удаление).
-##
-## Вся разметка строится кодом в _ready(), как и в world_map_screen.gd (узлы
-## карты) и battle_screen.gd (попапы) — так в этом проекте уже принято для
-## экранов, где UI проще держать в скрипте, чем вручную собирать в .tscn.
+## ARC-012: узел «Магазин» (docs/ui_wireframes.html#shop-screen). Два раздела
+## на одном экране: "Купить карты" и "Удалить карту из колоды". Разметка
+## строится кодом в _ready(), как и в world_map_screen.gd/battle_screen.gd.
 
-## Цена покупки = cost карты * множитель. У CardData пока нет системы
-## редкости (docs/game_design_doc.md 5.3 описывает её, но поле в ресурсе не
-## заведено) — это самое простое правило, которое даёт разброс цен, близкий к
-## примерам из мокапа (4-9 золота за карту).
+## У CardData нет системы редкости, поэтому цена = cost * множитель.
 const CARD_PRICE_MULTIPLIER := 2
-
-## Фиксированная плата за удаление карты из колоды — конкретное число нигде,
-## кроме мокапа, не задано ("−5💰 за карту"), взято оттуда.
 const REMOVE_CARD_PRICE := 5
 
 const SHOP_OFFER_MIN := 3
@@ -53,7 +42,6 @@ func _build_ui() -> void:
 	root_vbox.add_theme_constant_override("separation", 16)
 	root_margin.add_child(root_vbox)
 
-	# Шапка: "МАГАЗИН" + золото (design doc 10.5: "Золото всегда видно в шапке").
 	var header := HBoxContainer.new()
 	root_vbox.add_child(header)
 
@@ -68,7 +56,6 @@ func _build_ui() -> void:
 	header.add_child(_gold_label)
 	_update_gold_label()
 
-	# Два раздела рядом: купить / удалить.
 	var columns := HBoxContainer.new()
 	columns.add_theme_constant_override("separation", 32)
 	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -108,7 +95,6 @@ func _build_ui() -> void:
 	_remove_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	remove_scroll.add_child(_remove_list)
 
-	# Футер: возврат на карту (design doc 10.5: "Уйти на карту").
 	var back_button := Button.new()
 	back_button.text = "Уйти на карту →"
 	back_button.pressed.connect(_on_back_pressed)
@@ -148,13 +134,9 @@ func _refresh_remove_list() -> void:
 	for child in _remove_list.get_children():
 		child.queue_free()
 
-	# ARC-012: сортируем только ОТОБРАЖЕНИЕ (через пары card/index), а кнопку
-	# привязываем к исходному индексу в MatchSettings.run_deck, а не к самой
-	# карте — run_deck может содержать несколько ссылок на один и тот же
-	# ресурс CardData (MatchManager._build_generic_card_pool добивает колоду
-	# случайными повторами уже загруженных инстансов), и remove_at(index)
-	# однозначен, а erase(card) по значению удалил бы не ту карту, что нажал
-	# игрок.
+	# Кнопка привязана к исходному индексу в run_deck, а не к самой карте —
+	# колода может содержать несколько ссылок на один и тот же ресурс CardData,
+	# и erase(card) по значению удалил бы не ту карту, что нажал игрок.
 	var indexed: Array = []
 	for i in range(MatchSettings.run_deck.size()):
 		indexed.append({"card": MatchSettings.run_deck[i], "index": i})
@@ -174,10 +156,7 @@ func _refresh_remove_list() -> void:
 		_remove_list.add_child(empty_label)
 
 
-## Тот же порядок сортировки, что и в battle_screen._compare_cards_for_view
-## (ARC-016): по типу ресурса, затем по стоимости, затем по имени — здесь
-## отдельная копия, а не переиспользование чужого метода, чтобы shop_screen не
-## зависел от battle_screen.
+## Сортировка для отображения: тип ресурса → стоимость → имя.
 func _compare_cards(a: CardData, b: CardData) -> bool:
 	if a.type != b.type:
 		return a.type < b.type
@@ -232,10 +211,8 @@ func _on_remove_pressed(deck_index: int) -> void:
 
 
 func _on_back_pressed() -> void:
-	# ARC-012: как и battle_screen._on_match_ended() при победе с карты —
-	# помечаем узел пройденным и обновляем current_node_index, иначе
-	# world_map_screen._compute_available_nodes() не откроет соседние узлы.
-	# У магазина нет "поражения" — любой выход считается завершением узла.
+	# Как battle_screen при победе с карты: помечаем узел пройденным и
+	# обновляем current_node_index, иначе соседние узлы не откроются.
 	if MatchSettings.current_map_node:
 		MatchSettings.current_map_node.is_completed = true
 		if MatchSettings.world_map_data:
