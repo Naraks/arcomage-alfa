@@ -30,10 +30,41 @@
 | `mod_quarry`      | `target.quarry += value`                                                   |
 | `mod_magic`       | `target.magic += value`                                                    |
 | `mod_dungeon`     | `target.dungeon += value`                                                  |
+| `draw_card`       | `target` тянет `value` карт (`MatchManager.draw_card()` — уважает `max_hand_size`, ARC-003) |
+| `steal_resource`  | см. ниже                                                                    |
+| `conditional`     | см. ниже                                                                    |
 
 Раньше существовал ещё generic-тип `"build"`, который сам решал wall/tower по суффиксу `target` — убран (ARC-005):
 использовался ровно одной картой (`wall_card.tres`, переведена на `build_wall`) и дублировал `build_wall`/
 `build_tower` без единой причины для второго пути к тому же результату.
+
+### `steal_resource` (ARC-021)
+
+`{"type": "steal_resource", "target": "enemy", "resource": "gems", "value": 3}`
+
+`target` резолвится как обычно и определяет, **у кого крадут** (обычно `"enemy"`) — получает украденное всегда
+`actor` (тот, кто разыграл карту), это не настраивается. `resource` — один из `"bricks"`/`"gems"`/`"beasts"`.
+Крадётся `min(value, сколько реально есть у цели)` — увести ресурс в минус нельзя.
+
+### `conditional` (ARC-021)
+
+```
+{
+  "type": "conditional",
+  "target": "self",
+  "field": "wall_hp",
+  "op": "<",
+  "threshold": 3,
+  "then": {"type": "build_wall", "target": "self", "value": 3},
+  "else": {"type": "build_wall", "target": "self", "value": 1}
+}
+```
+
+`target`/`field` определяют, что именно проверяется (`field` — одно из `wall_hp`/`tower_hp`/`bricks`/`gems`/
+`beasts`/`quarry`/`magic`/`dungeon` резолвленного `target_player`). `op` — `<`, `<=`, `>`, `>=`, `==`, `!=`.
+В зависимости от результата применяется вложенный эффект `"then"` или `"else"` (тот же формат словаря, что и
+у любого другого эффекта, — включая свой собственный `target`, независимый от условия). Ветка необязательна:
+если подходящий ключ (`"then"`/`"else"`) отсутствует, ничего не происходит.
 
 ## Артефакты: `{"trigger": string, "type": string, "value": int}`
 

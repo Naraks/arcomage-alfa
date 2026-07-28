@@ -171,6 +171,150 @@ func test_apply_card_effects_build_wall_targets_enemy() -> void:
 	)
 
 
+# --- apply_card_effects: draw_card/steal_resource/conditional (ARC-021) ---
+
+
+func test_effect_draw_card_draws_into_target_hand() -> void:
+	MatchManager.deck = [TestFixtures.make_card(1, CardData.ResourceType.BRICKS)]
+	var card := TestFixtures.make_card(
+		1, CardData.ResourceType.BRICKS, [{"type": "draw_card", "target": "self", "value": 1}]
+	)
+
+	MatchManager.apply_card_effects(card, player)
+
+	assert_eq(MatchManager.player_hand.size(), 1, "draw_card с target=self должен пополнить руку actor'а")
+	assert_true(MatchManager.deck.is_empty(), "Карта должна уйти из колоды в руку")
+
+
+func test_effect_draw_card_draws_multiple_cards_by_value() -> void:
+	MatchManager.deck = [
+		TestFixtures.make_card(1, CardData.ResourceType.BRICKS),
+		TestFixtures.make_card(1, CardData.ResourceType.BRICKS),
+	]
+	var card := TestFixtures.make_card(
+		1, CardData.ResourceType.BRICKS, [{"type": "draw_card", "target": "self", "value": 2}]
+	)
+
+	MatchManager.apply_card_effects(card, player)
+
+	assert_eq(MatchManager.player_hand.size(), 2, "value должен определять количество тянущихся карт")
+
+
+func test_effect_draw_card_respects_max_hand_size() -> void:
+	player.max_hand_size = 1
+	MatchManager.player_hand = [TestFixtures.make_card(1, CardData.ResourceType.BRICKS)]
+	MatchManager.deck = [TestFixtures.make_card(1, CardData.ResourceType.BRICKS)]
+	var card := TestFixtures.make_card(
+		1, CardData.ResourceType.BRICKS, [{"type": "draw_card", "target": "self", "value": 1}]
+	)
+
+	MatchManager.apply_card_effects(card, player)
+
+	assert_eq(MatchManager.player_hand.size(), 1, "draw_card не должен превышать max_hand_size (ARC-003)")
+	assert_eq(MatchManager.deck.size(), 1, "Невытянутая карта должна остаться в колоде")
+
+
+func test_effect_steal_resource_moves_amount_from_target_to_actor() -> void:
+	var card := TestFixtures.make_card(
+		1,
+		CardData.ResourceType.GEMS,
+		[{"type": "steal_resource", "target": "enemy", "resource": "gems", "value": 3}]
+	)
+	var enemy_gems_before: int = enemy.gems
+	var player_gems_before: int = player.gems
+
+	MatchManager.apply_card_effects(card, player)
+
+	assert_eq(enemy.gems, enemy_gems_before - 3, "У цели (target=enemy) должно списаться value ресурса")
+	assert_eq(player.gems, player_gems_before + 3, "Actor должен получить украденное, а не target")
+
+
+func test_effect_steal_resource_clamps_to_amount_available() -> void:
+	enemy.gems = 2
+	var card := TestFixtures.make_card(
+		1,
+		CardData.ResourceType.GEMS,
+		[{"type": "steal_resource", "target": "enemy", "resource": "gems", "value": 5}]
+	)
+	var player_gems_before: int = player.gems
+
+	MatchManager.apply_card_effects(card, player)
+
+	assert_eq(enemy.gems, 0, "Нельзя увести ресурс цели в минус")
+	assert_eq(player.gems, player_gems_before + 2, "Actor получает ровно столько, сколько реально украдено")
+
+
+func test_effect_conditional_applies_then_branch_when_condition_true() -> void:
+	player.wall_hp = 2
+	var card := TestFixtures.make_card(
+		1,
+		CardData.ResourceType.BRICKS,
+		[
+			{
+				"type": "conditional",
+				"target": "self",
+				"field": "wall_hp",
+				"op": "<",
+				"threshold": 3,
+				"then": {"type": "build_wall", "target": "self", "value": 3},
+				"else": {"type": "build_wall", "target": "self", "value": 1},
+			}
+		]
+	)
+
+	MatchManager.apply_card_effects(card, player)
+
+	assert_eq(player.wall_hp, 5, "wall_hp(2) < threshold(3) должно применить ветку then (+3)")
+
+
+func test_effect_conditional_applies_else_branch_when_condition_false() -> void:
+	player.wall_hp = 5
+	var card := TestFixtures.make_card(
+		1,
+		CardData.ResourceType.BRICKS,
+		[
+			{
+				"type": "conditional",
+				"target": "self",
+				"field": "wall_hp",
+				"op": "<",
+				"threshold": 3,
+				"then": {"type": "build_wall", "target": "self", "value": 3},
+				"else": {"type": "build_wall", "target": "self", "value": 1},
+			}
+		]
+	)
+
+	MatchManager.apply_card_effects(card, player)
+
+	assert_eq(player.wall_hp, 6, "wall_hp(5) не < threshold(3) должно применить ветку else (+1)")
+
+
+func test_effect_conditional_nested_effect_target_independent_of_condition_target() -> void:
+	# Условие проверяется на self (wall_hp игрока), но вложенный эффект бьёт enemy —
+	# target условия и target вложенного эффекта резолвятся независимо друг от друга.
+	player.wall_hp = 5
+	var enemy_wall_before: int = enemy.wall_hp
+	var card := TestFixtures.make_card(
+		1,
+		CardData.ResourceType.BRICKS,
+		[
+			{
+				"type": "conditional",
+				"target": "self",
+				"field": "wall_hp",
+				"op": ">",
+				"threshold": 0,
+				"then": {"type": "damage", "target": "enemy", "value": 4},
+			}
+		]
+	)
+
+	MatchManager.apply_card_effects(card, player)
+
+	assert_eq(enemy.wall_hp, enemy_wall_before - 4, "Вложенный then-эффект должен бить enemy, а не self")
+
+
 # --- discard_card_by_index ---
 
 

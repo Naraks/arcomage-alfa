@@ -374,32 +374,141 @@ func apply_card_effects(card: CardData, actor: PlayerData) -> void:
 	var enemy = enemy_data if actor == player_data else player_data
 
 	for effect in card.effects:
-		var type = effect.get("type", "")
-		var value = effect.get("value", 0)
-		var target_str = effect.get("target", "enemy")
-
-		var target_player = resolve_target(actor, enemy, target_str)
-
-		match type:
-			"damage":
-				apply_damage(value, target_player, false)
-			"direct_damage":
-				apply_damage(value, target_player, true)
-			"build_wall":
-				target_player.wall_hp += value
-				GameEvents.value_built.emit(target_player, value, "wall")
-			"build_tower":
-				target_player.tower_hp += value
-				GameEvents.value_built.emit(target_player, value, "tower")
-			"mod_quarry":
-				target_player.quarry += value
-			"mod_magic":
-				target_player.magic += value
-			"mod_dungeon":
-				target_player.dungeon += value
+		_apply_effect(effect, actor, enemy)
 
 	GameEvents.resource_changed.emit(actor, "all", 0)
 	GameEvents.resource_changed.emit(enemy, "all", 0)
+
+
+## ARC-021: применение одного эффекта из словаря. Вынесено из apply_card_effects()
+## в отдельную функцию, чтобы "conditional" мог рекурсивно применить вложенный
+## под-эффект (ветка "then"/"else") тем же кодом, без дублирования match'а.
+func _apply_effect(effect: Dictionary, actor: PlayerData, enemy: PlayerData) -> void:
+	var type = effect.get("type", "")
+	var value = effect.get("value", 0)
+	var target_str = effect.get("target", "enemy")
+
+	var target_player = resolve_target(actor, enemy, target_str)
+
+	match type:
+		"damage":
+			apply_damage(value, target_player, false)
+		"direct_damage":
+			apply_damage(value, target_player, true)
+		"build_wall":
+			target_player.wall_hp += value
+			GameEvents.value_built.emit(target_player, value, "wall")
+		"build_tower":
+			target_player.tower_hp += value
+			GameEvents.value_built.emit(target_player, value, "tower")
+		"mod_quarry":
+			target_player.quarry += value
+		"mod_magic":
+			target_player.magic += value
+		"mod_dungeon":
+			target_player.dungeon += value
+		"draw_card":
+			# value — сколько карт тянет target_player (обычно "self").
+			for i in range(value):
+				draw_card(target_player)
+		"steal_resource":
+			# target_str резолвит, у КОГО крадём (обычно "enemy") — получает
+			# всегда actor, симметрично "украсть N Х у врага".
+			_apply_steal_resource(effect, target_player, actor)
+		"conditional":
+			_apply_conditional(effect, target_player, actor, enemy)
+
+
+## ARC-021: {"type": "steal_resource", "target": "enemy", "resource": "gems", "value": N}
+## Крадёт min(N, доступно у from) ресурса resource у from, отдаёт ровно столько же to —
+## нельзя увести ресурс в минус и нельзя украсть больше, чем реально есть.
+func _apply_steal_resource(effect: Dictionary, from_player: PlayerData, to_player: PlayerData) -> void:
+	var resource_name: String = effect.get("resource", "")
+	var value: int = effect.get("value", 0)
+	var amount: int = min(value, _get_resource(from_player, resource_name))
+	if amount <= 0:
+		return
+	_modify_resource(from_player, resource_name, -amount)
+	_modify_resource(to_player, resource_name, amount)
+
+
+func _get_resource(player: PlayerData, resource_name: String) -> int:
+	match resource_name:
+		"bricks":
+			return player.bricks
+		"gems":
+			return player.gems
+		"beasts":
+			return player.beasts
+	return 0
+
+
+func _modify_resource(player: PlayerData, resource_name: String, delta: int) -> void:
+	match resource_name:
+		"bricks":
+			player.bricks += delta
+		"gems":
+			player.gems += delta
+		"beasts":
+			player.beasts += delta
+
+
+## ARC-021: {"type": "conditional", "target": "self", "field": "wall_hp", "op": "<",
+## "threshold": 3, "then": {...эффект...}, "else": {...эффект...}}. target/field
+## резолвятся к тому же target_player, что и остальные эффекты (см. _apply_effect) —
+## условие всегда проверяется на нём, а не отдельно на actor/enemy. Вложенные
+## "then"/"else" — обычные словари эффекта со своим собственным target (может
+## отличаться от условия, например «если твоя Стена < 3 — урони Стену врага»).
+func _apply_conditional(
+	effect: Dictionary, condition_target: PlayerData, actor: PlayerData, enemy: PlayerData
+) -> void:
+	var field: String = effect.get("field", "")
+	var op: String = effect.get("op", "<")
+	var threshold = effect.get("threshold", 0)
+
+	var field_value = _get_field(condition_target, field)
+	var branch_key: String = "then" if _evaluate_condition(field_value, op, threshold) else "else"
+	var branch: Dictionary = effect.get(branch_key, {})
+	if not branch.is_empty():
+		_apply_effect(branch, actor, enemy)
+
+
+func _get_field(player: PlayerData, field_name: String):
+	match field_name:
+		"wall_hp":
+			return player.wall_hp
+		"tower_hp":
+			return player.tower_hp
+		"bricks":
+			return player.bricks
+		"gems":
+			return player.gems
+		"beasts":
+			return player.beasts
+		"quarry":
+			return player.quarry
+		"magic":
+			return player.magic
+		"dungeon":
+			return player.dungeon
+	return 0
+
+
+func _evaluate_condition(value, op: String, threshold) -> bool:
+	match op:
+		"<":
+			return value < threshold
+		"<=":
+			return value <= threshold
+		">":
+			return value > threshold
+		">=":
+			return value >= threshold
+		"==":
+			return value == threshold
+		"!=":
+			return value != threshold
+	return false
 
 
 ## ARC-005: единая точка резолва `target` из словаря эффекта карты/артефакта в
