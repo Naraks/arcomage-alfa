@@ -341,3 +341,15 @@ func test_build_starting_run_deck_is_not_empty() -> void:
 	var starting_deck: Array[CardData] = MatchManager.build_starting_run_deck()
 
 	assert_false(starting_deck.is_empty(), "Стартовая колода забега не должна быть пустой")
+
+
+func test_build_starting_run_deck_survives_initial_draw() -> void:
+	# Регрессия: без паддинга стартовая колода (11 карт) почти опустошалась уже
+	# начальной раздачей setup_match() (5 игроку + 5 ИИ) — оставалась 1 карта.
+	var starting_deck: Array[CardData] = MatchManager.build_starting_run_deck()
+
+	assert_gt(
+		starting_deck.size(),
+		10,
+		"Стартовая колода должна пережить начальную раздачу (5 игроку + 5 ИИ) с запасом"
+	)
