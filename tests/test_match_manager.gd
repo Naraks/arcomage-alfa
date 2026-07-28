@@ -322,6 +322,41 @@ func test_setup_match_falls_back_to_test_deck_when_run_deck_empty() -> void:
 	assert_false(MatchManager.deck.is_empty(), "Без run_deck (дефолт []) должна использоваться тестовая колода")
 
 
+func test_ai_does_not_draw_from_players_run_deck() -> void:
+	# Раньше игрок и ИИ делили один общий deck — уникальная карта из run_deck
+	# игрока могла оказаться в руке ИИ. Теперь у ИИ отдельная колода (enemy_deck).
+	var marker_card := TestFixtures.make_card(1, CardData.ResourceType.BRICKS)
+	var run_deck: Array[CardData] = [marker_card]
+	for i in range(19):
+		run_deck.append(TestFixtures.make_card(1, CardData.ResourceType.BRICKS))
+
+	MatchManager.setup_match(TestFixtures.make_player(), TestFixtures.make_player(), run_deck)
+
+	assert_false(
+		MatchManager.enemy_hand.has(marker_card) or MatchManager.enemy_deck.has(marker_card),
+		"Карта из run_deck игрока не должна попадать ни в руку, ни в колоду ИИ"
+	)
+	assert_true(
+		MatchManager.deck.has(marker_card) or MatchManager.player_hand.has(marker_card),
+		"Карта из run_deck должна остаться доступна игроку — в его колоде или руке"
+	)
+
+
+func test_setup_match_gives_enemy_independent_deck() -> void:
+	MatchManager.setup_match(TestFixtures.make_player(), TestFixtures.make_player())
+
+	assert_false(MatchManager.enemy_deck.is_empty(), "У ИИ должна быть своя непустая колода после setup_match")
+
+	var enemy_deck_size_before: int = MatchManager.enemy_deck.size()
+	MatchManager.deck.pop_back()
+
+	assert_eq(
+		MatchManager.enemy_deck.size(),
+		enemy_deck_size_before,
+		"Колода ИИ не должна меняться при изменении колоды игрока — это независимые массивы"
+	)
+
+
 func test_setup_match_does_not_mutate_caller_run_deck() -> void:
 	var run_deck: Array[CardData] = []
 	for i in range(12):

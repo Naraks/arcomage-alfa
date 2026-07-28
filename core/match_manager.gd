@@ -14,7 +14,13 @@ var last_actor: PlayerData
 
 var player_hand: Array[CardData] = []
 var enemy_hand: Array[CardData] = []
-var deck: Array[CardData] = []  # Общая колода для простоты прототипа
+## Колода игрока — стартовая из run_deck (ARC-016) в реальном забеге, либо
+## тестовый пул (см. STARTER_DECK_CARD_PATHS) вне забега.
+var deck: Array[CardData] = []
+## ARC-016: у ИИ своя, независимая от run_deck игрока колода — раньше обе
+## стороны делили один общий пул ("для простоты прототипа"), из-за чего ИИ
+## мог тянуть и разыгрывать уникальные наградные карты игрока.
+var enemy_deck: Array[CardData] = []
 var artifact_manager: Node
 
 
@@ -55,14 +61,16 @@ func setup_match(
 	# ARC-016: в match_manager.deck кладём ШУФЛ-КОПИЮ run_deck, а не саму
 	# run_deck — карты, разыгранные/сброшенные за бой, не должны пропадать из
 	# забега навсегда (discard/reshuffle внутри одного боя — вне рамок этого
-	# тикета). Колода общая на игрока и ИИ, как и раньше ("для простоты
-	# прототипа") — ИИ тоже будет тянуть карты из run_deck игрока, это
-	# существовавшее упрощение, а не то, что вводит ARC-016.
+	# тикета).
 	if not p_run_deck.is_empty():
 		deck = p_run_deck.duplicate()
 		deck.shuffle()
 	else:
 		_initialize_test_deck()
+
+	# У ИИ нет run_deck (это коллекция ИГРОКА) — свой независимый пул на
+	# каждый бой, из общего тестового набора карт.
+	enemy_deck = _build_generic_card_pool()
 
 	for i in range(5):
 		draw_card(player_data)
@@ -73,9 +81,9 @@ func setup_match(
 	start_turn(player_data)
 
 
-## Базовый пул карт, общий для тестовой колоды (_initialize_test_deck, ниже) и
-## стартовой колоды забега (build_starting_run_deck) — единственное место, где
-## перечислены пути .tres.
+## Базовый пул карт — единственное место, где перечислены пути .tres. Общий
+## источник для тестовой колоды игрока, колоды ИИ и стартовой колоды забега
+## (см. _build_generic_card_pool ниже).
 const STARTER_DECK_CARD_PATHS := [
 	"res://data/cards/wall_card.tres",
 	"res://data/cards/knight_card.tres",
@@ -92,45 +100,43 @@ const STARTER_DECK_CARD_PATHS := [
 
 
 func _initialize_test_deck() -> void:
-	deck = []
-	for path in STARTER_DECK_CARD_PATHS:
-		var card = load(path)
-		if card:
-			deck.append(card)
-		else:
-			print("[ERROR] Failed to load card: ", path)
-
-	# Заполняем колоду до нужного количества, если нужно
-	while deck.size() < 20:
-		deck.append(deck.pick_random())
-
-	deck.shuffle()
+	deck = _build_generic_card_pool()
 	print("[DEBUG] Deck initialized with ", deck.size(), " cards")
 
 
-## ARC-016: стартовая колода нового забега (main_menu.gd._on_campaign_pressed()).
-## Тот же базовый пул, что и у тестовой колоды.
-##
-## Правка после ручной проверки: изначально паддинга не было (11 карт
-## "как есть") — идея была не стартовать уже "раздутой" случайными повторами,
-## колода должна расти за счёт наград/магазина. Но setup_match() тянет 10 карт
-## сразу же при старте боя (5 игроку + 5 ИИ) — от 11 карт оставалась 1, и
-## следующая же тяга опустошала бы колоду и уходила в _initialize_test_deck()
-## фоллбэк, подменяя колоду забега посреди боя случайным непричастным пулом.
-## Пока нет реальных наград/магазина (ARC-015/012), которые растили бы колоду
-## органически, паддим её так же, как тестовую — до 20 карт. Когда ARC-015/012
-## появятся, это стоит пересмотреть (возможно, паддинг больше не понадобится).
-static func build_starting_run_deck() -> Array[CardData]:
-	var starting_deck: Array[CardData] = []
+## Перемешанный пул из STARTER_DECK_CARD_PATHS, дополненный случайными
+## повторами до 20 карт. static — не трогает состояние матча, поэтому его
+## также использует build_starting_run_deck() (стартовая колода игрока).
+## Источники: тестовая колода игрока (_initialize_test_deck), колода ИИ
+## (setup_match — у ИИ нет своей "коллекции", как run_deck у игрока, поэтому
+## он всегда берёт отсюда) и стартовая колода забега (build_starting_run_deck).
+static func _build_generic_card_pool() -> Array[CardData]:
+	var pool: Array[CardData] = []
 	for path in STARTER_DECK_CARD_PATHS:
 		var card = load(path)
 		if card:
-			starting_deck.append(card)
+			pool.append(card)
+		else:
+			print("[ERROR] Failed to load card: ", path)
 
-	while starting_deck.size() < 20:
-		starting_deck.append(starting_deck.pick_random())
+	while pool.size() < 20:
+		pool.append(pool.pick_random())
 
-	return starting_deck
+	pool.shuffle()
+	return pool
+
+
+## ARC-016: стартовая колода нового забега (main_menu.gd._on_campaign_pressed()).
+## Сейчас буквально тот же пул, что и генерик-колода ИИ/теста
+## (_build_generic_card_pool) — паддинг до 20 карт нужен потому, что
+## setup_match() тянет 10 карт сразу при старте боя (5 игроку + 5 ИИ), и
+## непаддинговая колода в 11 карт после этого почти опустошалась (баг, найденный
+## при ручной проверке). Пока нет реальных наград/магазина (ARC-015/012),
+## которые растили бы колоду органически, это самый простой рабочий вариант —
+## когда они появятся, стоит пересмотреть (возможно, свой, отдельный от
+## теста/ИИ стартовый набор без паддинга случайными повторами).
+static func build_starting_run_deck() -> Array[CardData]:
+	return _build_generic_card_pool()
 
 
 func draw_card(player: PlayerData) -> void:
@@ -142,15 +148,25 @@ func draw_card(player: PlayerData) -> void:
 	if hand.size() >= player.max_hand_size:
 		return
 
-	if deck.is_empty():
-		_initialize_test_deck()
-
-	var card = deck.pop_back()
+	# ARC-016: у игрока и ИИ раздельные колоды (см. deck/enemy_deck выше).
+	var is_player: bool = player == player_data
+	var card: CardData = _draw_from_deck(is_player)
 	if card == null:
 		print("[ERROR] Drew a null card!")
 		return
 
 	hand.append(card)
+
+
+func _draw_from_deck(is_player: bool) -> CardData:
+	if is_player:
+		if deck.is_empty():
+			_initialize_test_deck()
+		return deck.pop_back()
+
+	if enemy_deck.is_empty():
+		enemy_deck = _build_generic_card_pool()
+	return enemy_deck.pop_back()
 
 
 func start_turn(player: PlayerData) -> void:
