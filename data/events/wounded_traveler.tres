@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="EventData" format=3]
+
+[ext_resource type="Script" path="res://data/resources/event_data.gd" id="1_event"]
+
+[resource]
+script = ExtResource("1_event")
+event_title = "Раненый путник"
+event_description = "У обочины дороги лежит раненый путник. Он слишком слаб, чтобы идти дальше в одиночку."
+options = Array[Dictionary]([{
+"text": "Помочь путнику",
+"outcomes": [{
+"chance": 100,
+"result_text": "Путник в благодарность присоединяется к вам — в колоде появился «Рыцарь».",
+"effects": [{"type": "add_card", "card_path": "res://data/cards/knight_card.tres"}]
+}]
+}, {
+"text": "Пройти мимо",
+"outcomes": [{
+"chance": 100,
+"result_text": "Вы решаете не задерживаться.",
+"effects": []
+}]
+}])

@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="EventData" format=3]
+
+[ext_resource type="Script" path="res://data/resources/event_data.gd" id="1_event"]
+
+[resource]
+script = ExtResource("1_event")
+event_title = "Заброшенный склад"
+event_description = "Вы наткнулись на полуразрушенный склад у обочины дороги. Судя по всему, его никто не проверял уже давно."
+options = Array[Dictionary]([{
+"text": "Обыскать склад",
+"outcomes": [{
+"chance": 70,
+"result_text": "Под досками нашлось немного золота.",
+"effects": [{"type": "gold", "value": 15}]
+}, {
+"chance": 30,
+"result_text": "Пол оказался трухлявым — вы провалились и потеряли часть припасов.",
+"effects": [{"type": "gold", "value": -5}]
+}]
+}, {
+"text": "Не рисковать и пройти мимо",
+"outcomes": [{
+"chance": 100,
+"result_text": "Вы решаете не тратить время и продолжаете путь.",
+"effects": []
+}]
+}])

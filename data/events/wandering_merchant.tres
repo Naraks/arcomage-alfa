@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="EventData" format=3]
+
+[ext_resource type="Script" path="res://data/resources/event_data.gd" id="1_event"]
+
+[resource]
+script = ExtResource("1_event")
+event_title = "Странствующий торговец"
+event_description = "На перекрёстке вам встречается торговец с потрёпанной телегой карт. \"Всего 10 золота — и одна из них твоя\", — говорит он."
+options = Array[Dictionary]([{
+"text": "Купить карту за 10 золота",
+"outcomes": [{
+"chance": 100,
+"result_text": "Торговец протягивает вам карту «Маг-новичок».",
+"effects": [{"type": "gold", "value": -10}, {"type": "add_card", "card_path": "res://data/cards/gem_1.tres"}]
+}]
+}, {
+"text": "Отказаться",
+"outcomes": [{
+"chance": 100,
+"result_text": "Вы вежливо отказываетесь и идёте дальше.",
+"effects": []
+}]
+}])

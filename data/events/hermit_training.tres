@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="EventData" format=3]
+
+[ext_resource type="Script" path="res://data/resources/event_data.gd" id="1_event"]
+
+[resource]
+script = ExtResource("1_event")
+event_title = "Учения у мастера"
+event_description = "Отшельник у дороги предлагает поделиться секретами ремесла — правда, без каких-либо гарантий."
+options = Array[Dictionary]([{
+"text": "Тренироваться",
+"outcomes": [{
+"chance": 60,
+"result_text": "Мастер доволен вашими успехами — Карьер в каждом бою будет работать лучше.",
+"effects": [{"type": "run_quarry_bonus", "value": 1}]
+}, {
+"chance": 40,
+"result_text": "Урок не задался — время потрачено впустую.",
+"effects": []
+}]
+}, {
+"text": "Отказаться",
+"outcomes": [{
+"chance": 100,
+"result_text": "Вы благодарите отшельника и идёте дальше.",
+"effects": []
+}]
+}])
