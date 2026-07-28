@@ -1580,7 +1580,7 @@ Games. При локальном запуске (`python -m http.server`), в CI
 - [x] Если ни одна карта в руке не может быть сыграна, UI показывает подсказку «Нет доступных карт — сбросьте
       одну» (текст `status_label` или тултип).
 
-> ⚠️ **Частично реализовано** (ждёт проверки в игре). `ui/battle/battle_screen.gd::_on_turn_started()`: после
+> ✅ **Реализовано и проверено.** `ui/battle/battle_screen.gd::_on_turn_started()`: после
 > `refresh_hand()` на старте хода игрока проверяет новую `_has_playable_card()` (перебирает
 > `MatchManager.player_hand` через уже существующий `MatchManager.can_afford()` — та же проверка, что и при
 > клике по карте) — если рука не пуста, но играбельных карт нет, `status_label.text` вместо "YOUR TURN"
