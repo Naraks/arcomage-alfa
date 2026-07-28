@@ -1,8 +1,5 @@
 extends Control
 
-const WorldMapData = preload("res://data/resources/world_map_data.gd")
-const MapNodeData = preload("res://data/resources/map_node_data.gd")
-
 
 func _ready() -> void:
 	$VersionLabel.text = BuildVersion.get_display_string()
@@ -15,22 +12,10 @@ func _on_continue_pressed():
 func _on_campaign_pressed():
 	print("Campaign pressed - loading world map")
 
-	# Инициализация тестовой карты
-	var map = WorldMapData.new()
-	var node1 = MapNodeData.new()
-	node1.node_type = MapNodeData.NodeType.BATTLE
-	node1.position = Vector2(100, 100)
-
-	var node2 = MapNodeData.new()
-	node2.node_type = MapNodeData.NodeType.BATTLE
-	node2.position = Vector2(300, 100)
-
-	node1.connected_nodes.append(node2)
-
-	map.map_nodes.append(node1)
-	map.map_nodes.append(node2)
-
-	MatchSettings.world_map_data = map
+	# ARC-010: процедурная генерация карты вместо хардкода из 2 узлов.
+	# Сид не фиксируется здесь намеренно — обычный забег каждый раз получает
+	# новую карту; фиксированный сид (для "дневных забегов") — задел на будущее.
+	MatchSettings.world_map_data = WorldMapGenerator.generate_map(randi())
 
 	var err = get_tree().change_scene_to_file("res://ui/map/world_map_screen.tscn")
 	print("Change scene result: ", err)
