@@ -27,24 +27,47 @@
 | `direct_damage`   | `apply_damage(value, target, ignore_wall=true)` — урон идёт в `tower_hp` напрямую, стена не участвует |
 | `build_wall`      | `target.wall_hp += value`                                                  |
 | `build_tower`     | `target.tower_hp += value`                                                 |
-| `mod_quarry`      | `target.quarry += value`                                                   |
-| `mod_magic`       | `target.magic += value`                                                    |
-| `mod_dungeon`     | `target.dungeon += value`                                                  |
+| `mod_quarry`      | `target.quarry = max(0, target.quarry + value)` — не уходит в минус (ARC-020) |
+| `mod_magic`       | `target.magic = max(0, target.magic + value)`                              |
+| `mod_dungeon`     | `target.dungeon = max(0, target.dungeon + value)`                          |
 | `draw_card`       | `target` тянет `value` карт (`MatchManager.draw_card()` — уважает `max_hand_size`, ARC-003) |
 | `steal_resource`  | см. ниже                                                                    |
 | `conditional`     | см. ниже                                                                    |
+| `gain_resource`   | см. ниже (ARC-020)                                                          |
+| `drain_resource`  | см. ниже (ARC-020)                                                          |
+| `reduce_wall`     | `target.wall_hp = max(0, target.wall_hp - value)` — плоский минус к Стене, без перелива в Башню (в отличие от `damage`) |
 
 Раньше существовал ещё generic-тип `"build"`, который сам решал wall/tower по суффиксу `target` — убран (ARC-005):
 использовался ровно одной картой (`wall_card.tres`, переведена на `build_wall`) и дублировал `build_wall`/
 `build_tower` без единой причины для второго пути к тому же результату.
 
-### `steal_resource` (ARC-021)
+### `steal_resource` (ARC-021, `resource: "random"` — ARC-020)
 
 `{"type": "steal_resource", "target": "enemy", "resource": "gems", "value": 3}`
 
 `target` резолвится как обычно и определяет, **у кого крадут** (обычно `"enemy"`) — получает украденное всегда
-`actor` (тот, кто разыграл карту), это не настраивается. `resource` — один из `"bricks"`/`"gems"`/`"beasts"`.
-Крадётся `min(value, сколько реально есть у цели)` — увести ресурс в минус нельзя.
+`actor` (тот, кто разыграл карту), это не настраивается. `resource` — один из `"bricks"`/`"gems"`/`"beasts"`, либо
+`"random"` — тип ресурса выбирается случайно **в момент розыгрыша карты** (нужно карте «Кража времени»: «украсть
+любой ресурс врага, тот же ресурс приходит вам» — в данных заранее не фиксируется). Крадётся `min(value, сколько
+реально есть у цели)` — увести ресурс в минус нельзя.
+
+### `gain_resource` (ARC-020)
+
+`{"type": "gain_resource", "target": "self", "resource": "bricks", "value": 5}`
+
+Мгновенно `target.<resource> += value`. В отличие от `steal_resource`, у него только одна сторона — никто ничего
+не теряет. Нужен картам вида «Генератор X +5, сразу +5 X» (Гномья шахта / Архимаг / Логово альфы) — сам рост
+генератора это отдельный `mod_quarry`/`mod_magic`/`mod_dungeon` эффект в том же списке `effects`, `gain_resource`
+только про мгновенную прибавку к текущему запасу ресурса.
+
+### `drain_resource` (ARC-020)
+
+`{"type": "drain_resource", "target": "enemy", "resource": "bricks", "value": 3}`
+
+`target` теряет `min(value, сколько реально есть)` ресурса `resource` — в минус не уходит. В отличие от
+`steal_resource`, никто ничего не получает — чистое «проклятие», а не кража. Карта на несколько ресурсов сразу
+(«Ресурсы врага −N всех типов») — это просто три отдельных `drain_resource` в списке `effects`, по одному на
+`"bricks"`/`"gems"`/`"beasts"`.
 
 ### `conditional` (ARC-021)
 

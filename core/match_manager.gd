@@ -155,7 +155,13 @@ static func build_starting_run_deck() -> Array[CardData]:
 const STARTING_RUN_GOLD := 20
 
 ## ARC-012: все карты игры — источник предложений магазина (в отличие от
-## урезанного STARTER_DECK_CARD_PATHS выше).
+## урезанного STARTER_DECK_CARD_PATHS выше). ARC-020 добавил сюда 32 новые
+## карты (включая 12 RARE) — это заметно расширяет проблему, отмеченную ещё в
+## ARC-019 как отложенная: RARE-карты не должны попадать в магазин/награду
+## обычного боя (design doc 5.3), но пул сейчас общий и rarity никак не
+## фильтруется. Раньше это было 3 карты, теперь 15 — приоритет разделить пул
+## на common+uncommon (магазин/награда обычного боя) и rare (награда элиты/
+## босса) вырос, но сама правка вне рамок ARC-020 (контент), см. блокквот.
 const ALL_CARD_PATHS := [
 	"res://data/cards/wall_card.tres",
 	"res://data/cards/knight_card.tres",
@@ -170,6 +176,17 @@ const ALL_CARD_PATHS := [
 	"res://data/cards/brick_9.tres",
 	"res://data/cards/brick_10.tres",
 	"res://data/cards/brick_11.tres",
+	"res://data/cards/brick_12.tres",
+	"res://data/cards/brick_13.tres",
+	"res://data/cards/brick_14.tres",
+	"res://data/cards/brick_15.tres",
+	"res://data/cards/brick_16.tres",
+	"res://data/cards/brick_17.tres",
+	"res://data/cards/brick_18.tres",
+	"res://data/cards/brick_19.tres",
+	"res://data/cards/brick_20.tres",
+	"res://data/cards/brick_21.tres",
+	"res://data/cards/brick_22.tres",
 	"res://data/cards/gem_1.tres",
 	"res://data/cards/gem_2.tres",
 	"res://data/cards/gem_3.tres",
@@ -181,6 +198,16 @@ const ALL_CARD_PATHS := [
 	"res://data/cards/gem_9.tres",
 	"res://data/cards/gem_10.tres",
 	"res://data/cards/gem_11.tres",
+	"res://data/cards/gem_12.tres",
+	"res://data/cards/gem_13.tres",
+	"res://data/cards/gem_14.tres",
+	"res://data/cards/gem_15.tres",
+	"res://data/cards/gem_16.tres",
+	"res://data/cards/gem_17.tres",
+	"res://data/cards/gem_18.tres",
+	"res://data/cards/gem_19.tres",
+	"res://data/cards/gem_20.tres",
+	"res://data/cards/gem_21.tres",
 	"res://data/cards/beast_1.tres",
 	"res://data/cards/beast_2.tres",
 	"res://data/cards/beast_3.tres",
@@ -191,6 +218,17 @@ const ALL_CARD_PATHS := [
 	"res://data/cards/beast_8.tres",
 	"res://data/cards/beast_9.tres",
 	"res://data/cards/beast_10.tres",
+	"res://data/cards/beast_11.tres",
+	"res://data/cards/beast_12.tres",
+	"res://data/cards/beast_13.tres",
+	"res://data/cards/beast_14.tres",
+	"res://data/cards/beast_15.tres",
+	"res://data/cards/beast_16.tres",
+	"res://data/cards/beast_17.tres",
+	"res://data/cards/beast_18.tres",
+	"res://data/cards/beast_19.tres",
+	"res://data/cards/beast_20.tres",
+	"res://data/cards/beast_21.tres",
 ]
 
 
@@ -402,11 +440,14 @@ func _apply_effect(effect: Dictionary, actor: PlayerData, enemy: PlayerData) -> 
 			target_player.tower_hp += value
 			GameEvents.value_built.emit(target_player, value, "tower")
 		"mod_quarry":
-			target_player.quarry += value
+			# ARC-020: генератор не может уйти в минус (cards_list.md, "Заметка по
+			# реализации" — карты «порчи генераторов» вроде Порчи Карьера/
+			# Разрушения Основ используют отрицательный value поверх этого же типа).
+			target_player.quarry = max(0, target_player.quarry + value)
 		"mod_magic":
-			target_player.magic += value
+			target_player.magic = max(0, target_player.magic + value)
 		"mod_dungeon":
-			target_player.dungeon += value
+			target_player.dungeon = max(0, target_player.dungeon + value)
 		"draw_card":
 			# value — сколько карт тянет target_player (обычно "self").
 			for i in range(value):
@@ -417,13 +458,40 @@ func _apply_effect(effect: Dictionary, actor: PlayerData, enemy: PlayerData) -> 
 			_apply_steal_resource(effect, target_player, actor)
 		"conditional":
 			_apply_conditional(effect, target_player, actor, enemy)
+		"gain_resource":
+			# ARC-020: {"type": "gain_resource", "target": "self", "resource": "bricks",
+			# "value": N} — мгновенное +N ресурса target_player'у, без второй стороны
+			# (в отличие от steal_resource). Нужен для Rare-карт вида "Генератор X +5,
+			# сразу +5 X" (Гномья шахта/Архимаг/Логово альфы) — сам генератор растится
+			# отдельным mod_quarry/magic/dungeon эффектом в той же карте.
+			_modify_resource(target_player, effect.get("resource", ""), value)
+		"drain_resource":
+			# ARC-020: {"type": "drain_resource", "target": "enemy", "resource": "bricks",
+			# "value": N} — забирает min(N, доступно) ресурса у target_player, но, в
+			# отличие от steal_resource, никому не отдаёт (чистое "проклятие", не кража).
+			var drain_amount: int = min(value, _get_resource(target_player, effect.get("resource", "")))
+			if drain_amount > 0:
+				_modify_resource(target_player, effect.get("resource", ""), -drain_amount)
+		"reduce_wall":
+			# ARC-020: {"type": "reduce_wall", "target": "enemy", "value": N} — плоское
+			# -N к wall_hp, без перелива в tower_hp (в отличие от "damage"). Нужен для
+			# карт вида "Стена врага −N" как вторичный эффект (Гидра, Дракон).
+			target_player.wall_hp = max(0, target_player.wall_hp - value)
+
+
+const RESOURCE_NAMES := ["bricks", "gems", "beasts"]
 
 
 ## ARC-021: {"type": "steal_resource", "target": "enemy", "resource": "gems", "value": N}
 ## Крадёт min(N, доступно у from) ресурса resource у from, отдаёт ровно столько же to —
 ## нельзя увести ресурс в минус и нельзя украсть больше, чем реально есть.
+## ARC-020: resource == "random" — тип ресурса выбирается случайно в момент розыгрыша
+## (нужно карте "Кража времени": "украсть 5 любого ресурса врага, тот же ресурс приходит вам" —
+## "любой" в данных не фиксируется заранее, а бросается при применении эффекта).
 func _apply_steal_resource(effect: Dictionary, from_player: PlayerData, to_player: PlayerData) -> void:
 	var resource_name: String = effect.get("resource", "")
+	if resource_name == "random":
+		resource_name = RESOURCE_NAMES[randi() % RESOURCE_NAMES.size()]
 	var value: int = effect.get("value", 0)
 	var amount: int = min(value, _get_resource(from_player, resource_name))
 	if amount <= 0:

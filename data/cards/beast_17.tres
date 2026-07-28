@@ -4,9 +4,9 @@
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Дракон"
-description = "Наносит 12 урона башне врага (игнорирует стену). Стена врага -5."
-cost = 5
+card_name = "Вампир"
+description = "Наносит 6 урона врагу, ваша башня +3."
+cost = 4
 type = 2
-rarity = 2
-effects = Array[Dictionary]([{"target": "enemy", "type": "direct_damage", "value": 12}, {"target": "enemy", "type": "reduce_wall", "value": 5}])
+rarity = 1
+effects = Array[Dictionary]([{"target": "enemy", "type": "damage", "value": 6}, {"target": "self", "type": "build_tower", "value": 3}])

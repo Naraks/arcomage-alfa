@@ -315,6 +315,105 @@ func test_effect_conditional_nested_effect_target_independent_of_condition_targe
 	assert_eq(enemy.wall_hp, enemy_wall_before - 4, "Вложенный then-эффект должен бить enemy, а не self")
 
 
+# --- apply_card_effects: gain_resource/drain_resource/reduce_wall/random steal,
+# --- generator floor (ARC-020) ---
+
+
+func test_effect_mod_quarry_does_not_go_below_zero() -> void:
+	player.quarry = 1
+	var card := TestFixtures.make_card(
+		1, CardData.ResourceType.BRICKS, [{"type": "mod_quarry", "target": "self", "value": -5}]
+	)
+
+	MatchManager.apply_card_effects(card, player)
+
+	assert_eq(player.quarry, 0, "Генератор не должен уходить в минус (cards_list.md, порча генераторов)")
+
+
+func test_effect_gain_resource_adds_instantly_to_target() -> void:
+	var bricks_before: int = player.bricks
+	var card := TestFixtures.make_card(
+		1,
+		CardData.ResourceType.BRICKS,
+		[{"type": "gain_resource", "target": "self", "resource": "bricks", "value": 5}]
+	)
+
+	MatchManager.apply_card_effects(card, player)
+
+	assert_eq(player.bricks, bricks_before + 5)
+
+
+func test_effect_drain_resource_removes_without_transferring_to_actor() -> void:
+	enemy.gems = 5
+	var player_gems_before: int = player.gems
+	var card := TestFixtures.make_card(
+		1,
+		CardData.ResourceType.GEMS,
+		[{"type": "drain_resource", "target": "enemy", "resource": "gems", "value": 3}]
+	)
+
+	MatchManager.apply_card_effects(card, player)
+
+	assert_eq(enemy.gems, 2)
+	assert_eq(player.gems, player_gems_before, "drain_resource — проклятие, а не кража: actor ничего не получает")
+
+
+func test_effect_drain_resource_clamps_to_amount_available() -> void:
+	enemy.gems = 2
+	var card := TestFixtures.make_card(
+		1,
+		CardData.ResourceType.GEMS,
+		[{"type": "drain_resource", "target": "enemy", "resource": "gems", "value": 10}]
+	)
+
+	MatchManager.apply_card_effects(card, player)
+
+	assert_eq(enemy.gems, 0, "Нельзя увести ресурс цели в минус")
+
+
+func test_effect_reduce_wall_subtracts_flat_without_tower_overflow() -> void:
+	enemy.wall_hp = 3
+	var enemy_tower_before: int = enemy.tower_hp
+	var card := TestFixtures.make_card(
+		1, CardData.ResourceType.BEASTS, [{"type": "reduce_wall", "target": "enemy", "value": 10}]
+	)
+
+	MatchManager.apply_card_effects(card, player)
+
+	assert_eq(enemy.wall_hp, 0, "wall_hp не должен уходить в минус")
+	assert_eq(
+		enemy.tower_hp,
+		enemy_tower_before,
+		"reduce_wall не должен переливаться в tower_hp — этим он отличается от damage"
+	)
+
+
+func test_effect_steal_resource_random_moves_exactly_one_resource_type() -> void:
+	enemy.bricks = 10
+	enemy.gems = 10
+	enemy.beasts = 10
+	var player_bricks_before: int = player.bricks
+	var player_gems_before: int = player.gems
+	var player_beasts_before: int = player.beasts
+	var card := TestFixtures.make_card(
+		1,
+		CardData.ResourceType.GEMS,
+		[{"type": "steal_resource", "target": "enemy", "resource": "random", "value": 5}]
+	)
+
+	MatchManager.apply_card_effects(card, player)
+
+	var deltas := [
+		player.bricks - player_bricks_before,
+		player.gems - player_gems_before,
+		player.beasts - player_beasts_before,
+	]
+	var nonzero_deltas: Array = deltas.filter(func(d): return d != 0)
+	assert_eq(nonzero_deltas.size(), 1, "resource=random должен затронуть ровно один тип ресурса")
+	if nonzero_deltas.size() == 1:
+		assert_eq(nonzero_deltas[0], 5, "Должно быть украдено ровно value")
+
+
 # --- discard_card_by_index ---
 
 

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+[ext_resource type="Script" uid="uid://cmnf4fc3mdeqd" path="res://data/resources/card_data.gd" id="1_x1y2z"]
+[ext_resource type="Texture2D" path="res://assets/icons/brick_icon.svg" id="2_icon"]
+[resource]
+script = ExtResource("1_x1y2z")
+icon = ExtResource("2_icon")
+card_name = "Гномья шахта"
+description = "Генератор Кирпичей +5, сразу +5 Кирпичей."
+cost = 6
+type = 0
+rarity = 2
+effects = Array[Dictionary]([{"target": "self", "type": "mod_quarry", "value": 5}, {"target": "self", "type": "gain_resource", "resource": "bricks", "value": 5}])

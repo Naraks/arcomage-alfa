@@ -4,9 +4,9 @@
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Дракон"
-description = "Наносит 12 урона башне врага (игнорирует стену). Стена врага -5."
-cost = 5
+card_name = "Логово альфы"
+description = "Генератор Зверей +5, сразу +5 Зверей."
+cost = 6
 type = 2
 rarity = 2
-effects = Array[Dictionary]([{"target": "enemy", "type": "direct_damage", "value": 12}, {"target": "enemy", "type": "reduce_wall", "value": 5}])
+effects = Array[Dictionary]([{"target": "self", "type": "mod_dungeon", "value": 5}, {"target": "self", "type": "gain_resource", "resource": "beasts", "value": 5}])
