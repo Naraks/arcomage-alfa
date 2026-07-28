@@ -182,12 +182,27 @@ theme_override_constants/margin_left = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBox/HandArea"]
+[node name="HandRow" type="HBoxContainer" parent="VBox/HandArea"]
 layout_mode = 2
+mouse_filter = 1
+theme_override_constants/separation = 10
+
+[node name="DeckPileButton" type="Button" parent="VBox/HandArea/HandRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(90, 130)
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Показать колоду"
+text = "Колода
+0"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBox/HandArea/HandRow"]
+layout_mode = 2
+size_flags_horizontal = 3
 mouse_filter = 1
 vertical_scroll_mode = 0
 
-[node name="HandContainer" type="HBoxContainer" parent="VBox/HandArea/ScrollContainer"]
+[node name="HandContainer" type="HBoxContainer" parent="VBox/HandArea/HandRow/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3

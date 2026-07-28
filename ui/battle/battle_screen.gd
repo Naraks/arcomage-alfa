@@ -22,6 +22,7 @@ var p_wall_visuals: VBoxContainer
 
 @onready var hand_container: HBoxContainer = %HandContainer
 @onready var status_label: Label = %StatusLabel
+@onready var deck_pile_button: Button = %DeckPileButton
 
 
 func _ready() -> void:
@@ -32,6 +33,9 @@ func _ready() -> void:
 	GameEvents.damage_applied.connect(_on_damage_applied)
 	GameEvents.value_built.connect(_on_value_built)
 	GameEvents.match_ended.connect(_on_match_ended)
+
+	# ARC-016: просмотр колоды по клику на её "рубашку" внизу слева.
+	deck_pile_button.pressed.connect(_on_deck_pile_pressed)
 
 	# Тестовый запуск матча, если мы в этой сцене напрямую
 	_setup_visual_containers()
@@ -164,6 +168,100 @@ func _on_match_ended(winner: PlayerData) -> void:
 	vbox.add_child(button)
 
 
+## ARC-016: просмотр содержимого колоды (MatchManager.deck) — read-only,
+## открывается кликом по "рубашке" внизу слева (%DeckPileButton).
+func _on_deck_pile_pressed() -> void:
+	_show_card_list_popup("Колода (%d)" % MatchManager.deck.size(), MatchManager.deck)
+
+
+## Общий попап "список карт" — переиспользуем и для будущих "Сброс"/"Просмотр
+## награды" и т.п., не только для колоды. Карты рендерятся через entities/card
+## (card_scene) как в руке, но без подписки на card_clicked/card_right_clicked —
+## это read-only просмотр, клик по карте здесь ничего не делает.
+func _show_card_list_popup(title_text: String, cards: Array) -> void:
+	var layer = CanvasLayer.new()
+	add_child(layer)
+
+	# Полноэкранная полупрозрачная подложка — клик по ней (не по панели поверх
+	# неё) закрывает попап. Panel сверху по умолчанию останавливает mouse-ввод
+	# (MOUSE_FILTER_STOP), поэтому клики внутри попапа сюда не доходят.
+	var backdrop = ColorRect.new()
+	backdrop.color = Color(0, 0, 0, 0.6)
+	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
+	backdrop.gui_input.connect(
+		func(event):
+			if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+				layer.queue_free()
+	)
+	layer.add_child(backdrop)
+
+	var panel = Panel.new()
+	panel.set_anchors_preset(Control.PRESET_CENTER)
+	panel.custom_minimum_size = Vector2(720, 520)
+	backdrop.add_child(panel)
+
+	var root_margin = MarginContainer.new()
+	root_margin.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root_margin.add_theme_constant_override("margin_left", 16)
+	root_margin.add_theme_constant_override("margin_top", 16)
+	root_margin.add_theme_constant_override("margin_right", 16)
+	root_margin.add_theme_constant_override("margin_bottom", 16)
+	panel.add_child(root_margin)
+
+	var root_vbox = VBoxContainer.new()
+	root_vbox.add_theme_constant_override("separation", 12)
+	root_margin.add_child(root_vbox)
+
+	var header = HBoxContainer.new()
+	root_vbox.add_child(header)
+
+	var title_label = Label.new()
+	title_label.text = title_text
+	title_label.add_theme_font_size_override("font_size", 20)
+	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(title_label)
+
+	var close_button = Button.new()
+	close_button.text = "Закрыть"
+	close_button.pressed.connect(func(): layer.queue_free())
+	header.add_child(close_button)
+
+	var scroll = ScrollContainer.new()
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	root_vbox.add_child(scroll)
+
+	var grid = GridContainer.new()
+	grid.columns = 4
+	grid.add_theme_constant_override("h_separation", 10)
+	grid.add_theme_constant_override("v_separation", 10)
+	scroll.add_child(grid)
+
+	if cards.is_empty():
+		var empty_label = Label.new()
+		empty_label.text = "Пусто"
+		grid.add_child(empty_label)
+	else:
+		# Сортируем по типу ресурса, затем по стоимости — так проще пробежаться
+		# глазами по колоде, чем по её реальному (перемешанному) порядку тяги,
+		# который в любом случае не должен "спойлерить" следующую карту.
+		var sorted_cards: Array = cards.duplicate()
+		sorted_cards.sort_custom(_compare_cards_for_view)
+		for card_data in sorted_cards:
+			var card_node = card_scene.instantiate()
+			grid.add_child(card_node)
+			card_node.card_data = card_data
+
+
+func _compare_cards_for_view(a: CardData, b: CardData) -> bool:
+	if a.type != b.type:
+		return a.type < b.type
+	if a.cost != b.cost:
+		return a.cost < b.cost
+	return a.card_name < b.card_name
+
+
 func _test_setup() -> void:
 	# Баг: раньше переиспользовал MatchSettings.player_data/enemy_data, если они
 	# были заданы — на Restart после поражения это были те же самые, уже
@@ -235,6 +333,9 @@ func update_all_ui() -> void:
 	e_bricks_label.text = "Bricks: %d (+%d)" % [e.bricks, e.quarry]
 	e_gems_label.text = "Gems: %d (+%d)" % [e.gems, e.magic]
 	e_beasts_label.text = "Beasts: %d (+%d)" % [e.beasts, e.dungeon]
+
+	# ARC-016: счётчик на "рубашке" колоды внизу слева.
+	deck_pile_button.text = "Колода\n%d" % MatchManager.deck.size()
 
 
 func refresh_hand() -> void:
