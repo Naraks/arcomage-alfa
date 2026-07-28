@@ -79,7 +79,14 @@ func test_build_boss_slots_falls_back_to_card_when_no_artifacts_left() -> void:
 	# Владеем ВСЕМИ артефактами (не только первым) — иначе тест ломается при
 	# добавлении новых в ALL_ARTIFACT_PATHS (см. ARC-030..035): "артефактов не
 	# осталось" означает буквально ни одного доступного, не "меньше на один".
-	MatchSettings.run_artifacts = RewardScreenScript.ALL_ARTIFACT_PATHS.map(func(p): return load(p))
+	# Array(..., TYPE_OBJECT, "Resource", ArtifactData) — не просто .map(), тот
+	# возвращает нетипизированный Array; присвоить его типизированному полю
+	# MatchSettings.run_artifacts (Array[ArtifactData]) движок отказывается
+	# ("Invalid assignment ... value of type 'Array'") — нужен явно типизированный
+	# массив через 4-аргументный конструктор Array().
+	MatchSettings.run_artifacts = Array(
+		RewardScreenScript.ALL_ARTIFACT_PATHS.map(func(p): return load(p)), TYPE_OBJECT, "Resource", ArtifactData
+	)
 
 	var slots := screen._build_boss_slots()
 
@@ -97,8 +104,11 @@ func test_available_artifacts_excludes_owned() -> void:
 
 	assert_eq(screen._available_artifacts().size(), RewardScreenScript.ALL_ARTIFACT_PATHS.size())
 
-	# Владеем ВСЕМИ артефактами — см. комментарий в test_build_boss_slots_falls_back_to_card_when_no_artifacts_left.
-	MatchSettings.run_artifacts = RewardScreenScript.ALL_ARTIFACT_PATHS.map(func(p): return load(p))
+	# Владеем ВСЕМИ артефактами — см. комментарий в test_build_boss_slots_falls_back_to_card_when_no_artifacts_left
+	# (тот же типизированный Array() нужен по той же причине).
+	MatchSettings.run_artifacts = Array(
+		RewardScreenScript.ALL_ARTIFACT_PATHS.map(func(p): return load(p)), TYPE_OBJECT, "Resource", ArtifactData
+	)
 
 	assert_true(screen._available_artifacts().is_empty())
 
