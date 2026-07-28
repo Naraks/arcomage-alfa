@@ -105,6 +105,22 @@ func test_play_card_by_index_deducts_resources() -> void:
 	assert_eq(player.bricks, 2, "Стоимость карты должна списаться с нужного ресурса")
 
 
+## ARC-035: pre-play хук ("Счастливая Монета") — value=1.0 делает срабатывание
+## гарантированным (randf() < 1.0 всегда true, см. комментарий в
+## tests/test_artifact_manager.gd), поэтому тест детерминирован без seed.
+func test_play_card_by_index_skips_payment_when_artifact_guarantees_it() -> void:
+	var card := TestFixtures.make_card(3, CardData.ResourceType.BRICKS)
+	MatchManager.player_hand = [card]
+	player.active_artifacts = [
+		TestFixtures.make_artifact([{"trigger": "pre_play", "type": "skip_payment_chance", "value": 1.0}])
+	]
+
+	MatchManager.play_card_by_index(0, player)
+
+	assert_eq(player.bricks, 5, "С гарантированным skip_payment_chance ресурсы не должны списываться")
+	assert_eq(MatchManager.player_hand.size(), 0, "Карта всё равно должна разыграться и уйти из руки")
+
+
 func test_play_card_by_index_removes_card_from_hand() -> void:
 	var card := TestFixtures.make_card(1, CardData.ResourceType.BRICKS)
 	MatchManager.player_hand = [card]
@@ -135,6 +151,32 @@ func test_play_card_by_index_applies_direct_damage_effect() -> void:
 	MatchManager.player_hand = [card]
 	MatchManager.play_card_by_index(0, player)
 	assert_eq(enemy.tower_hp, 16, "direct_damage должен уйти врагу напрямую в башню, игнорируя стену")
+
+
+## ARC-030/031: интеграционный тест на весь путь через РЕАЛЬНЫЙ сигнал
+## GameEvents.damage_applied (emitted из apply_damage() внутри
+## apply_card_effects() выше) — в отличие от tests/test_artifact_manager.gd,
+## который дёргает ArtifactManager._on_damage_taken() напрямую, этот тест
+## подтверждает, что ArtifactManager реально подключён как autoload
+## (project.godot) и получает source (атакующего) через сигнал, не только
+## в изоляции.
+func test_play_card_by_index_damage_triggers_reflect_damage_artifact_on_defender() -> void:
+	enemy.active_artifacts = [
+		TestFixtures.make_artifact([{"trigger": "on_damage_taken", "type": "reflect_damage", "value": 2}])
+	]
+	var card := TestFixtures.make_card(
+		1, CardData.ResourceType.BRICKS, [{"type": "damage", "value": 3, "target": "enemy"}]
+	)
+	MatchManager.player_hand = [card]
+	var player_tower_before: int = player.tower_hp
+
+	MatchManager.play_card_by_index(0, player)
+
+	assert_eq(
+		player.tower_hp,
+		player_tower_before - 2,
+		"Урон по стене врага с Шипастой Стеной должен вернуть 2 урона атакующему"
+	)
 
 
 # --- resolve_target (ARC-005) ---

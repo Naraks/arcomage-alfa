@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ArtifactData" format=3]
+
+[ext_resource type="Script" uid="uid://dqwb0jjr464c5" path="res://data/resources/artifact_data.gd" id="1_x1y2z"]
+
+[resource]
+script = ExtResource("1_x1y2z")
+artifact_name = "Счастливая Монета"
+description = "10% шанс не потратить ресурсы при розыгрыше карты."
+effects = Array[Dictionary]([{"trigger": "pre_play", "type": "skip_payment_chance", "value": 0.1}])

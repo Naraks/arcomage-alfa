@@ -21,13 +21,6 @@ var deck: Array[CardData] = []
 ## стороны делили один общий пул ("для простоты прототипа"), из-за чего ИИ
 ## мог тянуть и разыгрывать уникальные наградные карты игрока.
 var enemy_deck: Array[CardData] = []
-var artifact_manager: Node
-
-
-func _ready() -> void:
-	# Инициализация менеджера артефактов
-	artifact_manager = load("res://core/artifact_manager.gd").new()
-	add_child(artifact_manager)
 
 
 ## ARC-016: p_run_deck — колода забега (MatchSettings.run_deck), собственность
@@ -366,14 +359,23 @@ func play_card_by_index(index: int, actor: PlayerData) -> void:
 
 	current_state = State.PROCESS_CARD
 
+	# ARC-035: pre-play хук ДО списания стоимости — "Счастливая Монета" (10%
+	# не потратить ресурсы за карту) физически не может сработать ПОСЛЕ
+	# списания, как остальные триггеры артефактов (card_played и т.п. в
+	# ArtifactManager._check_artifacts() срабатывают уже после розыгрыша).
+	# can_afford() выше уже проверил, что actor МОГ БЫ заплатить — сам факт
+	# пропуска оплаты не должен разрешать то, что иначе было бы недоступно.
+	var skip_payment: bool = ArtifactManager.should_skip_payment(actor)
+
 	# Трата ресурсов
-	match card.type:
-		CardData.ResourceType.BRICKS:
-			actor.bricks -= card.cost
-		CardData.ResourceType.GEMS:
-			actor.gems -= card.cost
-		CardData.ResourceType.BEASTS:
-			actor.beasts -= card.cost
+	if not skip_payment:
+		match card.type:
+			CardData.ResourceType.BRICKS:
+				actor.bricks -= card.cost
+			CardData.ResourceType.GEMS:
+				actor.gems -= card.cost
+			CardData.ResourceType.BEASTS:
+				actor.beasts -= card.cost
 
 	# Удаление из руки
 	hand.remove_at(index)
@@ -444,9 +446,9 @@ func _apply_effect(effect: Dictionary, actor: PlayerData, enemy: PlayerData) -> 
 
 	match type:
 		"damage":
-			apply_damage(value, target_player, false)
+			apply_damage(value, target_player, false, actor)
 		"direct_damage":
-			apply_damage(value, target_player, true)
+			apply_damage(value, target_player, true, actor)
 		"build_wall":
 			target_player.wall_hp += value
 			GameEvents.value_built.emit(target_player, value, "wall")
@@ -603,7 +605,13 @@ func resolve_target(actor: PlayerData, enemy: PlayerData, target_str: String) ->
 	return enemy
 
 
-func apply_damage(amount: int, target: PlayerData, ignore_wall: bool) -> void:
+## ARC-030: source (необязательный, по умолчанию null) — кто нанёс урон,
+## пробрасывается в GameEvents.damage_applied для ArtifactManager (триггер
+## "on_damage_taken", нужен Шипастой Стене — ARC-031, знать, кому отвечать).
+## Оба реальных вызова из _apply_effect() передают actor; вызовы без source
+## (тесты, потенциальный будущий "урон от ловушки/эффекта без владельца")
+## просто не дадут сработать эффектам с типом "reflect_damage".
+func apply_damage(amount: int, target: PlayerData, ignore_wall: bool, source: PlayerData = null) -> void:
 	if ignore_wall:
 		target.tower_hp -= amount
 	else:
@@ -615,7 +623,7 @@ func apply_damage(amount: int, target: PlayerData, ignore_wall: bool) -> void:
 	# ARC-004: damage_applied несёт положительный amount — знак больше не нужен,
 	# т.к. само имя сигнала уже говорит "это урон".
 	var hit_wall = not ignore_wall
-	GameEvents.damage_applied.emit(target, amount, hit_wall)
+	GameEvents.damage_applied.emit(target, amount, hit_wall, source)
 
 
 func check_win() -> bool:

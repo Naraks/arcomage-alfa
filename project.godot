@@ -28,6 +28,7 @@ MatchSettings="*res://core/match_settings.gd"
 BuildVersion="*res://core/build_version.gd"
 ProfileManager="*res://core/profile_manager.gd"
 RunSaveManager="*res://core/run_save_manager.gd"
+ArtifactManager="*res://core/artifact_manager.gd"
 
 [display]
 

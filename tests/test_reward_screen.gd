@@ -76,7 +76,10 @@ func test_build_boss_slots_offers_artifact_when_available() -> void:
 
 func test_build_boss_slots_falls_back_to_card_when_no_artifacts_left() -> void:
 	var screen = RewardScreenScript.new()
-	MatchSettings.run_artifacts = [load(RewardScreenScript.ALL_ARTIFACT_PATHS[0])]
+	# Владеем ВСЕМИ артефактами (не только первым) — иначе тест ломается при
+	# добавлении новых в ALL_ARTIFACT_PATHS (см. ARC-030..035): "артефактов не
+	# осталось" означает буквально ни одного доступного, не "меньше на один".
+	MatchSettings.run_artifacts = RewardScreenScript.ALL_ARTIFACT_PATHS.map(func(p): return load(p))
 
 	var slots := screen._build_boss_slots()
 
@@ -94,7 +97,8 @@ func test_available_artifacts_excludes_owned() -> void:
 
 	assert_eq(screen._available_artifacts().size(), RewardScreenScript.ALL_ARTIFACT_PATHS.size())
 
-	MatchSettings.run_artifacts = [load(RewardScreenScript.ALL_ARTIFACT_PATHS[0])]
+	# Владеем ВСЕМИ артефактами — см. комментарий в test_build_boss_slots_falls_back_to_card_when_no_artifacts_left.
+	MatchSettings.run_artifacts = RewardScreenScript.ALL_ARTIFACT_PATHS.map(func(p): return load(p))
 
 	assert_true(screen._available_artifacts().is_empty())
 

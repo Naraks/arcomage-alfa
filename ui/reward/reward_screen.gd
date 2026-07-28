@@ -19,10 +19,16 @@ const HIGH_RARITY_CARD_PATHS := [
 	"res://data/cards/gem_10.tres",
 ]
 
-## Все артефакты игры. Пока только один (ARC-015 — первый реальный источник
-## артефактов в забеге) — при добавлении новых достаточно дописать сюда.
+## Все артефакты игры (ARC-015 — первый реальный источник артефактов в
+## забеге; ARC-030..035 добавили ещё пять) — при добавлении новых достаточно
+## дописать сюда.
 const ALL_ARTIFACT_PATHS := [
 	"res://data/artifacts/dwarf_pickaxe.tres",
+	"res://data/artifacts/spiky_wall.tres",
+	"res://data/artifacts/mana_sphere.tres",
+	"res://data/artifacts/horn_of_plenty.tres",
+	"res://data/artifacts/book_of_wisdom.tres",
+	"res://data/artifacts/lucky_coin.tres",
 ]
 
 var _slots: Array[Dictionary] = []
