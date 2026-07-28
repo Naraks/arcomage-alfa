@@ -135,6 +135,15 @@ func _on_match_ended(winner: PlayerData) -> void:
 			func():
 				if is_victory and MatchSettings.current_map_node:
 					MatchSettings.current_map_node.is_completed = true
+					# ARC-011: world_map_screen считает доступные для клика узлы от
+					# current_node_index — без этого обновления игрок так и остался
+					# бы "запертым" на первом этаже после первой же победы.
+					if MatchSettings.world_map_data:
+						var node_index: int = MatchSettings.world_map_data.map_nodes.find(
+							MatchSettings.current_map_node
+						)
+						if node_index != -1:
+							MatchSettings.world_map_data.current_node_index = node_index
 				MatchSettings.came_from_map = false
 				MatchSettings.current_map_node = null
 				get_tree().change_scene_to_file("res://ui/map/world_map_screen.tscn")
