@@ -71,7 +71,7 @@ func _on_battle_pressed():
 
 
 func _on_deck_pressed():
-	print("Deck pressed - functionality not yet implemented")
+	get_tree().change_scene_to_file("res://ui/deck/deck_screen.tscn")
 
 
 func _on_upgrades_pressed():
