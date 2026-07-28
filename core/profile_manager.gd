@@ -29,6 +29,7 @@ var profile: Dictionary = {
 	"fame": 0,
 	"upgrades": {},
 	"unlocked_cards": [],
+	"settings": {"volume": 1.0},
 }
 
 ## ARC-038: правило блокировки — просто CardData.rarity == RARE. Никакого
@@ -117,6 +118,10 @@ const UPGRADE_CATALOG := {
 
 func _ready() -> void:
 	load_profile()
+	# ARC-042: "применяется... между сессиями" — не только сохранить значение,
+	# но и реально приложить его к AudioServer сразу при старте, а не только
+	# когда игрок зайдёт в экран настроек и подвигает слайдер.
+	_apply_volume_to_audio_server(get_volume())
 
 
 ## ARC-017: Слава — постоянная мета-валюта (design doc 9.1), начисляется по
@@ -216,6 +221,40 @@ func unlock_card(card: CardData) -> bool:
 	profile["unlocked_cards"] = unlocked
 	save_profile()
 	return true
+
+
+## ARC-042: линейная громкость 0.0..1.0 (не дБ — так интуитивнее для UI-слайдера,
+## конвертация в дБ только в _apply_volume_to_audio_server()). float() —
+## подстраховка от _restore_int_types() (см. её комментарий ниже): ровно 1.0
+## после JSON save/load round-trip превращается в int(1), get_volume() должен
+## всё равно вернуть float для единообразия с вызывающим кодом (слайдер и
+## linear_to_db() одинаково хорошо съедят и int, и float, но контракт функции
+## честнее как float).
+func get_volume() -> float:
+	return float(profile.get("settings", {}).get("volume", 1.0))
+
+
+## Клэмп 0..1 — на случай кривого ручного значения (напр. из старого/битого
+## save-файла или программной ошибки вызывающего кода), а не только
+## доверие UI-слайдеру, у которого и так min/max выставлены на 0/1.
+func set_volume(value: float) -> void:
+	var clamped: float = clamp(value, 0.0, 1.0)
+	var settings: Dictionary = profile.get("settings", {})
+	settings["volume"] = clamped
+	profile["settings"] = settings
+	_apply_volume_to_audio_server(clamped)
+	save_profile()
+
+
+## В проекте пока нет собственного audio bus layout (default_bus_layout.tres) —
+## AudioServer всё равно всегда имеет встроенную шину "Master" даже без него,
+## этого достаточно для единственного пока регулятора "общая громкость".
+## linear_to_db(0.0) == -inf дБ, что AudioServer штатно трактует как полную
+## тишину — отдельная ветка на value==0.0 не нужна.
+func _apply_volume_to_audio_server(value: float) -> void:
+	var bus_index := AudioServer.get_bus_index("Master")
+	if bus_index != -1:
+		AudioServer.set_bus_volume_db(bus_index, linear_to_db(value))
 
 
 func save_profile() -> void:

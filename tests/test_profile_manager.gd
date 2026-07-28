@@ -289,3 +289,56 @@ func test_unlock_card_fails_when_already_unlocked() -> void:
 
 	assert_false(result)
 	assert_eq(ProfileManager.profile["fame"], fame_before, "Повторная покупка не должна списывать Славу")
+
+
+# --- ARC-042: get_volume / set_volume ---
+
+
+func test_get_volume_defaults_to_one_without_settings_key() -> void:
+	ProfileManager.profile = {"fame": 0}
+
+	assert_eq(ProfileManager.get_volume(), 1.0)
+
+
+func test_get_volume_reads_from_profile_settings() -> void:
+	ProfileManager.profile["settings"] = {"volume": 0.4}
+
+	assert_eq(ProfileManager.get_volume(), 0.4)
+
+
+func test_set_volume_stores_value_in_profile_settings() -> void:
+	ProfileManager.set_volume(0.6)
+
+	assert_eq(ProfileManager.get_volume(), 0.6)
+
+
+func test_set_volume_clamps_above_one() -> void:
+	ProfileManager.set_volume(3.5)
+
+	assert_eq(ProfileManager.get_volume(), 1.0)
+
+
+func test_set_volume_clamps_below_zero() -> void:
+	ProfileManager.set_volume(-2.0)
+
+	assert_eq(ProfileManager.get_volume(), 0.0)
+
+
+func test_set_volume_applies_to_master_audio_bus() -> void:
+	ProfileManager.set_volume(0.5)
+
+	var bus_index := AudioServer.get_bus_index("Master")
+	assert_almost_eq(AudioServer.get_bus_volume_db(bus_index), linear_to_db(0.5), 0.001)
+
+
+func test_volume_persists_across_save_and_load() -> void:
+	ProfileManager.set_volume(0.25)
+
+	# Подменяем profile целиком (другим значением громкости) перед load_profile(),
+	# чтобы доказать, что 0.25 реально пришёл с диска, а не просто уцелел в
+	# памяти — тот же приём, что test_save_and_load_round_trip_preserves_fame_and_upgrades.
+	ProfileManager.profile = {"fame": 0, "settings": {"volume": 0.9}}
+
+	ProfileManager.load_profile()
+
+	assert_eq(ProfileManager.get_volume(), 0.25)
