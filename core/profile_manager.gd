@@ -54,5 +54,31 @@ func load_profile() -> void:
 		var json = JSON.new()
 		var error = json.parse(json_string)
 		if error == OK:
-			profile = json.data
+			profile = _restore_int_types(json.data)
 			print("[DEBUG] Profile loaded")
+
+
+## ARC-036: JSON.parse() в Godot возвращает АБСОЛЮТНО ВСЕ числа как float —
+## формат JSON сам по себе не различает int/float, и движок не пытается
+## угадать. Без этого прохода "fame"/"total_wins"/значения в "upgrades" (по
+## смыслу всегда целые — счётчики, уровни прокачки) после каждой перезагрузки
+## профиля тихо превращались бы в float (2 -> 2.0). Само по себе `2 == 2.0`
+## в GDScript истинно, но строгое сравнение словарей (тесты; в будущем —
+## сравнение уровня апгрейда в match/switch-подобной логике ARC-037) уже
+## различает их. Рекурсивно приводит float без дробной части к int во
+## вложенных Dictionary/Array; в profile нет полей, которым намеренно нужна
+## именно дробная точность, так что это допущение безопасно для всего дерева.
+func _restore_int_types(value):
+	if value is Dictionary:
+		var result := {}
+		for key in value:
+			result[key] = _restore_int_types(value[key])
+		return result
+	if value is Array:
+		var result := []
+		for item in value:
+			result.append(_restore_int_types(item))
+		return result
+	if value is float and value == floor(value):
+		return int(value)
+	return value
