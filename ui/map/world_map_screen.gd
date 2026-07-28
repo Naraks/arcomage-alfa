@@ -5,6 +5,8 @@ const MapNodeData = preload("res://data/resources/map_node_data.gd")
 
 @export var map_data: Resource
 
+@onready var _map_content: Control = $ScrollContainer/MapContent
+
 
 func _ready() -> void:
 	print("WorldMapScreen _ready")
@@ -18,8 +20,14 @@ func _ready() -> void:
 		_generate_debug_node_bar()
 
 
+## Карта может быть выше/шире экрана (12-15 этажей) — раньше узлы и
+## линии добавлялись прямо в корневой Control без прокрутки, из-за чего нижние
+## этажи были не видны и недоступны для клика. Теперь всё содержимое карты
+## живёт в $ScrollContainer/MapContent, а не в самом экране.
 func _generate_map_ui() -> void:
 	print("Generating map UI, nodes count: ", map_data.map_nodes.size())
+	_fit_map_content_size()
+
 	# Отрисовка путей
 	for node in map_data.map_nodes:
 		for connected in node.connected_nodes:
@@ -27,7 +35,7 @@ func _generate_map_ui() -> void:
 			line.points = [node.position + Vector2(25, 25), connected.position + Vector2(25, 25)]
 			line.width = 2
 			line.default_color = Color.WHITE
-			add_child(line)
+			_map_content.add_child(line)
 
 	# ARC-011: кликабельны только узлы, соединённые с current_node_index и ещё
 	# не пройденные — остальные задизейблены и визуально приглушены.
@@ -45,8 +53,20 @@ func _generate_map_ui() -> void:
 		_style_node_button(button, node, is_available)
 
 		button.pressed.connect(_on_node_pressed.bind(node))
-		add_child(button)
+		_map_content.add_child(button)
 		print("Added button at: ", node.position)
+
+
+## Узлы позиционируются абсолютно (node.position, см. world_map_generator.gd),
+## поэтому ScrollContainer должен знать реальный размер контента заранее —
+## иначе он не покажет скроллбар и обрежет карту по размеру экрана.
+func _fit_map_content_size() -> void:
+	var max_x := 0.0
+	var max_y := 0.0
+	for node in map_data.map_nodes:
+		max_x = max(max_x, node.position.x)
+		max_y = max(max_y, node.position.y)
+	_map_content.custom_minimum_size = Vector2(max_x + 150, max_y + 150)
 
 
 ## Доступные для клика узлы — соединённые с текущей позицией на карте
