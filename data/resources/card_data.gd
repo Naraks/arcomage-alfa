@@ -13,5 +13,5 @@ enum ResourceType { BRICKS, GEMS, BEASTS }
 @export var type: ResourceType = ResourceType.BRICKS
 
 ## Список эффектов. Пример: {"type": "damage", "value": 5, "target": "enemy_wall"}
-## Формат ключей "type"/"target" и то, что реально на что влияет — см. effects_reference.md (ARC-005).
+## Формат ключей "type"/"target" и то, что реально на что влияет — см. docs/effects_reference.md (ARC-005).
 @export var effects: Array[Dictionary] = []
