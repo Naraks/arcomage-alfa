@@ -1,14 +1,28 @@
-extends SceneTree
+extends Node
 ## ARC-054: headless-симулятор «ИИ против ИИ» для сбора статистики по картам
 ## (нужен ARC-023 для балансировки cost/value).
 ##
-## Запуск (как GUT в CI, см. .github/workflows/ci.yml):
-##   godot --headless --path . -s tools/battle_simulator.gd -- --games=500 --out=balance_report.csv
+## Запуск: обычная сцена (НЕ -s/SceneTree — см. ниже, почему), явно
+## указанная как main scene этого конкретного запуска:
+##   godot --headless --path . res://tools/battle_simulator.tscn -- --games=500 --out=balance_report.csv
 ##
 ## Аргументы (все необязательные):
 ##   --games=N   сколько игр прогнать (по умолчанию 500, см. ARC-023: "выборка ≥500")
 ##   --out=PATH  путь для CSV со статистикой по картам (по умолчанию res://balance_report.csv)
 ##   --seed=N    зерно RNG для воспроизводимого прогона (по умолчанию не задаётся — каждый запуск другой)
+##
+## Почему обычная сцена, а не `-s tools/battle_simulator.gd` (как GUT в CI,
+## .github/workflows/ci.yml): скрипт, переданный через `-s`, компилируется
+## движком ДО регистрации автозагрузок как глобальных идентификаторов — при
+## попытке так запустить этот файл раньше был "Compile Error: Identifier not
+## found: GameEvents" (подтверждено реальным запуском). addons/gut/gut_cmdln.gd
+## сам этот -s-скрипт никогда не трогает автозагрузки проекта напрямую — только
+## grузит через load() свои же addon-файлы (gut_cli.gd), и уже ОНИ, скомпилированные
+## позже как обычные Node-скрипты, свободно используют MatchManager/GameEvents.
+## Обычная сцена (этот файл, как battle_screen.gd и вообще любой скрипт
+## проекта) компилируется уже после полного бутстрапа движка и автозагрузок —
+## поэтому здесь MatchManager/GameEvents/PlayerData/CardData можно использовать
+## как обычно, bare-идентификаторами.
 ##
 ## Каждая игра — независимый бой через MatchManager (тот же автозагруз, что использует
 ## battle_screen.gd и GUT-тесты), между двумя случайно выбранными профилями ИИ
@@ -43,22 +57,7 @@ var _game_card_plays: Array = []  # за текущую игру: [{"name": Stri
 var _current_winner_side: String = ""
 
 
-## Как addons/gut/gut_cmdln.gd (тот же способ запуска через `-s`, тот же
-## Godot 4.7.1-stable в CI, см. .github/workflows/ci.yml): вход через _init(),
-## а не _initialize() (у SceneTree в Godot 4 нет отдельного колбэка с таким
-## именем) — и та же защитная пауза на случай, если движок ещё не
-## зарегистрировал self как активный main loop к моменту вызова _init().
-func _init() -> void:
-	var max_iter := 20
-	var iter := 0
-	while Engine.get_main_loop() == null and iter < max_iter:
-		await create_timer(0.01).timeout
-		iter += 1
-	if Engine.get_main_loop() == null:
-		push_error("Main loop did not start in time.")
-		quit(1)
-		return
-
+func _ready() -> void:
 	var args := _parse_args()
 	var num_games: int = args.get("games", 500)
 	var out_path: String = args.get("out", "res://balance_report.csv")
@@ -83,7 +82,7 @@ func _init() -> void:
 	print("Готово: ", num_games, " игр.")
 	print("Отчёт по картам: ", out_path)
 	print("Отчёт по матчапам стратегий: ", out_path.get_basename() + "_matchups.csv")
-	quit()
+	get_tree().quit()
 
 
 ## Заранее заносит в _card_stats ВСЕ карты игры с нулевыми счётчиками — иначе
