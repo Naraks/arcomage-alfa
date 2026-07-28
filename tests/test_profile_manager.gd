@@ -176,6 +176,17 @@ func test_purchase_upgrade_next_cost_increases_after_purchase() -> void:
 
 # --- ARC-038: is_card_unlocked / get_card_unlock_cost / unlock_card ---
 
+## ФЕЙКОВЫЙ путь, не указывающий на реальный .tres — намеренно, НЕ путь
+## настоящей RARE-карты вроде "res://data/cards/gem_10.tres". Присвоение
+## card.resource_path = <путь, уже занятый другим загруженным ресурсом в
+## ResourceCache> валит движок ("Method/function failed") — а к моменту, как
+## этот файл тестов выполняется, gem_10.tres/brick_1.tres почти наверняка уже
+## реально загружены где-то ещё (test_reward_screen.gd/test_meta_shop_screen.gd
+## и т.п., GUT гоняет все файлы в одном процессе). Синтетическая CardData.new()
+## здесь никогда не грузится через load() — ей нужна просто уникальная
+## строка-ключ для bookkeeping в profile.unlocked_cards, не настоящий файл.
+const _FAKE_RARE_CARD_PATH := "res://data/cards/__test_only_fake_rare_card__.tres"
+
 
 func _make_card(rarity: int, path: String = "") -> CardData:
 	var card := CardData.new()
@@ -192,14 +203,14 @@ func test_is_card_unlocked_true_for_non_rare_by_default() -> void:
 
 
 func test_is_card_unlocked_false_for_rare_by_default() -> void:
-	var card := _make_card(CardData.Rarity.RARE, "res://data/cards/gem_10.tres")
+	var card := _make_card(CardData.Rarity.RARE, _FAKE_RARE_CARD_PATH)
 
 	assert_false(ProfileManager.is_card_unlocked(card))
 
 
 func test_is_card_unlocked_true_for_rare_after_being_added_to_unlocked_cards() -> void:
-	var card := _make_card(CardData.Rarity.RARE, "res://data/cards/gem_10.tres")
-	ProfileManager.profile["unlocked_cards"] = ["res://data/cards/gem_10.tres"]
+	var card := _make_card(CardData.Rarity.RARE, _FAKE_RARE_CARD_PATH)
+	ProfileManager.profile["unlocked_cards"] = [_FAKE_RARE_CARD_PATH]
 
 	assert_true(ProfileManager.is_card_unlocked(card))
 
@@ -211,34 +222,34 @@ func test_get_card_unlock_cost_negative_one_for_non_rare() -> void:
 
 
 func test_get_card_unlock_cost_is_rare_unlock_cost_for_locked_rare() -> void:
-	var card := _make_card(CardData.Rarity.RARE, "res://data/cards/gem_10.tres")
+	var card := _make_card(CardData.Rarity.RARE, _FAKE_RARE_CARD_PATH)
 
 	assert_eq(ProfileManager.get_card_unlock_cost(card), ProfileManager.RARE_CARD_UNLOCK_COST)
 
 
 func test_get_card_unlock_cost_negative_one_for_already_unlocked_rare() -> void:
-	var card := _make_card(CardData.Rarity.RARE, "res://data/cards/gem_10.tres")
-	ProfileManager.profile["unlocked_cards"] = ["res://data/cards/gem_10.tres"]
+	var card := _make_card(CardData.Rarity.RARE, _FAKE_RARE_CARD_PATH)
+	ProfileManager.profile["unlocked_cards"] = [_FAKE_RARE_CARD_PATH]
 
 	assert_eq(ProfileManager.get_card_unlock_cost(card), -1)
 
 
 func test_can_afford_card_unlock_false_without_enough_fame() -> void:
-	var card := _make_card(CardData.Rarity.RARE, "res://data/cards/gem_10.tres")
+	var card := _make_card(CardData.Rarity.RARE, _FAKE_RARE_CARD_PATH)
 	ProfileManager.profile["fame"] = 0
 
 	assert_false(ProfileManager.can_afford_card_unlock(card))
 
 
 func test_can_afford_card_unlock_true_with_enough_fame() -> void:
-	var card := _make_card(CardData.Rarity.RARE, "res://data/cards/gem_10.tres")
+	var card := _make_card(CardData.Rarity.RARE, _FAKE_RARE_CARD_PATH)
 	ProfileManager.profile["fame"] = ProfileManager.RARE_CARD_UNLOCK_COST
 
 	assert_true(ProfileManager.can_afford_card_unlock(card))
 
 
 func test_unlock_card_deducts_fame_and_adds_to_unlocked_cards() -> void:
-	var card := _make_card(CardData.Rarity.RARE, "res://data/cards/gem_10.tres")
+	var card := _make_card(CardData.Rarity.RARE, _FAKE_RARE_CARD_PATH)
 	ProfileManager.profile["fame"] = ProfileManager.RARE_CARD_UNLOCK_COST + 5
 
 	var result := ProfileManager.unlock_card(card)
@@ -249,7 +260,7 @@ func test_unlock_card_deducts_fame_and_adds_to_unlocked_cards() -> void:
 
 
 func test_unlock_card_fails_without_enough_fame() -> void:
-	var card := _make_card(CardData.Rarity.RARE, "res://data/cards/gem_10.tres")
+	var card := _make_card(CardData.Rarity.RARE, _FAKE_RARE_CARD_PATH)
 	ProfileManager.profile["fame"] = 0
 
 	var result := ProfileManager.unlock_card(card)
@@ -260,7 +271,7 @@ func test_unlock_card_fails_without_enough_fame() -> void:
 
 
 func test_unlock_card_fails_for_non_rare_card() -> void:
-	var card := _make_card(CardData.Rarity.COMMON, "res://data/cards/brick_1.tres")
+	var card := _make_card(CardData.Rarity.COMMON, "res://data/cards/__test_only_fake_common_card__.tres")
 	ProfileManager.profile["fame"] = 999999
 
 	var result := ProfileManager.unlock_card(card)
@@ -269,8 +280,8 @@ func test_unlock_card_fails_for_non_rare_card() -> void:
 
 
 func test_unlock_card_fails_when_already_unlocked() -> void:
-	var card := _make_card(CardData.Rarity.RARE, "res://data/cards/gem_10.tres")
-	ProfileManager.profile["unlocked_cards"] = ["res://data/cards/gem_10.tres"]
+	var card := _make_card(CardData.Rarity.RARE, _FAKE_RARE_CARD_PATH)
+	ProfileManager.profile["unlocked_cards"] = [_FAKE_RARE_CARD_PATH]
 	ProfileManager.profile["fame"] = 999999
 	var fame_before: int = ProfileManager.profile["fame"]
 
