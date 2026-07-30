@@ -70,17 +70,13 @@ func _on_battle_pressed():
 	get_tree().change_scene_to_file("res://ui/battle/battle_screen.tscn")
 
 
-func _on_deck_pressed():
-	get_tree().change_scene_to_file("res://ui/deck/deck_screen.tscn")
-
-
-func _on_upgrades_pressed():
-	get_tree().change_scene_to_file("res://ui/meta_shop/meta_shop_screen.tscn")
-
-
 func _on_settings_pressed():
 	get_tree().change_scene_to_file("res://ui/settings/settings_screen.tscn")
 
 
-func _on_stats_pressed():
-	get_tree().change_scene_to_file("res://ui/stats/stats_screen.tscn")
+## ARC-046: «Колода», «Прокачка» и «Статистика» были тремя отдельными
+## кнопками/экранами — теперь один "Профиль" открывает единый экран с
+## вкладками (ui/profile/profile_screen.tscn), см. блокквот ARC-046 в
+## docs/dev_plan_tickets.md.
+func _on_profile_pressed():
+	get_tree().change_scene_to_file("res://ui/profile/profile_screen.tscn")
