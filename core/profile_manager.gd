@@ -23,6 +23,12 @@ extends Node
 ## уровня 0 (без бонуса). Сознательный даунгрейд "бесплатного" стартового
 ## бонуса в "заработанный" — так и задуман прогресс-магазин; см. блокквот
 ## ARC-037 в dev_plan_tickets.md.
+## ARC-039: "total_wins"/"unlocked_artifacts" существуют с ARC-001, но до
+## этого тикета ничто в игре их не писало (мёртвые заглушки — total_wins
+## всегда оставался 0, unlocked_artifacts всегда []). Здесь оба наконец
+## получают реальных писателей (см. record_run_finished()/
+## record_artifact_collected() ниже) и появляются total_runs/max_tower_height —
+## данные для экрана статистики (game_design_doc.md §9.3).
 var profile: Dictionary = {
 	"total_wins": 0,
 	"unlocked_artifacts": [],
@@ -30,6 +36,8 @@ var profile: Dictionary = {
 	"upgrades": {},
 	"unlocked_cards": [],
 	"settings": {"volume": 1.0},
+	"total_runs": 0,
+	"max_tower_height": 0,
 }
 
 ## ARC-038: правило блокировки — просто CardData.rarity == RARE. Никакого
@@ -122,6 +130,27 @@ func _ready() -> void:
 	# но и реально приложить его к AudioServer сразу при старте, а не только
 	# когда игрок зайдёт в экран настроек и подвигает слайдер.
 	_apply_volume_to_audio_server(get_volume())
+	# ARC-039: "максимальная высота Башни" — пик МОЖЕТ случиться в любом бою
+	# забега, не обязательно в последнем (run_summary_screen.gd видит только
+	# состояние на момент конца ЗАБЕГА в целом, не пики по ходу него) —
+	# поэтому слушаем конец КАЖДОГО отдельного боя напрямую, тем же паттерном,
+	# что ArtifactManager подписывается на GameEvents в своём _ready().
+	GameEvents.match_ended.connect(_on_match_ended)
+
+
+## ARC-039: сравниваем tower_hp ИГРОКА (MatchManager.player_data), не
+## победителя матча (winner может быть врагом) — высокая башня, до которой
+## игрок дорос перед поражением, всё равно личный рекорд. Отслеживается для
+## ЛЮБОГО боя (в т.ч. тестового "Битва" из главного меню, не только забегов
+## кампании) — то же допущение, что и у "открытых карт": простая, всегда
+## работающая метрика вместо специального различения "это часть забега?".
+func _on_match_ended(_winner: Resource) -> void:
+	if not MatchManager.player_data:
+		return
+	var height: int = MatchManager.player_data.tower_hp
+	if height > profile.get("max_tower_height", 0):
+		profile["max_tower_height"] = height
+		save_profile()
 
 
 ## ARC-017: Слава — постоянная мета-валюта (design doc 9.1), начисляется по
@@ -131,6 +160,40 @@ func _ready() -> void:
 func add_fame(amount: int) -> void:
 	profile["fame"] = profile.get("fame", 0) + amount
 	save_profile()
+
+
+## ARC-039: вызывается из run_summary_screen.gd._ready() — единственной
+## точки конца ЗАБЕГА целиком (см. её же комментарий/ARC-018), тем же
+## способом, что она уже вызывает add_fame(). total_runs растёт всегда
+## (забег закончился — неважно, победой или поражением боссу); total_wins —
+## только при victory. "победа" здесь = победа над боссом (MatchSettings.
+## run_victory), а не победа в отдельном бою — так же, как "число забегов"
+## считает завершённые ЗАБЕГИ, а не отдельные бои внутри них (иначе эти два
+## числа значили бы почти одно и то же и не несли раздельного смысла).
+func record_run_finished(victory: bool) -> void:
+	profile["total_runs"] = profile.get("total_runs", 0) + 1
+	if victory:
+		profile["total_wins"] = profile.get("total_wins", 0) + 1
+	save_profile()
+
+
+## ARC-039: вызывается из ui/reward/reward_screen.gd._apply_slot() при выборе
+## слота-артефакта. "Открытые" здесь = "хоть раз получены в награду за
+## какой-либо забег", НАВСЕГДА, в отличие от MatchSettings.run_artifacts
+## (которые обнуляются каждый новый забег) — лифетайм-достижение/коллекция,
+## не то же самое понятие, что "разблокировка" у карт (ARC-038): у
+## артефактов нет отдельного гейта "нужно купить, чтобы выпадали" — они
+## всегда могут выпасть, но факт "видел ли игрок эту награду хоть раз" сам
+## по себе интересен как коллекционная статистика (design doc §9.3,
+## docs/ui_wireframes.html#profile-screen, вкладка "Коллекция").
+## artifact.resource_path — тот же способ идентификации, что unlocked_cards
+## у ARC-038.
+func record_artifact_collected(artifact: ArtifactData) -> void:
+	var collected: Array = profile.get("unlocked_artifacts", [])
+	if not collected.has(artifact.resource_path):
+		collected.append(artifact.resource_path)
+		profile["unlocked_artifacts"] = collected
+		save_profile()
 
 
 ## ARC-037: текущий купленный уровень улучшения key (0, если ни разу не

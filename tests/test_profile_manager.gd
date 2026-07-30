@@ -342,3 +342,79 @@ func test_volume_persists_across_save_and_load() -> void:
 	ProfileManager.load_profile()
 
 	assert_eq(ProfileManager.get_volume(), 0.25)
+
+
+# --- ARC-039: record_run_finished / record_artifact_collected / _on_match_ended ---
+
+
+func test_record_run_finished_always_increments_total_runs() -> void:
+	ProfileManager.profile = {"total_runs": 2, "total_wins": 1}
+
+	ProfileManager.record_run_finished(false)
+
+	assert_eq(ProfileManager.profile["total_runs"], 3)
+	assert_eq(ProfileManager.profile["total_wins"], 1, "Поражение не должно увеличивать total_wins")
+
+
+func test_record_run_finished_increments_total_wins_on_victory() -> void:
+	ProfileManager.profile = {"total_runs": 2, "total_wins": 1}
+
+	ProfileManager.record_run_finished(true)
+
+	assert_eq(ProfileManager.profile["total_runs"], 3)
+	assert_eq(ProfileManager.profile["total_wins"], 2)
+
+
+func test_record_run_finished_handles_missing_keys_in_old_profile() -> void:
+	ProfileManager.profile = {"fame": 0}
+
+	ProfileManager.record_run_finished(true)
+
+	assert_eq(ProfileManager.profile["total_runs"], 1)
+	assert_eq(ProfileManager.profile["total_wins"], 1)
+
+
+func test_record_artifact_collected_adds_resource_path() -> void:
+	var artifact: ArtifactData = load("res://data/artifacts/dwarf_pickaxe.tres")
+	ProfileManager.profile["unlocked_artifacts"] = []
+
+	ProfileManager.record_artifact_collected(artifact)
+
+	assert_eq(ProfileManager.profile["unlocked_artifacts"], [artifact.resource_path])
+
+
+func test_record_artifact_collected_does_not_duplicate() -> void:
+	var artifact: ArtifactData = load("res://data/artifacts/dwarf_pickaxe.tres")
+	ProfileManager.profile["unlocked_artifacts"] = [artifact.resource_path]
+
+	ProfileManager.record_artifact_collected(artifact)
+
+	assert_eq(ProfileManager.profile["unlocked_artifacts"], [artifact.resource_path])
+
+
+func test_on_match_ended_records_new_max_tower_height() -> void:
+	var saved_player: PlayerData = MatchManager.player_data
+	var p := TestFixtures.make_player()
+	p.tower_hp = 42
+	MatchManager.player_data = p
+	ProfileManager.profile["max_tower_height"] = 10
+
+	ProfileManager._on_match_ended(null)
+
+	assert_eq(ProfileManager.profile["max_tower_height"], 42)
+
+	MatchManager.player_data = saved_player
+
+
+func test_on_match_ended_does_not_lower_existing_record() -> void:
+	var saved_player: PlayerData = MatchManager.player_data
+	var p := TestFixtures.make_player()
+	p.tower_hp = 5
+	MatchManager.player_data = p
+	ProfileManager.profile["max_tower_height"] = 50
+
+	ProfileManager._on_match_ended(null)
+
+	assert_eq(ProfileManager.profile["max_tower_height"], 50, "Меньшая высота не должна затирать рекорд")
+
+	MatchManager.player_data = saved_player

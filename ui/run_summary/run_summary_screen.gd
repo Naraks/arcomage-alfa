@@ -21,6 +21,9 @@ func _ready() -> void:
 	var fame_earned := _calculate_fame(floors_passed, elites_defeated, MatchSettings.run_victory)
 
 	ProfileManager.add_fame(fame_earned)
+	# ARC-039: тот же единственный хук конца забега, что уже используется для
+	# add_fame() чуть выше — total_runs/total_wins (экран статистики).
+	ProfileManager.record_run_finished(MatchSettings.run_victory)
 
 	_build_ui(floors_passed, elites_defeated, fame_earned)
 

@@ -80,3 +80,7 @@ func _on_upgrades_pressed():
 
 func _on_settings_pressed():
 	get_tree().change_scene_to_file("res://ui/settings/settings_screen.tscn")
+
+
+func _on_stats_pressed():
+	get_tree().change_scene_to_file("res://ui/stats/stats_screen.tscn")

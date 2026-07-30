@@ -270,6 +270,9 @@ func _on_confirm_pressed() -> void:
 func _apply_slot(slot: Dictionary) -> void:
 	if slot.get("kind") == "artifact":
 		MatchSettings.run_artifacts.append(slot["artifact"])
+		# ARC-039: лифетайм-коллекция для экрана статистики — отдельно от
+		# run_artifacts выше (тот обнуляется каждый новый забег).
+		ProfileManager.record_artifact_collected(slot["artifact"])
 	else:
 		MatchSettings.run_deck.append(slot["card"])
 

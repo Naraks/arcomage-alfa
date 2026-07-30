@@ -7,20 +7,24 @@ extends GutTest
 const RewardScreenScript = preload("res://ui/reward/reward_screen.gd")
 
 var _saved_unlocked_cards: Array
+var _saved_unlocked_artifacts: Array
 
 
 func before_each() -> void:
 	MatchSettings.run_deck = []
 	MatchSettings.run_artifacts = []
-	# ARC-038: ProfileManager — общий синглтон с другими тестовыми файлами;
-	# фиксируем известное состояние (ничего не разблокировано) и восстанавливаем
-	# после, как test_profile_manager.gd делает для всего profile.
+	# ARC-038/039: ProfileManager — общий синглтон с другими тестовыми файлами;
+	# фиксируем известное состояние (ничего не разблокировано/собрано) и
+	# восстанавливаем после, как test_profile_manager.gd делает для всего profile.
 	_saved_unlocked_cards = ProfileManager.profile.get("unlocked_cards", []).duplicate()
 	ProfileManager.profile["unlocked_cards"] = []
+	_saved_unlocked_artifacts = ProfileManager.profile.get("unlocked_artifacts", []).duplicate()
+	ProfileManager.profile["unlocked_artifacts"] = []
 
 
 func after_each() -> void:
 	ProfileManager.profile["unlocked_cards"] = _saved_unlocked_cards
+	ProfileManager.profile["unlocked_artifacts"] = _saved_unlocked_artifacts
 
 
 # --- обычный бой ---
@@ -147,6 +151,19 @@ func test_apply_slot_artifact_appends_to_run_artifacts() -> void:
 	screen._apply_slot({"kind": "artifact", "artifact": artifact})
 
 	assert_eq(MatchSettings.run_artifacts, [artifact])
+
+	screen.free()
+
+
+func test_apply_slot_artifact_records_it_as_collected_in_profile() -> void:
+	# ARC-039: лифетайм-коллекция для экрана статистики, отдельно от
+	# run_artifacts (тот обнуляется каждый новый забег, см. тест выше).
+	var screen = RewardScreenScript.new()
+	var artifact := load(RewardScreenScript.ALL_ARTIFACT_PATHS[0])
+
+	screen._apply_slot({"kind": "artifact", "artifact": artifact})
+
+	assert_eq(ProfileManager.profile["unlocked_artifacts"], [artifact.resource_path])
 
 	screen.free()
 
