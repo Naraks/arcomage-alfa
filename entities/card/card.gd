@@ -3,15 +3,32 @@ extends Control
 signal card_clicked(card_node: Node)
 signal card_right_clicked(card_node: Node)
 
+# ARC-091: preload как тип вместо class_name CurvedLabel напрямую — не
+# зависит от того, подхватил ли редактор глобальный кэш скриптовых классов
+# для только что добавленного файла (class_name в curved_label.gd оставлен
+# для читаемости/автокомплита, но здесь на него не полагаемся).
+const CurvedLabelScript = preload("res://entities/card/curved_label.gd")
+
+## ARC-091 (docs/art_prompts.md §5): "материал печати = редкость" — три отдельные
+## текстуры печати (форма/материал), не 9 (цвет ресурса накладывается сверху
+## через modulate, как и на ленте).
+const SEAL_TEXTURES := {
+	CardData.Rarity.COMMON: preload("res://art/card_frame/seal_common.png"),
+	CardData.Rarity.UNCOMMON: preload("res://art/card_frame/seal_uncommon.png"),
+	CardData.Rarity.RARE: preload("res://art/card_frame/seal_rare.png"),
+}
+
 @export var card_data: CardData:
 	set(value):
 		card_data = value
 		update_ui()
 
-@onready var name_label: Label = $NameLabel
+@onready var name_label: CurvedLabelScript = $NameLabel
 @onready var cost_label: Label = $CostLabel
 @onready var description_label: Label = $DescriptionLabel
 @onready var background: NinePatchRect = $Background
+@onready var name_banner: TextureRect = $NameBanner
+@onready var seal_badge: TextureRect = $SealBadge
 @onready var icon_texture: TextureRect = $IconTexture
 
 
@@ -45,18 +62,30 @@ func update_ui() -> void:
 	icon_texture.texture = card_data.icon
 	icon_texture.visible = card_data.icon != null
 
-	# ARC-091 (docs/art_prompts.md §5): фон карты — текстура пергамента
-	# (NinePatchRect), а не сплошная заливка цветом ресурса, как раньше.
-	# Ресурс теперь читается через СЛАБЫЙ цветной подтон бумаги (не убивает
-	# текстуру/потёртости), а не через основной сплошной цвет фона — по
-	# зафиксированному решению в художественном брифе.
+	# ARC-091 (docs/art_prompts.md §5): пергамент фона — ВСЕГДА одного цвета
+	# (без подтона по ресурсу — правка по фидбеку: слабый подтон парчмента
+	# сливался с лентой-баннером того же тона, цвет было не отличить).
+	# Цветовое кодирование ресурса теперь целиком на ленте и печати —
+	# они маленькие и декоративные, поэтому тон может быть насыщенным, не
+	# рискуя убить текстуру всей карты, как было бы с сплошной заливкой фона.
+	background.modulate = Color(1, 1, 1, 1)
+
+	# ARC-091: печать стоимости — материал/форма зависит от редкости карты
+	# (простая бечёвка/серебро/золото), цвет воска — от типа ресурса (тот же
+	# modulate, что и на ленте, чтобы цветовое кодирование читалось одинаково
+	# в обоих местах карты).
+	seal_badge.texture = SEAL_TEXTURES.get(card_data.rarity, SEAL_TEXTURES[CardData.Rarity.COMMON])
+
+	var resource_tint := Color(1, 1, 1, 1)
 	match card_data.type:
 		CardData.ResourceType.BRICKS:
-			background.modulate = Color(1.0, 0.88, 0.8)
+			resource_tint = Color(1.0, 0.35, 0.3)
 		CardData.ResourceType.GEMS:
-			background.modulate = Color(0.85, 0.9, 1.0)
+			resource_tint = Color(0.35, 0.5, 1.0)
 		CardData.ResourceType.BEASTS:
-			background.modulate = Color(0.88, 1.0, 0.85)
+			resource_tint = Color(0.35, 1.0, 0.35)
+	name_banner.modulate = resource_tint
+	seal_badge.modulate = resource_tint
 
 
 func _on_mouse_entered() -> void:

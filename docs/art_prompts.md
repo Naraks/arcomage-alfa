@@ -168,16 +168,31 @@ watermark, no background (isolated on transparent).
 ```
 
 **Восковые печати, по редкости (3 отдельные текстуры, форма — не цвет; цвет ресурса накладывается
-`modulate` в движке, поэтому сама печать должна быть в нейтральном/светлом воске на референсе):**
+`modulate` в движке, поэтому сама печать должна быть в нейтральном/светлом воске на референсе).**
+
+Первая попытка вышла неудачной: печати сгенерировались как 3D-рендер предмета под углом (перспектива
+сверху-сбоку, объёмная "подушка", глянцевые блики, длинная тень) — смотрится как иконка инвентаря ролевой
+игры, а не как плоский элемент карты в том же стиле, что остальной арт. Промпт ниже явно требует плоский
+вид строго анфас и минимум деталей (эта иконка в игре отображается совсем маленькой — badge стоимости в
+углу карты, ~20×20px):
+
 ```
-A wax seal stamp icon for a fantasy card game, painterly 2D style matching Clash Royale /
-Hearthstone, circular, isolated on transparent background, no text/no number on it (a
-number will be overlaid separately) — three variants needed, generate separately:
-1) Common: a plain wax blob with a simple twine string pressed across it, humble and
-   rough-edged.
-2) Uncommon: a neater wax seal wrapped with a thin silver ribbon trim.
-3) Rare: an ornate wax seal with a small emblem stamped into it, gold ribbon trim, subtle
-   warm glow around the edge.
-Neutral pale wax color (so in-engine tinting can recolor it per resource type), no gore,
-no watermark.
+Flat 2D icon of a wax seal, viewed straight-on / top-down (orthographic front view, NOT a
+3D-rendered object, NOT at an angle, NOT isometric, no perspective tilt), painted in the
+same painterly 2D style as the rest of the card game's art (Clash Royale / Hearthstone UI
+icon style) but drastically simplified — bold flat silhouette, minimal shading, only 1-2
+tones of shadow, no glossy highlights, no drop shadow, no glow, no rim light. Perfectly
+circular outer silhouette, isolated on transparent background, no text/no number on it (a
+number will be overlaid separately). Must stay clearly readable as a simple round icon at
+very small size (roughly 20x20 pixels on screen) — three variants needed, generate
+separately, each as simple as possible:
+1) Common: a flat round wax circle with a simple twine string laid across it in a flat X,
+   humble, rough uneven outer edge, minimal detail.
+2) Uncommon: a flat round wax circle with a thin flat silver ring around the rim, minimal
+   detail, no other ornament.
+3) Rare: a flat round wax circle with a thin flat gold ring around the rim and ONE small
+   simple flat symbol in the center (a single plain shape, not a detailed crest), minimal
+   detail.
+Neutral pale wax color (so in-engine tinting can recolor it per resource type), flat even
+lighting, no gore, no watermark.
 ```
