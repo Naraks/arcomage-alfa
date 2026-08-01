@@ -1,0 +1,183 @@
+extends GutTest
+## ARC-091 (docs/art_prompts.md §5): CurvedLabel — имя карты, изогнутое по
+## дуге под форму ленты-баннера (entities/card/curved_label.gd).
+##
+## Реальную отрисовку (_draw(), draw_char/draw_set_transform) в headless GUT
+## без живого рендера не проверить — тестируем только чистую математику
+## раскладки (compute_radius/compute_char_placements), вынесенную отдельными
+## static-функциями специально для этого. Ширины символов задаются вручную
+## (не через реальный Font) — не хотим, чтобы тест зависел от конкретного
+## файла шрифта, как и tests/fixtures.gd не читает реальные .tres.
+
+const CurvedLabelScript = preload("res://entities/card/curved_label.gd")
+
+
+func test_compute_radius_zero_angle_returns_zero() -> void:
+	assert_eq(CurvedLabelScript.compute_radius(100.0, 0.0), 0.0)
+
+
+func test_compute_radius_zero_width_returns_zero() -> void:
+	assert_eq(CurvedLabelScript.compute_radius(0.0, 20.0), 0.0)
+
+
+func test_compute_radius_larger_angle_gives_smaller_radius() -> void:
+	# Тот же текст, но сильнее выгнуть (больше угол) — должно потребовать
+	# окружность МЕНЬШЕГО радиуса (сильнее изгиб = "круче" дуга).
+	var r_gentle = CurvedLabelScript.compute_radius(100.0, 10.0)
+	var r_sharp = CurvedLabelScript.compute_radius(100.0, 40.0)
+	assert_true(r_sharp < r_gentle, "Больший угол дуги должен давать меньший радиус")
+
+
+func test_compute_char_placements_empty_widths_returns_empty() -> void:
+	var placements = CurvedLabelScript.compute_char_placements([], 100.0, Vector2.ZERO)
+	assert_eq(placements.size(), 0)
+
+
+func test_compute_char_placements_zero_radius_keeps_theta_zero_for_all_chars() -> void:
+	# radius=0 — вырожденный случай (не должно быть по логике _draw(), но
+	# сама функция обязана не делить на ноль и не падать).
+	var widths: Array[float] = [10.0, 10.0, 10.0]
+	var placements = CurvedLabelScript.compute_char_placements(widths, 0.0, Vector2.ZERO)
+	assert_eq(placements.size(), 3)
+	for p in placements:
+		assert_eq(p["theta"], 0.0)
+
+
+func test_compute_char_placements_middle_char_of_odd_string_has_zero_theta() -> void:
+	# Нечётное число одинаковых по ширине символов — средний символ должен
+	# сидеть точно в вершине дуги (theta=0).
+	var widths: Array[float] = [10.0, 10.0, 10.0]
+	var placements = CurvedLabelScript.compute_char_placements(widths, 100.0, Vector2.ZERO)
+	assert_almost_eq(placements[1]["theta"], 0.0, 0.0001, "Средний символ должен быть в вершине дуги")
+
+
+func test_compute_char_placements_symmetric_for_symmetric_widths() -> void:
+	# Симметричные по ширине символы вокруг центра строки должны давать
+	# симметричные (равные по модулю, противоположные по знаку) углы.
+	var widths: Array[float] = [10.0, 10.0, 10.0, 10.0]
+	var placements = CurvedLabelScript.compute_char_placements(widths, 100.0, Vector2.ZERO)
+	assert_almost_eq(placements[0]["theta"], -placements[3]["theta"], 0.0001)
+	assert_almost_eq(placements[1]["theta"], -placements[2]["theta"], 0.0001)
+
+
+func test_compute_char_placements_thetas_increase_left_to_right() -> void:
+	# Угол должен монотонно расти слева направо (дуга не "переламывается").
+	var widths: Array[float] = [8.0, 12.0, 6.0, 15.0, 9.0]
+	var placements = CurvedLabelScript.compute_char_placements(widths, 200.0, Vector2.ZERO)
+	for i in range(1, placements.size()):
+		assert_true(
+			placements[i]["theta"] > placements[i - 1]["theta"],
+			"theta должна монотонно расти по мере движения слева направо"
+		)
+
+
+func test_compute_char_placements_positions_lie_on_the_circle() -> void:
+	# Все точки раскладки должны лежать ровно на окружности радиуса radius
+	# вокруг circle_center (это и есть определение "дуги").
+	var widths: Array[float] = [10.0, 14.0, 8.0, 20.0]
+	var radius := 150.0
+	var center := Vector2(75, 300)
+	var placements = CurvedLabelScript.compute_char_placements(widths, radius, center)
+	for p in placements:
+		var dist = (p["pos"] as Vector2).distance_to(center)
+		assert_almost_eq(dist, radius, 0.01, "Точка символа должна лежать на окружности заданного радиуса")
+
+
+func test_compute_char_placements_apex_char_sits_directly_above_center() -> void:
+	# Символ в вершине дуги (theta=0) должен оказаться строго над центром
+	# окружности (по формуле pos = center + radius*(sin(0), -cos(0))).
+	var widths: Array[float] = [10.0, 10.0, 10.0]
+	var radius := 100.0
+	var center := Vector2(50, 200)
+	var placements = CurvedLabelScript.compute_char_placements(widths, radius, center)
+	var apex: Vector2 = placements[1]["pos"]
+	assert_almost_eq(apex.x, center.x, 0.01)
+	assert_almost_eq(apex.y, center.y - radius, 0.01)
+
+
+## ARC-091 (docs/dev_plan_tickets.md — «имя написано чернилами на пергаменте»,
+## после отказа от ленты-баннера): compute_jitter — детерминированный
+## "дрожащий" почерк, по одному смещению/повороту на символ.
+
+func test_compute_jitter_returns_one_entry_per_character() -> void:
+	var jitter = CurvedLabelScript.compute_jitter(5, 2.0, 4.0, 1)
+	assert_eq(jitter.size(), 5)
+
+
+func test_compute_jitter_zero_amount_gives_zero_offsets() -> void:
+	var jitter = CurvedLabelScript.compute_jitter(4, 0.0, 0.0, 42)
+	for j in jitter:
+		assert_eq(j["dx"], 0.0)
+		assert_eq(j["dy"], 0.0)
+		assert_eq(j["drot"], 0.0)
+
+
+func test_compute_jitter_same_seed_is_deterministic() -> void:
+	# Один и тот же seed должен давать байт-в-байт одинаковый результат при
+	# каждом вызове — иначе буквы "дёргались" бы между перерисовками, а не
+	# просто выглядели неровно один раз.
+	var a = CurvedLabelScript.compute_jitter(6, 3.0, 8.0, 777)
+	var b = CurvedLabelScript.compute_jitter(6, 3.0, 8.0, 777)
+	for i in a.size():
+		assert_eq(a[i]["dx"], b[i]["dx"])
+		assert_eq(a[i]["dy"], b[i]["dy"])
+		assert_eq(a[i]["drot"], b[i]["drot"])
+
+
+func test_compute_jitter_different_seeds_usually_differ() -> void:
+	var a = CurvedLabelScript.compute_jitter(6, 3.0, 8.0, 1)
+	var b = CurvedLabelScript.compute_jitter(6, 3.0, 8.0, 2)
+	var all_equal := true
+	for i in a.size():
+		if a[i]["dx"] != b[i]["dx"]:
+			all_equal = false
+			break
+	assert_false(all_equal, "Разные seed почти наверняка должны давать разные смещения")
+
+
+func test_compute_jitter_offsets_stay_within_bounds() -> void:
+	var position_amount := 2.5
+	var rotation_amount := 6.0
+	var jitter = CurvedLabelScript.compute_jitter(20, position_amount, rotation_amount, 99)
+	for j in jitter:
+		assert_true(abs(j["dx"]) <= position_amount)
+		assert_true(abs(j["dy"]) <= position_amount)
+		assert_true(abs(j["drot"]) <= deg_to_rad(rotation_amount) + 0.0001)
+
+
+## ARC-091 (docs/dev_plan_tickets.md — «буквы в названии карты плавают»):
+## compute_float_offset — детерминированное по времени вертикальное смещение
+## одной буквы (своя фаза на индекс, поэтому буквы не подпрыгивают синхронно).
+
+func test_compute_float_offset_zero_amplitude_is_always_zero() -> void:
+	assert_eq(CurvedLabelScript.compute_float_offset(0, 5.0, 0.0, 1.0), 0.0)
+	assert_eq(CurvedLabelScript.compute_float_offset(3, 100.0, 0.0, 2.5), 0.0)
+
+
+func test_compute_float_offset_matches_sine_formula() -> void:
+	var index := 2
+	var time := 1.3
+	var amplitude := 4.0
+	var speed := 1.5
+	var expected := amplitude * sin(time * speed + index * 0.9)
+	assert_almost_eq(
+		CurvedLabelScript.compute_float_offset(index, time, amplitude, speed), expected, 0.0001
+	)
+
+
+func test_compute_float_offset_stays_within_amplitude_bounds() -> void:
+	var amplitude := 3.0
+	for i in range(10):
+		for t_step in range(20):
+			var t: float = t_step * 0.37
+			var offset = CurvedLabelScript.compute_float_offset(i, t, amplitude, 1.0)
+			assert_true(abs(offset) <= amplitude + 0.0001)
+
+
+func test_compute_float_offset_different_indices_differ_at_same_time() -> void:
+	# Разные буквы (разный index) в один и тот же момент времени должны, как
+	# правило, иметь разную фазу — иначе строка "плавала" бы синхронно, как
+	# единый блок, а не отдельными буквами.
+	var a = CurvedLabelScript.compute_float_offset(0, 2.0, 3.0, 1.0)
+	var b = CurvedLabelScript.compute_float_offset(1, 2.0, 3.0, 1.0)
+	assert_ne(a, b)
