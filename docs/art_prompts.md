@@ -117,7 +117,63 @@ should read as quick and sneaky, not powerful or heroic — a cheap, low-tier mi
 яркости оставляло заметный светлый ореол вокруг персонажа, спорящий с более тёмным пергаментом —
 решаемо, но требует куда больше возни и даёт менее гарантированный результат. **Выбран вариант A** —
 им теперь и является мастер-промпт §1, старый насыщенно-цветной Clash Royale/Hearthstone стиль (§2
-исторический) для иллюстраций больше не используется.
+исторический) для иллюстраций больше не используется. Отдельно пробовали цветной арт прямо на текстуре
+пергамента (без белого фона у генерации) как ещё одну альтернативу для самого Гоблина — тоже неплохо
+блендился, но автор тикета решил стиль не менять, сепия остаётся канонической (см.
+`docs/dev_plan_tickets.md`, ARC-091).
+
+---
+
+### Зверолов (`beast_1.tres`, Звери, Common, cost 1, «Увеличивает добычу зверей на 1»)
+
+Не боец — вспомогательная карта (эффект `mod_dungeon +1`, свой территория/добыча, а не атака). Common,
+дешёвая (cost 1), поэтому персонаж должен читаться как обычный практичный следопыт, а не как герой:
+никакой магии/свечения, простое снаряжение (§3 — модификатор редкости Common).
+
+**Subject:**
+```
+A rugged, weathered beast hunter and trapper, plain human, practical worn leather and fur
+clothing, a simple fur-trimmed hood or cap. Carries humble trapping gear — a coil of rope
+or snare wire slung over one shoulder, a small skinning knife at the belt, a couple of
+animal pelts draped across the other shoulder. Crouched low as if reading tracks on the
+ground, alert and watchful posture, weathered face with rough stubble. No magic, no glow,
+no fine armor or ornate weapons — a common, humble tracker going about his trade, not a
+heroic warrior.
+```
+
+**Готовый промпт для Midjourney (пример):**
+```
+Monochrome sepia ink illustration in the style of an old illuminated manuscript bestiary,
+painted or engraved directly onto aged parchment paper, bold expressive ink linework, soft
+sepia-brown wash shading, no flat color, no saturated hues, no background scene, subject
+alone on empty parchment with faint ink flourishes trailing off, bold clean readable
+silhouette, vertical portrait orientation, no text, no frame, no gore, family-friendly ::
+a rugged weathered beast hunter and trapper, practical worn leather and fur clothing,
+fur-trimmed hood, coil of snare rope over one shoulder, small skinning knife at the belt,
+animal pelts draped over the other shoulder, crouched low reading tracks on the ground,
+alert watchful posture, weathered stubbled face, no magic, no glow, no fine armor, humble
+tracker not a heroic warrior
+--ar 3:4 --style raw --no text, watermark, frame, color, blood, extra limbs
+```
+
+**Тот же промпт для DALL-E/ChatGPT Images/Firefly (обычным текстом, без `--` параметров):**
+```
+Create a monochrome sepia ink illustration in the style of an old illuminated manuscript
+bestiary, as if painted or engraved directly onto aged parchment paper — not a separate
+picture pasted on top of the paper. Bold expressive ink linework with soft sepia-brown wash
+shading, no flat color, no saturated hues. No background scene at all — just the subject
+alone on the empty parchment, loosely bordered by faint ink hatching or decorative
+flourishes trailing off into nothing. Bold, clean, readable silhouette. Vertical 3:4
+portrait orientation. No text, no card frame, no watermark, no gore, family-friendly tone.
+
+Subject: a rugged, weathered beast hunter and trapper, plain human, practical worn leather
+and fur clothing, a simple fur-trimmed hood or cap. He carries humble trapping gear — a
+coil of rope or snare wire slung over one shoulder, a small skinning knife at the belt, a
+couple of animal pelts draped across the other shoulder. He's crouched low as if reading
+tracks on the ground, alert and watchful posture, weathered face with rough stubble. No
+magic, no glow, no fine armor or ornate weapons — a common, humble tracker going about his
+trade, not a heroic warrior.
+```
 
 ---
 
