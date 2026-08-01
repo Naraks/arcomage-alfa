@@ -1,32 +1,32 @@
-[gd_scene load_steps=4 format=3 uid="uid://b8xq7y3p2j4k1"]
+[gd_scene format=3 uid="uid://b8xq7y3p2j4k1"]
 
-[ext_resource type="Script" path="res://entities/card/card.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://art/card_frame/parchment_bg.png" id="2_parchment"]
+[ext_resource type="Script" uid="uid://c8cxkvigyypcx" path="res://entities/card/card.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://1qevcall0pfq" path="res://art/card_frame/parchment_bg.png" id="2_parchment"]
 
-[node name="Card" type="Control"]
+[node name="Card" type="Control" unique_id=966600199]
 custom_minimum_size = Vector2(150, 220)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 150.0
 offset_bottom = 220.0
+size_flags_vertical = 4
 pivot_offset = Vector2(75, 110)
 script = ExtResource("1_script")
 
-[node name="Background" type="NinePatchRect" parent="."]
+[node name="Background" type="NinePatchRect" parent="." unique_id=1477713208]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 texture = ExtResource("2_parchment")
 patch_margin_left = 32
 patch_margin_top = 40
 patch_margin_right = 32
 patch_margin_bottom = 40
 
-[node name="Border" type="ReferenceRect" parent="."]
+[node name="Border" type="ReferenceRect" parent="." unique_id=1571984303]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -38,7 +38,7 @@ border_color = Color(0, 0, 0, 1)
 border_width = 2.0
 editor_only = false
 
-[node name="ClickButton" type="Button" parent="."]
+[node name="ClickButton" type="Button" parent="." unique_id=498039082]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = 15
@@ -48,7 +48,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
-[node name="NameLabel" type="Label" parent="."]
+[node name="NameLabel" type="Label" parent="." unique_id=502496569]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -59,7 +59,7 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Card Name"
 horizontal_alignment = 1
 
-[node name="CostLabel" type="Label" parent="."]
+[node name="CostLabel" type="Label" parent="." unique_id=1301683982]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -73,7 +73,7 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "1"
 horizontal_alignment = 2
 
-[node name="IconTexture" type="TextureRect" parent="."]
+[node name="IconTexture" type="TextureRect" parent="." unique_id=2102813129]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -86,7 +86,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="DescriptionLabel" type="Label" parent="."]
+[node name="DescriptionLabel" type="Label" parent="." unique_id=1298564381]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
