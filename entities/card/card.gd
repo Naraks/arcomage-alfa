@@ -11,7 +11,7 @@ signal card_right_clicked(card_node: Node)
 @onready var name_label: Label = $NameLabel
 @onready var cost_label: Label = $CostLabel
 @onready var description_label: Label = $DescriptionLabel
-@onready var background: ColorRect = $Background
+@onready var background: NinePatchRect = $Background
 @onready var icon_texture: TextureRect = $IconTexture
 
 
@@ -45,14 +45,18 @@ func update_ui() -> void:
 	icon_texture.texture = card_data.icon
 	icon_texture.visible = card_data.icon != null
 
-	# Меняем цвет фона в зависимости от типа ресурса
+	# ARC-091 (docs/art_prompts.md §5): фон карты — текстура пергамента
+	# (NinePatchRect), а не сплошная заливка цветом ресурса, как раньше.
+	# Ресурс теперь читается через СЛАБЫЙ цветной подтон бумаги (не убивает
+	# текстуру/потёртости), а не через основной сплошной цвет фона — по
+	# зафиксированному решению в художественном брифе.
 	match card_data.type:
 		CardData.ResourceType.BRICKS:
-			background.modulate = Color(0.8, 0.4, 0.4)
+			background.modulate = Color(1.0, 0.88, 0.8)
 		CardData.ResourceType.GEMS:
-			background.modulate = Color(0.4, 0.4, 0.8)
+			background.modulate = Color(0.85, 0.9, 1.0)
 		CardData.ResourceType.BEASTS:
-			background.modulate = Color(0.4, 0.8, 0.4)
+			background.modulate = Color(0.88, 1.0, 0.85)
 
 
 func _on_mouse_entered() -> void:
