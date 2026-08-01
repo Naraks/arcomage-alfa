@@ -1,41 +1,59 @@
 # Промпт-бриф для арта карт (для внешнего AI-инструмента/художника)
 
-Дополняет ARC-091. Ранний вариант стиля был плоский векторный "щит-медальон" — по фидбэку не подошёл
-("совсем не то"), поэтому здесь другое направление: **расписанный 2D-арт в духе Clash Royale /
-Hearthstone**, как и требует GDD §11.1, без щита/кольца редкости внутри самой иллюстрации (рамку и
-индикатор редкости рисует движок поверх готового арта — см. §3 ниже, и §5 про сам шаблон карты).
+Дополняет ARC-091. История стиля: первый вариант был плоский векторный "щит-медальон" — отклонён
+("совсем не то"). Второй — расписанный насыщенный 2D-арт в духе Clash Royale/Hearthstone (яркий
+cel-shading, отдельная фоновая сцена за персонажем). На карте «Гоблин» этот вариант конфликтовал с
+шаблоном карты (§5 — состаренный пергамент/свиток): иллюстрация со своей сюжетной сценой (лес/небо)
+всегда читалась как отдельная фотография-вставка поверх пергамента, а не как рисунок на той же
+"бумаге", сколько её край ни растушёвывай программно (см. историю правок в `docs/dev_plan_tickets.md`,
+ARC-091). По итогам прямого сравнения A/Б на реальной текстуре пергамента — **закреплён третий,
+текущий вариант**: монохромная сепийная тушь/гравюра, как в старом бестиарии, без отдельной фоновой
+сцены — рисунок читается как часть той же страницы, что и рамка карты, а не вставка на неё.
+
+Индикатор редкости и рамку/печать/ленту по-прежнему рисует движок поверх готового арта (§3, §5) —
+иллюстрация того же 3:4 портретного формата, что и раньше, меняется только сама техника/палитра.
 Генерировать через Midjourney/ChatGPT Images/Leonardo/Stable Diffusion или отдавать художнику как
 техзадание — промпт одинаково читается в обоих случаях.
 
 ## 1. Мастер-промпт (стиль, общий для всех карт)
 
-Блок стиля не меняется от карты к карте — меняется только "Subject" (§4) и палитра по ресурсу (§2).
+Блок стиля не меняется от карты к карте — меняется только "Subject" (§4). Палитра по ресурсу (§2 —
+теперь исторический раздел, см. пометку там) на саму иллюстрацию больше не влияет: цветовое
+кодирование ресурса целиком на ленте-баннере и восковой печати (ARC-091), иллюстрация сознательно
+монохромна.
 
 ```
-Stylized 2D fantasy trading card game illustration, painterly digital art in the style of
-Clash Royale and Hearthstone card art. Bold, clean, readable silhouette even at small
-thumbnail size. Warm painterly rendering with soft cel-shaded lighting, semi-realistic but
-slightly exaggerated cartoonish proportions, rich saturated colors. Single subject centered
-as the hero of the frame, filling 70-80% of the composition. Dramatic rim light separating
-the subject from a soft, blurred, simplified background (shallow depth of field) so the
-background never competes with the subject. Vertical 3:4 portrait orientation, camera at a
-slight low angle. No text, no logos, no watermark, no card frame or border, no gore or blood,
-family-friendly / all-ages tone.
+Monochrome sepia ink illustration in the style of an old illuminated manuscript bestiary,
+as if painted or engraved directly onto aged parchment paper — NOT a separate picture
+pasted on top of the paper, the parchment's own texture and warm tone should show through
+the linework and shading. Bold expressive ink linework with soft sepia-brown wash shading
+(like diluted ink or watercolor wash, one or two tones), no flat color, no saturated hues.
+Single subject, no background scene at all — just the subject alone on the empty parchment,
+loosely bordered by faint ink hatching or a few scattered decorative flourishes that trail
+off into nothing (not a hard outline, not a frame). Bold, clean, readable silhouette even
+at small thumbnail size. Vertical 3:4 portrait orientation. No text, no card frame, no
+watermark, no color, no gore, family-friendly tone.
 ```
 
 **Негативный промпт** (Stable Diffusion/Leonardo; для Midjourney — через `--no`):
 ```
-text, watermark, signature, logo, card frame, border, UI elements, blood, gore, photorealistic,
-3d render, low quality, blurry subject, extra limbs, deformed hands
+text, watermark, signature, logo, card frame, border, UI elements, color, saturated color,
+blood, gore, photorealistic, 3d render, low quality, blurry subject, extra limbs, deformed hands,
+background scene, environment
 ```
 
-## 2. Палитра по типу ресурса (GDD §5.1/11.2 — не менять свободно)
+## 2. Палитра по типу ресурса (историческая — на иллюстрацию больше не влияет)
 
-| Тип | Палитра сцены/освещения |
+Эта таблица относилась к прежнему насыщенно-цветному варианту стиля (сцена/фон за персонажем красились
+по типу ресурса). После перехода на монохромную сепию (§1) иллюстрация ресурс больше не кодирует —
+только лента-баннер и восковая печать (`card.gd::update_ui()`, `resource_tint`). Таблица оставлена как
+референс для этих двух узлов, не для Subject-промптов §4:
+
+| Тип | Акцентный цвет (лента + печать, не иллюстрация) |
 | :--- | :--- |
-| Кирпичи (красный) | Тёплый каменно-кирпичный — терракота, охра, серый камень; фон — пыль/строительная площадка. |
-| Гемы (синий) | Холодный магический — сапфир, электрик-синий, фиолетовые отсветы; фон — мерцающая аура/руны. |
-| Звери (зелёный) | Природный — мшисто-зелёный, коричневый, янтарный; фон — лес/пещера/логово. |
+| Кирпичи (красный) | `Color(1.0, 0.35, 0.3)` — терракота/кирпич. |
+| Гемы (синий) | `Color(0.35, 0.5, 1.0)` — сапфир/электрик-синий. |
+| Звери (зелёный) | `Color(0.35, 1.0, 0.35)` — мшисто-зелёный. |
 
 ## 3. Модификатор редкости (влияет на позу/детализацию, не на цвет рамки — рамку рисует движок)
 
@@ -63,32 +81,43 @@ powerful — a low-tier minion, not a boss.
 
 **Готовый промпт для Midjourney (пример):**
 ```
-Stylized 2D fantasy trading card game illustration, painterly digital art in the style of
-Clash Royale and Hearthstone card art, bold clean readable silhouette, warm painterly
-cel-shaded lighting, rich saturated colors, single subject centered filling 70-80% of frame,
-dramatic rim light against a soft blurred forest background, vertical portrait orientation,
-slight low camera angle, no text, no frame, no gore, family-friendly ::
-a small scrawny goblin, mottled sickly-green skin, oversized pointed ears, mischievous
-crooked grin, one eye squinted, crouched mid-lunge gripping a small rusty jagged dagger,
-ragged leather scraps and burlap loincloth, no armor, quick and sneaky body language, not
-heroic or powerful, mossy green and brown natural palette, soft dark forest background blur
---ar 3:4 --style raw --no text, watermark, frame, blood, extra limbs
+Monochrome sepia ink illustration in the style of an old illuminated manuscript bestiary,
+painted or engraved directly onto aged parchment paper, bold expressive ink linework, soft
+sepia-brown wash shading, no flat color, no saturated hues, no background scene, subject
+alone on empty parchment with faint ink flourishes trailing off, bold clean readable
+silhouette, vertical portrait orientation, no text, no frame, no gore, family-friendly ::
+a small scrawny goblin, oversized pointed ears, mischievous crooked grin, one eye squinted,
+crouched mid-lunge gripping a small jagged dagger, ragged leather scraps and burlap
+loincloth, no armor, quick and sneaky body language, not heroic or powerful
+--ar 3:4 --style raw --no text, watermark, frame, color, blood, extra limbs
 ```
 
 **Тот же промпт для DALL-E/ChatGPT Images/Firefly (обычным текстом, без `--` параметров):**
 ```
-Create a stylized 2D fantasy trading card illustration in the painterly style of Clash Royale
-and Hearthstone card art. Bold, clean, readable silhouette. Warm cel-shaded lighting, rich
-saturated colors, vertical 3:4 portrait composition, subject centered and filling most of the
-frame, soft blurred forest background with dramatic rim lighting separating the subject from
-it. No text, no card frame, no watermark, no gore, family-friendly tone.
+Create a monochrome sepia ink illustration in the style of an old illuminated manuscript
+bestiary, as if painted or engraved directly onto aged parchment paper — not a separate
+picture pasted on top of the paper. Bold expressive ink linework with soft sepia-brown wash
+shading, no flat color, no saturated hues. No background scene at all — just the subject
+alone on the empty parchment, loosely bordered by faint ink hatching or decorative
+flourishes trailing off into nothing. Bold, clean, readable silhouette. Vertical 3:4
+portrait orientation. No text, no card frame, no watermark, no gore, family-friendly tone.
 
-Subject: a small, scrawny goblin with mottled sickly-green skin, oversized pointed ears, a
-mischievous crooked grin with one eye squinted. It's crouched in a mid-lunge pose, gripping a
-small rusty jagged dagger, wearing only ragged leather scraps and a burlap loincloth, no
-armor. Its body language should read as quick and sneaky, not powerful or heroic — this is a
-cheap, low-tier minion, not a boss monster. Natural mossy green and brown palette.
+Subject: a small, scrawny goblin with oversized pointed ears, a mischievous crooked grin
+with one eye squinted. It's crouched in a mid-lunge pose, gripping a small jagged dagger,
+wearing only ragged leather scraps and a burlap loincloth, no armor. Its body language
+should read as quick and sneaky, not powerful or heroic — a cheap, low-tier minion.
 ```
+
+**Решение по стилю (закрыто).** Прогнали через генератор оба кандидата на "убрать фон и лучше
+вписать в пергамент" — вариант A (монохром/сепия, гравюра на пергаменте, промпт выше) и вариант B
+(цветной, без фона, живописный "истекающий" край). Сравнили визуально прямо на реальной текстуре
+`art/card_frame/parchment_bg.png` (не на абстрактном фоне): у A край практически не читается — тон
+сепии настолько близок к пергаменту, что даже простая программная растушёвка даёт бесшовный результат.
+У B генератор дал не чистый белый, а кремовый фон с цветными разводами по краю, и вырезание по порогу
+яркости оставляло заметный светлый ореол вокруг персонажа, спорящий с более тёмным пергаментом —
+решаемо, но требует куда больше возни и даёт менее гарантированный результат. **Выбран вариант A** —
+им теперь и является мастер-промпт §1, старый насыщенно-цветной Clash Royale/Hearthstone стиль (§2
+исторический) для иллюстраций больше не используется.
 
 ---
 
@@ -195,4 +224,27 @@ separately, each as simple as possible:
    detail.
 Neutral pale wax color (so in-engine tinting can recolor it per resource type), flat even
 lighting, no gore, no watermark.
+```
+
+**Пергамент фона — версия с рваными краями ("развёрнутый свиток").** По просьбе автора тикета — текущий
+`parchment_bg.png` (прямоугольная текстура, потёртость только цветом/тенью у края, растягивается через
+`NinePatchRect`) заменяется на текстуру с НАСТОЯЩЕЙ рваной альфа-кромкой (вырез по неровному контуру, а
+не просто цвет). `NinePatchRect` для неровного силуэта не годится — растягиваемая середина исказит рваный
+край, если он попадёт в зону растяжения. Как только текстура готова, `Background` в `card.tscn`
+переключается с `NinePatchRect` обратно на обычный `TextureRect` (тот же приём, что уже у ленты/печатей) —
+без 9-slice, просто масштабируется под размер карты целиком.
+
+```
+A single sheet of aged parchment paper, unrolled flat, viewed straight-on / top-down (NOT
+at an angle, NOT a 3D-rendered object). Painterly 2D texture matching a stylized fantasy
+card game (Clash Royale / Hearthstone art direction), warm cream and light brown tones,
+subtle fiber grain, soft stains and light burn marks concentrated near the edges, worn but
+still fully legible and clean in the center for text/art overlay. The paper's outer edge
+must be genuinely torn and ragged all the way around — irregular hand-torn notches, small
+frayed fiber wisps sticking out unevenly, NOT a clean rectangle and NOT a uniform scalloped
+pattern, each side torn differently. Vertical portrait orientation, taller than wide
+(roughly matching a tarot/playing card silhouette). Everything outside the torn paper
+shape must be transparent (isolated cutout on alpha channel, not a background color) — the
+ragged silhouette itself IS the edge of the image content. No text, no drawn border/frame
+line on top of it, no watermark.
 ```

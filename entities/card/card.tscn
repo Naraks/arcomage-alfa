@@ -17,20 +17,22 @@ pivot_offset = Vector2(75, 110)
 size_flags_vertical = 4
 script = ExtResource("1_script")
 
-[node name="Background" type="NinePatchRect" parent="." unique_id=1477713208]
+[node name="Background" type="TextureRect" parent="." unique_id=1477713208]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -14.0
+offset_top = -10.733337
+offset_right = 13.0
+offset_bottom = 12.733337
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_parchment")
-patch_margin_left = 32
-patch_margin_top = 40
-patch_margin_right = 32
-patch_margin_bottom = 40
+expand_mode = 1
 
 [node name="Border" type="ReferenceRect" parent="." unique_id=1571984303]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -52,43 +54,29 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
-[node name="NameBanner" type="TextureRect" parent="." unique_id=1753697157]
+[node name="IconTexture" type="TextureRect" parent="." unique_id=2102813129]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = -7.0
-offset_top = 115.0
-offset_right = 5.0
-offset_bottom = 169.0
+offset_left = 16.000002
+offset_top = 14.000002
+offset_right = -55.621597
+offset_bottom = 92.3784
 grow_horizontal = 2
+scale = Vector2(1.4799997, 1.4799997)
 mouse_filter = 2
-texture = ExtResource("3_banner")
 expand_mode = 1
-
-[node name="NameLabel" type="Control" parent="." unique_id=502496569]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_left = 4.0
-offset_top = 117.0
-offset_right = -4.0
-offset_bottom = 139.0
-grow_horizontal = 2
-mouse_filter = 2
-script = ExtResource("6_curved_label")
-text = "Card Name"
-font = ExtResource("5_kurale_font")
-arc_angle_degrees = 28.0
+stretch_mode = 5
 
 [node name="SealBadge" type="TextureRect" parent="." unique_id=1294269577]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -94.0
-offset_top = -9.0
-offset_right = -60.0
-offset_bottom = 25.0
+offset_left = -145.0
+offset_top = -8.0
+offset_right = -111.0
+offset_bottom = 26.0
 grow_horizontal = 0
 mouse_filter = 2
 texture = ExtResource("4_seal_common")
@@ -100,10 +88,10 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -93.0
-offset_top = -12.0
-offset_right = -59.0
-offset_bottom = 22.0
+offset_left = -144.0
+offset_top = -11.0
+offset_right = -110.0
+offset_bottom = 23.0
 grow_horizontal = 0
 theme_override_colors/font_color = Color(0.25, 0.12, 0.05, 1)
 theme_override_colors/font_outline_color = Color(0.98, 0.9, 0.75, 1)
@@ -114,18 +102,33 @@ text = "1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="IconTexture" type="TextureRect" parent="." unique_id=2102813129]
+[node name="NameBanner" type="TextureRect" parent="." unique_id=1753697157]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = 45.0
-offset_top = 56.0
-offset_right = -45.0
-offset_bottom = 116.0
+offset_left = -6.0
+offset_top = 114.0
+offset_right = 6.0
+offset_bottom = 168.0
 grow_horizontal = 2
 mouse_filter = 2
+texture = ExtResource("3_banner")
 expand_mode = 1
-stretch_mode = 5
+
+[node name="NameLabel" type="Control" parent="." unique_id=502496569]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 5.0
+offset_top = 115.99999
+offset_right = -3.0
+offset_bottom = 138.0
+grow_horizontal = 2
+mouse_filter = 2
+script = ExtResource("6_curved_label")
+text = "Card Name"
+font = ExtResource("5_kurale_font")
+arc_angle_degrees = 29.0
 
 [node name="DescriptionLabel" type="Label" parent="." unique_id=1298564381]
 layout_mode = 1
