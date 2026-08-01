@@ -114,11 +114,12 @@ mouse_filter = 2
 script = ExtResource("6_curved_label")
 text = "Card Name"
 font = ExtResource("5_kurale_font")
-font_size = 20
+font_size = 26
 font_color = Color(0.18, 0.11, 0.05, 1)
 arc_angle_degrees = 0.0
 jitter_position = 1.5
 jitter_rotation_degrees = 4.0
+float_amplitude = 1.5
 
 [node name="DescriptionLabel" type="Label" parent="." unique_id=1298564381]
 layout_mode = 1
@@ -131,7 +132,10 @@ offset_right = -10.0
 offset_bottom = -6.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0.18, 0.11, 0.05, 1)
+theme_override_constants/line_spacing = 3
 theme_override_font_sizes/font_size = 12
 text = "Description goes here..."
+horizontal_alignment = 1
+vertical_alignment = 1
 autowrap_mode = 3
