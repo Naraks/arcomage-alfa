@@ -27,7 +27,6 @@ const SEAL_TEXTURES := {
 @onready var cost_label: Label = $CostLabel
 @onready var description_label: Label = $DescriptionLabel
 @onready var background: TextureRect = $Background
-@onready var name_banner: TextureRect = $NameBanner
 @onready var seal_badge: TextureRect = $SealBadge
 @onready var icon_texture: TextureRect = $IconTexture
 
@@ -71,9 +70,11 @@ func update_ui() -> void:
 	background.modulate = Color(1, 1, 1, 1)
 
 	# ARC-091: печать стоимости — материал/форма зависит от редкости карты
-	# (простая бечёвка/серебро/золото), цвет воска — от типа ресурса (тот же
-	# modulate, что и на ленте, чтобы цветовое кодирование читалось одинаково
-	# в обоих местах карты).
+	# (простая бечёвка/серебро/золото), цвет воска — от типа ресурса.
+	# Раньше цвет ресурса дублировался ещё и на ленте-баннере имени — лента
+	# убрана (не вписывалась в пергамент/сепийную иллюстрацию, см.
+	# docs/dev_plan_tickets.md), печать осталась ЕДИНСТВЕННЫМ носителем
+	# цветового кодирования ресурса на карте (GDD §11.2).
 	seal_badge.texture = SEAL_TEXTURES.get(card_data.rarity, SEAL_TEXTURES[CardData.Rarity.COMMON])
 
 	var resource_tint := Color(1, 1, 1, 1)
@@ -84,7 +85,6 @@ func update_ui() -> void:
 			resource_tint = Color(0.35, 0.5, 1.0)
 		CardData.ResourceType.BEASTS:
 			resource_tint = Color(0.35, 1.0, 0.35)
-	name_banner.modulate = resource_tint
 	seal_badge.modulate = resource_tint
 
 

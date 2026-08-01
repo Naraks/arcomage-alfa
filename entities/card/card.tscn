@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://c8cxkvigyypcx" path="res://entities/card/card.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://1qevcall0pfq" path="res://art/card_frame/parchment_bg.png" id="2_parchment"]
-[ext_resource type="Texture2D" uid="uid://bs2mkof36ail6" path="res://art/card_frame/name_banner.png" id="3_banner"]
 [ext_resource type="Texture2D" uid="uid://b05lhmmruoebt" path="res://art/card_frame/seal_common.png" id="4_seal_common"]
 [ext_resource type="FontFile" uid="uid://bssykbxai7big" path="res://fonts/Kurale-Regular.ttf" id="5_kurale_font"]
 [ext_resource type="Script" uid="uid://c4jtwam2edt30" path="res://entities/card/curved_label.gd" id="6_curved_label"]
@@ -102,33 +101,24 @@ text = "1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="NameBanner" type="TextureRect" parent="." unique_id=1753697157]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_left = -6.0
-offset_top = 114.0
-offset_right = 6.0
-offset_bottom = 168.0
-grow_horizontal = 2
-mouse_filter = 2
-texture = ExtResource("3_banner")
-expand_mode = 1
-
 [node name="NameLabel" type="Control" parent="." unique_id=502496569]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = 5.0
-offset_top = 115.99999
+offset_top = 116.0
 offset_right = -3.0
-offset_bottom = 138.0
+offset_bottom = 151.0
 grow_horizontal = 2
 mouse_filter = 2
 script = ExtResource("6_curved_label")
 text = "Card Name"
 font = ExtResource("5_kurale_font")
-arc_angle_degrees = 29.0
+font_size = 20
+font_color = Color(0.18, 0.11, 0.05, 1)
+arc_angle_degrees = 0.0
+jitter_position = 1.5
+jitter_rotation_degrees = 4.0
 
 [node name="DescriptionLabel" type="Label" parent="." unique_id=1298564381]
 layout_mode = 1
