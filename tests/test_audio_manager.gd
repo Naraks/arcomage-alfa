@@ -2,14 +2,21 @@ extends GutTest
 ## ARC-089 (docs/dev_plan_tickets.md, «Звуковые эффекты (SFX)») —
 ## core/audio_manager.gd: единая точка воспроизведения SFX.
 ##
-## Реальное воспроизведение звука (AudioStreamPlayer.play(), фактический
-## аудио-рендер) headless GUT'ом не проверить — как и с _draw() в
-## curved_label.gd (см. tests/test_curved_label.gd), тестируем только то, что
-## можно проверить без живого движка: play_sfx() создаёт/не создаёт дочерний
-## AudioStreamPlayer с правильными свойствами. Экземпляр AudioManager не
-## добавляется в дерево сцены (как и остальные тесты в этом проекте — см.
-## tests/test_battle_screen.gd) — Node.add_child() на свободный (вне дерева)
-## узел работать не мешает, а .play() внутри play_sfx() тестами не проверяем.
+## Реальное воспроизведение звука (фактический аудио-рендер) headless GUT'ом
+## не проверить — как и с _draw() в curved_label.gd (см.
+## tests/test_curved_label.gd), тестируем только то, что можно проверить без
+## живого движка: play_sfx() создаёт/не создаёт дочерний AudioStreamPlayer с
+## правильными свойствами.
+##
+## В отличие от большинства сцен-тестов в проекте (например
+## tests/test_battle_screen.gd, где screen.new() намеренно НЕ добавляется в
+## дерево, т.к. тестируемый код не трогает get_tree()) — здесь дерево нужно:
+## play_sfx() сама вызывает player.play(), а AudioStreamPlayer.play() на узле
+## вне дерева сцены роняет движковую ошибку "!node->is_inside_tree()", которую
+## GUT засчитывает как провал теста (обнаружено по gut_results.xml с реального
+## прогона в редакторе — headless-запуска в песочнице агента нет). Поэтому
+## manager добавляется в дерево через add_child_autofree() — GUT сам уберёт
+## его (и всех детей-AudioStreamPlayer) после теста.
 
 const AudioManagerScript = preload("res://core/audio_manager.gd")
 
@@ -18,10 +25,7 @@ var manager: Node
 
 func before_each() -> void:
 	manager = AudioManagerScript.new()
-
-
-func after_each() -> void:
-	manager.free()
+	add_child_autofree(manager)
 
 
 func test_play_sfx_with_null_stream_adds_no_children() -> void:
