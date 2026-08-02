@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://df7x8h2n3r6p1"]
+[gd_scene load_steps=6 format=3 uid="uid://df7x8h2n3r6p1"]
 
 [ext_resource type="Script" path="res://ui/battle/battle_screen.gd" id="1_battle"]
+[ext_resource type="Texture2D" path="res://art/hud/icon_bricks.png" id="2_icon_bricks"]
+[ext_resource type="Texture2D" path="res://art/hud/icon_gems.png" id="3_icon_gems"]
+[ext_resource type="Texture2D" path="res://art/hud/icon_beasts.png" id="4_icon_beasts"]
+[ext_resource type="Texture2D" path="res://art/battle/background_battlefield.png" id="5_background"]
 
 [node name="BattleScreen" type="Control"]
 layout_mode = 3
@@ -11,14 +15,16 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_battle")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.15, 0.15, 0.2, 1)
+texture = ExtResource("5_background")
+expand_mode = 1
+stretch_mode = 0
 
 [node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -48,26 +54,62 @@ layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
-[node name="BricksLabel" type="Label" parent="VBox/StatsHBox/PlayerStats/VBox/ResourcesHBox"]
-unique_name_in_owner = true
+[node name="BricksBox" type="HBoxContainer" parent="VBox/StatsHBox/PlayerStats/VBox/ResourcesHBox"]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Bricks: 5"
-horizontal_alignment = 1
+alignment = 1
+theme_override_constants/separation = 6
 
-[node name="GemsLabel" type="Label" parent="VBox/StatsHBox/PlayerStats/VBox/ResourcesHBox"]
-unique_name_in_owner = true
+[node name="Icon" type="TextureRect" parent="VBox/StatsHBox/PlayerStats/VBox/ResourcesHBox/BricksBox"]
+custom_minimum_size = Vector2(38, 38)
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Gems: 5"
-horizontal_alignment = 1
+texture = ExtResource("2_icon_bricks")
+expand_mode = 1
+stretch_mode = 5
 
-[node name="BeastsLabel" type="Label" parent="VBox/StatsHBox/PlayerStats/VBox/ResourcesHBox"]
+[node name="BricksLabel" type="Label" parent="VBox/StatsHBox/PlayerStats/VBox/ResourcesHBox/BricksBox"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Beasts: 5"
+text = "5"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GemsBox" type="HBoxContainer" parent="VBox/StatsHBox/PlayerStats/VBox/ResourcesHBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 6
+
+[node name="Icon" type="TextureRect" parent="VBox/StatsHBox/PlayerStats/VBox/ResourcesHBox/GemsBox"]
+custom_minimum_size = Vector2(38, 38)
+layout_mode = 2
+texture = ExtResource("3_icon_gems")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GemsLabel" type="Label" parent="VBox/StatsHBox/PlayerStats/VBox/ResourcesHBox/GemsBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "5"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BeastsBox" type="HBoxContainer" parent="VBox/StatsHBox/PlayerStats/VBox/ResourcesHBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 6
+
+[node name="Icon" type="TextureRect" parent="VBox/StatsHBox/PlayerStats/VBox/ResourcesHBox/BeastsBox"]
+custom_minimum_size = Vector2(38, 38)
+layout_mode = 2
+texture = ExtResource("4_icon_beasts")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BeastsLabel" type="Label" parent="VBox/StatsHBox/PlayerStats/VBox/ResourcesHBox/BeastsBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "5"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="HBox" type="HBoxContainer" parent="VBox/StatsHBox/PlayerStats/VBox"]
 layout_mode = 2
@@ -90,11 +132,6 @@ custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 value = 20.0
 
-[node name="Label" type="Label" parent="VBox/StatsHBox/PlayerStats/VBox/HBox/VBox"]
-layout_mode = 2
-text = "Your Tower"
-horizontal_alignment = 1
-
 [node name="EnemyStats" type="MarginContainer" parent="VBox/StatsHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -114,31 +151,62 @@ size_flags_horizontal = 3
 layout_mode = 2
 alignment = 1
 
-[node name="EnemyBricksLabel" type="Label" parent="VBox/StatsHBox/EnemyStats/HBox/VBox/EnemyResourcesHBox"]
+[node name="EnemyBricksBox" type="HBoxContainer" parent="VBox/StatsHBox/EnemyStats/HBox/VBox/EnemyResourcesHBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 6
+
+[node name="Icon" type="TextureRect" parent="VBox/StatsHBox/EnemyStats/HBox/VBox/EnemyResourcesHBox/EnemyBricksBox"]
+custom_minimum_size = Vector2(38, 38)
+layout_mode = 2
+texture = ExtResource("2_icon_bricks")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="EnemyBricksLabel" type="Label" parent="VBox/StatsHBox/EnemyStats/HBox/VBox/EnemyResourcesHBox/EnemyBricksBox"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Bricks: 0"
+text = "0"
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="EnemyGemsLabel" type="Label" parent="VBox/StatsHBox/EnemyStats/HBox/VBox/EnemyResourcesHBox"]
+[node name="EnemyGemsBox" type="HBoxContainer" parent="VBox/StatsHBox/EnemyStats/HBox/VBox/EnemyResourcesHBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 6
+
+[node name="Icon" type="TextureRect" parent="VBox/StatsHBox/EnemyStats/HBox/VBox/EnemyResourcesHBox/EnemyGemsBox"]
+custom_minimum_size = Vector2(38, 38)
+layout_mode = 2
+texture = ExtResource("3_icon_gems")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="EnemyGemsLabel" type="Label" parent="VBox/StatsHBox/EnemyStats/HBox/VBox/EnemyResourcesHBox/EnemyGemsBox"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Gems: 0"
+text = "0"
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="EnemyBeastsLabel" type="Label" parent="VBox/StatsHBox/EnemyStats/HBox/VBox/EnemyResourcesHBox"]
+[node name="EnemyBeastsBox" type="HBoxContainer" parent="VBox/StatsHBox/EnemyStats/HBox/VBox/EnemyResourcesHBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 6
+
+[node name="Icon" type="TextureRect" parent="VBox/StatsHBox/EnemyStats/HBox/VBox/EnemyResourcesHBox/EnemyBeastsBox"]
+custom_minimum_size = Vector2(38, 38)
+layout_mode = 2
+texture = ExtResource("4_icon_beasts")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="EnemyBeastsLabel" type="Label" parent="VBox/StatsHBox/EnemyStats/HBox/VBox/EnemyResourcesHBox/EnemyBeastsBox"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Beasts: 0"
+text = "0"
 horizontal_alignment = 1
-
-[node name="Label" type="Label" parent="VBox/StatsHBox/EnemyStats/HBox/VBox"]
-layout_mode = 2
-text = "Enemy Tower"
-horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="EnemyTowerBar" type="ProgressBar" parent="VBox/StatsHBox/EnemyStats/HBox/VBox"]
 unique_name_in_owner = true

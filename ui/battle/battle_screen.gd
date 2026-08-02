@@ -2,6 +2,13 @@ extends Control
 
 const MapNodeData = preload("res://data/resources/map_node_data.gd")
 
+## ARC-080: раньше рендерился один Panel(20x10) на каждую единицу HP без
+## ограничения сверху. wall_hp ничем не капается в бою (build_wall копится
+## весь матч) — колонка блоков разрасталась на сотни пикселей, раздувала
+## верхний StatsHBox и выталкивала остальной UI (в т.ч. ресурсы игрока) за
+## пределы экрана. Теперь высота колонки жёстко ограничена MAX_VISUAL_BLOCKS.
+const MAX_VISUAL_BLOCKS := 20
+
 @export var card_scene: PackedScene = preload("res://entities/card/card.tscn")
 
 var e_tower_visuals: VBoxContainer
@@ -45,7 +52,9 @@ func _ready() -> void:
 		# ARC-016: run_deck пуст для тестового боя из главного меню (main_menu.gd
 		# явно сбрасывает его) — setup_match() тогда сама уйдёт на старую
 		# тестовую колоду.
-		MatchManager.setup_match(MatchSettings.player_data, MatchSettings.enemy_data, MatchSettings.run_deck)
+		MatchManager.setup_match(
+			MatchSettings.player_data, MatchSettings.enemy_data, MatchSettings.run_deck
+		)
 	else:
 		_test_setup()
 
@@ -76,14 +85,6 @@ func _setup_visual_containers() -> void:
 	p_wall_visuals = VBoxContainer.new()
 	p_wall_visuals.alignment = BoxContainer.ALIGNMENT_END
 	player_visuals_hbox.add_child(p_wall_visuals)
-
-
-## ARC-080: раньше рендерился один Panel(20x10) на каждую единицу HP без
-## ограничения сверху. wall_hp ничем не капается в бою (build_wall копится
-## весь матч) — колонка блоков разрасталась на сотни пикселей, раздувала
-## верхний StatsHBox и выталкивала остальной UI (в т.ч. ресурсы игрока) за
-## пределы экрана. Теперь высота колонки жёстко ограничена MAX_VISUAL_BLOCKS.
-const MAX_VISUAL_BLOCKS := 20
 
 
 func _update_visuals(container: VBoxContainer, amount: int, color: Color) -> void:
@@ -215,7 +216,11 @@ func _show_card_list_popup(title_text: String, cards: Array) -> void:
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	backdrop.gui_input.connect(
 		func(event):
-			if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			if (
+				event is InputEventMouseButton
+				and event.pressed
+				and event.button_index == MOUSE_BUTTON_LEFT
+			):
 				layer.queue_free()
 	)
 	layer.add_child(backdrop)
@@ -367,13 +372,16 @@ func update_all_ui() -> void:
 	_update_visuals(p_tower_visuals, p.tower_hp, Color.GRAY)
 	_update_visuals(p_wall_visuals, p.wall_hp, Color.DARK_GRAY)
 
-	bricks_label.text = "Bricks: %d (+%d)" % [p.bricks, p.quarry]
-	gems_label.text = "Gems: %d (+%d)" % [p.gems, p.magic]
-	beasts_label.text = "Beasts: %d (+%d)" % [p.beasts, p.dungeon]
+	# ARC-091: название ресурса словом убрано — теперь его показывает иконка
+	# рядом с числом (ui/battle/battle_screen.tscn::*ResourcesHBox/*Box/Icon),
+	# см. docs/art_prompts.md §6.
+	bricks_label.text = "%d (+%d)" % [p.bricks, p.quarry]
+	gems_label.text = "%d (+%d)" % [p.gems, p.magic]
+	beasts_label.text = "%d (+%d)" % [p.beasts, p.dungeon]
 
-	e_bricks_label.text = "Bricks: %d (+%d)" % [e.bricks, e.quarry]
-	e_gems_label.text = "Gems: %d (+%d)" % [e.gems, e.magic]
-	e_beasts_label.text = "Beasts: %d (+%d)" % [e.beasts, e.dungeon]
+	e_bricks_label.text = "%d (+%d)" % [e.bricks, e.quarry]
+	e_gems_label.text = "%d (+%d)" % [e.gems, e.magic]
+	e_beasts_label.text = "%d (+%d)" % [e.beasts, e.dungeon]
 
 	# ARC-016: счётчик на "рубашке" колоды внизу слева.
 	deck_pile_button.text = "Колода\n%d" % MatchManager.deck.size()

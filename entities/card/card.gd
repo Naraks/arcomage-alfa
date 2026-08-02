@@ -18,6 +18,11 @@ const SEAL_TEXTURES := {
 	CardData.Rarity.RARE: preload("res://art/card_frame/seal_rare.png"),
 }
 
+## ARC-089: шелест пергамента при наведении на карту — через AudioManager
+## (core/audio_manager.gd, автозагрузка), не отдельным AudioStreamPlayer на
+## самой карте (единая точка воспроизведения SFX, см. критерий приёмки тикета).
+const HOVER_RUSTLE_SOUND = preload("res://audio/sfx/card_hover_rustle.wav")
+
 @export var card_data: CardData:
 	set(value):
 		card_data = value
@@ -93,6 +98,7 @@ func _on_mouse_entered() -> void:
 	var tween = create_tween()
 	tween.tween_property(self, "scale", Vector2(1.1, 1.1), 0.1).set_trans(Tween.TRANS_QUAD)
 	z_index = 10
+	AudioManager.play_sfx(HOVER_RUSTLE_SOUND, -6.0)
 
 
 func _on_mouse_exited() -> void:

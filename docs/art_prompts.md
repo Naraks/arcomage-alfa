@@ -314,3 +314,178 @@ shape must be transparent (isolated cutout on alpha channel, not a background co
 ragged silhouette itself IS the edge of the image content. No text, no drawn border/frame
 line on top of it, no watermark.
 ```
+
+---
+
+## 6. Иконки ресурсов (HUD боя)
+
+`ui/battle/battle_screen.gd`/`.tscn` — счётчики ресурсов сейчас просто текст (`"Bricks: 5 (+1)"`,
+`%BricksLabel`/`%GemsLabel`/`%BeastsLabel` и зеркальные `%Enemy*Label`), без иконок. План — заменить
+слово на иконку ресурса перед числом (`"5 (+1)"` рядом с картинкой вместо `"Bricks: 5 (+1)"`).
+
+Это HUD-элемент, не иллюстрация карты — рядом нет пергамента (обычные `Label` в `HBoxContainer` на
+дефолтной теме), и по GDD §11.2 цвет — единственный невербальный ориентир ресурса, так что, в отличие
+от иллюстраций карт (§1, сознательно монохромные), эти иконки ЦВЕТНЫЕ: та же палитра, что уже
+используется для акцентов ленты/печати на картах (§2, исторический для иллюстраций, но актуальный
+именно как справочник цвета) — терракотовый красный / сапфировый синий / мшисто-зелёный. Стиль —
+тот же язык упрощённой плоской иконки, что уже утверждён для восковых печатей §5 (жирный плоский
+силуэт, минимум деталей, читается совсем маленьким), а не полноценная иллюстрация §1.
+
+Один запрос — три иконки в одном изображении рядом (тот же приём, что и с печатями §5: одна генерация,
+дальше нарезка по альфа-каналу программно), не три отдельных прогона:
+
+```
+Three separate flat 2D game UI icons for a fantasy resource-management card game,
+arranged in a row side by side with clear empty space between each one so they can be
+cropped apart individually. Each icon: bold, clean, simplified silhouette, painterly but
+drastically reduced detail (only 1-2 tones of shading, no glossy highlights, no drop
+shadow, no glow), viewed straight-on / orthographic (NOT a 3D render, NOT isometric, NOT
+at an angle). Must stay clearly readable as a small UI icon at very small size (roughly
+24x24 pixels on screen). Isolated on a transparent background, no text, no numbers, no
+watermark, no card frame, family-friendly tone.
+
+1) Bricks resource: a small stack of 2-3 roughly-hewn terracotta/clay bricks, warm
+   brick-red and rust-orange tones, faint mortar lines.
+2) Gems resource: a single faceted crystal gem, sapphire blue with one bright highlight
+   facet, simple geometric cut.
+3) Beasts resource: a single animal paw print (or a small simplified wolf/beast head
+   silhouette, whichever reads clearer at tiny size), mossy green and warm brown tones.
+
+Style matches a painterly 2D fantasy card game art direction (Clash Royale / Hearthstone
+UI icon style), simplified for small-size HUD use, not a detailed illustration.
+```
+
+После генерации — та же обработка, что уже применялась к печатям (`docs/dev_plan_tickets.md`,
+ARC-091): нарезать по альфа-каналу на 3 отдельных файла (`art/hud/icon_bricks.png`,
+`icon_gems.png`, `icon_beasts.png` — путь предварительный, можно поменять), подключить как
+`TextureRect` рядом с каждым `Label`/вместо текста "Bricks"/"Gems"/"Beasts" в `battle_screen.tscn`,
+число оставить обычным `Label` рядом с иконкой (`"%d (+%d)"`, без названия ресурса словом).
+
+---
+
+## 7. Макеты фона боевого экрана (`ui/battle/battle_screen.tscn`)
+
+Сейчас `Background` боевого экрана — сплошной `ColorRect` (`Color(0.15, 0.15, 0.2)`), без арта.
+
+**Раскладка — правка автора тикета, расходится с текстом GDD §10.3.** Текст GDD описывает зеркальную
+раскладку "противник сверху, игрок снизу", но **фактическая раскладка в игре и то, что нужно для
+макетов — башня игрока СЛЕВА, башня противника СПРАВА**, растут навстречу друг другу к центру (это и
+подтверждает реальный код/скриншоты `PlayerStats`/`EnemyStats` в `battle_screen.tscn` — они уже
+horizontal, не vertical). Это стоит когда-нибудь поправить и в самом тексте GDD §10.3, отдельно от
+этого арт-брифа — не делаю сейчас, чтобы не смешивать правку документации с подготовкой промпта.
+
+**Не арена, а сами башни — с визуализацией размера и ресурсов.** Не общий вид поля боя, а именно две
+конкретные башни как главный визуальный объект: у каждой должно быть видно, ЧТО она растёт из
+блоков (уже реализовано в коде отдельным слоем — `PlayerTowerBar`/`EnemyTowerBar`, растущая стопка —
+GDD §10.3, "фирменная фишка визуализации", сохранить), и рядом с базой каждой башни — небольшие кучки
+трёх ресурсов (кирпичи/самоцветы/звериные шкуры), чтобы экономика читалась не только числом в HUD, но
+и на глаз, боковым зрением, прямо в арт-фоне.
+
+**Важная оговорка по инструменту.** ChatGPT/Midjourney не умеют надёжно рисовать реальный
+функциональный UI (точный текст, числа, кнопки на нужных местах, тем более ДИНАМИЧЕСКИ меняющийся
+размер башни по ходу боя) — просить "весь экран боя с цифрами и текстом" бессмысленно, получится
+каша из нечитаемых символов. Промпты ниже просят только **фоновую иллюстрацию/окружение** (одно
+статичное референсное состояние башен и куч ресурсов, задающее стиль, не сам работающий механизм
+роста) — сам HUD (иконки ресурсов §6, счётчики, рука карт, растущие блоки башни, кнопки) остаётся
+настоящими нодами Godot поверх этого фона, как уже сделано.
+
+Три варианта направления, чтобы было из чего выбирать.
+
+**Решение (предварительное, до генерации/визуальной проверки).** Обсудили все три — вариант 1
+(сепия по всему экрану) рискует читаемостью: белый HUD-текст на светлом пергаменте почти не виден
+(пришлось бы перекрашивать весь текстовый HUD в тёмные чернила), и цветные partиклы урона/стройки
+(GDD §11.4, должны быть "сочными") будут спорить по тону со старой бумагой. Вариант 3 (яркая арена) —
+та же насыщенная цветная эстетика, от которой уже сознательно ушли для иллюстраций карт. **Выбран
+вариант 2** — тёмный/мистический, даёт нужный контраст под HUD и партиклы, не спорит с сепийными
+картами (светлый пергамент карты на тёмном фоне — естественный контраст, карта "выступает" вперёд),
+и по духу ближе к сеттингу GDD ("маги-подмастерья"). Не реализовано — ждём генерацию и визуальную
+проверку перед тем как трогать `battle_screen.tscn`.
+
+**Уточнение по скоупу — правка автора тикета.** Промпты ниже (все три варианта) изначально просили
+нарисовать САМИ башни как часть фона — это неверно: башни (растущая стопка блоков, `PlayerTowerBar`/
+`EnemyTowerBar`) уже отдельный динамический слой поверх фона, который реагирует на розыгрыш карт
+(растёт/меняется в реальном времени) — если запечь башни в статичный фоновый арт, будет два
+конфликтующих изображения башни одновременно. **`Background` — это только атмосфера/окружение, без
+башен и без куч ресурсов у их основания** (ту идею с кучками ресурсов тоже отменяет — они были
+привязаны к базам башен, которых в фоне больше нет).
+
+**Правка после первой генерации — «помещение» не годится.** Первая версия промпта (см. историю ниже)
+вышла как интерьер мастерской (каменный зал, арки, колонны) — стилистически хорошая, но по смыслу не
+работает: башни физически не могут стоять внутри помещения, а игра именно про две башни, растущие
+навстречу друг другу. Актуальный промпт — та же тёмная мистическая палитра и настроение, но открытое
+пространство (ночное небо, а не потолок и стены):
+
+```
+A wide 16:9 background illustration for a fantasy card game battle screen — atmosphere and
+environment only, no towers, no buildings, no characters, no piles of objects, nothing in
+the foreground. An open-air, moody twilight/night magical battlefield: a dim cracked stone
+or earthen ground stretching from the left edge of the frame to the right, open dark night
+sky above with faint stars and soft magical aurora-like glow near the horizon, faint
+floating magic runes and glowing particles drifting in the air just above the ground,
+distant silhouettes of low ruins or mountains fading into haze near the horizon line (not
+overhead architecture — nothing should read as a ceiling or indoor space). Deep indigo and
+muted purple palette, painterly 2D game-art style (Clash Royale-adjacent but darker and
+moodier), no gore, no text, no watermark. The entire image — left, right, and especially
+the center and lower two-thirds — must stay dark, low-contrast and visually calm/empty,
+since game towers, cards, and UI will be placed on top of it afterward.
+```
+
+Промпты с башнями ниже (все три варианта) и первая (интерьерная) версия скоуп-промпта оставлены как
+есть для истории обсуждения — актуальный для генерации сейчас только промпт выше.
+
+**Вариант 1 — "Иллюминированная рукопись".** Максимально созвучно уже принятому стилю карт (§1,
+сепийная тушь на пергаменте) — весь экран боя выглядит как разворот старинного гримуара, на котором
+разыгрывается бой.
+
+```
+A wide 16:9 background illustration for a fantasy card game battle screen, in the same
+monochrome sepia ink-and-wash style as an old illuminated manuscript bestiary — as if the
+entire scene is drawn directly on a large aged parchment page, not a separate scene pasted
+behind the UI. Two opposing towers made of stacked rough-hewn bricks, sketched in the same
+bold ink linework: one tower positioned at the LEFT edge of the frame (the player's), one
+at the RIGHT edge (the enemy's), facing each other across a calm, mostly empty parchment
+gap in the middle reserved for game UI. At the base of each tower, a few small distinct
+piles: a modest stack of bricks, a small cluster of faceted gems, and a folded animal pelt
+with a paw print nearby — visually representing that tower's stockpiled resources, sketched
+in the same ink style, simple and small, not competing with the towers themselves. Faint
+decorative ink flourishes and subtle aged stains only near the very edges of the frame. No
+text, no numbers, no UI elements, no watermark, no color, family-friendly tone.
+```
+
+**Вариант 2 — "Мастерская подмастерья".** По духу сеттинга GDD ("маги-подмастерья") — мистическая
+арена/мастерская, темнее и атмосфернее, с магическим свечением.
+
+```
+A wide 16:9 background illustration for a fantasy card game battle screen. A moody, twilight
+magical dueling scene between two apprentice mages' towers built from stacked stone blocks —
+one warm-lit tower at the LEFT edge of the frame (the player's), one cool-lit tower at the
+RIGHT edge (the enemy's), facing each other across a shadowy arcane gap in the middle with
+faint floating magic runes and soft glowing particles, reserved for game UI. At the base of
+each tower, small glowing piles representing that side's resources: a stack of stone bricks,
+a cluster of glowing crystal gems, and a folded fur pelt with a paw print — simple, modest in
+size, not competing with the towers. Deep indigo and muted purple palette, painterly 2D
+game-art style (Clash Royale-adjacent but darker and moodier), no gore. The image must stay
+dark, low-contrast and visually calm in the central gap and lower area — reserved for game UI
+(cards, counters, buttons) to be placed on top later. No text, no numbers, no UI elements, no
+watermark.
+```
+
+**Вариант 3 — "Яркая арена".** Ближе к исходному брифу GDD §11.1 (насыщенный, но не мрачный
+Clash Royale/Hearthstone стиль) — самый жизнерадостный/"постер"-вариант из трёх.
+
+```
+A wide 16:9 background illustration for a fantasy card game battle screen. Two colorful
+toy-like stone towers built from stacked bricks, one at the LEFT edge of the frame
+(player's) and one at the RIGHT edge (enemy's), facing each other across a bright, sunny
+storybook sky with soft clouds in the gap between them, reserved for game UI. At the base of
+each tower, small tidy piles representing that side's resources: a stack of red-brown
+bricks, a cluster of blue faceted gems, and a green-brown fur pelt with a paw print — simple
+shapes, modest size, not competing with the towers. Bold, clean, saturated but not garish
+colors, painterly 2D game-art style in the spirit of Clash Royale, no gore, family-friendly.
+The central gap and lower area should stay soft, blurred and less detailed — reserved for
+game UI (cards, counters, buttons) to be placed on top later. No text, no numbers, no UI
+elements, no watermark.
+```
+
+После генерации — можно сравнить все три варианта прямо в браузере поверх текущего скриншота боевого
+экрана (наложение полупрозрачным слоем) перед тем как выбирать и интегрировать любой из них.
