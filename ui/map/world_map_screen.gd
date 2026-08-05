@@ -185,7 +185,7 @@ func _update_hud() -> void:
 
 
 func _node_state(node: Resource, available_nodes: Array = []) -> int:
-	var index := map_data.map_nodes.find(node)
+	var index: int = map_data.map_nodes.find(node)
 	if index == map_data.current_node_index and index >= 0:
 		return NodeState.CURRENT
 	if available_nodes.has(node):
@@ -199,7 +199,7 @@ func _node_label(node: Resource, state: int) -> String:
 	var presentation: Dictionary = NODE_PRESENTATION.get(
 		node.node_type, {"icon": "?", "title": "Узел"}
 	)
-	var state_label := {
+	var state_label: String = {
 		NodeState.CURRENT: "ВЫ ЗДЕСЬ",
 		NodeState.AVAILABLE: "ДОСТУПНО",
 		NodeState.COMPLETED: "ПРОЙДЕНО",
@@ -260,7 +260,7 @@ func _has_incoming_edge(target_node: Resource) -> bool:
 ## круглее всего текущий узел, доступный выделен толстой рамкой, пройденный
 ## почти прямоугольный, заблокированный — прямоугольный и приглушённый.
 func _style_node_button(button: Button, state: int) -> void:
-	var palette := {
+	var palette: Array = {
 		NodeState.CURRENT: [Color("5b3c20"), Color("f6d58a"), 18],
 		NodeState.AVAILABLE: [Color("2f5b45"), Color("d8f4db"), 12],
 		NodeState.COMPLETED: [Color("273d32"), Color("9eb9a3"), 4],
