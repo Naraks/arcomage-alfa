@@ -269,6 +269,45 @@ func test_aggressive_no_longer_ignores_reduce_wall() -> void:
 	assert_true(strategy.calculate_card_priority(card, player, enemy) > 0.0)
 
 
+func test_aggressive_prefers_damage_over_economic_at_full_enemy_tower() -> void:
+	# ARC-085 regression: до фикса при tower_hp=200 mod_quarry(3) набирал 6.0
+	# (3*2.0), а damage(5) — только 5.0 (5*(200/200)), и экономическая карта
+	# побеждала. После фикса: floor=2.5 на урон + вес экономики снижен до 0.5.
+	var strategy := AggressiveAIStrategy.new()
+	enemy.tower_hp = 200
+	var damage_card := TestFixtures.make_card(
+		1, CardData.ResourceType.GEMS, [{"type": "damage", "target": "enemy", "value": 5}]
+	)
+	var economic_card := TestFixtures.make_card(
+		1, CardData.ResourceType.GEMS, [{"type": "mod_quarry", "target": "self", "value": 3}]
+	)
+
+	var damage_score := strategy.calculate_card_priority(damage_card, player, enemy)
+	var economic_score := strategy.calculate_card_priority(economic_card, player, enemy)
+	assert_gt(
+		damage_score,
+		economic_score,
+		"Aggressive must prefer damage over economy regardless of enemy tower HP"
+	)
+
+
+func test_aggressive_get_best_card_picks_damage_at_full_enemy_tower() -> void:
+	# ARC-085 regression: get_best_card() должен возвращать атакующую карту,
+	# а не экономическую, даже когда башня врага на максимальном HP.
+	var strategy := AggressiveAIStrategy.new()
+	enemy.tower_hp = 200
+	player.gems = 10
+	var damage_card := TestFixtures.make_card(
+		5, CardData.ResourceType.GEMS, [{"type": "damage", "target": "enemy", "value": 5}]
+	)
+	var economic_card := TestFixtures.make_card(
+		5, CardData.ResourceType.GEMS, [{"type": "mod_quarry", "target": "self", "value": 3}]
+	)
+	var hand: Array[CardData] = [economic_card, damage_card]
+
+	assert_eq(strategy.get_best_card(hand, player, enemy), damage_card)
+
+
 func test_builder_no_longer_ignores_steal_resource() -> void:
 	var strategy := BuilderAIStrategy.new()
 	var card := TestFixtures.make_card(
