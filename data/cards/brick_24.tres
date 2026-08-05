@@ -5,8 +5,8 @@
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
 card_name = "Великий бастион"
-description = "Строит башню на 24."
+description = "Строит башню на 20."
 cost = 12
 type = 0
 rarity = 2
-effects = Array[Dictionary]([{"target": "self", "type": "build_tower", "value": 24}])
+effects = Array[Dictionary]([{"target": "self", "type": "build_tower", "value": 20}])
