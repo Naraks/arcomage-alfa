@@ -64,8 +64,87 @@ func test_available_nodes_are_connected_to_current_and_not_completed() -> void:
 		available.has(next_completed), "Соединённый, но уже пройденный узел не должен быть доступен"
 	)
 	assert_false(
-		available.has(current), "Текущий узел не входит в свои же connected_nodes — сам по себе недоступен"
+		available.has(current),
+		"Текущий узел не входит в свои же connected_nodes — сам по себе недоступен"
 	)
+
+	screen.free()
+
+
+# --- UI 02/13 (#97): состояния, превью и защита переходов ---
+
+
+func test_node_states_distinguish_current_available_completed_and_locked() -> void:
+	var completed := _make_node(MapNodeData.NodeType.BATTLE, true)
+	var current := _make_node(MapNodeData.NodeType.REST, true)
+	var available := _make_node(MapNodeData.NodeType.SHOP)
+	var locked := _make_node(MapNodeData.NodeType.EVENT)
+	current.connected_nodes = [available]
+
+	var map := WorldMapData.new()
+	map.map_nodes = [completed, current, available, locked]
+	map.current_node_index = 1
+	var screen = WorldMapScreenScript.new()
+	screen.map_data = map
+	var available_nodes: Array = screen._compute_available_nodes()
+
+	assert_eq(screen._node_state(current, available_nodes), WorldMapScreenScript.NodeState.CURRENT)
+	assert_eq(
+		screen._node_state(available, available_nodes), WorldMapScreenScript.NodeState.AVAILABLE
+	)
+	assert_eq(
+		screen._node_state(completed, available_nodes), WorldMapScreenScript.NodeState.COMPLETED
+	)
+	assert_eq(screen._node_state(locked, available_nodes), WorldMapScreenScript.NodeState.LOCKED)
+
+	screen.free()
+
+
+func test_node_labels_include_stable_type_and_non_color_state() -> void:
+	var node := _make_node(MapNodeData.NodeType.SHOP)
+	var screen = WorldMapScreenScript.new()
+
+	var available_label: String = screen._node_label(node, WorldMapScreenScript.NodeState.AVAILABLE)
+	var locked_label: String = screen._node_label(node, WorldMapScreenScript.NodeState.LOCKED)
+
+	assert_true(available_label.contains("¤"), "Магазин должен иметь устойчивую пиктограмму")
+	assert_true(available_label.contains("Магазин"))
+	assert_true(available_label.contains("ДОСТУПНО"))
+	assert_true(
+		locked_label.contains("ЗАКРЫТО"), "Состояние различается текстом, а не только цветом"
+	)
+
+	screen.free()
+
+
+func test_event_preview_does_not_reveal_hidden_result() -> void:
+	var event_node := _make_node(MapNodeData.NodeType.EVENT)
+	event_node.floor_index = 3
+	var screen = WorldMapScreenScript.new()
+
+	var preview: String = screen._node_preview(event_node, WorldMapScreenScript.NodeState.AVAILABLE)
+
+	assert_true(preview.contains("Этаж 4"))
+	assert_true(preview.contains("Результат скрыт"))
+
+	screen.free()
+
+
+func test_can_enter_node_allows_only_reachable_uncompleted_nodes() -> void:
+	var current := _make_node(MapNodeData.NodeType.BATTLE, true)
+	var reachable := _make_node(MapNodeData.NodeType.REST)
+	var unreachable := _make_node(MapNodeData.NodeType.SHOP)
+	current.connected_nodes = [reachable]
+
+	var map := WorldMapData.new()
+	map.map_nodes = [current, reachable, unreachable]
+	map.current_node_index = 0
+	var screen = WorldMapScreenScript.new()
+	screen.map_data = map
+
+	assert_true(screen._can_enter_node(reachable))
+	assert_false(screen._can_enter_node(current))
+	assert_false(screen._can_enter_node(unreachable))
 
 	screen.free()
 
@@ -109,7 +188,9 @@ func test_apply_node_difficulty_battle_assigns_random_strategy_from_all_four() -
 		)
 		seen_types[strategy.get_script()] = true
 
-	assert_true(seen_types.size() > 1, "За 200 попыток должно встретиться больше одного типа стратегии")
+	assert_true(
+		seen_types.size() > 1, "За 200 попыток должно встретиться больше одного типа стратегии"
+	)
 
 	screen.free()
 
@@ -201,7 +282,9 @@ func test_apply_node_difficulty_battle_scales_with_floor_index() -> void:
 		orig_tower_hp + floor_index * WorldMapScreenScript.FLOOR_TOWER_HP_PER_FLOOR,
 		"Даже обычный BATTLE должен масштабироваться от глубины карты (ARC-029)"
 	)
-	assert_eq(enemy.wall_hp, orig_wall_hp + floor_index * WorldMapScreenScript.FLOOR_WALL_HP_PER_FLOOR)
+	assert_eq(
+		enemy.wall_hp, orig_wall_hp + floor_index * WorldMapScreenScript.FLOOR_WALL_HP_PER_FLOOR
+	)
 	assert_eq(
 		enemy.quarry, orig_quarry + int(floor_index / WorldMapScreenScript.FLOOR_GENERATOR_INTERVAL)
 	)
@@ -221,9 +304,11 @@ func test_apply_node_difficulty_elite_combines_floor_and_elite_bonus() -> void:
 
 	assert_eq(
 		enemy.tower_hp,
-		orig_tower_hp
-		+ floor_index * WorldMapScreenScript.FLOOR_TOWER_HP_PER_FLOOR
-		+ WorldMapScreenScript.ELITE_TOWER_BONUS,
+		(
+			orig_tower_hp
+			+ floor_index * WorldMapScreenScript.FLOOR_TOWER_HP_PER_FLOOR
+			+ WorldMapScreenScript.ELITE_TOWER_BONUS
+		),
 		"Бонус за этаж должен складываться с фиксированным бонусом ELITE_BATTLE, а не заменять его"
 	)
 

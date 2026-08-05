@@ -1,7 +1,31 @@
 extends Control
 
+## UI 02/13 (#97): состояние узла — отдельная семантика, а не оттенок.
+## Текущий узел остаётся последним посещённым; доступными являются его выходы.
+enum NodeState { CURRENT, AVAILABLE, COMPLETED, LOCKED }
+
 const WorldMapData = preload("res://data/resources/world_map_data.gd")
 const MapNodeData = preload("res://data/resources/map_node_data.gd")
+
+const NODE_PRESENTATION := {
+	MapNodeData.NodeType.BATTLE:
+	{"icon": "⚔", "title": "Бой", "preview": "Обычный бой. Награда — после победы."},
+	MapNodeData.NodeType.ELITE_BATTLE:
+	{"icon": "♛", "title": "Элита", "preview": "Опасный усиленный противник и ценная награда."},
+	MapNodeData.NodeType.SHOP:
+	{"icon": "¤", "title": "Магазин", "preview": "Покупка и удаление карт за золото."},
+	MapNodeData.NodeType.REST:
+	{
+		"icon": "♨",
+		"title": "Отдых",
+		"preview": "Безопасная остановка и постоянное усиление забега."
+	},
+	MapNodeData.NodeType.EVENT:
+	{"icon": "?", "title": "Событие", "preview": "Неизвестная встреча. Результат скрыт до входа."},
+	MapNodeData.NodeType.BOSS:
+	{"icon": "♜", "title": "Босс", "preview": "Финальное испытание этого маршрута."},
+}
+const NODE_SIZE := Vector2(132, 62)
 
 ## ARC-017: "выше стартовые HP/генераторы, чуть агрессивнее" (design doc,
 ## раздел 6) для элиты/босса — конкретные числа нигде не заданы, взяты как
@@ -67,6 +91,8 @@ const FLOOR_GENERATOR_INTERVAL := 3
 @export var map_data: Resource
 
 @onready var _map_content: Control = $ScrollContainer/MapContent
+@onready var _hud_label: Label = $Header/Hud
+@onready var _preview_label: Label = $Preview
 
 
 func _ready() -> void:
@@ -75,6 +101,7 @@ func _ready() -> void:
 		map_data = MatchSettings.world_map_data
 
 	if map_data:
+		_update_hud()
 		_generate_map_ui()
 		# ARC-018: единая точка автосохранения — сюда возвращаются после любого
 		# узла (shop/rest/event/reward уже успели проставить is_completed/
@@ -98,9 +125,9 @@ func _generate_map_ui() -> void:
 	for node in map_data.map_nodes:
 		for connected in node.connected_nodes:
 			var line = Line2D.new()
-			line.points = [node.position + Vector2(25, 25), connected.position + Vector2(25, 25)]
-			line.width = 2
-			line.default_color = Color.WHITE
+			line.points = [node.position + NODE_SIZE / 2.0, connected.position + NODE_SIZE / 2.0]
+			line.width = 4
+			line.default_color = Color(0.55, 0.45, 0.28, 0.8)
 			_map_content.add_child(line)
 
 	# ARC-011: кликабельны только узлы, соединённые с current_node_index и ещё
@@ -110,15 +137,20 @@ func _generate_map_ui() -> void:
 	# Отрисовка узлов
 	for node in map_data.map_nodes:
 		var button = Button.new()
-		button.text = MapNodeData.NodeType.keys()[node.node_type]
+		var state := _node_state(node, available_nodes)
+		button.text = _node_label(node, state)
+		button.tooltip_text = _node_preview(node, state)
 		button.position = node.position
-		button.custom_minimum_size = Vector2(50, 50)
+		button.custom_minimum_size = NODE_SIZE
 
-		var is_available: bool = available_nodes.has(node)
-		button.disabled = not is_available
-		_style_node_button(button, node, is_available)
+		# LOCKED остаётся кликабельным только для понятной обратной связи;
+		# _can_enter_node — единый guard, поэтому переход невозможен.
+		button.disabled = state == NodeState.COMPLETED or state == NodeState.CURRENT
+		_style_node_button(button, state)
 
 		button.pressed.connect(_on_node_pressed.bind(node))
+		button.mouse_entered.connect(_show_node_preview.bind(node, state))
+		button.focus_entered.connect(_show_node_preview.bind(node, state))
 		_map_content.add_child(button)
 		print("Added button at: ", node.position)
 
@@ -132,7 +164,65 @@ func _fit_map_content_size() -> void:
 	for node in map_data.map_nodes:
 		max_x = max(max_x, node.position.x)
 		max_y = max(max_y, node.position.y)
-	_map_content.custom_minimum_size = Vector2(max_x + 150, max_y + 150)
+	_map_content.custom_minimum_size = Vector2(max_x + 220, max_y + 170)
+
+
+func _update_hud() -> void:
+	var floor_number := 1
+	if map_data.current_node_index >= 0 and map_data.current_node_index < map_data.map_nodes.size():
+		floor_number = map_data.map_nodes[map_data.current_node_index].floor_index + 1
+	_hud_label.text = (
+		"Этаж %d/%d  •  Золото %d\nБашня +%d  •  Колода %d  •  Артефакты %d"
+		% [
+			floor_number,
+			maxi(1, map_data.floor_count),
+			MatchSettings.run_gold,
+			MatchSettings.run_tower_bonus,
+			MatchSettings.run_deck.size(),
+			MatchSettings.run_artifacts.size(),
+		]
+	)
+
+
+func _node_state(node: Resource, available_nodes: Array = []) -> int:
+	var index := map_data.map_nodes.find(node)
+	if index == map_data.current_node_index and index >= 0:
+		return NodeState.CURRENT
+	if available_nodes.has(node):
+		return NodeState.AVAILABLE
+	if node.is_completed:
+		return NodeState.COMPLETED
+	return NodeState.LOCKED
+
+
+func _node_label(node: Resource, state: int) -> String:
+	var presentation: Dictionary = NODE_PRESENTATION.get(
+		node.node_type, {"icon": "?", "title": "Узел"}
+	)
+	var state_label := {
+		NodeState.CURRENT: "ВЫ ЗДЕСЬ",
+		NodeState.AVAILABLE: "ДОСТУПНО",
+		NodeState.COMPLETED: "ПРОЙДЕНО",
+		NodeState.LOCKED: "ЗАКРЫТО"
+	}[state]
+	return "%s  %s\n%s" % [presentation.icon, presentation.title, state_label]
+
+
+func _node_preview(node: Resource, state: int) -> String:
+	if state == NodeState.LOCKED:
+		return "Путь закрыт: сначала завершите связанный доступный узел."
+	var presentation: Dictionary = NODE_PRESENTATION.get(
+		node.node_type, {"preview": "Неизвестный узел."}
+	)
+	return "Этаж %d. %s" % [node.floor_index + 1, presentation.preview]
+
+
+func _show_node_preview(node: Resource, state: int) -> void:
+	_preview_label.text = _node_preview(node, state)
+
+
+func _can_enter_node(node: Resource) -> bool:
+	return _compute_available_nodes().has(node)
 
 
 ## Доступные для клика узлы — соединённые с текущей позицией на карте
@@ -166,17 +256,28 @@ func _has_incoming_edge(target_node: Resource) -> bool:
 	return false
 
 
-## Доступные узлы — обычный вид. Пройденные — приглушённо-зелёные (для
-## наглядности маршрута за спиной). Всё остальное недоступное — тусклое,
-## с иконкой замка перед названием типа узла.
-func _style_node_button(button: Button, node: Resource, is_available: bool) -> void:
-	if is_available:
-		button.modulate = Color.WHITE
-	elif node.is_completed:
-		button.modulate = Color(0.5, 0.8, 0.5, 1.0)
-	else:
-		button.modulate = Color(0.45, 0.45, 0.45, 1.0)
-		button.text = "🔒 " + button.text
+## Состояния различаются одновременно подписью, формой и контрастом рамки:
+## круглее всего текущий узел, доступный выделен толстой рамкой, пройденный
+## почти прямоугольный, заблокированный — прямоугольный и приглушённый.
+func _style_node_button(button: Button, state: int) -> void:
+	var palette := {
+		NodeState.CURRENT: [Color("5b3c20"), Color("f6d58a"), 18],
+		NodeState.AVAILABLE: [Color("2f5b45"), Color("d8f4db"), 12],
+		NodeState.COMPLETED: [Color("273d32"), Color("9eb9a3"), 4],
+		NodeState.LOCKED: [Color("292724"), Color("77716a"), 0],
+	}[state]
+	var box := StyleBoxFlat.new()
+	box.bg_color = palette[0]
+	box.border_color = palette[1]
+	box.set_border_width_all(2 if state != NodeState.AVAILABLE else 3)
+	box.set_corner_radius_all(palette[2])
+	box.content_margin_left = 10
+	box.content_margin_right = 10
+	button.add_theme_stylebox_override("normal", box)
+	button.add_theme_stylebox_override("disabled", box)
+	button.add_theme_color_override("font_color", palette[1])
+	button.add_theme_color_override("font_disabled_color", palette[1])
+	button.add_theme_font_size_override("font_size", 14)
 
 
 ## Панель отладки: по одной всегда доступной кнопке на каждый NodeType, не
@@ -245,6 +346,9 @@ func _apply_node_difficulty(enemy: PlayerData, node_type: int, floor_index: int 
 
 func _on_node_pressed(node: Resource) -> void:
 	print("Node pressed: ", node.node_type)
+	if map_data.map_nodes.has(node) and not _can_enter_node(node):
+		_preview_label.text = "Этот путь пока закрыт. Выберите узел с пометкой «ДОСТУПНО»."
+		return
 
 	# ARC-015: ELITE_BATTLE/BOSS запускают тот же battle_screen, что и обычный
 	# BATTLE — отличается пул наград после победы (reward_screen.gd читает
