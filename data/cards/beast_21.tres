@@ -5,8 +5,8 @@
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
 card_name = "Древний левиафан"
-description = "Наносит 24 урона башне врага (игнорирует стену)."
+description = "Наносит 14 урона башне врага (игнорирует стену)."
 cost = 8
 type = 2
 rarity = 2
-effects = Array[Dictionary]([{"target": "enemy", "type": "direct_damage", "value": 24}])
+effects = Array[Dictionary]([{"target": "enemy", "type": "direct_damage", "value": 14}])

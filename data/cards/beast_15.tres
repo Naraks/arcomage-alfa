@@ -5,8 +5,8 @@
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
 card_name = "Орк"
-description = "Наносит 7 урона врагу."
+description = "Наносит 8 урона врагу."
 cost = 3
 type = 2
 rarity = 1
-effects = Array[Dictionary]([{"target": "enemy", "type": "damage", "value": 7}])
+effects = Array[Dictionary]([{"target": "enemy", "type": "damage", "value": 8}])

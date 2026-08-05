@@ -5,7 +5,7 @@
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
 card_name = "Защитный барьер"
-description = "Строит стену на 3."
+description = "Строит стену на 5."
 cost = 2
 type = 1
-effects = Array[Dictionary]([{"target": "self_wall", "type": "build_wall", "value": 3}])
+effects = Array[Dictionary]([{"target": "self_wall", "type": "build_wall", "value": 5}])
