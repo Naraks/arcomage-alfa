@@ -1,4 +1,4 @@
-# Alfa (Arcomage Roguelike) — план разработки в виде тикетов
+# «Башни магов: Дуэль» — план разработки в виде тикетов
 
 Документ подготовлен на основе аудита текущего кода проекта `C:\GodotProjects\alfa` (Godot 4.7) и существующих
 файлов планирования (`cards_list.md`, `checklist.md`). Часть пунктов в `checklist.md` устарела —
@@ -245,11 +245,13 @@ ARC-073 — через GUT в headless-режиме с ненулевым exit-�
 `GTA_VI.exe`, см. ARC-008) в осмысленное имя и включить в CI по требованию (manual trigger / тег `playtest-*`).
 
 **Критерии приёмки:**
-- [x] Пресет переименован, путь экспорта — `./builds/alfa-windows/Alfa.exe`.
+- [x] Пресет переименован, текущий путь экспорта — `./builds/alfa-windows/MageTowersDuel.exe`.
 - [x] Сборка запускается по git-тегу вида `playtest-YYYYMMDD` или вручную из CI.
 
-> ✅ Реализовано и проверено: `export_path` пресета `Windows Desktop` — `./builds/alfa-windows/Alfa.exe`
-> (было `./GTA_VI.exe`); `/GTA_VI.*` убран из `.gitignore` как более не нужный. Джоб
+> ✅ Реализовано и проверено: исходный `export_path` пресета `Windows Desktop` был
+> `./builds/alfa-windows/Alfa.exe` (до этого — `./GTA_VI.exe`); после утверждения публичного названия игры
+> бинарник переименован в `./builds/alfa-windows/MageTowersDuel.exe`. `/GTA_VI.*` убран из `.gitignore` как
+> более не нужный. Джоб
 > `build-windows-playtest` триггерится тегом `playtest-*` или вручную (`workflow_dispatch`), не
 > запускается на обычных push/PR; собирает Windows-бинарник кросс-компиляцией на `ubuntu-latest` и
 > прикладывает `alfa-windows-playtest` как artifact. Прогон подтверждён.

@@ -284,7 +284,7 @@ jobs:
             exit 0
           fi
           SHORT_SHA="${GITHUB_SHA:0:7}"
-          TEXT="✅ Новая Web-сборка готова (commit ${SHORT_SHA})"$'\n'"https://naraks.github.io/arcomage-alfa/"
+          TEXT="✅ Новая Web-сборка «Башни магов: Дуэль» готова (commit ${SHORT_SHA})"$'\n'"https://naraks.github.io/arcomage-alfa/"
           curl -sS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             --data-urlencode chat_id="${TELEGRAM_CHAT_ID}" \
             --data-urlencode text="${TEXT}"
@@ -362,7 +362,7 @@ jobs:
       - name: Export Windows build
         run: |
           mkdir -p builds/alfa-windows
-          "$GODOT_DIR/godot" --headless --path . --export-release "Windows Desktop" ./builds/alfa-windows/Alfa.exe
+          "$GODOT_DIR/godot" --headless --path . --export-release "Windows Desktop" ./builds/alfa-windows/MageTowersDuel.exe
 
       - name: Upload Windows build
         uses: actions/upload-artifact@v4
