@@ -214,12 +214,20 @@ func setup_match(
 	if not p_run_deck.is_empty():
 		deck = p_run_deck.duplicate()
 		deck.shuffle()
+		# У ИИ нет run_deck (это коллекция ИГРОКА) — свой независимый пул на
+		# каждый бой, из общего тестового набора карт.
+		enemy_deck = _build_generic_card_pool()
 	else:
-		_initialize_test_deck()
-
-	# У ИИ нет run_deck (это коллекция ИГРОКА) — свой независимый пул на
-	# каждый бой, из общего тестового набора карт.
-	enemy_deck = _build_generic_card_pool()
+		# ARC-095: тестовый бой без забега («Битва» в главном меню) — раньше
+		# и игрок, и ИИ получали урезанный STARTER_DECK_CARD_PATHS (11 карт),
+		# дополненный случайными повторами до 20 (_build_generic_card_pool,
+		# см. _initialize_test_deck). Теперь оба берут полный пул всех
+		# уникальных карт игры (ALL_CARD_PATHS) без паддинга повторами —
+		# тестовый бой должен давать возможность увидеть в деле любую карту,
+		# не только стартовый набор. Реального забега (p_run_deck непустой)
+		# это не касается — там уже и так настоящая растущая колода игрока.
+		deck = _build_full_card_pool()
+		enemy_deck = _build_full_card_pool()
 
 	for i in range(5):
 		draw_card(player_data)
@@ -230,6 +238,10 @@ func setup_match(
 	start_turn(player_data)
 
 
+## ARC-095: используется теперь только аварийным доливом в _draw_from_deck()
+## (колода игрока опустела посреди боя, реальный забег или нет) — при старте
+## тестового боя без забега setup_match() с этого тикета берёт
+## _build_full_card_pool(), не этот генерик-пул.
 func _initialize_test_deck() -> void:
 	deck = _build_generic_card_pool()
 	print("[DEBUG] Deck initialized with ", deck.size(), " cards")
@@ -238,9 +250,9 @@ func _initialize_test_deck() -> void:
 ## Перемешанный пул из STARTER_DECK_CARD_PATHS, дополненный случайными
 ## повторами до 20 карт. static — не трогает состояние матча, поэтому его
 ## также использует build_starting_run_deck() (стартовая колода игрока).
-## Источники: тестовая колода игрока (_initialize_test_deck), колода ИИ
-## (setup_match — у ИИ нет своей "коллекции", как run_deck у игрока, поэтому
-## он всегда берёт отсюда) и стартовая колода забега (build_starting_run_deck).
+## Источники: аварийный долив опустевшей колоды игрока (_draw_from_deck),
+## колода ИИ в реальном забеге (setup_match, у ИИ нет своей "коллекции", как
+## run_deck у игрока) и стартовая колода забега (build_starting_run_deck).
 static func _build_generic_card_pool() -> Array[CardData]:
 	var pool: Array[CardData] = []
 	for path in STARTER_DECK_CARD_PATHS:
@@ -252,6 +264,25 @@ static func _build_generic_card_pool() -> Array[CardData]:
 
 	while pool.size() < 20:
 		pool.append(pool.pick_random())
+
+	pool.shuffle()
+	return pool
+
+
+## ARC-095: полный пул уникальных карт игры (ALL_CARD_PATHS, без паддинга
+## повторами — 68 карт уже с запасом покрывают любой разумный размер колоды)
+## — только для тестового боя из главного меню («Битва», p_run_deck пуст).
+## Настоящий забег (world_map BATTLE/ELITE_BATTLE/BOSS) не использует эту
+## функцию вовсе — там и так настоящая растущая колода игрока (p_run_deck),
+## а колода ИИ там всё ещё берётся из _build_generic_card_pool().
+static func _build_full_card_pool() -> Array[CardData]:
+	var pool: Array[CardData] = []
+	for path in ALL_CARD_PATHS:
+		var card = load(path)
+		if card:
+			pool.append(card)
+		else:
+			print("[ERROR] Failed to load card: ", path)
 
 	pool.shuffle()
 	return pool
