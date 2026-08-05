@@ -1,7 +1,7 @@
 extends GutTest
-## Юнит-тесты EventScreen (ARC-014): выбор исхода по вероятности, худший
-## денежный расход варианта, применение эффектов к MatchSettings, и проверка
-## структуры всего пула .tres событий. Экземпляр создаётся через load().new() без
+## Юнит-тесты EventScreen (ARC-014, UI 07/13): выбор исхода, цена/доступность
+## решения, однократное применение, адаптивный макет и проверка структуры
+## всего пула .tres событий. Экземпляр создаётся через load().new() без
 ## добавления в дерево сцены, как в tests/test_shop_screen.gd —
 ## _return_to_map() (трогает get_tree()) здесь не тестируется.
 
@@ -87,18 +87,56 @@ func test_min_gold_delta_picks_worst_outcome() -> void:
 	screen.free()
 
 
-func test_option_label_marks_risk_without_revealing_outcome() -> void:
+func test_option_state_marks_risk_without_revealing_outcome() -> void:
 	var screen = EventScreenScript.new()
 	var option := {
 		"text": "Испытать удачу",
-		"outcomes": [{"chance": 50}, {"chance": 50}],
+		"outcomes":
+		[
+			{"chance": 50, "effects": [{"type": "gold", "value": 14}]},
+			{"chance": 50, "effects": [{"type": "gold", "value": -5}]},
+		],
 	}
 
-	var label: String = screen._option_label(option)
+	var state: Dictionary = screen._option_state(option, 20)
+	var details: String = screen._option_details_text(state)
 
-	assert_true(label.contains("Риск"))
-	assert_true(label.contains("Испытать удачу"))
-	assert_false(label.contains("50"), "UI не должен раскрывать точные шансы/исходы")
+	assert_true(state.is_risky)
+	assert_eq(state.guaranteed_cost, 0)
+	assert_eq(state.required_reserve, 5)
+	assert_true(details.contains("Риск"))
+	assert_false(details.contains("50"), "UI не должен раскрывать точные шансы/исходы")
+
+	screen.free()
+
+
+func test_option_state_shows_guaranteed_price_and_shortfall() -> void:
+	var screen = EventScreenScript.new()
+	var option := {
+		"outcomes":
+		[
+			{"chance": 40, "effects": [{"type": "gold", "value": -10}]},
+			{"chance": 60, "effects": [{"type": "gold", "value": -10}]},
+		]
+	}
+
+	var state: Dictionary = screen._option_state(option, 6)
+
+	assert_false(state.available)
+	assert_eq(state.guaranteed_cost, 10)
+	assert_eq(state.shortfall, 4)
+	assert_eq(state.unavailable_reason, "Не хватает 4 золота")
+	assert_true(screen._option_details_text(state).contains("Цена: 10 золота"))
+
+	screen.free()
+
+
+func test_layout_modes_cover_wide_four_by_three_and_portrait() -> void:
+	var screen = EventScreenScript.new()
+
+	assert_eq(screen._layout_mode_for_size(Vector2(1280, 720)), "wide")
+	assert_eq(screen._layout_mode_for_size(Vector2(1024, 768)), "stacked")
+	assert_eq(screen._layout_mode_for_size(Vector2(720, 1280)), "stacked")
 
 	screen.free()
 
@@ -228,4 +266,28 @@ func test_all_events_have_valid_structure() -> void:
 						)
 			assert_eq(total_chance, 100, "Сумма chance должна быть 100: %s" % path)
 		assert_true(has_safe_exit, "У события должен быть безопасный выход без расходов: %s" % path)
+	screen.free()
+
+
+func test_apply_option_once_blocks_double_application() -> void:
+	var screen = EventScreenScript.new()
+	MatchSettings.run_gold = 20
+	var option := {
+		"outcomes":
+		[
+			{
+				"chance": 100,
+				"result_text": "Оплачено",
+				"effects": [{"type": "gold", "value": -5}],
+			}
+		]
+	}
+
+	var first: Dictionary = screen._apply_option_once(option)
+	var second: Dictionary = screen._apply_option_once(option)
+
+	assert_eq(first.result_text, "Оплачено")
+	assert_eq(second, {})
+	assert_eq(MatchSettings.run_gold, 15, "Двойной клик не должен применить цену дважды")
+
 	screen.free()

@@ -1,13 +1,16 @@
 extends Control
-## ARC-014: узел «Событие» (docs/game_design_doc.md 7.1). Случайное EventData
-## из data/events показывает текст + 2-3 варианта; выбор разыгрывает исход
-## (возможен риск — несколько outcomes с вероятностями), применяет эффекты к
-## MatchSettings и показывает результат перед возвратом на карту. Разметка
-## строится кодом в _ready(), как и в ui/shop/shop_screen.gd.
+## ARC-014 / UI 07/13 (#102): иллюстрированная сцена решения. EventData
+## выбирается без повторов через сохранённую shuffle bag (ARC-088), затем
+## показывается в адаптивной сюжетной карточке. Варианты отдельно сообщают
+## гарантированную цену, риск и причину недоступности; применение защищено от
+## двойного клика флагом _choice_resolved.
 
+const EventIllustrationScript = preload("res://ui/event/event_illustration.gd")
 const EVENTS_DIRECTORY := "res://data/events"
+const WIDE_LAYOUT_MIN_ASPECT := 1.35
 
 var _event: EventData
+var _choice_resolved := false
 var _gold_label: Label
 var _options_list: VBoxContainer
 var _result_panel: VBoxContainer
@@ -30,8 +33,6 @@ func _pick_random_event_path() -> String:
 		map_data.event_draw_pile.assign(paths)
 		map_data.event_draw_pile.shuffle()
 	var path: String = map_data.event_draw_pile.pop_back()
-	# Фиксируем выбор немедленно: перезагрузка страницы не должна позволять
-	# перебрасывать событие или возвращать его обратно в очередь.
 	if is_inside_tree():
 		RunSaveManager.save_run()
 	return path
@@ -46,64 +47,117 @@ func _all_event_paths() -> Array[String]:
 	return paths
 
 
+func _layout_mode_for_size(viewport_size: Vector2) -> String:
+	if viewport_size.y <= 0:
+		return "stacked"
+	return "wide" if viewport_size.x / viewport_size.y >= WIDE_LAYOUT_MIN_ASPECT else "stacked"
+
+
 func _build_ui() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
-
 	var bg := ColorRect.new()
-	bg.color = Color(0.12, 0.1, 0.12)
+	bg.color = Color(0.045, 0.038, 0.032)
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
 
-	var root_margin := MarginContainer.new()
-	root_margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root_margin.add_theme_constant_override("margin_left", 24)
-	root_margin.add_theme_constant_override("margin_right", 24)
-	root_margin.add_theme_constant_override("margin_top", 24)
-	root_margin.add_theme_constant_override("margin_bottom", 24)
-	add_child(root_margin)
+	var margin := MarginContainer.new()
+	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
+	margin.add_theme_constant_override("margin_left", 20)
+	margin.add_theme_constant_override("margin_right", 20)
+	margin.add_theme_constant_override("margin_top", 16)
+	margin.add_theme_constant_override("margin_bottom", 16)
+	add_child(margin)
 
-	var root_vbox := VBoxContainer.new()
-	root_vbox.add_theme_constant_override("separation", 16)
-	root_margin.add_child(root_vbox)
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	margin.add_child(scroll)
 
-	var header := HBoxContainer.new()
-	root_vbox.add_child(header)
+	var content: BoxContainer
+	if _layout_mode_for_size(get_viewport_rect().size) == "wide":
+		content = HBoxContainer.new()
+	else:
+		content = VBoxContainer.new()
+	content.add_theme_constant_override("separation", 20)
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.custom_minimum_size.x = maxf(280.0, get_viewport_rect().size.x - 48.0)
+	scroll.add_child(content)
+
+	content.add_child(_build_story_panel())
+	content.add_child(_build_decision_panel())
+	_refresh_options()
+
+
+func _build_story_panel() -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel.size_flags_stretch_ratio = 0.9
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 12)
+	panel.add_child(box)
+
+	var illustration = EventIllustrationScript.new()
+	illustration.configure(_event.event_title)
+	illustration.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.add_child(illustration)
 
 	var title := Label.new()
 	title.text = _event.event_title
-	title.add_theme_font_size_override("font_size", 28)
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header.add_child(title)
-
-	_gold_label = Label.new()
-	_gold_label.add_theme_font_size_override("font_size", 22)
-	header.add_child(_gold_label)
-	_update_gold_label()
+	title.add_theme_font_size_override("font_size", 30)
+	title.add_theme_color_override("font_color", Color(0.96, 0.79, 0.43))
+	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(title)
 
 	var description := Label.new()
 	description.text = _event.event_description
-	description.autowrap_mode = TextServer.AUTOWRAP_WORD
-	root_vbox.add_child(description)
+	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	description.add_theme_font_size_override("font_size", 18)
+	box.add_child(description)
+	return panel
+
+
+func _build_decision_panel() -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel.size_flags_stretch_ratio = 1.1
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 12)
+	panel.add_child(box)
+
+	var header := HBoxContainer.new()
+	box.add_child(header)
+	var prompt := Label.new()
+	prompt.text = "ВАШЕ РЕШЕНИЕ"
+	prompt.add_theme_font_size_override("font_size", 22)
+	prompt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(prompt)
+	_gold_label = Label.new()
+	_gold_label.add_theme_font_size_override("font_size", 18)
+	header.add_child(_gold_label)
+	_update_gold_label()
 
 	_options_list = VBoxContainer.new()
-	_options_list.add_theme_constant_override("separation", 8)
-	root_vbox.add_child(_options_list)
+	_options_list.add_theme_constant_override("separation", 10)
+	box.add_child(_options_list)
 
 	_result_panel = VBoxContainer.new()
-	_result_panel.add_theme_constant_override("separation", 12)
+	_result_panel.add_theme_constant_override("separation", 14)
 	_result_panel.visible = false
-	root_vbox.add_child(_result_panel)
-
+	box.add_child(_result_panel)
+	var result_title := Label.new()
+	result_title.text = "ПОСЛЕДСТВИЕ"
+	result_title.add_theme_font_size_override("font_size", 20)
+	_result_panel.add_child(result_title)
 	_result_label = Label.new()
-	_result_label.autowrap_mode = TextServer.AUTOWRAP_WORD
+	_result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_result_panel.add_child(_result_label)
-
 	var continue_button := Button.new()
-	continue_button.text = "Продолжить"
+	continue_button.text = "Продолжить путь →"
+	continue_button.custom_minimum_size.y = 52
 	continue_button.pressed.connect(_return_to_map)
 	_result_panel.add_child(continue_button)
-
-	_refresh_options()
+	return panel
 
 
 func _update_gold_label() -> void:
@@ -113,39 +167,92 @@ func _update_gold_label() -> void:
 func _refresh_options() -> void:
 	for child in _options_list.get_children():
 		child.queue_free()
-
 	for option in _event.options:
-		var button := Button.new()
-		button.text = _option_label(option)
-		button.disabled = MatchSettings.run_gold + _min_gold_delta(option) < 0
-		button.pressed.connect(_on_option_chosen.bind(option))
-		_options_list.add_child(button)
+		_options_list.add_child(_build_option_panel(option))
 
 
-func _option_label(option: Dictionary) -> String:
-	var outcomes: Array = option.get("outcomes", [])
-	var marker := "⚠ Риск" if outcomes.size() > 1 else "✓ Гарантированно"
-	return "%s · %s" % [marker, option.get("text", "")]
+func _build_option_panel(option: Dictionary) -> PanelContainer:
+	var state := _option_state(option, MatchSettings.run_gold)
+	var panel := PanelContainer.new()
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 5)
+	panel.add_child(box)
+	var button := Button.new()
+	button.text = String(option.get("text", ""))
+	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	button.custom_minimum_size.y = 50
+	button.disabled = not state.available or _choice_resolved
+	button.tooltip_text = state.unavailable_reason
+	button.pressed.connect(_on_option_chosen.bind(option))
+	box.add_child(button)
+	var details := Label.new()
+	details.text = _option_details_text(state)
+	details.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	details.add_theme_color_override(
+		"font_color", Color(0.94, 0.55, 0.42) if not state.available else Color(0.75, 0.72, 0.66)
+	)
+	box.add_child(details)
+	return panel
 
 
-## Худший возможный расход золота среди всех outcomes варианта — на нём
-## основано, дизейблить ли кнопку (варианты с риском могут иметь и
-## гарантированную, и рискованную денежную часть одновременно).
+func _gold_delta(outcome: Dictionary) -> int:
+	var delta := 0
+	for effect in outcome.get("effects", []):
+		if effect.get("type") == "gold":
+			delta += int(effect.get("value", 0))
+	return delta
+
+
 func _min_gold_delta(option: Dictionary) -> int:
 	var worst := 0
 	var first := true
 	for outcome in option.get("outcomes", []):
-		var delta := 0
-		for effect in outcome.get("effects", []):
-			if effect.get("type") == "gold":
-				delta += int(effect.get("value", 0))
+		var delta := _gold_delta(outcome)
 		if first or delta < worst:
 			worst = delta
 			first = false
 	return worst
 
 
-## Выбирает исход варианта по вероятности (chance в сумме 100 по outcomes).
+func _guaranteed_gold_cost(option: Dictionary) -> int:
+	var outcomes: Array = option.get("outcomes", [])
+	if outcomes.is_empty():
+		return 0
+	var shared_delta := _gold_delta(outcomes[0])
+	for outcome in outcomes:
+		if _gold_delta(outcome) != shared_delta:
+			return 0
+	return maxi(0, -shared_delta)
+
+
+func _option_state(option: Dictionary, available_gold: int) -> Dictionary:
+	var outcomes: Array = option.get("outcomes", [])
+	var required_reserve := maxi(0, -_min_gold_delta(option))
+	var shortfall := maxi(0, required_reserve - available_gold)
+	return {
+		"available": shortfall == 0,
+		"shortfall": shortfall,
+		"guaranteed_cost": _guaranteed_gold_cost(option),
+		"required_reserve": required_reserve,
+		"is_risky": outcomes.size() > 1,
+		"unavailable_reason": "Не хватает %d золота" % shortfall if shortfall > 0 else "",
+	}
+
+
+func _option_details_text(state: Dictionary) -> String:
+	var parts: Array[String] = []
+	if state.guaranteed_cost > 0:
+		parts.append("Цена: %d золота" % state.guaranteed_cost)
+	elif state.required_reserve > 0:
+		parts.append("Нужен запас: %d золота" % state.required_reserve)
+	else:
+		parts.append("Без затрат")
+	parts.append("⚠ Риск: результат неизвестен" if state.is_risky else "✓ Результат гарантирован")
+	if not state.available:
+		parts.append(state.unavailable_reason)
+	return "  •  ".join(parts)
+
+
 func _resolve_outcome(outcomes: Array) -> Dictionary:
 	var roll := randi() % 100
 	var cumulative := 0
@@ -177,18 +284,25 @@ func _apply_effects(effects: Array) -> void:
 				MatchSettings.run_dungeon_bonus += value
 
 
-func _on_option_chosen(option: Dictionary) -> void:
+func _apply_option_once(option: Dictionary) -> Dictionary:
+	if _choice_resolved:
+		return {}
+	_choice_resolved = true
 	var outcome := _resolve_outcome(option.get("outcomes", []))
 	_apply_effects(outcome.get("effects", []))
-	_update_gold_label()
+	return outcome
 
+
+func _on_option_chosen(option: Dictionary) -> void:
+	var outcome := _apply_option_once(option)
+	if outcome.is_empty():
+		return
+	_update_gold_label()
 	_options_list.visible = false
 	_result_label.text = outcome.get("result_text", "")
 	_result_panel.visible = true
 
 
-## Как shop_screen._on_back_pressed(): помечаем узел пройденным и обновляем
-## current_node_index, иначе соседние узлы не откроются.
 func _return_to_map() -> void:
 	if MatchSettings.current_map_node:
 		MatchSettings.current_map_node.is_completed = true
