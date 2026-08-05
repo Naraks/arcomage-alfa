@@ -5,8 +5,8 @@
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
 card_name = "Звериная ферма"
-description = "Генератор Зверей +3, наносит 4 урона."
+description = "Генератор Зверей +2, наносит 4 урона."
 cost = 3
 type = 2
 rarity = 1
-effects = Array[Dictionary]([{"target": "self", "type": "mod_dungeon", "value": 3}, {"target": "enemy", "type": "damage", "value": 4}])
+effects = Array[Dictionary]([{"target": "self", "type": "mod_dungeon", "value": 2}, {"target": "enemy", "type": "damage", "value": 4}])

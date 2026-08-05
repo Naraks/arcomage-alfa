@@ -5,8 +5,8 @@
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
 card_name = "Гномья шахта"
-description = "Генератор Кирпичей +4, Башня +8."
+description = "Генератор Кирпичей +2, Башня +8."
 cost = 6
 type = 0
 rarity = 2
-effects = Array[Dictionary]([{"target": "self", "type": "mod_quarry", "value": 4}, {"target": "self", "type": "build_tower", "value": 8}])
+effects = Array[Dictionary]([{"target": "self", "type": "mod_quarry", "value": 2}, {"target": "self", "type": "build_tower", "value": 8}])

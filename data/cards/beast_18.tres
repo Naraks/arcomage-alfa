@@ -5,8 +5,8 @@
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
 card_name = "Логово альфы"
-description = "Генератор Зверей +4, Стена +10."
+description = "Генератор Зверей +2, Стена +10."
 cost = 5
 type = 2
 rarity = 2
-effects = Array[Dictionary]([{"target": "self", "type": "mod_dungeon", "value": 4}, {"target": "self", "type": "build_wall", "value": 10}])
+effects = Array[Dictionary]([{"target": "self", "type": "mod_dungeon", "value": 2}, {"target": "self", "type": "build_wall", "value": 10}])
