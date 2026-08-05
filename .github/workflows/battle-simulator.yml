@@ -1,0 +1,113 @@
+name: Battle Simulator (баланс-профилирование)
+
+# ARC-084/ARC-054: необязательный ручной запуск tools/battle_simulator.gd —
+# сотни ИИ-против-ИИ боёв для отчётов по картам/матчапам стратегий/типам
+# победы (ARC-084). Отдельный workflow, а не job внутри ci.yml, специально:
+# ci.yml тоже слушает workflow_dispatch на уровне всего файла, и job внутри
+# него можно только гейтить через if (github.event_name == 'workflow_dispatch'),
+# а не давать ему свой независимый триггер — ручной запуск ci.yml тогда
+# гонял бы ВСЕ его джобы (tests/coverage/export-web/smoke-test/windows-build)
+# заодно с симулятором, а не только его. Здесь — быстрый, самостоятельный
+# запуск, не влияет на обязательные проверки push/PR и не блокирует их.
+on:
+  workflow_dispatch:
+    inputs:
+      games:
+        description: "Сколько игр прогнать"
+        required: false
+        default: "500"
+      seed:
+        description: "Seed RNG для воспроизводимого прогона (пусто — случайный)"
+        required: false
+        default: ""
+
+env:
+  GODOT_VERSION: 4.7.1-stable
+  GODOT_DIR: /opt/godot
+
+jobs:
+  simulate:
+    name: Прогон battle_simulator.gd
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (with LFS)
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Cache Godot binary
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.GODOT_DIR }}
+          key: godot-${{ env.GODOT_VERSION }}-linux-x86_64
+
+      - name: Download Godot ${{ env.GODOT_VERSION }}
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p "$GODOT_DIR"
+          curl -fsSL -o /tmp/godot.zip \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip"
+          unzip -q /tmp/godot.zip -d /tmp/godot-extracted
+          mv /tmp/godot-extracted/Godot_v${GODOT_VERSION}_linux.x86_64 "$GODOT_DIR/godot"
+          chmod +x "$GODOT_DIR/godot"
+
+      # Тот же приём, что в ci.yml (джоб tests) — первый headless-запуск
+      # импортирует ассеты и создаёт .godot/, ненулевой код возврата тут не
+      # значит ошибку.
+      - name: Import project (warm .godot/ cache)
+        run: |
+          "$GODOT_DIR/godot" --headless --editor --quit --path . || true
+
+      - name: Запустить симулятор
+        run: |
+          SEED_ARG=""
+          if [ -n "${{ inputs.seed }}" ]; then
+            SEED_ARG="--seed=${{ inputs.seed }}"
+          fi
+          "$GODOT_DIR/godot" --headless --path . res://tools/battle_simulator.tscn -- \
+            --games=${{ inputs.games }} --out=balance_report.csv $SEED_ARG
+
+      # Читаемая сводка прямо в странице запуска — не нужно скачивать
+      # артефакт, чтобы увидеть распределение типов побед и топ/анти-топ карт
+      # по winrate.
+      - name: Сводка в Job Summary
+        if: always()
+        run: |
+          {
+            echo "### Типы победы"
+            echo ""
+            if [ -f balance_report_win_types.csv ]; then
+              echo "| win_type | games | share |"
+              echo "|---|---:|---:|"
+              tail -n +2 balance_report_win_types.csv | awk -F, '{printf "| %s | %s | %s |\n", $1, $2, $3}'
+            else
+              echo "_balance_report_win_types.csv не найден — прогон, вероятно, упал раньше записи отчётов._"
+            fi
+            echo ""
+            echo "### Топ-10 карт по winrate (при ≥20 розыгрышах)"
+            echo ""
+            if [ -f balance_report.csv ]; then
+              echo "| card_name | played | win_rate |"
+              echo "|---|---:|---:|"
+              tail -n +2 balance_report.csv | awk -F, '$2+0>=20 && $4!="n/a"' | sort -t, -k4 -rn | head -10 | awk -F, '{printf "| %s | %s | %s |\n", $1, $2, $4}'
+              echo ""
+              echo "### Анти-топ-10 карт по winrate (при ≥20 розыгрышах)"
+              echo ""
+              echo "| card_name | played | win_rate |"
+              echo "|---|---:|---:|"
+              tail -n +2 balance_report.csv | awk -F, '$2+0>=20 && $4!="n/a"' | sort -t, -k4 -n | head -10 | awk -F, '{printf "| %s | %s | %s |\n", $1, $2, $4}'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Приложить отчёты
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: battle-simulator-report
+          path: |
+            balance_report.csv
+            balance_report_matchups.csv
+            balance_report_win_types.csv
+          if-no-files-found: warn
+          retention-days: 30

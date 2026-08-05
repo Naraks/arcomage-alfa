@@ -28,6 +28,23 @@
 /balance_report*.csv.import
 /balance_report*.translation
 
+# ARC-091: отклонённые/промежуточные генерации арта — оставлены на диске как
+# история экспериментов (см. блокквоты ARC-091 в docs/dev_plan_tickets.md),
+# но не должны попадать в репозиторий — не подключены ни к одной сцене.
+# - background_workshop.png: первая генерация фона битвы (интерьер мастерской),
+#   отклонена по фидбэку "башни не могут быть в помещении", заменена на
+#   background_battlefield.png (уже в репозитории, реально используется).
+# - name_banner.png: лента названия карты, узел NameBanner убран из card.tscn
+#   при переходе на чернильный текст без ленты.
+# - cards/source/: сырые неоткадрированные генерации (goblin1-4, tracker1) —
+#   рабочий материал, из которого вырезаны реальные art/cards/goblin.png и
+#   art/cards/beast_hunter.png.
+/art/battle/background_workshop.png
+/art/battle/background_workshop.png.import
+/art/card_frame/name_banner.png
+/art/card_frame/name_banner.png.import
+/art/cards/source/
+
 # OS
 .DS_Store
 Thumbs.db

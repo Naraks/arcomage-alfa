@@ -4,9 +4,9 @@
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Армагеддон"
-description = "Наносит 22 урона башне врага (игнорирует стену)."
-cost = 8
+card_name = "Абсолютный катаклизм"
+description = "Наносит 28 урона башне врага (игнорирует стену)."
+cost = 9
 type = 1
 rarity = 2
-effects = Array[Dictionary]([{"target": "enemy", "type": "direct_damage", "value": 22}])
+effects = Array[Dictionary]([{"target": "enemy", "type": "direct_damage", "value": 28}])

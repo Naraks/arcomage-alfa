@@ -7,6 +7,12 @@ extends GutTest
 ## не читаются из боевого контента data/cards/*.tres, который часто меняется
 ## из-за баланса (Эпик C) и не должен ломать тесты логики.
 
+## ARC-084 (gdlint duplicated-load): пути, которые несколько тестов ниже
+## грузят по отдельности — вынесены в const, чтобы литеральная строка пути
+## встречалась в файле один раз, а не по три/два раза подряд.
+const DEFAULT_AI_STRATEGY_PATH := "res://data/resources/default_ai_strategy.gd"
+const DWARF_PICKAXE_PATH := "res://data/artifacts/dwarf_pickaxe.tres"
+
 var player: PlayerData
 var enemy: PlayerData
 
@@ -112,13 +118,19 @@ func test_play_card_by_index_skips_payment_when_artifact_guarantees_it() -> void
 	var card := TestFixtures.make_card(3, CardData.ResourceType.BRICKS)
 	MatchManager.player_hand = [card]
 	player.active_artifacts = [
-		TestFixtures.make_artifact([{"trigger": "pre_play", "type": "skip_payment_chance", "value": 1.0}])
+		TestFixtures.make_artifact(
+			[{"trigger": "pre_play", "type": "skip_payment_chance", "value": 1.0}]
+		)
 	]
 
 	MatchManager.play_card_by_index(0, player)
 
-	assert_eq(player.bricks, 5, "С гарантированным skip_payment_chance ресурсы не должны списываться")
-	assert_eq(MatchManager.player_hand.size(), 0, "Карта всё равно должна разыграться и уйти из руки")
+	assert_eq(
+		player.bricks, 5, "С гарантированным skip_payment_chance ресурсы не должны списываться"
+	)
+	assert_eq(
+		MatchManager.player_hand.size(), 0, "Карта всё равно должна разыграться и уйти из руки"
+	)
 
 
 func test_play_card_by_index_removes_card_from_hand() -> void:
@@ -150,7 +162,9 @@ func test_play_card_by_index_applies_direct_damage_effect() -> void:
 	)
 	MatchManager.player_hand = [card]
 	MatchManager.play_card_by_index(0, player)
-	assert_eq(enemy.tower_hp, 16, "direct_damage должен уйти врагу напрямую в башню, игнорируя стену")
+	assert_eq(
+		enemy.tower_hp, 16, "direct_damage должен уйти врагу напрямую в башню, игнорируя стену"
+	)
 
 
 ## ARC-030/031: интеграционный тест на весь путь через РЕАЛЬНЫЙ сигнал
@@ -162,7 +176,9 @@ func test_play_card_by_index_applies_direct_damage_effect() -> void:
 ## в изоляции.
 func test_play_card_by_index_damage_triggers_reflect_damage_artifact_on_defender() -> void:
 	enemy.active_artifacts = [
-		TestFixtures.make_artifact([{"trigger": "on_damage_taken", "type": "reflect_damage", "value": 2}])
+		TestFixtures.make_artifact(
+			[{"trigger": "on_damage_taken", "type": "reflect_damage", "value": 2}]
+		)
 	]
 	var card := TestFixtures.make_card(
 		1, CardData.ResourceType.BRICKS, [{"type": "damage", "value": 3, "target": "enemy"}]
@@ -203,13 +219,17 @@ func test_apply_card_effects_build_wall_targets_enemy() -> void:
 	# resolve_target() — отдельный generic "build" тип был избыточен и убран (ARC-005),
 	# т.к. использовался ровно одной картой (wall_card.tres) и дублировал build_wall.
 	var card := TestFixtures.make_card(
-		1, CardData.ResourceType.BRICKS, [{"type": "build_wall", "value": 3, "target": "enemy_wall"}]
+		1,
+		CardData.ResourceType.BRICKS,
+		[{"type": "build_wall", "value": 3, "target": "enemy_wall"}]
 	)
 	MatchManager.player_hand = [card]
 	var enemy_wall_before: int = enemy.wall_hp
 	MatchManager.play_card_by_index(0, player)
 	assert_eq(
-		enemy.wall_hp, enemy_wall_before + 3, "build_wall с target=enemy_wall должен прибавлять wall_hp врагу"
+		enemy.wall_hp,
+		enemy_wall_before + 3,
+		"build_wall с target=enemy_wall должен прибавлять wall_hp врагу"
 	)
 
 
@@ -224,7 +244,9 @@ func test_effect_draw_card_draws_into_target_hand() -> void:
 
 	MatchManager.apply_card_effects(card, player)
 
-	assert_eq(MatchManager.player_hand.size(), 1, "draw_card с target=self должен пополнить руку actor'а")
+	assert_eq(
+		MatchManager.player_hand.size(), 1, "draw_card с target=self должен пополнить руку actor'а"
+	)
 	assert_true(MatchManager.deck.is_empty(), "Карта должна уйти из колоды в руку")
 
 
@@ -239,7 +261,9 @@ func test_effect_draw_card_draws_multiple_cards_by_value() -> void:
 
 	MatchManager.apply_card_effects(card, player)
 
-	assert_eq(MatchManager.player_hand.size(), 2, "value должен определять количество тянущихся карт")
+	assert_eq(
+		MatchManager.player_hand.size(), 2, "value должен определять количество тянущихся карт"
+	)
 
 
 func test_effect_draw_card_respects_max_hand_size() -> void:
@@ -252,7 +276,9 @@ func test_effect_draw_card_respects_max_hand_size() -> void:
 
 	MatchManager.apply_card_effects(card, player)
 
-	assert_eq(MatchManager.player_hand.size(), 1, "draw_card не должен превышать max_hand_size (ARC-003)")
+	assert_eq(
+		MatchManager.player_hand.size(), 1, "draw_card не должен превышать max_hand_size (ARC-003)"
+	)
 	assert_eq(MatchManager.deck.size(), 1, "Невытянутая карта должна остаться в колоде")
 
 
@@ -267,7 +293,9 @@ func test_effect_steal_resource_moves_amount_from_target_to_actor() -> void:
 
 	MatchManager.apply_card_effects(card, player)
 
-	assert_eq(enemy.gems, enemy_gems_before - 3, "У цели (target=enemy) должно списаться value ресурса")
+	assert_eq(
+		enemy.gems, enemy_gems_before - 3, "У цели (target=enemy) должно списаться value ресурса"
+	)
 	assert_eq(player.gems, player_gems_before + 3, "Actor должен получить украденное, а не target")
 
 
@@ -283,25 +311,32 @@ func test_effect_steal_resource_clamps_to_amount_available() -> void:
 	MatchManager.apply_card_effects(card, player)
 
 	assert_eq(enemy.gems, 0, "Нельзя увести ресурс цели в минус")
-	assert_eq(player.gems, player_gems_before + 2, "Actor получает ровно столько, сколько реально украдено")
+	assert_eq(
+		player.gems,
+		player_gems_before + 2,
+		"Actor получает ровно столько, сколько реально украдено"
+	)
 
 
 func test_effect_conditional_applies_then_branch_when_condition_true() -> void:
 	player.wall_hp = 2
-	var card := TestFixtures.make_card(
-		1,
-		CardData.ResourceType.BRICKS,
-		[
-			{
-				"type": "conditional",
-				"target": "self",
-				"field": "wall_hp",
-				"op": "<",
-				"threshold": 3,
-				"then": {"type": "build_wall", "target": "self", "value": 3},
-				"else": {"type": "build_wall", "target": "self", "value": 1},
-			}
-		]
+	var card := (
+		TestFixtures
+		. make_card(
+			1,
+			CardData.ResourceType.BRICKS,
+			[
+				{
+					"type": "conditional",
+					"target": "self",
+					"field": "wall_hp",
+					"op": "<",
+					"threshold": 3,
+					"then": {"type": "build_wall", "target": "self", "value": 3},
+					"else": {"type": "build_wall", "target": "self", "value": 1},
+				}
+			]
+		)
 	)
 
 	MatchManager.apply_card_effects(card, player)
@@ -311,20 +346,23 @@ func test_effect_conditional_applies_then_branch_when_condition_true() -> void:
 
 func test_effect_conditional_applies_else_branch_when_condition_false() -> void:
 	player.wall_hp = 5
-	var card := TestFixtures.make_card(
-		1,
-		CardData.ResourceType.BRICKS,
-		[
-			{
-				"type": "conditional",
-				"target": "self",
-				"field": "wall_hp",
-				"op": "<",
-				"threshold": 3,
-				"then": {"type": "build_wall", "target": "self", "value": 3},
-				"else": {"type": "build_wall", "target": "self", "value": 1},
-			}
-		]
+	var card := (
+		TestFixtures
+		. make_card(
+			1,
+			CardData.ResourceType.BRICKS,
+			[
+				{
+					"type": "conditional",
+					"target": "self",
+					"field": "wall_hp",
+					"op": "<",
+					"threshold": 3,
+					"then": {"type": "build_wall", "target": "self", "value": 3},
+					"else": {"type": "build_wall", "target": "self", "value": 1},
+				}
+			]
+		)
 	)
 
 	MatchManager.apply_card_effects(card, player)
@@ -337,24 +375,29 @@ func test_effect_conditional_nested_effect_target_independent_of_condition_targe
 	# target условия и target вложенного эффекта резолвятся независимо друг от друга.
 	player.wall_hp = 5
 	var enemy_wall_before: int = enemy.wall_hp
-	var card := TestFixtures.make_card(
-		1,
-		CardData.ResourceType.BRICKS,
-		[
-			{
-				"type": "conditional",
-				"target": "self",
-				"field": "wall_hp",
-				"op": ">",
-				"threshold": 0,
-				"then": {"type": "damage", "target": "enemy", "value": 4},
-			}
-		]
+	var card := (
+		TestFixtures
+		. make_card(
+			1,
+			CardData.ResourceType.BRICKS,
+			[
+				{
+					"type": "conditional",
+					"target": "self",
+					"field": "wall_hp",
+					"op": ">",
+					"threshold": 0,
+					"then": {"type": "damage", "target": "enemy", "value": 4},
+				}
+			]
+		)
 	)
 
 	MatchManager.apply_card_effects(card, player)
 
-	assert_eq(enemy.wall_hp, enemy_wall_before - 4, "Вложенный then-эффект должен бить enemy, а не self")
+	assert_eq(
+		enemy.wall_hp, enemy_wall_before - 4, "Вложенный then-эффект должен бить enemy, а не self"
+	)
 
 
 # --- apply_card_effects: gain_resource/drain_resource/reduce_wall/random steal,
@@ -369,7 +412,9 @@ func test_effect_mod_quarry_does_not_go_below_zero() -> void:
 
 	MatchManager.apply_card_effects(card, player)
 
-	assert_eq(player.quarry, 0, "Генератор не должен уходить в минус (cards_list.md, порча генераторов)")
+	assert_eq(
+		player.quarry, 0, "Генератор не должен уходить в минус (cards_list.md, порча генераторов)"
+	)
 
 
 func test_effect_gain_resource_adds_instantly_to_target() -> void:
@@ -397,7 +442,11 @@ func test_effect_drain_resource_removes_without_transferring_to_actor() -> void:
 	MatchManager.apply_card_effects(card, player)
 
 	assert_eq(enemy.gems, 2)
-	assert_eq(player.gems, player_gems_before, "drain_resource — проклятие, а не кража: actor ничего не получает")
+	assert_eq(
+		player.gems,
+		player_gems_before,
+		"drain_resource — проклятие, а не кража: actor ничего не получает"
+	)
 
 
 func test_effect_drain_resource_clamps_to_amount_available() -> void:
@@ -495,6 +544,57 @@ func test_check_win_true_when_resource_target_reached() -> void:
 	assert_true(MatchManager.check_win())
 
 
+## ARC-084: check_win() теперь также записывает ЗА СЧЁТ ЧЕГО произошла победа
+## (last_win_reason/last_win_resource) — нужно tools/battle_simulator.gd для
+## профилирования типов победы. Проверяем все 4 варианта: высота башни,
+## уничтожение башни, и ресурсная победа по каждому из трёх типов ресурса.
+
+
+func test_check_win_reason_is_tower_height() -> void:
+	player.tower_hp = MatchManager.WIN_TOWER_HEIGHT
+	MatchManager.check_win()
+	assert_eq(MatchManager.last_win_reason, "tower_height")
+	assert_eq(MatchManager.last_win_resource, "", "Победа по высоте башни не про ресурс")
+
+
+func test_check_win_reason_is_tower_destroyed() -> void:
+	enemy.tower_hp = 0
+	MatchManager.check_win()
+	assert_eq(MatchManager.last_win_reason, "tower_destroyed")
+	assert_eq(MatchManager.last_win_resource, "")
+
+
+func test_check_win_reason_prioritizes_destruction_over_own_height() -> void:
+	# Оба условия истинны одновременно (искусственный кейс, на практике один
+	# apply_card_effects() почти никогда не двигает обе оси разом) — по
+	# комментарию в match_manager.gd уничтожение приоритетнее.
+	player.tower_hp = MatchManager.WIN_TOWER_HEIGHT
+	enemy.tower_hp = 0
+	MatchManager.check_win()
+	assert_eq(MatchManager.last_win_reason, "tower_destroyed")
+
+
+func test_check_win_reason_is_resource_bricks() -> void:
+	player.bricks = MatchManager.WIN_RESOURCE_AMOUNT
+	MatchManager.check_win()
+	assert_eq(MatchManager.last_win_reason, "resource")
+	assert_eq(MatchManager.last_win_resource, "bricks")
+
+
+func test_check_win_reason_is_resource_gems() -> void:
+	enemy.gems = MatchManager.WIN_RESOURCE_AMOUNT
+	MatchManager.check_win()
+	assert_eq(MatchManager.last_win_reason, "resource")
+	assert_eq(MatchManager.last_win_resource, "gems")
+
+
+func test_check_win_reason_is_resource_beasts() -> void:
+	player.beasts = MatchManager.WIN_RESOURCE_AMOUNT
+	MatchManager.check_win()
+	assert_eq(MatchManager.last_win_reason, "resource")
+	assert_eq(MatchManager.last_win_resource, "beasts")
+
+
 # --- setup_match / execute_ai_turn (регрессия ARC-078: зависающий ход ИИ) ---
 
 
@@ -526,7 +626,7 @@ func test_execute_ai_turn_returns_turn_to_player_when_ai_strategy_missing() -> v
 
 
 func test_execute_ai_turn_returns_turn_to_player_when_hand_empty() -> void:
-	enemy.ai_strategy = load("res://data/resources/default_ai_strategy.gd").new()
+	enemy.ai_strategy = load(DEFAULT_AI_STRATEGY_PATH).new()
 	MatchManager.current_state = MatchManager.State.AI_TURN
 	MatchManager.enemy_hand = []
 
@@ -546,7 +646,7 @@ func test_execute_ai_turn_returns_turn_to_player_when_hand_empty() -> void:
 func test_resolve_ai_turn_plays_best_card_for_player_actor_too() -> void:
 	# execute_ai_turn() всегда ведёт enemy_data — _resolve_ai_turn() должна уметь
 	# то же самое и для player_data (симулятору нужны обе стороны под ИИ).
-	player.ai_strategy = load("res://data/resources/default_ai_strategy.gd").new()
+	player.ai_strategy = load(DEFAULT_AI_STRATEGY_PATH).new()
 	var card := TestFixtures.make_card(
 		1, CardData.ResourceType.BRICKS, [{"type": "build_wall", "target": "self", "value": 3}]
 	)
@@ -569,7 +669,7 @@ func test_resolve_ai_turn_falls_back_to_default_strategy_for_any_actor() -> void
 
 
 func test_resolve_ai_turn_ends_player_turn_and_hands_off_to_enemy_when_hand_empty() -> void:
-	player.ai_strategy = load("res://data/resources/default_ai_strategy.gd").new()
+	player.ai_strategy = load(DEFAULT_AI_STRATEGY_PATH).new()
 	MatchManager.player_hand = []
 	MatchManager.current_state = MatchManager.State.PLAYER_TURN
 
@@ -608,13 +708,23 @@ func test_setup_match_applies_profile_manager_bonuses() -> void:
 
 	MatchManager.setup_match(p, e)
 
-	assert_eq(MatchManager.player_data.tower_hp, orig_tower_hp + 2 * 3, "tower: уровень 2 * per_level 3")
-	assert_eq(MatchManager.player_data.wall_hp, orig_wall_hp + 1 * 3, "wall: уровень 1 * per_level 3")
-	assert_eq(MatchManager.player_data.quarry, orig_quarry + 3 * 1, "quarry: уровень 3 * per_level 1")
-	assert_eq(MatchManager.player_data.magic, orig_magic + 1 * 1, "magic: уровень 1 * per_level 1")
-	assert_eq(MatchManager.player_data.dungeon, orig_dungeon + 2 * 1, "dungeon: уровень 2 * per_level 1")
 	assert_eq(
-		MatchManager.player_data.max_hand_size, orig_hand_size + 1 * 1, "hand_size: уровень 1 * per_level 1"
+		MatchManager.player_data.tower_hp, orig_tower_hp + 2 * 3, "tower: уровень 2 * per_level 3"
+	)
+	assert_eq(
+		MatchManager.player_data.wall_hp, orig_wall_hp + 1 * 3, "wall: уровень 1 * per_level 3"
+	)
+	assert_eq(
+		MatchManager.player_data.quarry, orig_quarry + 3 * 1, "quarry: уровень 3 * per_level 1"
+	)
+	assert_eq(MatchManager.player_data.magic, orig_magic + 1 * 1, "magic: уровень 1 * per_level 1")
+	assert_eq(
+		MatchManager.player_data.dungeon, orig_dungeon + 2 * 1, "dungeon: уровень 2 * per_level 1"
+	)
+	assert_eq(
+		MatchManager.player_data.max_hand_size,
+		orig_hand_size + 1 * 1,
+		"hand_size: уровень 1 * per_level 1"
 	)
 
 	ProfileManager.profile["upgrades"] = saved_upgrades
@@ -681,7 +791,7 @@ func test_setup_match_does_not_apply_rest_bonuses_to_enemy() -> void:
 func test_setup_match_applies_run_artifacts_to_player() -> void:
 	var p := TestFixtures.make_player()
 	var e := TestFixtures.make_player()
-	var artifact: ArtifactData = load("res://data/artifacts/dwarf_pickaxe.tres")
+	var artifact: ArtifactData = load(DWARF_PICKAXE_PATH)
 	MatchSettings.run_artifacts = [artifact]
 
 	MatchManager.setup_match(p, e)
@@ -694,7 +804,7 @@ func test_setup_match_applies_run_artifacts_to_player() -> void:
 func test_setup_match_does_not_apply_run_artifacts_to_enemy() -> void:
 	var p := TestFixtures.make_player()
 	var e := TestFixtures.make_player()
-	var artifact: ArtifactData = load("res://data/artifacts/dwarf_pickaxe.tres")
+	var artifact: ArtifactData = load(DWARF_PICKAXE_PATH)
 	MatchSettings.run_artifacts = [artifact]
 
 	MatchManager.setup_match(p, e)
@@ -719,7 +829,9 @@ func test_setup_match_resets_hands_from_previous_match() -> void:
 	# 5 карт из начальной раздачи заполняют руку до max_hand_size (ARC-003);
 	# доборная карта в start_turn(player_data) в конце setup_match() блокируется
 	# лимитом руки, поэтому обе руки останавливаются на 5, а не копятся выше.
-	assert_eq(MatchManager.player_hand.size(), 5, "Рука игрока должна начинаться с нуля, а не копиться")
+	assert_eq(
+		MatchManager.player_hand.size(), 5, "Рука игрока должна начинаться с нуля, а не копиться"
+	)
 	assert_eq(MatchManager.enemy_hand.size(), 5, "Рука ИИ должна начинаться с нуля, а не копиться")
 
 
@@ -744,7 +856,10 @@ func test_setup_match_uses_run_deck_when_provided() -> void:
 func test_setup_match_falls_back_to_test_deck_when_run_deck_empty() -> void:
 	MatchManager.setup_match(TestFixtures.make_player(), TestFixtures.make_player())
 
-	assert_false(MatchManager.deck.is_empty(), "Без run_deck (дефолт []) должна использоваться тестовая колода")
+	assert_false(
+		MatchManager.deck.is_empty(),
+		"Без run_deck (дефолт []) должна использоваться тестовая колода"
+	)
 
 
 func test_ai_does_not_draw_from_players_run_deck() -> void:
@@ -770,7 +885,10 @@ func test_ai_does_not_draw_from_players_run_deck() -> void:
 func test_setup_match_gives_enemy_independent_deck() -> void:
 	MatchManager.setup_match(TestFixtures.make_player(), TestFixtures.make_player())
 
-	assert_false(MatchManager.enemy_deck.is_empty(), "У ИИ должна быть своя непустая колода после setup_match")
+	assert_false(
+		MatchManager.enemy_deck.is_empty(),
+		"У ИИ должна быть своя непустая колода после setup_match"
+	)
 
 	var enemy_deck_size_before: int = MatchManager.enemy_deck.size()
 	MatchManager.deck.pop_back()

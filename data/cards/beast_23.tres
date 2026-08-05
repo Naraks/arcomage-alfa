@@ -4,9 +4,9 @@
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Медведь"
-description = "Наносит 6 урона врагу."
-cost = 3
+card_name = "Голиаф"
+description = "Стена +18."
+cost = 6
 type = 2
-rarity = 1
-effects = Array[Dictionary]([{"target": "enemy", "type": "damage", "value": 6}])
+rarity = 2
+effects = Array[Dictionary]([{"target": "self", "type": "build_wall", "value": 18}])

@@ -4,12 +4,21 @@ extends Node
 ##
 ## Запуск: обычная сцена (НЕ -s/SceneTree — см. ниже, почему), явно
 ## указанная как main scene этого конкретного запуска:
-##   godot --headless --path . res://tools/battle_simulator.tscn -- --games=500 --out=balance_report.csv
+##   godot --headless --path . res://tools/battle_simulator.tscn -- \
+##     --games=500 --out=balance_report.csv
 ##
 ## Аргументы (все необязательные):
 ##   --games=N   сколько игр прогнать (по умолчанию 500, см. ARC-023: "выборка ≥500")
 ##   --out=PATH  путь для CSV со статистикой по картам (по умолчанию res://balance_report.csv)
-##   --seed=N    зерно RNG для воспроизводимого прогона (по умолчанию не задаётся — каждый запуск другой)
+##   --seed=N    зерно RNG для воспроизводимого прогона (по умолчанию не задаётся —
+##               каждый запуск другой)
+##
+## Пишет три CSV (не один): <out> — по картам, <out>_matchups.csv — по матчапам
+## стратегий, <out>_win_types.csv — ARC-084, тип победы (tower_destroyed/
+## tower_height/resource_bricks/resource_gems/resource_beasts/draw) с долей от
+## общего числа игр. Последний нужен для критерия 3 ARC-084 — насколько вообще
+## достижима ресурсная победа (WIN_RESOURCE_AMOUNT=300) при текущем темпе
+## притока по сравнению с боевыми путями к победе.
 ##
 ## Почему обычная сцена, а не `-s tools/battle_simulator.gd` (как GUT в CI,
 ## .github/workflows/ci.yml): скрипт, переданный через `-s`, компилируется
@@ -53,8 +62,15 @@ const STRATEGY_PATHS := {
 
 var _card_stats: Dictionary = {}  # card_name -> {"played": int, "wins": int}
 var _matchup_stats: Dictionary = {}  # "a_vs_b" -> {"a_wins": int, "b_wins": int, "draws": int}
+## ARC-084: тип победы по каждой сыгранной партии — key см. _win_reason_key(),
+## значение — счётчик игр. Профилирование "чем вообще заканчиваются игры"
+## (высота башни/уничтожение башни/ресурсы, и каким именно ресурсом), запрошено
+## отдельно от per-card/per-matchup статистики, которая уже была.
+var _win_reason_stats: Dictionary = {}
 var _game_card_plays: Array = []  # за текущую игру: [{"name": String, "side": "a"/"b"}]
 var _current_winner_side: String = ""
+var _current_win_reason: String = ""
+var _current_win_resource: String = ""
 
 
 func _ready() -> void:
@@ -78,10 +94,12 @@ func _ready() -> void:
 
 	_write_card_report(out_path)
 	_write_matchup_report(out_path.get_basename() + "_matchups.csv")
+	_write_win_reason_report(out_path.get_basename() + "_win_types.csv")
 
 	print("Готово: ", num_games, " игр.")
 	print("Отчёт по картам: ", out_path)
 	print("Отчёт по матчапам стратегий: ", out_path.get_basename() + "_matchups.csv")
+	print("Отчёт по типам победы: ", out_path.get_basename() + "_win_types.csv")
 	get_tree().quit()
 
 
@@ -122,8 +140,16 @@ func _run_one_game(strat_a_name: String, strat_b_name: String) -> void:
 
 	_game_card_plays = []
 	_current_winner_side = ""
+	_current_win_reason = ""
+	_current_win_resource = ""
+	# ARC-084: снимаем last_win_reason/last_win_resource ВНУТРИ колбэка, в
+	# момент самого match_ended — check_win() выставляет их непосредственно
+	# перед emit(), так что на этот момент они гарантированно относятся к
+	# только что закончившейся игре, а не к какой-то из следующих.
 	var on_match_ended := func(winner):
 		_current_winner_side = "a" if winner == MatchManager.player_data else "b"
+		_current_win_reason = MatchManager.last_win_reason
+		_current_win_resource = MatchManager.last_win_resource
 	GameEvents.match_ended.connect(on_match_ended, CONNECT_ONE_SHOT)
 
 	# setup_match(p_run_deck=...) даёт полный пул карт стороне A (player_data), но
@@ -156,6 +182,7 @@ func _run_one_game(strat_a_name: String, strat_b_name: String) -> void:
 	var winner_label: String = _current_winner_side if _current_winner_side != "" else "draw"
 	_record_card_plays(winner_label)
 	_record_matchup(strat_a_name, strat_b_name, winner_label)
+	_record_win_reason(winner_label)
 
 
 func _record_card_plays(winner_label: String) -> void:
@@ -180,6 +207,62 @@ func _record_matchup(strat_a_name: String, strat_b_name: String, winner_label: S
 		_matchup_stats[key]["draws"] += 1
 
 
+## ARC-084: сводит last_win_reason/last_win_resource в один ключ отчёта —
+## "resource" разбивается на "resource_bricks"/"resource_gems"/
+## "resource_beasts" (иначе три типа ресурсной победы слились бы в одну
+## строку и потеряли бы как раз то, что запросили — "по какому ресурсу").
+## "draw" — партия дошла до MAX_TURNS_PER_GAME без победителя, on_match_ended
+## тогда вообще не срабатывал, _current_win_reason/_current_win_resource
+## остаются пустыми с начала _run_one_game().
+func _win_reason_key(winner_label: String) -> String:
+	if winner_label == "draw":
+		return "draw"
+	if _current_win_reason == "resource":
+		return "resource_%s" % _current_win_resource
+	return _current_win_reason
+
+
+func _record_win_reason(winner_label: String) -> void:
+	var key := _win_reason_key(winner_label)
+	_win_reason_stats[key] = _win_reason_stats.get(key, 0) + 1
+
+
+func _write_win_reason_report(out_path: String) -> void:
+	var file := FileAccess.open(out_path, FileAccess.WRITE)
+	if not file:
+		print("[ERROR] Не удалось открыть файл отчёта по типам победы: ", out_path)
+		return
+
+	var total: int = 0
+	for count in _win_reason_stats.values():
+		total += count
+
+	file.store_line("win_type,games,share")
+	# Фиксированный порядок строк (не просто keys().sort()) — читаемее: сначала
+	# оба "боевых" типа, потом три ресурсных по порядку типов ресурса, потом
+	# draw, и только в конце — любые неожиданные ключи (не должно случаться,
+	# но не молчать, если вдруг появится).
+	var known_order := [
+		"tower_destroyed",
+		"tower_height",
+		"resource_bricks",
+		"resource_gems",
+		"resource_beasts",
+		"draw"
+	]
+	for key in known_order:
+		var count: int = _win_reason_stats.get(key, 0)
+		var share: float = float(count) / total if total > 0 else 0.0
+		file.store_line("%s,%d,%.3f" % [key, count, share])
+	for key in _win_reason_stats.keys():
+		if key in known_order:
+			continue
+		var count: int = _win_reason_stats[key]
+		var share: float = float(count) / total if total > 0 else 0.0
+		file.store_line("%s,%d,%.3f" % [key, count, share])
+	file.close()
+
+
 func _write_card_report(out_path: String) -> void:
 	var file := FileAccess.open(out_path, FileAccess.WRITE)
 	if not file:
@@ -194,7 +277,7 @@ func _write_card_report(out_path: String) -> void:
 		var played: int = stats["played"]
 		var wins: int = stats["wins"]
 		var win_rate: String = "%.2f" % (float(wins) / played) if played > 0 else "n/a"
-		file.store_line("\"%s\",%d,%d,%s" % [name, played, wins, win_rate])
+		file.store_line('"%s",%d,%d,%s' % [name, played, wins, win_rate])
 	file.close()
 
 
@@ -211,15 +294,21 @@ func _write_matchup_report(out_path: String) -> void:
 		var stats: Dictionary = _matchup_stats[key]
 		var parts: PackedStringArray = key.split("_vs_")
 		var total: int = stats["a_wins"] + stats["b_wins"] + stats["draws"]
-		file.store_line(
-			"%s,%s,%d,%.2f,%.2f,%.2f" % [
-				parts[0],
-				parts[1],
-				total,
-				float(stats["a_wins"]) / total,
-				float(stats["b_wins"]) / total,
-				float(stats["draws"]) / total,
-			]
+		(
+			file
+			. store_line(
+				(
+					"%s,%s,%d,%.2f,%.2f,%.2f"
+					% [
+						parts[0],
+						parts[1],
+						total,
+						float(stats["a_wins"]) / total,
+						float(stats["b_wins"]) / total,
+						float(stats["draws"]) / total,
+					]
+				)
+			)
 		)
 	file.close()
 

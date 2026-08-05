@@ -7,10 +7,146 @@ enum State { START_MATCH, PLAYER_TURN, PROCESS_CARD, AI_TURN, CHECK_WIN, END_MAT
 const WIN_TOWER_HEIGHT = 100
 const WIN_RESOURCE_AMOUNT = 300
 
+## ARC-084 (gdlint class-definitions-order): все const этого файла собраны в
+## одном месте, в начале, а не разбросаны между функциями — раньше
+## STARTER_DECK_CARD_PATHS/STARTING_RUN_GOLD/ALL_CARD_PATHS/RESOURCE_NAMES
+## были определены значительно ниже, вперемешку с методами (сохранены на
+## месте использования доккомментарии — сами константы просто переехали).
+
+const DEFAULT_AI_STRATEGY_PATH := "res://data/resources/default_ai_strategy.gd"
+
+## Базовый пул карт — единственное место, где перечислены пути .tres. Общий
+## источник для тестовой колоды игрока, колоды ИИ и стартовой колоды забега
+## (см. _build_generic_card_pool ниже).
+const STARTER_DECK_CARD_PATHS := [
+	"res://data/cards/wall_card.tres",
+	"res://data/cards/knight_card.tres",
+	"res://data/cards/brick_1.tres",
+	# ARC-084: brick_2.tres ("Стена 1", стена+2) убран из игры целиком —
+	# точный дубликат-хуже wall_card.tres ("Стена", стена+3) на том же cost=1,
+	# см. docs/balance_proposal_arc084.md §1. Заменён на brick_9.tres ("Бур"),
+	# чтобы Кирпичи не остались единственным типом с 2 стартовыми картами
+	# вместо 3 (у Гемов/Зверей — по 3, см. gem_1..3/beast_1..3 ниже).
+	"res://data/cards/brick_9.tres",
+	"res://data/cards/brick_3.tres",
+	"res://data/cards/gem_1.tres",
+	"res://data/cards/gem_2.tres",
+	"res://data/cards/gem_3.tres",
+	"res://data/cards/beast_1.tres",
+	"res://data/cards/beast_2.tres",
+	"res://data/cards/beast_3.tres",
+]
+
+## ARC-012: стартовое золото забега — заглушка, пока в игре нет реальных
+## источников золота (ARC-013/014/015).
+const STARTING_RUN_GOLD := 20
+
+## ARC-012: все карты игры — источник предложений магазина (в отличие от
+## урезанного STARTER_DECK_CARD_PATHS выше), включая RARE (пул общий по
+## редкости, фильтрация по редкости — не здесь). ARC-020 добавил сюда 32
+## новые карты (включая 12 RARE) и отметил как отложенную проблему: RARE не
+## должны попадать в магазин/награду обычного боя (design doc §5.3). ARC-038
+## её закрыл — build_shop_offer() ниже и ui/reward/reward_screen.gd
+## (_unlocked_paths()) фильтруют RARE-карты через
+## ProfileManager.is_card_unlocked(), так что в этом массиве по-прежнему
+## перечислены ВСЕ карты (это по-прежнему полный пул), но заблокированные
+## RARE отсеиваются на этапе построения предложения, а не здесь.
+##
+## ARC-084 (docs/balance_proposal_arc084.md): brick_2/brick_11/brick_12/beast_4
+## убраны насовсем — точные дубликаты/доминируемые варианты уже существующих
+## карт (не про слабость, это уже правил ARC-023). brick_23/brick_24/gem_22/
+## gem_23/beast_22/beast_23 — новые карты верхнего края (cost 6/8/9),
+## закрывающие пробелы кривой impact/cost из docs/balance_audit_arc084.md.
+const ALL_CARD_PATHS := [
+	"res://data/cards/wall_card.tres",
+	"res://data/cards/knight_card.tres",
+	"res://data/cards/brick_1.tres",
+	"res://data/cards/brick_3.tres",
+	"res://data/cards/brick_4.tres",
+	"res://data/cards/brick_5.tres",
+	"res://data/cards/brick_6.tres",
+	"res://data/cards/brick_7.tres",
+	"res://data/cards/brick_8.tres",
+	"res://data/cards/brick_9.tres",
+	"res://data/cards/brick_10.tres",
+	"res://data/cards/brick_13.tres",
+	"res://data/cards/brick_14.tres",
+	"res://data/cards/brick_15.tres",
+	"res://data/cards/brick_16.tres",
+	"res://data/cards/brick_17.tres",
+	"res://data/cards/brick_18.tres",
+	"res://data/cards/brick_19.tres",
+	"res://data/cards/brick_20.tres",
+	"res://data/cards/brick_21.tres",
+	"res://data/cards/brick_22.tres",
+	"res://data/cards/brick_23.tres",
+	"res://data/cards/brick_24.tres",
+	"res://data/cards/gem_1.tres",
+	"res://data/cards/gem_2.tres",
+	"res://data/cards/gem_3.tres",
+	"res://data/cards/gem_4.tres",
+	"res://data/cards/gem_5.tres",
+	"res://data/cards/gem_6.tres",
+	"res://data/cards/gem_7.tres",
+	"res://data/cards/gem_8.tres",
+	"res://data/cards/gem_9.tres",
+	"res://data/cards/gem_10.tres",
+	"res://data/cards/gem_11.tres",
+	"res://data/cards/gem_12.tres",
+	"res://data/cards/gem_13.tres",
+	"res://data/cards/gem_14.tres",
+	"res://data/cards/gem_15.tres",
+	"res://data/cards/gem_16.tres",
+	"res://data/cards/gem_17.tres",
+	"res://data/cards/gem_18.tres",
+	"res://data/cards/gem_19.tres",
+	"res://data/cards/gem_20.tres",
+	"res://data/cards/gem_21.tres",
+	"res://data/cards/gem_22.tres",
+	"res://data/cards/gem_23.tres",
+	"res://data/cards/beast_1.tres",
+	"res://data/cards/beast_2.tres",
+	"res://data/cards/beast_3.tres",
+	"res://data/cards/beast_5.tres",
+	"res://data/cards/beast_6.tres",
+	"res://data/cards/beast_7.tres",
+	"res://data/cards/beast_8.tres",
+	"res://data/cards/beast_9.tres",
+	"res://data/cards/beast_10.tres",
+	"res://data/cards/beast_11.tres",
+	"res://data/cards/beast_12.tres",
+	"res://data/cards/beast_13.tres",
+	"res://data/cards/beast_14.tres",
+	"res://data/cards/beast_15.tres",
+	"res://data/cards/beast_16.tres",
+	"res://data/cards/beast_17.tres",
+	"res://data/cards/beast_18.tres",
+	"res://data/cards/beast_19.tres",
+	"res://data/cards/beast_20.tres",
+	"res://data/cards/beast_21.tres",
+	"res://data/cards/beast_22.tres",
+	"res://data/cards/beast_23.tres",
+]
+
+## ARC-021 (используется в _apply_steal_resource ниже): список типов ресурса
+## для "любой" (resource == "random", карта "Кража времени").
+const RESOURCE_NAMES := ["bricks", "gems", "beasts"]
+
 var current_state: State = State.START_MATCH
 var player_data: PlayerData
 var enemy_data: PlayerData
 var last_actor: PlayerData
+
+## ARC-084 (профилирование симулятора, tools/battle_simulator.gd): тип
+## последней победы — "tower_height" (своя башня достигла WIN_TOWER_HEIGHT),
+## "tower_destroyed" (башня врага упала до 0) или "resource" (свой ресурс
+## достиг WIN_RESOURCE_AMOUNT). last_win_resource заполняется только для
+## "resource" ("bricks"/"gems"/"beasts") — иначе пустая строка. Оба поля
+## выставляются в check_win() непосредственно перед match_ended, не
+## сбрасываются автоматически между матчами (следующий check_win()
+## перезапишет их заново, как и winner).
+var last_win_reason: String = ""
+var last_win_resource: String = ""
 
 var player_hand: Array[CardData] = []
 var enemy_hand: Array[CardData] = []
@@ -42,7 +178,7 @@ func setup_match(
 	# enemy_data может прийти без ai_strategy (world_map_screen.gd, main_menu.gd) —
 	# подстраховываемся здесь, в единой точке входа для всех боевых сценариев (ARC-078).
 	if not enemy_data.ai_strategy:
-		enemy_data.ai_strategy = load("res://data/resources/default_ai_strategy.gd").new()
+		enemy_data.ai_strategy = load(DEFAULT_AI_STRATEGY_PATH).new()
 
 	# Бонусы мета-прогрессии, если ProfileManager доступен (ARC-001).
 	# ARC-037: раньше здесь было два хардкодных плоских бонуса
@@ -94,24 +230,6 @@ func setup_match(
 	start_turn(player_data)
 
 
-## Базовый пул карт — единственное место, где перечислены пути .tres. Общий
-## источник для тестовой колоды игрока, колоды ИИ и стартовой колоды забега
-## (см. _build_generic_card_pool ниже).
-const STARTER_DECK_CARD_PATHS := [
-	"res://data/cards/wall_card.tres",
-	"res://data/cards/knight_card.tres",
-	"res://data/cards/brick_1.tres",
-	"res://data/cards/brick_2.tres",
-	"res://data/cards/brick_3.tres",
-	"res://data/cards/gem_1.tres",
-	"res://data/cards/gem_2.tres",
-	"res://data/cards/gem_3.tres",
-	"res://data/cards/beast_1.tres",
-	"res://data/cards/beast_2.tres",
-	"res://data/cards/beast_3.tres",
-]
-
-
 func _initialize_test_deck() -> void:
 	deck = _build_generic_card_pool()
 	print("[DEBUG] Deck initialized with ", deck.size(), " cards")
@@ -150,90 +268,6 @@ static func _build_generic_card_pool() -> Array[CardData]:
 ## теста/ИИ стартовый набор без паддинга случайными повторами).
 static func build_starting_run_deck() -> Array[CardData]:
 	return _build_generic_card_pool()
-
-
-## ARC-012: стартовое золото забега — заглушка, пока в игре нет реальных
-## источников золота (ARC-013/014/015).
-const STARTING_RUN_GOLD := 20
-
-## ARC-012: все карты игры — источник предложений магазина (в отличие от
-## урезанного STARTER_DECK_CARD_PATHS выше), включая RARE (пул общий по
-## редкости, фильтрация по редкости — не здесь). ARC-020 добавил сюда 32
-## новые карты (включая 12 RARE) и отметил как отложенную проблему: RARE не
-## должны попадать в магазин/награду обычного боя (design doc §5.3). ARC-038
-## её закрыл — build_shop_offer() ниже и ui/reward/reward_screen.gd
-## (_unlocked_paths()) фильтруют RARE-карты через
-## ProfileManager.is_card_unlocked(), так что в этом массиве по-прежнему
-## перечислены ВСЕ карты (это по-прежнему полный пул), но заблокированные
-## RARE отсеиваются на этапе построения предложения, а не здесь.
-const ALL_CARD_PATHS := [
-	"res://data/cards/wall_card.tres",
-	"res://data/cards/knight_card.tres",
-	"res://data/cards/brick_1.tres",
-	"res://data/cards/brick_2.tres",
-	"res://data/cards/brick_3.tres",
-	"res://data/cards/brick_4.tres",
-	"res://data/cards/brick_5.tres",
-	"res://data/cards/brick_6.tres",
-	"res://data/cards/brick_7.tres",
-	"res://data/cards/brick_8.tres",
-	"res://data/cards/brick_9.tres",
-	"res://data/cards/brick_10.tres",
-	"res://data/cards/brick_11.tres",
-	"res://data/cards/brick_12.tres",
-	"res://data/cards/brick_13.tres",
-	"res://data/cards/brick_14.tres",
-	"res://data/cards/brick_15.tres",
-	"res://data/cards/brick_16.tres",
-	"res://data/cards/brick_17.tres",
-	"res://data/cards/brick_18.tres",
-	"res://data/cards/brick_19.tres",
-	"res://data/cards/brick_20.tres",
-	"res://data/cards/brick_21.tres",
-	"res://data/cards/brick_22.tres",
-	"res://data/cards/gem_1.tres",
-	"res://data/cards/gem_2.tres",
-	"res://data/cards/gem_3.tres",
-	"res://data/cards/gem_4.tres",
-	"res://data/cards/gem_5.tres",
-	"res://data/cards/gem_6.tres",
-	"res://data/cards/gem_7.tres",
-	"res://data/cards/gem_8.tres",
-	"res://data/cards/gem_9.tres",
-	"res://data/cards/gem_10.tres",
-	"res://data/cards/gem_11.tres",
-	"res://data/cards/gem_12.tres",
-	"res://data/cards/gem_13.tres",
-	"res://data/cards/gem_14.tres",
-	"res://data/cards/gem_15.tres",
-	"res://data/cards/gem_16.tres",
-	"res://data/cards/gem_17.tres",
-	"res://data/cards/gem_18.tres",
-	"res://data/cards/gem_19.tres",
-	"res://data/cards/gem_20.tres",
-	"res://data/cards/gem_21.tres",
-	"res://data/cards/beast_1.tres",
-	"res://data/cards/beast_2.tres",
-	"res://data/cards/beast_3.tres",
-	"res://data/cards/beast_4.tres",
-	"res://data/cards/beast_5.tres",
-	"res://data/cards/beast_6.tres",
-	"res://data/cards/beast_7.tres",
-	"res://data/cards/beast_8.tres",
-	"res://data/cards/beast_9.tres",
-	"res://data/cards/beast_10.tres",
-	"res://data/cards/beast_11.tres",
-	"res://data/cards/beast_12.tres",
-	"res://data/cards/beast_13.tres",
-	"res://data/cards/beast_14.tres",
-	"res://data/cards/beast_15.tres",
-	"res://data/cards/beast_16.tres",
-	"res://data/cards/beast_17.tres",
-	"res://data/cards/beast_18.tres",
-	"res://data/cards/beast_19.tres",
-	"res://data/cards/beast_20.tres",
-	"res://data/cards/beast_21.tres",
-]
 
 
 ## card_count РАЗНЫХ карт (без повторов) из ALL_CARD_PATHS — предложение
@@ -331,7 +365,7 @@ func _resolve_ai_turn(actor: PlayerData) -> void:
 	# отсутствие стратегии не должно вешать ход навсегда.
 	if not actor.ai_strategy:
 		print("[ERROR] AI Strategy not set! Falling back to default_ai_strategy.gd")
-		actor.ai_strategy = load("res://data/resources/default_ai_strategy.gd").new()
+		actor.ai_strategy = load(DEFAULT_AI_STRATEGY_PATH).new()
 
 	var best_card = actor.ai_strategy.get_best_card(hand, actor, opponent)
 
@@ -502,7 +536,9 @@ func _apply_effect(effect: Dictionary, actor: PlayerData, enemy: PlayerData) -> 
 			# ARC-020: {"type": "drain_resource", "target": "enemy", "resource": "bricks",
 			# "value": N} — забирает min(N, доступно) ресурса у target_player, но, в
 			# отличие от steal_resource, никому не отдаёт (чистое "проклятие", не кража).
-			var drain_amount: int = min(value, _get_resource(target_player, effect.get("resource", "")))
+			var drain_amount: int = min(
+				value, _get_resource(target_player, effect.get("resource", ""))
+			)
 			if drain_amount > 0:
 				_modify_resource(target_player, effect.get("resource", ""), -drain_amount)
 		"reduce_wall":
@@ -512,16 +548,15 @@ func _apply_effect(effect: Dictionary, actor: PlayerData, enemy: PlayerData) -> 
 			target_player.wall_hp = max(0, target_player.wall_hp - value)
 
 
-const RESOURCE_NAMES := ["bricks", "gems", "beasts"]
-
-
 ## ARC-021: {"type": "steal_resource", "target": "enemy", "resource": "gems", "value": N}
 ## Крадёт min(N, доступно у from) ресурса resource у from, отдаёт ровно столько же to —
 ## нельзя увести ресурс в минус и нельзя украсть больше, чем реально есть.
 ## ARC-020: resource == "random" — тип ресурса выбирается случайно в момент розыгрыша
 ## (нужно карте "Кража времени": "украсть 5 любого ресурса врага, тот же ресурс приходит вам" —
 ## "любой" в данных не фиксируется заранее, а бросается при применении эффекта).
-func _apply_steal_resource(effect: Dictionary, from_player: PlayerData, to_player: PlayerData) -> void:
+func _apply_steal_resource(
+	effect: Dictionary, from_player: PlayerData, to_player: PlayerData
+) -> void:
 	var resource_name: String = effect.get("resource", "")
 	if resource_name == "random":
 		resource_name = RESOURCE_NAMES[randi() % RESOURCE_NAMES.size()]
@@ -574,42 +609,40 @@ func _apply_conditional(
 		_apply_effect(branch, actor, enemy)
 
 
+## ARC-084 (gdlint max-returns): один return вместо восьми — значение
+## собирается словарём-таблицей и отдаётся один раз, логика не изменилась.
 func _get_field(player: PlayerData, field_name: String):
-	match field_name:
-		"wall_hp":
-			return player.wall_hp
-		"tower_hp":
-			return player.tower_hp
-		"bricks":
-			return player.bricks
-		"gems":
-			return player.gems
-		"beasts":
-			return player.beasts
-		"quarry":
-			return player.quarry
-		"magic":
-			return player.magic
-		"dungeon":
-			return player.dungeon
-	return 0
+	var fields := {
+		"wall_hp": player.wall_hp,
+		"tower_hp": player.tower_hp,
+		"bricks": player.bricks,
+		"gems": player.gems,
+		"beasts": player.beasts,
+		"quarry": player.quarry,
+		"magic": player.magic,
+		"dungeon": player.dungeon,
+	}
+	return fields.get(field_name, 0)
 
 
+## ARC-084 (gdlint max-returns): один return вместо семи — результат копится в
+## переменную внутри match, отдаётся один раз в конце, логика не изменилась.
 func _evaluate_condition(value, op: String, threshold) -> bool:
+	var result := false
 	match op:
 		"<":
-			return value < threshold
+			result = value < threshold
 		"<=":
-			return value <= threshold
+			result = value <= threshold
 		">":
-			return value > threshold
+			result = value > threshold
 		">=":
-			return value >= threshold
+			result = value >= threshold
 		"==":
-			return value == threshold
+			result = value == threshold
 		"!=":
-			return value != threshold
-	return false
+			result = value != threshold
+	return result
 
 
 ## ARC-005: единая точка резолва `target` из словаря эффекта карты/артефакта в
@@ -628,7 +661,9 @@ func resolve_target(actor: PlayerData, enemy: PlayerData, target_str: String) ->
 ## Оба реальных вызова из _apply_effect() передают actor; вызовы без source
 ## (тесты, потенциальный будущий "урон от ловушки/эффекта без владельца")
 ## просто не дадут сработать эффектам с типом "reflect_damage".
-func apply_damage(amount: int, target: PlayerData, ignore_wall: bool, source: PlayerData = null) -> void:
+func apply_damage(
+	amount: int, target: PlayerData, ignore_wall: bool, source: PlayerData = null
+) -> void:
 	if ignore_wall:
 		target.tower_hp -= amount
 	else:
@@ -643,29 +678,62 @@ func apply_damage(amount: int, target: PlayerData, ignore_wall: bool, source: Pl
 	GameEvents.damage_applied.emit(target, amount, hit_wall, source)
 
 
+## ARC-084: помимо winner, теперь определяет и записывает в last_win_reason/
+## last_win_resource ЗА СЧЁТ ЧЕГО именно произошла победа — нужно
+## tools/battle_simulator.gd для профилирования (были запросы: "по ресурсам
+## (по какому ресурсу), по высоте башни, по уничтожению башни противника").
+## Приоритет проверки при теоретическом одновременном срабатывании нескольких
+## условий за один вызов (на практике почти невозможно — один apply_card_
+## effects() обычно двигает только одну ось): сначала уничтожение башни
+## врага, затем собственная высота башни, затем ресурсы — уничтожение
+## приоритетнее как более "прямое" и мгновенное завершение партии.
 func check_win() -> bool:
 	current_state = State.CHECK_WIN
 	var winner = null
+	var reason := ""
+	var win_resource := ""
 
-	if player_data.tower_hp >= WIN_TOWER_HEIGHT or enemy_data.tower_hp <= 0:
+	if enemy_data.tower_hp <= 0:
 		winner = player_data
-	elif enemy_data.tower_hp >= WIN_TOWER_HEIGHT or player_data.tower_hp <= 0:
+		reason = "tower_destroyed"
+	elif player_data.tower_hp <= 0:
 		winner = enemy_data
-	elif (
-		player_data.bricks >= WIN_RESOURCE_AMOUNT
-		or player_data.gems >= WIN_RESOURCE_AMOUNT
-		or player_data.beasts >= WIN_RESOURCE_AMOUNT
-	):
+		reason = "tower_destroyed"
+	elif player_data.tower_hp >= WIN_TOWER_HEIGHT:
 		winner = player_data
-	elif (
-		enemy_data.bricks >= WIN_RESOURCE_AMOUNT
-		or enemy_data.gems >= WIN_RESOURCE_AMOUNT
-		or enemy_data.beasts >= WIN_RESOURCE_AMOUNT
-	):
+		reason = "tower_height"
+	elif enemy_data.tower_hp >= WIN_TOWER_HEIGHT:
 		winner = enemy_data
+		reason = "tower_height"
+	elif player_data.bricks >= WIN_RESOURCE_AMOUNT:
+		winner = player_data
+		reason = "resource"
+		win_resource = "bricks"
+	elif player_data.gems >= WIN_RESOURCE_AMOUNT:
+		winner = player_data
+		reason = "resource"
+		win_resource = "gems"
+	elif player_data.beasts >= WIN_RESOURCE_AMOUNT:
+		winner = player_data
+		reason = "resource"
+		win_resource = "beasts"
+	elif enemy_data.bricks >= WIN_RESOURCE_AMOUNT:
+		winner = enemy_data
+		reason = "resource"
+		win_resource = "bricks"
+	elif enemy_data.gems >= WIN_RESOURCE_AMOUNT:
+		winner = enemy_data
+		reason = "resource"
+		win_resource = "gems"
+	elif enemy_data.beasts >= WIN_RESOURCE_AMOUNT:
+		winner = enemy_data
+		reason = "resource"
+		win_resource = "beasts"
 
 	if winner:
 		current_state = State.END_MATCH
+		last_win_reason = reason
+		last_win_resource = win_resource
 		GameEvents.match_ended.emit(winner)
 		return true
 
