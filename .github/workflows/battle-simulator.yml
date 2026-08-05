@@ -68,6 +68,13 @@ jobs:
           "$GODOT_DIR/godot" --headless --path . res://tools/battle_simulator.tscn -- \
             --games=${{ inputs.games }} --out=balance_report.csv $SEED_ARG
 
+      # Godot может вернуть exit code 0 даже после runtime SCRIPT ERROR.
+      # Нулевая сумма turns означает, что ни одна партия не дошла до игрового цикла.
+      - name: Проверить валидность отчёта
+        run: |
+          test -s balance_report_games.csv
+          awk -F, 'NR>1 {games++; turns+=$8} END {exit !(games>0 && turns>0)}' balance_report_games.csv
+
       # Читаемая сводка прямо в странице запуска — не нужно скачивать
       # артефакт, чтобы увидеть распределение типов побед и топ/анти-топ карт
       # по winrate.

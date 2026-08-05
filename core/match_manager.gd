@@ -242,9 +242,10 @@ func setup_match(
 
 	# ARC-015: артефакты забега (награда за бой) — копия, не сама run_artifacts,
 	# по аналогии с run_deck ниже.
-	player_data.active_artifacts = (
-		MatchSettings.run_artifacts.duplicate() if p_apply_player_progression else []
-	)
+	if p_apply_player_progression:
+		player_data.active_artifacts = MatchSettings.run_artifacts.duplicate()
+	else:
+		player_data.active_artifacts.clear()
 
 	# ARC-016: в match_manager.deck кладём ШУФЛ-КОПИЮ run_deck, а не саму
 	# run_deck — карты, разыгранные/сброшенные за бой, не должны пропадать из
