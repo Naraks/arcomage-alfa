@@ -1,0 +1,1640 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Башни магов: Дуэль — обзор экранов</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+</head>
+<body>
+<iframe sandbox="allow-scripts" referrerpolicy="no-referrer" title="Ui Screen Design Review" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;Ui Screen Design Review&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(
+    --background,
+    var(--color-background-primary, light-dark(rgb(255 255 255), rgb(24 24 24)))
+  ) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --color-background-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --card: color-mix(in oklab, var(--foreground) 5%, var(--background));
+  --card-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --popover: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255), rgb(45 45 45))
+  );
+  --popover-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --primary: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --primary-foreground: var(
+    --color-text-inverse,
+    light-dark(rgb(255 255 255), rgb(13 13 13))
+  );
+  --secondary: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%))
+  );
+  --secondary-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: var(
+    --color-text-secondary,
+    light-dark(rgb(26 28 31 / 49.4%), rgb(255 255 255 / 49.8%))
+  );
+  --accent: var(
+    --color-background-info,
+    light-dark(rgb(229 242 255), rgb(13 39 63))
+  );
+  --accent-foreground: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --destructive: var(
+    --color-text-warning,
+    light-dark(rgb(226 85 7), rgb(255 133 73))
+  );
+  --border: var(
+    --color-border-secondary,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+  --input: var(
+    --color-border-primary,
+    light-dark(
+      rgb(26 28 31 / 11.8%),
+      color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+    )
+  );
+  --ring: var(
+    --color-ring-primary,
+    light-dark(rgb(51 156 255), rgb(131 195 255 / 76%))
+  );
+  --font-size-base: var(--font-text-md-size, 14px);
+  --blue: light-dark(rgb(51 156 255), rgb(51 156 255));
+  --orange: light-dark(rgb(226 85 7), rgb(251 106 34));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+  --red: light-dark(rgb(224 46 42), rgb(255 103 100));
+  --purple: light-dark(rgb(146 79 247), rgb(173 123 249));
+  --yellow: light-dark(rgb(255 195 0), rgb(255 210 64));
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: var(--border-radius-lg, 12.5px);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  /* Preserve MCP aliases for older inline renderers without creating :root cycles. */
+  --color-background-primary: var(
+    --background,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --color-text-primary: var(
+    --foreground,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --color-border-secondary: var(
+    --border,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--font-weight-medium, 500);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive &gt; .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align=&quot;right&quot;]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align=&quot;center&quot;]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: superellipse(1.5);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget &gt; :not(.card) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: superellipse(1.5);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+    [aria-pressed=&quot;true&quot;],
+    [aria-selected=&quot;true&quot;],
+    .is-selected
+  ) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+/* Model-authored chart rules can otherwise stretch icons after these styles load. */
+svg.lucide {
+  display: block;
+  width: 16px !important;
+  height: 16px !important;
+  flex: none;
+  margin: 0 !important;
+  stroke-width: 1.6;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;style&gt;
+#arc-ui-review {
+  --arc-ink: #f6ecd7;
+  --arc-muted: #b9aa92;
+  --arc-night: #17141d;
+  --arc-panel: #28222e;
+  --arc-panel-2: #352b38;
+  --arc-line: #66566b;
+  --arc-gold: #e7bd67;
+  --arc-brick: #df6b55;
+  --arc-gem: #668de8;
+  --arc-beast: #65ad76;
+  --arc-danger: #cf625f;
+  color: var(--foreground);
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-wrap: anywhere;
+}
+#arc-ui-review * { box-sizing: border-box; }
+#arc-ui-review .arc-cover,
+#arc-ui-review .arc-section { margin-bottom: 28px; }
+#arc-ui-review .arc-kicker { color: var(--muted-foreground); letter-spacing: .08em; text-transform: uppercase; }
+#arc-ui-review .arc-cover-grid,
+#arc-ui-review .arc-findings,
+#arc-ui-review .arc-audit-grid { display: grid; gap: 16px; }
+#arc-ui-review .arc-cover-grid { grid-template-columns: minmax(0, 1.6fr) minmax(220px, .8fr); align-items: end; }
+#arc-ui-review .arc-findings { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+#arc-ui-review .arc-audit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 16px; }
+#arc-ui-review .arc-stat-row { display: flex; gap: 10px; flex-wrap: wrap; }
+#arc-ui-review .arc-stat-row .card { flex: 1 1 120px; }
+#arc-ui-review .arc-stat-value { display: block; margin-bottom: 4px; }
+#arc-ui-review .arc-toolbar,
+#arc-ui-review .arc-variant-bar,
+#arc-ui-review .arc-screen-meta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+#arc-ui-review .arc-toolbar .form-label { flex: 1 1 260px; }
+#arc-ui-review .arc-toolbar .form-select { width: 100%; }
+#arc-ui-review .arc-screen-meta { color: var(--muted-foreground); }
+#arc-ui-review .arc-tag { display: inline-flex; align-items: center; gap: 5px; }
+#arc-ui-review .arc-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--viz-series-1); }
+#arc-ui-review .arc-list { margin: 8px 0 0; padding-left: 19px; }
+#arc-ui-review .arc-list li + li { margin-top: 6px; }
+#arc-ui-review .arc-variant-bar { margin: 18px 0 12px; }
+#arc-ui-review .arc-variant-bar .btn[aria-pressed=&quot;true&quot;] { background: var(--primary); color: var(--primary-foreground); }
+#arc-ui-review .arc-variant-note { color: var(--muted-foreground); margin: 0 0 12px; }
+#arc-ui-review .arc-tradeoff { color: var(--muted-foreground); margin-top: 10px; }
+#arc-ui-review .arc-mock-shell { width: 100%; }
+#arc-ui-review .arc-game-frame {
+  position: relative;
+  min-height: 430px;
+  overflow: hidden;
+  border: 1px solid var(--arc-line);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 50% 22%, rgba(104,78,126,.32), transparent 35%),
+    linear-gradient(145deg, #201824, var(--arc-night) 52%, #11141b);
+  color: var(--arc-ink);
+  font-family: Georgia, &quot;Times New Roman&quot;, serif;
+  box-shadow: inset 0 0 55px rgba(0,0,0,.34);
+}
+#arc-ui-review .arc-game-frame button { font: inherit; }
+#arc-ui-review .arc-game-top {
+  position: absolute; inset: 0 0 auto 0; min-height: 54px; padding: 12px 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  background: rgba(16,13,19,.82); border-bottom: 1px solid var(--arc-line);
+}
+#arc-ui-review .arc-game-title { color: var(--arc-gold); letter-spacing: .06em; text-transform: uppercase; }
+#arc-ui-review .arc-chip-row { display: flex; gap: 8px; flex-wrap: wrap; }
+#arc-ui-review .arc-chip { padding: 5px 8px; border: 1px solid var(--arc-line); border-radius: 999px; background: rgba(255,255,255,.05); }
+#arc-ui-review .arc-stage { position: absolute; inset: 55px 0 58px; padding: 16px; }
+#arc-ui-review .arc-game-foot {
+  position: absolute; inset: auto 0 0 0; min-height: 58px; padding: 10px 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  background: rgba(16,13,19,.9); border-top: 1px solid var(--arc-line);
+}
+#arc-ui-review .arc-game-action { padding: 9px 14px; border-radius: 7px; border: 1px solid #947443; background: #5c4228; color: var(--arc-ink); }
+#arc-ui-review .arc-game-action--main { background: var(--arc-gold); color: #21170d; border-color: #f3d493; }
+#arc-ui-review .arc-hero-copy { position: absolute; left: 7%; top: 17%; width: 38%; }
+#arc-ui-review .arc-logo { color: var(--arc-gold); font-size: 36px; letter-spacing: .16em; margin-bottom: 10px; }
+#arc-ui-review .arc-hero-art { position: absolute; inset: 0; opacity: .85; background: linear-gradient(115deg, transparent 38%, rgba(93,57,65,.45) 39%, transparent 65%), radial-gradient(circle at 77% 46%, rgba(226,141,83,.36), transparent 25%); }
+#arc-ui-review .arc-tower { position: absolute; bottom: 0; width: 74px; background: linear-gradient(#80685d,#382f34); border: 2px solid #9b806a; box-shadow: 0 0 30px rgba(231,189,103,.13); }
+#arc-ui-review .arc-tower::before { content: &quot;&quot;; position: absolute; left: -7px; right: -7px; top: -12px; height: 16px; background: repeating-linear-gradient(90deg,#8a6d5c 0 14px,transparent 14px 19px); }
+#arc-ui-review .arc-tower--left { left: 55%; height: 51%; }
+#arc-ui-review .arc-tower--right { right: 9%; height: 68%; }
+#arc-ui-review .arc-menu-stack { display: grid; gap: 8px; margin-top: 18px; }
+#arc-ui-review .arc-menu-item { padding: 9px 12px; border-left: 3px solid var(--arc-gold); background: rgba(16,13,19,.72); }
+#arc-ui-review .arc-split { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; height: 100%; }
+#arc-ui-review .arc-pane { padding: 14px; border: 1px solid var(--arc-line); background: rgba(40,34,46,.86); }
+#arc-ui-review .arc-pane h3 { margin-top: 0; color: var(--arc-gold); }
+#arc-ui-review .arc-row { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid rgba(185,170,146,.2); }
+#arc-ui-review .arc-cards { display: flex; gap: 12px; justify-content: center; align-items: stretch; height: 100%; }
+#arc-ui-review .arc-card-mini { width: min(29%, 180px); min-width: 120px; padding: 12px; border: 2px solid #876f50; border-radius: 10px; background: linear-gradient(#ead9b7,#c9ae81); color: #281d15; text-align: center; box-shadow: 0 8px 22px rgba(0,0,0,.25); }
+#arc-ui-review .arc-card-mini strong { display: block; min-height: 36px; }
+#arc-ui-review .arc-card-art { height: 74px; margin: 10px 0; border-radius: 6px; background: radial-gradient(circle,#b78a56,#6b4437); }
+#arc-ui-review .arc-card-mini:nth-child(2) .arc-card-art { background: radial-gradient(circle,#6f87be,#38445f); }
+#arc-ui-review .arc-card-mini:nth-child(3) .arc-card-art { background: radial-gradient(circle,#76956e,#3d513c); }
+#arc-ui-review .arc-path { position: relative; height: 100%; min-height: 300px; }
+#arc-ui-review .arc-path::before { content: &quot;&quot;; position: absolute; left: 50%; top: 18px; bottom: 18px; width: 3px; background: linear-gradient(var(--arc-muted),var(--arc-gold)); transform: translateX(-50%); }
+#arc-ui-review .arc-node { position: absolute; left: 50%; width: 170px; transform: translateX(-50%); padding: 9px 12px; border: 1px solid var(--arc-line); border-radius: 999px; background: var(--arc-panel); text-align: center; }
+#arc-ui-review .arc-node:nth-child(1) { top: 4%; }
+#arc-ui-review .arc-node:nth-child(2) { top: 29%; margin-left: -105px; }
+#arc-ui-review .arc-node:nth-child(3) { top: 52%; margin-left: 102px; border-color: var(--arc-gold); }
+#arc-ui-review .arc-node:nth-child(4) { top: 78%; }
+#arc-ui-review .arc-arena { display: grid; grid-template-rows: 1fr auto 1fr; height: 100%; gap: 6px; }
+#arc-ui-review .arc-va-side { display: grid; grid-template-columns: minmax(170px,.7fr) minmax(230px,1.3fr); gap: 12px; align-items: end; min-height: 108px; }
+#arc-ui-review .arc-va-side--player { grid-template-columns: minmax(230px,1.3fr) minmax(170px,.7fr); align-items: start; }
+#arc-ui-review .arc-va-hud { align-self: center; padding: 9px 11px; background: rgba(40,34,46,.9); border: 1px solid var(--arc-line); }
+#arc-ui-review .arc-va-hud strong { display: block; color: var(--arc-gold); margin-bottom: 5px; }
+#arc-ui-review .arc-resources { display: flex; gap: 9px; flex-wrap: wrap; color: var(--arc-muted); }
+#arc-ui-review .arc-fortress { display: flex; align-items: end; justify-content: center; gap: 14px; min-height: 104px; padding: 0 10px 8px; border-bottom: 4px solid #6b584b; background: linear-gradient(180deg, transparent 0 62%, rgba(76,58,50,.24)); }
+#arc-ui-review .arc-fortress--enemy { justify-content: flex-end; }
+#arc-ui-review .arc-fortress--player { justify-content: flex-start; }
+#arc-ui-review .arc-building { position: relative; border: 2px solid #a18a72; background: repeating-linear-gradient(0deg,#584c48 0 9px,#302b2d 9px 11px); box-shadow: 0 6px 12px rgba(0,0,0,.35); }
+#arc-ui-review .arc-building::before { content: &quot;&quot;; position: absolute; left: -2px; right: -2px; top: -12px; height: 14px; background: repeating-linear-gradient(90deg,#75645a 0 12px,transparent 12px 18px); border-bottom: 2px solid #a18a72; }
+#arc-ui-review .arc-building::after { content: &quot;&quot;; position: absolute; left: 50%; top: 30%; width: 9px; height: 16px; transform: translateX(-50%); border-radius: 8px 8px 1px 1px; background: #18151b; box-shadow: 0 28px 0 #18151b; }
+#arc-ui-review .arc-building--tower { width: 62px; height: 88px; }
+#arc-ui-review .arc-building--tower.is-short { height: 72px; }
+#arc-ui-review .arc-building--wall { width: 96px; height: 38px; background: repeating-linear-gradient(0deg,#655851 0 8px,#373033 8px 10px); }
+#arc-ui-review .arc-building--wall::after { top: 40%; box-shadow: 26px 0 0 #18151b,-26px 0 0 #18151b; height: 9px; }
+#arc-ui-review .arc-building-value { position: absolute; left: 50%; bottom: -7px; transform: translate(-50%,100%); padding: 2px 7px; border: 1px solid var(--arc-line); border-radius: 999px; background: #17141d; color: var(--arc-ink); white-space: nowrap; }
+#arc-ui-review .arc-turn { justify-self: center; padding: 7px 15px; border: 1px solid var(--arc-gold); background: rgba(27,22,31,.94); color: var(--arc-gold); }
+#arc-ui-review .arc-hand { display: flex; justify-content: center; gap: 7px; }
+#arc-ui-review .arc-hand span { width: 58px; height: 78px; padding: 6px; border-radius: 5px; background: #d4bb8d; color: #2a2119; text-align: center; }
+#arc-ui-review .arc-story { display: grid; grid-template-columns: minmax(180px,.8fr) minmax(0,1.2fr); height: 100%; gap: 16px; }
+#arc-ui-review .arc-story-art { border: 1px solid var(--arc-line); background: radial-gradient(circle at 55% 38%,rgba(231,189,103,.35),transparent 26%), linear-gradient(145deg,#4c3440,#1c1c25); }
+#arc-ui-review .arc-choice-stack { display: grid; gap: 10px; align-content: center; }
+#arc-ui-review .arc-choice { padding: 12px; border: 1px solid var(--arc-line); background: rgba(40,34,46,.88); }
+#arc-ui-review .arc-choice em { display: block; color: var(--arc-muted); margin-top: 4px; }
+#arc-ui-review .arc-summary { display: grid; grid-template-columns: 1.1fr .9fr; gap: 16px; height: 100%; align-items: center; }
+#arc-ui-review .arc-score { text-align: center; padding: 18px; }
+#arc-ui-review .arc-score strong { display: block; color: var(--arc-gold); font-size: 32px; margin: 8px 0; }
+#arc-ui-review .arc-timeline { display: grid; gap: 8px; }
+#arc-ui-review .arc-timeline div { padding: 9px 10px; border-left: 3px solid var(--arc-gold); background: rgba(40,34,46,.82); }
+#arc-ui-review .arc-profile { display: grid; grid-template-columns: 180px 1fr; height: 100%; }
+#arc-ui-review .arc-profile-nav { padding: 16px; border-right: 1px solid var(--arc-line); background: rgba(21,18,26,.8); }
+#arc-ui-review .arc-profile-nav div { padding: 10px 6px; }
+#arc-ui-review .arc-profile-nav .is-active { color: var(--arc-gold); border-left: 3px solid var(--arc-gold); }
+#arc-ui-review .arc-profile-main { padding: 16px; }
+#arc-ui-review .arc-upgrade-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+#arc-ui-review .arc-upgrade { padding: 12px; border: 1px solid var(--arc-line); background: rgba(53,43,56,.75); }
+#arc-ui-review .arc-phone-wrap { display: grid; place-items: center; height: 100%; }
+#arc-ui-review .arc-phone { width: min(290px,90%); height: 340px; border: 7px solid #0d0b11; border-radius: 24px; overflow: hidden; background: var(--arc-night); box-shadow: 0 18px 30px rgba(0,0,0,.35); }
+#arc-ui-review .arc-phone-head { padding: 11px; background: #221c28; border-bottom: 1px solid var(--arc-line); color: var(--arc-gold); }
+#arc-ui-review .arc-phone-body { height: 244px; padding: 10px; display: grid; gap: 8px; align-content: start; overflow: hidden; }
+#arc-ui-review .arc-phone-item { padding: 9px; background: var(--arc-panel); border: 1px solid var(--arc-line); }
+#arc-ui-review .arc-phone-tabs { display: flex; justify-content: space-around; padding: 9px; background: #211b27; border-top: 1px solid var(--arc-line); }
+#arc-ui-review .arc-roadmap .table td:first-child { white-space: nowrap; }
+#arc-ui-review .arc-priority { color: var(--foreground); }
+#arc-ui-review .arc-rec { color: var(--viz-series-3); }
+@media (max-width: 760px) {
+  #arc-ui-review .arc-cover-grid,
+  #arc-ui-review .arc-findings,
+  #arc-ui-review .arc-audit-grid { grid-template-columns: 1fr; }
+  #arc-ui-review .arc-game-frame { min-height: 520px; }
+  #arc-ui-review .arc-split,
+  #arc-ui-review .arc-story,
+  #arc-ui-review .arc-summary { grid-template-columns: 1fr; }
+  #arc-ui-review .arc-cards { flex-wrap: wrap; align-content: center; }
+  #arc-ui-review .arc-card-mini { width: 44%; min-width: 110px; }
+  #arc-ui-review .arc-profile { grid-template-columns: 1fr; }
+  #arc-ui-review .arc-profile-nav { display: flex; border-right: 0; border-bottom: 1px solid var(--arc-line); overflow: hidden; }
+  #arc-ui-review .arc-profile-nav div { flex: 1; text-align: center; }
+  #arc-ui-review .arc-va-side,
+  #arc-ui-review .arc-va-side--player { grid-template-columns: 1fr; }
+  #arc-ui-review .arc-va-hud { display: none; }
+  #arc-ui-review .arc-fortress { min-height: 116px; }
+  #arc-ui-review .arc-hero-copy { width: 72%; left: 7%; }
+  #arc-ui-review .arc-tower--left { left: 64%; opacity: .5; }
+  #arc-ui-review .arc-tower--right { right: 4%; opacity: .5; }
+}
+&lt;/style&gt;
+
+&lt;div id=&quot;arc-ui-review&quot;&gt;
+  &lt;section class=&quot;arc-cover&quot;&gt;
+    &lt;div class=&quot;arc-cover-grid&quot;&gt;
+      &lt;div&gt;
+        &lt;div class=&quot;arc-kicker text-small&quot;&gt;UI-аудит проекта «Башни магов: Дуэль» · 5 августа 2026&lt;/div&gt;
+        &lt;h1&gt;От функционального прототипа к читаемой фэнтези-игре&lt;/h1&gt;
+        &lt;p&gt;Разбор реализованных сцен, расхождений с GDD и трёх направлений дизайна для каждого экрана.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;arc-stat-row&quot; aria-label=&quot;Масштаб аудита&quot;&gt;
+        &lt;div class=&quot;card viz-stat&quot;&gt;&lt;span class=&quot;text-muted&quot;&gt;Экраны&lt;/span&gt;&lt;span class=&quot;viz-stat-value&quot;&gt;13&lt;/span&gt;&lt;span class=&quot;text-small&quot;&gt;runtime-сцен&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;card viz-stat&quot;&gt;&lt;span class=&quot;text-muted&quot;&gt;Варианты&lt;/span&gt;&lt;span class=&quot;viz-stat-value&quot;&gt;39&lt;/span&gt;&lt;span class=&quot;text-small&quot;&gt;по 3 на экран&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;card viz-stat&quot;&gt;&lt;span class=&quot;text-muted&quot;&gt;Главный риск&lt;/span&gt;&lt;span class=&quot;viz-stat-value&quot;&gt;Touch&lt;/span&gt;&lt;span class=&quot;text-small&quot;&gt;ПКМ без аналога&lt;/span&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;section class=&quot;arc-section&quot;&gt;
+    &lt;div class=&quot;arc-kicker text-small&quot;&gt;Диагноз&lt;/div&gt;
+    &lt;h2&gt;Что уже хорошо и что мешает следующему качественному скачку&lt;/h2&gt;
+    &lt;div class=&quot;arc-findings&quot;&gt;
+      &lt;div class=&quot;card&quot;&gt;
+        &lt;h3&gt;Сохранить&lt;/h3&gt;
+        &lt;ul class=&quot;arc-list&quot;&gt;
+          &lt;li&gt;единый цветовой язык трёх ресурсов;&lt;/li&gt;
+          &lt;li&gt;пергаментные карты и печать стоимости;&lt;/li&gt;
+          &lt;li&gt;крупные базовые кнопки и полный набор игровых флоу;&lt;/li&gt;
+          &lt;li&gt;единый профиль с тремя разделами.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;card&quot;&gt;
+        &lt;h3&gt;Исправить первым&lt;/h3&gt;
+        &lt;ul class=&quot;arc-list&quot;&gt;
+          &lt;li&gt;явная кнопка сброса карты вместо обязательной ПКМ;&lt;/li&gt;
+          &lt;li&gt;русский язык во всём боевом HUD и локализованные узлы карты;&lt;/li&gt;
+          &lt;li&gt;адаптивные версии горизонтальных экранов;&lt;/li&gt;
+          &lt;li&gt;одна визуальная и навигационная система.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;card&quot;&gt;
+        &lt;h3&gt;Не раздувать&lt;/h3&gt;
+        &lt;ul class=&quot;arc-list&quot;&gt;
+          &lt;li&gt;не добавлять новые экраны ради каждого действия;&lt;/li&gt;
+          &lt;li&gt;не дублировать HP одновременно барами и блоками без роли;&lt;/li&gt;
+          &lt;li&gt;не показывать недоступные настройки без реализации;&lt;/li&gt;
+          &lt;li&gt;не заменять ясные действия декоративным шумом.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;section class=&quot;arc-section&quot; aria-labelledby=&quot;explorer-title&quot;&gt;
+    &lt;div class=&quot;arc-kicker text-small&quot;&gt;Интерактивная часть&lt;/div&gt;
+    &lt;h2 id=&quot;explorer-title&quot;&gt;Экран за экраном&lt;/h2&gt;
+    &lt;div class=&quot;arc-toolbar viz-controls&quot;&gt;
+      &lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot; id=&quot;arc-prev&quot;&gt;← Предыдущий&lt;/button&gt;
+      &lt;label class=&quot;form-label&quot;&gt;Экран
+        &lt;select class=&quot;form-select&quot; id=&quot;arc-screen-select&quot;&gt;&lt;/select&gt;
+      &lt;/label&gt;
+      &lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot; id=&quot;arc-next&quot;&gt;Следующий →&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;arc-screen-meta text-small&quot; id=&quot;arc-screen-meta&quot;&gt;&lt;/div&gt;
+    &lt;h2 id=&quot;arc-screen-title&quot;&gt;&lt;/h2&gt;
+    &lt;p id=&quot;arc-current-state&quot;&gt;&lt;/p&gt;
+
+    &lt;div class=&quot;arc-audit-grid&quot;&gt;
+      &lt;div class=&quot;card&quot;&gt;
+        &lt;h3&gt;Добавить&lt;/h3&gt;
+        &lt;ul class=&quot;arc-list&quot; id=&quot;arc-add-list&quot;&gt;&lt;/ul&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;card&quot;&gt;
+        &lt;h3&gt;Убрать / упростить&lt;/h3&gt;
+        &lt;ul class=&quot;arc-list&quot; id=&quot;arc-remove-list&quot;&gt;&lt;/ul&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;arc-variant-bar&quot; id=&quot;arc-variant-buttons&quot; aria-label=&quot;Варианты дизайна&quot;&gt;&lt;/div&gt;
+    &lt;p class=&quot;arc-variant-note&quot; id=&quot;arc-variant-note&quot;&gt;&lt;/p&gt;
+    &lt;div class=&quot;arc-mock-shell&quot; id=&quot;arc-mock&quot;&gt;&lt;/div&gt;
+    &lt;p class=&quot;arc-tradeoff text-small&quot; id=&quot;arc-tradeoff&quot;&gt;&lt;/p&gt;
+  &lt;/section&gt;
+
+  &lt;section class=&quot;arc-section arc-roadmap&quot;&gt;
+    &lt;div class=&quot;arc-kicker text-small&quot;&gt;Решение&lt;/div&gt;
+    &lt;h2&gt;Рекомендуемый порядок реализации&lt;/h2&gt;
+    &lt;div class=&quot;table-responsive&quot;&gt;
+      &lt;table class=&quot;table table-sm&quot;&gt;
+        &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Приоритет&lt;/th&gt;&lt;th&gt;Пакет&lt;/th&gt;&lt;th&gt;Зачем&lt;/th&gt;&lt;th&gt;Экраны&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+        &lt;tbody&gt;
+          &lt;tr&gt;&lt;td class=&quot;arc-priority&quot;&gt;P0&lt;/td&gt;&lt;td&gt;Touch и ясность боя&lt;/td&gt;&lt;td&gt;Убирает блокирующие ошибки управления&lt;/td&gt;&lt;td&gt;Бой, результат боя&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td class=&quot;arc-priority&quot;&gt;P0&lt;/td&gt;&lt;td&gt;Навигационный каркас&lt;/td&gt;&lt;td&gt;Единая шапка, язык и возврат без дублирования&lt;/td&gt;&lt;td&gt;Карта, профиль, настройки&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td class=&quot;arc-priority&quot;&gt;P1&lt;/td&gt;&lt;td&gt;Карточные решения&lt;/td&gt;&lt;td&gt;Показывает игроку ценность до выбора&lt;/td&gt;&lt;td&gt;Награда, магазин, отдых, событие&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td class=&quot;arc-priority&quot;&gt;P1&lt;/td&gt;&lt;td&gt;Коллекция и мета&lt;/td&gt;&lt;td&gt;Делает долгосрочный прогресс видимым&lt;/td&gt;&lt;td&gt;Прокачка, статистика, колода&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td class=&quot;arc-priority&quot;&gt;P2&lt;/td&gt;&lt;td&gt;Визуальный слой&lt;/td&gt;&lt;td&gt;Добавляет характер после стабилизации UX&lt;/td&gt;&lt;td&gt;Меню, карта, итоги, фоны&lt;/td&gt;&lt;/tr&gt;
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+    &lt;p class=&quot;text-muted text-small&quot;&gt;Основание аудита: реальные &lt;code&gt;ui/**/*.gd&lt;/code&gt;/&lt;code&gt;*.tscn&lt;/code&gt;, тема, карточная сцена, GDD §10 и существующие wireframes. Макеты показывают информационную архитектуру, а не финальный арт.&lt;/p&gt;
+  &lt;/section&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+(() =&gt; {
+  const root = document.getElementById(&#x27;arc-ui-review&#x27;);
+  const screens = [
+    {
+      name: &#x27;Главное меню&#x27;, source: &#x27;ui/main_menu.tscn&#x27;, priority: &#x27;P1&#x27;,
+      current: &#x27;Сейчас это центрированный список из пяти равнозначных кнопок без фона и логотипа. Функции полные, но «Кампания», «Продолжить» и «Битва» не образуют понятной иерархии.&#x27;,
+      add: [&#x27;героический фон с двумя башнями и логотип&#x27;, &#x27;крупный CTA «Продолжить забег» с кратким прогрессом&#x27;, &#x27;пояснение для отключённого продолжения&#x27;, &#x27;переименовать «Битва» в «Быстрый бой»&#x27;],
+      remove: [&#x27;одинаковый вес всех пяти кнопок&#x27;, &#x27;пустой фон и случайное центральное положение&#x27;, &#x27;техническую версию из зоны основного внимания&#x27;],
+      variants: [
+        {name:&#x27;Кинематографичный вход&#x27;, rec:true, layout:&#x27;hero&#x27;, thesis:&#x27;Арт продаёт фантазию, слева — один главный путь и короткие вторичные действия.&#x27;, zones:[&#x27;БАШНИ МАГОВ: ДУЭЛЬ&#x27;,&#x27;Продолжить · этаж 9&#x27;,&#x27;Новый забег&#x27;,&#x27;Быстрый бой&#x27;,&#x27;Профиль · Настройки&#x27;], tradeoff:&#x27;Лучший первый кадр; требует качественного фонового арта.&#x27;},
+        {name:&#x27;Центральная печать&#x27;, layout:&#x27;cards&#x27;, thesis:&#x27;Логотип и три большие руны-режима вместо обычного списка.&#x27;, zones:[&#x27;Продолжить&#x27;,&#x27;Кампания&#x27;,&#x27;Быстрый бой&#x27;,&#x27;Профиль&#x27;,&#x27;Настройки&#x27;], tradeoff:&#x27;Хорошо для геймпада и ТВ, но слабее использует широкий фон.&#x27;},
+        {name:&#x27;Мобильный лаунчер&#x27;, layout:&#x27;mobile&#x27;, thesis:&#x27;Сценическая шапка и вертикальные крупные CTA для портретного браузера.&#x27;, zones:[&#x27;БАШНИ МАГОВ: ДУЭЛЬ&#x27;,&#x27;Продолжить забег&#x27;,&#x27;Новый забег&#x27;,&#x27;Быстрый бой&#x27;,&#x27;Профиль · ⚙&#x27;], tradeoff:&#x27;Самая надёжная адаптивность; на десктопе выглядит менее эпично.&#x27;}
+      ]
+    },
+    {
+      name: &#x27;Карта мира&#x27;, source: &#x27;ui/map/world_map_screen.gd&#x27;, priority: &#x27;P0&#x27;,
+      current: &#x27;Реальная сцена — полноэкранный ScrollContainer с 50×50 кнопками, сырыми enum-названиями и линиями. Нет золота, этажа, колоды, артефактов, легенды и превью выбранного узла.&#x27;,
+      add: [&#x27;верхний HUD: этаж, золото, колода, артефакты&#x27;, &#x27;русские иконки и названия типов узлов&#x27;, &#x27;карточку-превью узла перед входом&#x27;, &#x27;явный текущий маршрут и положение игрока&#x27;],
+      remove: [&#x27;BATTLE / ELITE_BATTLE / REST как пользовательские подписи&#x27;, &#x27;замок-emoji на каждом будущем узле&#x27;, &#x27;клик с мгновенным переходом без контекста&#x27;],
+      variants: [
+        {name:&#x27;Лента путешествия&#x27;, rec:true, layout:&#x27;path&#x27;, thesis:&#x27;Вертикальный путь, верхний HUD и крупный следующий выбор.&#x27;, zones:[&#x27;Этаж 9/15 · 42 золота&#x27;,&#x27;✓ Магазин&#x27;,&#x27;⚔ Бой&#x27;,&#x27;? Событие&#x27;,&#x27;🐉 Босс&#x27;], tradeoff:&#x27;Близко к текущей генерации и дешевле всего внедряется.&#x27;},
+        {name:&#x27;Созвездие маршрутов&#x27;, layout:&#x27;split&#x27;, thesis:&#x27;Карта слева, справа — постоянное превью узла, риска и награды.&#x27;, zones:[&#x27;Маршруты&#x27;,&#x27;Выбран: Элита&#x27;,&#x27;Сложность +2&#x27;,&#x27;Награда: редкая&#x27;,&#x27;Войти&#x27;], tradeoff:&#x27;Больше информации, но теснее на мобильном.&#x27;},
+        {name:&#x27;Выбор этажа&#x27;, layout:&#x27;mobile&#x27;, thesis:&#x27;Показывать только текущий этаж и 2–3 большие карточки следующего шага.&#x27;, zones:[&#x27;Этаж 9 из 15&#x27;,&#x27;⚔ Обычный бой&#x27;,&#x27;? Неизвестное событие&#x27;,&#x27;🔥 Отдых&#x27;,&#x27;Колода · Артефакты&#x27;], tradeoff:&#x27;Лучший touch UX; меньше ощущения большой карты.&#x27;}
+      ]
+    },
+    {
+      name: &#x27;Боевой экран&#x27;, source: &#x27;ui/battle/battle_screen.tscn&#x27;, priority: &#x27;P0&#x27;,
+      current: &#x27;Есть фон, ресурсы, рука и просмотр колоды, но обе стороны собраны рядом сверху. В оригинальном Arcomage Башня и Стена были отдельными узнаваемыми строениями с числом у основания; текущие ProgressBar и одинаковые блоки эту ключевую метафору теряют.&#x27;,
+      add: [&#x27;вертикальную арену: противник сверху, игрок снизу&#x27;, &#x27;отдельные силуэты Башни и Стены с ростом конструкции&#x27;, &#x27;явную кнопку «Сбросить» или режим выбора для touch&#x27;, &#x27;затемнение недоступных карт, артефакты, журнал хода и русские статусы&#x27;],
+      remove: [&#x27;горизонтальное соседство двух HUD в верхней строке&#x27;, &#x27;HP-полосы как главный образ Башни и Стены&#x27;, &#x27;обязательную ПКМ как единственный способ сброса&#x27;, &#x27;YOUR TURN / ENEMY TURN / Victory / Restart и фиксированный попап 720×520&#x27;],
+      variants: [
+        {name:&#x27;Вертикальная зеркальная арена&#x27;, rec:true, layout:&#x27;arena&#x27;, thesis:&#x27;Противник сверху, игрок снизу; между ними поле. Башни растут каменными ярусами, стены — отдельными зубчатыми секциями, числа стоят у основания как в оригинальном Arcomage.&#x27;, zones:[&#x27;ПРОТИВНИК · Башня 31 · Стена 8&#x27;,&#x27;ХОД ИГРОКА&#x27;,&#x27;ВЫ · Башня 25 · Стена 12&#x27;,&#x27;🧱 9(+2) · 💎 5(+1) · 🐾 6(+2)&#x27;,&#x27;Сыграть · Сбросить · Колода 23&#x27;], tradeoff:&#x27;Лучше всего сохраняет архетип оригинала, но требует модульных спрайтов строительства и анимации добавления/разрушения ярусов.&#x27;},
+        {name:&#x27;Настольная дуэль&#x27;, layout:&#x27;split&#x27;, thesis:&#x27;Статусы по бокам, центр — история последней карты и цели эффекта.&#x27;, zones:[&#x27;ВЫ · ресурсы&#x27;,&#x27;Поле: Огненный шар → Башня −6&#x27;,&#x27;ПРОТИВНИК · ресурсы&#x27;,&#x27;Рука 5 карт&#x27;,&#x27;Сбросить&#x27;], tradeoff:&#x27;Очень ясная причинность, но меньше вертикальной метафоры башен.&#x27;},
+        {name:&#x27;Компактный tactical HUD&#x27;, layout:&#x27;mobile&#x27;, thesis:&#x27;Верх — две короткие строки статов, середина — поле, низ — карусель карт и две кнопки.&#x27;, zones:[&#x27;ВЫ 25/8 ↔ ВРАГ 31/4&#x27;,&#x27;ХОД ИГРОКА&#x27;,&#x27;Карта 1 · Карта 2 · Карта 3&#x27;,&#x27;СЫГРАТЬ&#x27;,&#x27;СБРОСИТЬ&#x27;], tradeoff:&#x27;Работает в портрете; карточный арт приходится показывать крупнее по одной карте.&#x27;}
+      ]
+    },
+    {
+      name: &#x27;Награда&#x27;, source: &#x27;ui/reward/reward_screen.gd&#x27;, priority: &#x27;P1&#x27;,
+      current: &#x27;Три текстовых Panel вместо общей карточной сцены. Стоимость карты обозначена золотой монетой, хотя это стоимость ресурса; выбор делается отдельной кнопкой внутри каждого слота, затем ещё раз подтверждается.&#x27;,
+      add: [&#x27;реальный шаблон Card для наград-карт&#x27;, &#x27;корректную иконку ресурса и редкость&#x27;, &#x27;видимый эффект на состав колоды&#x27;, &#x27;особый визуальный язык артефактов&#x27;],
+      remove: [&#x27;💰 у стоимости карты&#x27;, &#x27;три одинаковые кнопки «Выбрать» внутри слотов&#x27;, &#x27;двойное действие «выбрать → подтвердить» без полезного промежуточного состояния&#x27;],
+      variants: [
+        {name:&#x27;Настоящий драфт&#x27;, rec:true, layout:&#x27;cards&#x27;, thesis:&#x27;Три полноценные карты; тап выбирает, нижняя кнопка подтверждает.&#x27;, zones:[&#x27;Огненный шар&#x27;,&#x27;Дракон&#x27;,&#x27;Кирка гнома&#x27;,&#x27;Пропустить&#x27;,&#x27;Забрать выбранное&#x27;], tradeoff:&#x27;Максимальная узнаваемость; надо переиспользовать card_scene в read-only режиме.&#x27;},
+        {name:&#x27;Карусель награды&#x27;, layout:&#x27;mobile&#x27;, thesis:&#x27;Одна крупная награда в центре, соседние видны краями, свайп для сравнения.&#x27;, zones:[&#x27;ПОБЕДА&#x27;,&#x27;Дракон · редкая&#x27;,&#x27;Урон 9 · cost 🐾 8&#x27;,&#x27;← 2 из 3 →&#x27;,&#x27;Забрать&#x27;], tradeoff:&#x27;Отлично для телефона; сравнение трёх вариантов медленнее.&#x27;},
+        {name:&#x27;Таблица выбора&#x27;, layout:&#x27;split&#x27;, thesis:&#x27;Слева варианты, справа — детальное сравнение с текущей колодой.&#x27;, zones:[&#x27;3 награды&#x27;,&#x27;Выбран: Дракон&#x27;,&#x27;Тип: Звери · Редкая&#x27;,&#x27;В колоде уже: 1&#x27;,&#x27;Добавить в колоду&#x27;], tradeoff:&#x27;Самая аналитичная версия, но слабее эмоционально.&#x27;}
+      ]
+    },
+    {
+      name: &#x27;Магазин забега&#x27;, source: &#x27;ui/shop/shop_screen.gd&#x27;, priority: &#x27;P1&#x27;,
+      current: &#x27;Две длинные текстовые колонки: покупка и удаление. На десктопе функционально, но карты не визуализированы, две независимые прокрутки плохо масштабируются, удаление необратимо и легко нажать случайно.&#x27;,
+      add: [&#x27;визуальные карточки предложения и состав/кривую колоды&#x27;, &#x27;подтверждение удаления с названием карты&#x27;, &#x27;состояние после покупки и сравнение цены с золотом&#x27;, &#x27;адаптивные вкладки на узком экране&#x27;],
+      remove: [&#x27;две обязательные колонки на любой ширине&#x27;, &#x27;повтор цены удаления в каждой строке&#x27;, &#x27;моментальное удаление по одному tap&#x27;],
+      variants: [
+        {name:&#x27;Две мастерские&#x27;, rec:true, layout:&#x27;split&#x27;, thesis:&#x27;На десктопе покупка и чистка рядом; на мобильном превращаются во вкладки.&#x27;, zones:[&#x27;Купить · 3 предложения&#x27;,&#x27;Карточки + цена&#x27;,&#x27;Почистить колоду&#x27;,&#x27;Кривая cost · 18 карт&#x27;,&#x27;Уйти на карту&#x27;], tradeoff:&#x27;Сохраняет текущую модель и добавляет адаптивность.&#x27;},
+        {name:&#x27;Лавка торговца&#x27;, layout:&#x27;cards&#x27;, thesis:&#x27;Главный фокус на 3–5 предложениях; чистка колоды — отдельное действие внизу.&#x27;, zones:[&#x27;Осадное орудие&#x27;,&#x27;Метеорит&#x27;,&#x27;Ополчение&#x27;,&#x27;Почистить колоду&#x27;,&#x27;42 золота&#x27;], tradeoff:&#x27;Эмоционально сильнее, но удаление становится на один шаг глубже.&#x27;},
+        {name:&#x27;Deck doctor&#x27;, layout:&#x27;mobile&#x27;, thesis:&#x27;Пошагово: купить, затем при желании заменить или удалить карту.&#x27;, zones:[&#x27;МАГАЗИН · 42&#x27;,&#x27;1. Выберите покупку&#x27;,&#x27;2. Добавить или заменить&#x27;,&#x27;Удаление: 5 золота&#x27;,&#x27;Готово&#x27;], tradeoff:&#x27;Минимум ошибок на touch; медленнее для опытного игрока.&#x27;}
+      ]
+    },
+    {
+      name: &#x27;Событие&#x27;, source: &#x27;ui/event/event_screen.gd&#x27;, priority: &#x27;P1&#x27;,
+      current: &#x27;Заголовок, текст и 2–3 кнопки на однотонном фоне. Недоступный вариант просто отключён, риск и тип возможного результата не читаются до выбора, визуального контекста события нет.&#x27;,
+      add: [&#x27;иллюстрацию сцены или персонажа&#x27;, &#x27;цену и гарантированный эффект прямо в варианте&#x27;, &#x27;метку риска без раскрытия случайного исхода&#x27;, &#x27;причину недоступности и экран результата с изменениями&#x27;],
+      remove: [&#x27;пустое пространство однотонного фона&#x27;, &#x27;безымянно disabled-кнопки&#x27;, &#x27;длинный текст внутри кнопки как единственную иерархию&#x27;],
+      variants: [
+        {name:&#x27;Иллюстрированная история&#x27;, rec:true, layout:&#x27;story&#x27;, thesis:&#x27;Слева сцена, справа короткий текст и варианты с ценой/риском.&#x27;, zones:[&#x27;Раненый путник&#x27;,&#x27;«Помоги мне добраться…»&#x27;,&#x27;Помочь · −5 золота · надёжно&#x27;,&#x27;Обыскать · риск&#x27;,&#x27;Уйти&#x27;], tradeoff:&#x27;Сильная атмосфера и ясные решения; нужен набор фоновых иллюстраций.&#x27;},
+        {name:&#x27;Риск / награда&#x27;, layout:&#x27;split&#x27;, thesis:&#x27;Каждый выбор показывает гарантированную часть и уровень неопределённости.&#x27;, zones:[&#x27;Вариант A&#x27;,&#x27;−5 золота · карта&#x27;,&#x27;Вариант B&#x27;,&#x27;Высокий риск · редкая награда&#x27;,&#x27;Подтвердить&#x27;], tradeoff:&#x27;Честнее для стратегии, но может сделать события слишком вычисляемыми.&#x27;},
+        {name:&#x27;Событие-модалка&#x27;, layout:&#x27;mobile&#x27;, thesis:&#x27;Короткая карточка поверх затемнённой карты мира, без ощущения отдельного экрана.&#x27;, zones:[&#x27;Древний алтарь&#x27;,&#x27;Коснуться печати&#x27;,&#x27;Пожертвовать 8 золота&#x27;,&#x27;Отступить&#x27;,&#x27;Результат →&#x27;], tradeoff:&#x27;Быстрый флоу; меньше места для длинной истории.&#x27;}
+      ]
+    },
+    {
+      name: &#x27;Отдых&#x27;, source: &#x27;ui/rest/rest_screen.gd&#x27;, priority: &#x27;P1&#x27;,
+      current: &#x27;Две большие равнозначные панели и мгновенный возврат после выбора. Не показаны текущие бонусы забега и конкретное значение «до → после», поэтому решение приходится принимать без контекста.&#x27;,
+      add: [&#x27;текущие постоянные бонусы забега&#x27;, &#x27;превью «было → станет»&#x27;, &#x27;короткое подтверждение выбора&#x27;, &#x27;атмосферу лагеря и связь бонуса с ресурсным цветом&#x27;],
+      remove: [&#x27;абстрактный текст без текущих значений&#x27;, &#x27;мгновенный уход сразу после первого tap&#x27;, &#x27;растянутые пустые панели&#x27;],
+      variants: [
+        {name:&#x27;У костра&#x27;, rec:true, layout:&#x27;choices&#x27;, thesis:&#x27;Два выразительных выбора вокруг костра с конкретным приростом.&#x27;, zones:[&#x27;ОТДЫХ&#x27;,&#x27;Фундамент: Башня +5&#x27;,&#x27;Рудник: Карьер +1&#x27;,&#x27;Сейчас: Башня +10 · Карьер +0&#x27;,&#x27;Выбрать и продолжить&#x27;], tradeoff:&#x27;Понятно и атмосферно; нужен хотя бы один фон лагеря.&#x27;},
+        {name:&#x27;Настройка лагеря&#x27;, layout:&#x27;split&#x27;, thesis:&#x27;Слева текущий билд забега, справа два доступных апгрейда.&#x27;, zones:[&#x27;Ваши бонусы&#x27;,&#x27;Башня +10 · Магия +1&#x27;,&#x27;Доступно&#x27;,&#x27;Фундамент / Рудник&#x27;,&#x27;Применить&#x27;], tradeoff:&#x27;Хорошо для длинных забегов, но выглядит более системно, чем приключенчески.&#x27;},
+        {name:&#x27;Быстрый выбор&#x27;, layout:&#x27;mobile&#x27;, thesis:&#x27;Две крупные карточки с дельтой и одной кнопкой подтверждения.&#x27;, zones:[&#x27;ОТДЫХ&#x27;,&#x27;Башня 35 → 40&#x27;,&#x27;Карьер 2 → 3&#x27;,&#x27;Выбрано: Башня&#x27;,&#x27;Продолжить&#x27;], tradeoff:&#x27;Дёшево и надёжно; меньше визуального характера.&#x27;}
+      ]
+    },
+    {
+      name: &#x27;Итоги забега&#x27;, source: &#x27;ui/run_summary/run_summary_screen.gd&#x27;, priority: &#x27;P1&#x27;,
+      current: &#x27;Центрированный текстовый список: этажи, элиты, золото, артефакты и Слава. Нет причины завершения, маршрута, рекордов, состава колоды и действия «новый забег».&#x27;,
+      add: [&#x27;ясную причину победы/поражения&#x27;, &#x27;маршрут и ключевые моменты&#x27;, &#x27;новые рекорды и открытия&#x27;, &#x27;CTA «Новый забег» рядом с меню&#x27;],
+      remove: [&#x27;равный визуальный вес всех строк&#x27;, &#x27;формулировку про «золото не сохранится» как главный негатив&#x27;, &#x27;длинный перечень артефактов без иконок&#x27;],
+      variants: [
+        {name:&#x27;История забега&#x27;, rec:true, layout:&#x27;summary&#x27;, thesis:&#x27;Слева итог и Слава, справа маршрут с ключевыми победами и находками.&#x27;, zones:[&#x27;ПОБЕДА&#x27;,&#x27;+185 Славы&#x27;,&#x27;Этаж 4 · первая редкая&#x27;,&#x27;Этаж 9 · элита&#x27;,&#x27;Босс · Башня разрушена&#x27;], tradeoff:&#x27;Даёт завершённость и хорошо использует собранные данные.&#x27;},
+        {name:&#x27;Кинематографичный финал&#x27;, layout:&#x27;hero&#x27;, thesis:&#x27;Большой исход, силуэт башни и только 3 главных достижения.&#x27;, zones:[&#x27;ПОБЕДА НАД БОССОМ&#x27;,&#x27;15 этажей&#x27;,&#x27;2 элиты&#x27;,&#x27;+185 Славы&#x27;,&#x27;Новый забег&#x27;], tradeoff:&#x27;Сильная эмоция, но меньше аналитики.&#x27;},
+        {name:&#x27;Отчёт наставника&#x27;, layout:&#x27;split&#x27;, thesis:&#x27;Результат плюс мягкие советы: сильная сторона колоды и точка роста.&#x27;, zones:[&#x27;Результат&#x27;,&#x27;Башня 55 · 18 карт&#x27;,&#x27;Сильная сторона&#x27;,&#x27;Экономика зверей&#x27;,&#x27;Совет: меньше дешёвых стен&#x27;], tradeoff:&#x27;Полезно новичкам; советы требуют надёжной аналитики, иначе раздражают.&#x27;}
+      ]
+    },
+    {
+      name: &#x27;Профиль — оболочка&#x27;, source: &#x27;ui/profile/profile_screen.tscn&#x27;, priority: &#x27;P0&#x27;,
+      current: &#x27;TabContainer переиспользует три самостоятельные сцены. Каждая рисует собственный фон, заголовок и кнопку «Назад», общей шапки со Славой нет; вкладка «Коллекция» фактически показывает только колоду.&#x27;,
+      add: [&#x27;общую шапку: Профиль, Слава, Назад&#x27;, &#x27;единый контентный контейнер без вложенных полноэкранных фонов&#x27;, &#x27;постоянную навигацию между тремя разделами&#x27;, &#x27;корректное название «Колода» или полноценную Коллекцию&#x27;],
+      remove: [&#x27;три дублированных заголовка и кнопки «Назад»&#x27;, &#x27;три независимых фоновых ColorRect внутри вкладок&#x27;, &#x27;семантическое расхождение названия вкладки и содержимого&#x27;],
+      variants: [
+        {name:&#x27;Единая оболочка&#x27;, rec:true, layout:&#x27;profile&#x27;, thesis:&#x27;Одна шапка и боковые разделы на десктопе, нижние вкладки на мобильном.&#x27;, zones:[&#x27;ПРОФИЛЬ · ✦ 1280&#x27;,&#x27;Прокачка&#x27;,&#x27;Статистика&#x27;,&#x27;Коллекция&#x27;,&#x27;Назад&#x27;], tradeoff:&#x27;Чище всего архитектурно; требует отделить содержимое под-сцен от их shell.&#x27;},
+        {name:&#x27;Кодекс героя&#x27;, layout:&#x27;cards&#x27;, thesis:&#x27;Три крупные главы-плитки, каждая открывает отдельный тематический раздел.&#x27;, zones:[&#x27;Прокачка&#x27;,&#x27;Достижения&#x27;,&#x27;Коллекция&#x27;,&#x27;✦ 1280&#x27;,&#x27;Назад&#x27;], tradeoff:&#x27;Очень дружелюбно новичку, но добавляет уровень навигации.&#x27;},
+        {name:&#x27;Мобильный профиль&#x27;, layout:&#x27;mobile&#x27;, thesis:&#x27;Компактная шапка, прокручиваемый контент и нижние вкладки.&#x27;, zones:[&#x27;ПРОФИЛЬ · 1280 ✦&#x27;,&#x27;Прокачка&#x27;,&#x27;Карточка улучшения&#x27;,&#x27;Следующая цель&#x27;,&#x27;↑ · ◫ · ★&#x27;], tradeoff:&#x27;Оптимально для телефона; на десктопе понадобится расширенный режим.&#x27;}
+      ]
+    },
+    {
+      name: &#x27;Прокачка&#x27;, source: &#x27;ui/meta_shop/meta_shop_screen.gd&#x27;, priority: &#x27;P1&#x27;,
+      current: &#x27;Шесть улучшений и все редкие открытия идут одним длинным списком «текст + кнопка». Эффект следующего уровня есть, но нет превью карты, группировки, ощущения прогресса и обратной связи после покупки.&#x27;,
+      add: [&#x27;группы Основание / Ресурсы / Утилити / Открытия&#x27;, &#x27;прогресс уровня и итоговый эффект&#x27;, &#x27;превью редкой карты до открытия&#x27;, &#x27;короткую анимацию покупки и следующую цель&#x27;],
+      remove: [&#x27;дублирующие заголовки «Магазин прокачки / Прокачка»&#x27;, &#x27;одинаковую строку для апгрейда и открытия карты&#x27;, &#x27;длинный список без визуальных якорей&#x27;],
+      variants: [
+        {name:&#x27;Дерево мастерства&#x27;, rec:true, layout:&#x27;profile&#x27;, thesis:&#x27;Категории слева, справа сетка связанных улучшений с уровнями.&#x27;, zones:[&#x27;✦ 1280&#x27;,&#x27;Основание&#x27;,&#x27;Ресурсы&#x27;,&#x27;Открытия&#x27;,&#x27;Башня II → III&#x27;], tradeoff:&#x27;Хорошо показывает долгосрочные цели; связи должны быть настоящими, не декоративными.&#x27;},
+        {name:&#x27;Витрина улучшений&#x27;, layout:&#x27;cards&#x27;, thesis:&#x27;Каждое улучшение — карточка с эффектом, уровнем и ценой.&#x27;, zones:[&#x27;Башня +5&#x27;,&#x27;Стена +3&#x27;,&#x27;Карьер +1&#x27;,&#x27;Открыть Дракона&#x27;,&#x27;✦ 1280&#x27;], tradeoff:&#x27;Просто внедрить и адаптировать; длинная коллекция требует фильтров.&#x27;},
+        {name:&#x27;Путь славы&#x27;, layout:&#x27;path&#x27;, thesis:&#x27;Последовательные вехи открытий вместо свободного магазина.&#x27;, zones:[&#x27;Старт&#x27;,&#x27;Башня II&#x27;,&#x27;Редкая карта&#x27;,&#x27;Рука +1&#x27;,&#x27;Мастер&#x27;], tradeoff:&#x27;Сильнее мотивирует, но меняет мета-экономику и свободу выбора.&#x27;}
+      ]
+    },
+    {
+      name: &#x27;Статистика&#x27;, source: &#x27;ui/stats/stats_screen.gd&#x27;, priority: &#x27;P2&#x27;,
+      current: &#x27;Пять одинаковых Label: победы, забеги, максимальная Башня, редкие карты и артефакты. Информация верная, но не рассказывает о прогрессе и не показывает, что является хорошим результатом.&#x27;,
+      add: [&#x27;иерархию: главная метрика, рекорды, коллекция&#x27;, &#x27;winrate и лучший забег при достаточных данных&#x27;, &#x27;прогресс открытия в виде шкал&#x27;, &#x27;пустые состояния с ближайшей целью&#x27;],
+      remove: [&#x27;пять равнозначных строк&#x27;, &#x27;повтор отдельного заголовка внутри профиля&#x27;, &#x27;цифры без контекста или цели&#x27;],
+      variants: [
+        {name:&#x27;История игрока&#x27;, rec:true, layout:&#x27;summary&#x27;, thesis:&#x27;Главный результат, три рекорда и короткая хронология достижений.&#x27;, zones:[&#x27;12 ПОБЕД&#x27;,&#x27;Лучший забег: 15 этажей&#x27;,&#x27;Башня 74&#x27;,&#x27;Карты 18/23&#x27;,&#x27;Артефакты 4/6&#x27;], tradeoff:&#x27;Даёт смысл цифрам без тяжёлой аналитики.&#x27;},
+        {name:&#x27;Галерея рекордов&#x27;, layout:&#x27;cards&#x27;, thesis:&#x27;Каждый рекорд — отдельная медаль или трофей.&#x27;, zones:[&#x27;12 побед&#x27;,&#x27;74 Башня&#x27;,&#x27;23 забега&#x27;,&#x27;18/23 карт&#x27;,&#x27;4/6 артефактов&#x27;], tradeoff:&#x27;Эмоционально, но занимает много места.&#x27;},
+        {name:&#x27;Короткий журнал&#x27;, layout:&#x27;mobile&#x27;, thesis:&#x27;Крупный winrate, затем компактный список рекордов и прогресс коллекции.&#x27;, zones:[&#x27;СТАТИСТИКА&#x27;,&#x27;Победы 12 из 23&#x27;,&#x27;Башня: рекорд 74&#x27;,&#x27;Карты 78%&#x27;,&#x27;Артефакты 67%&#x27;], tradeoff:&#x27;Самая дешёвая правка текущего экрана.&#x27;}
+      ]
+    },
+    {
+      name: &#x27;Колода / коллекция&#x27;, source: &#x27;ui/deck/deck_screen.gd&#x27;, priority: &#x27;P1&#x27;,
+      current: &#x27;Текстовый список сгруппированных карт. Вкладка называется «Коллекция», но показывает случайно собранное превью стартовой колоды или текущий забег; закрытые карты и артефакты отсутствуют.&#x27;,
+      add: [&#x27;переключатель «Колода забега / Стартовая / Коллекция»&#x27;, &#x27;карточную сетку, фильтры ресурса и стоимость&#x27;, &#x27;кривую стоимости и число карт&#x27;, &#x27;открытые/закрытые карты и артефакты&#x27;],
+      remove: [&#x27;случайное превью стартовой колоды при каждом входе&#x27;, &#x27;одни названия без изображения и эффекта&#x27;, &#x27;название «Коллекция» для экрана только про колоду&#x27;],
+      variants: [
+        {name:&#x27;Коллекция + колода&#x27;, rec:true, layout:&#x27;profile&#x27;, thesis:&#x27;Общий каталог с быстрым переключением источника и фильтрами.&#x27;, zones:[&#x27;Коллекция 18/23&#x27;,&#x27;Колода забега · 18&#x27;,&#x27;Кирпичи&#x27;,&#x27;Гемы&#x27;,&#x27;Звери&#x27;], tradeoff:&#x27;Закрывает расхождение GDD; потребует карточную сетку и состояния lock.&#x27;},
+        {name:&#x27;Альбом карт&#x27;, layout:&#x27;cards&#x27;, thesis:&#x27;Визуальный binder: открытые карты полноцветные, закрытые — силуэты.&#x27;, zones:[&#x27;Каменоломня&#x27;,&#x27;Архимаг&#x27;,&#x27;Логово&#x27;,&#x27;Закрытая карта&#x27;,&#x27;Фильтры&#x27;], tradeoff:&#x27;Лучше всего продаёт коллекционирование, но слабее анализирует текущую колоду.&#x27;},
+        {name:&#x27;Анализатор колоды&#x27;, layout:&#x27;split&#x27;, thesis:&#x27;Слева состав, справа cost-кривая, ресурсы и дубликаты.&#x27;, zones:[&#x27;18 карт&#x27;,&#x27;Состав по типу&#x27;,&#x27;cost 1–3: 9&#x27;,&#x27;cost 4–7: 6&#x27;,&#x27;cost 8+: 3&#x27;], tradeoff:&#x27;Полезно опытным игрокам; для новичка нужен простой режим.&#x27;}
+      ]
+    },
+    {
+      name: &#x27;Настройки&#x27;, source: &#x27;ui/settings/settings_screen.gd&#x27;, priority: &#x27;P0&#x27;,
+      current: &#x27;Единственный Master-слайдер громкости и кнопка назад на однотонном фоне. Функция честная, но не даёт отдельно отключить SFX/музыку, снизить анимацию или заново открыть обучение.&#x27;,
+      add: [&#x27;Mute и отдельные Music / SFX после появления двух шин&#x27;, &#x27;уменьшение анимации и тряски&#x27;, &#x27;кнопку «Пройти обучение снова»&#x27;, &#x27;полноэкранный режим и безопасный сброс прогресса при поддержке&#x27;],
+      remove: [&#x27;большой отдельный экран ради одной строки&#x27;, &#x27;выбор языка до появления локализации&#x27;, &#x27;любые неработающие placeholder-настройки&#x27;],
+      variants: [
+        {name:&#x27;Компактная панель&#x27;, rec:true, layout:&#x27;split&#x27;, thesis:&#x27;На десктопе небольшое модальное окно; на мобильном — обычный лист.&#x27;, zones:[&#x27;ЗВУК&#x27;,&#x27;Общая громкость 80%&#x27;,&#x27;Доступность&#x27;,&#x27;Уменьшить анимацию&#x27;,&#x27;Обучение снова&#x27;], tradeoff:&#x27;Подходит текущему объёму и не выглядит пустым.&#x27;},
+        {name:&#x27;Полный settings hub&#x27;, layout:&#x27;profile&#x27;, thesis:&#x27;Категории Звук / Видео / Управление / Доступность.&#x27;, zones:[&#x27;НАСТРОЙКИ&#x27;,&#x27;Звук&#x27;,&#x27;Видео&#x27;,&#x27;Доступность&#x27;,&#x27;Сброс данных&#x27;], tradeoff:&#x27;Масштабируется, но сейчас будет полупустым.&#x27;},
+        {name:&#x27;Быстрые настройки&#x27;, layout:&#x27;mobile&#x27;, thesis:&#x27;Самые частые переключатели доступны из паузы и меню.&#x27;, zones:[&#x27;НАСТРОЙКИ&#x27;,&#x27;Громкость 80%&#x27;,&#x27;Без тряски&#x27;,&#x27;Полный экран&#x27;,&#x27;Обучение&#x27;], tradeoff:&#x27;Лучший мобильный UX; опасные действия нужны отдельным подтверждением.&#x27;}
+      ]
+    }
+  ];
+
+  let screenIndex = 2;
+  let variantIndex = 0;
+  const select = root.querySelector(&#x27;#arc-screen-select&#x27;);
+  const title = root.querySelector(&#x27;#arc-screen-title&#x27;);
+  const meta = root.querySelector(&#x27;#arc-screen-meta&#x27;);
+  const current = root.querySelector(&#x27;#arc-current-state&#x27;);
+  const addList = root.querySelector(&#x27;#arc-add-list&#x27;);
+  const removeList = root.querySelector(&#x27;#arc-remove-list&#x27;);
+  const variantButtons = root.querySelector(&#x27;#arc-variant-buttons&#x27;);
+  const variantNote = root.querySelector(&#x27;#arc-variant-note&#x27;);
+  const mock = root.querySelector(&#x27;#arc-mock&#x27;);
+  const tradeoff = root.querySelector(&#x27;#arc-tradeoff&#x27;);
+
+  function esc(value) {
+    return String(value).replace(/[&amp;&lt;&gt;&quot;&#x27;]/g, ch =&gt; ({&#x27;&amp;&#x27;:&#x27;&amp;amp;&#x27;,&#x27;&lt;&#x27;:&#x27;&amp;lt;&#x27;,&#x27;&gt;&#x27;:&#x27;&amp;gt;&#x27;,&#x27;&quot;&#x27;:&#x27;&amp;quot;&#x27;,&quot;&#x27;&quot;:&#x27;&amp;#39;&#x27;}[ch]));
+  }
+
+  function listHtml(items) { return items.map(item =&gt; `&lt;li&gt;${esc(item)}&lt;/li&gt;`).join(&#x27;&#x27;); }
+
+  function frame(inner, header, footer) {
+    return `&lt;div class=&quot;arc-game-frame&quot;&gt;&lt;div class=&quot;arc-game-top&quot;&gt;&lt;span class=&quot;arc-game-title&quot;&gt;${esc(header)}&lt;/span&gt;&lt;span class=&quot;arc-chip&quot;&gt;UX-концепт&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;arc-stage&quot;&gt;${inner}&lt;/div&gt;&lt;div class=&quot;arc-game-foot&quot;&gt;&lt;span&gt;${esc(footer || &#x27;Контекст всегда виден&#x27;)}&lt;/span&gt;&lt;button type=&quot;button&quot; class=&quot;arc-game-action arc-game-action--main&quot;&gt;Продолжить&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;`;
+  }
+
+  function renderMock(screen, variant) {
+    const z = variant.zones;
+    if (variant.layout === &#x27;hero&#x27;) {
+      return `&lt;div class=&quot;arc-game-frame&quot;&gt;&lt;div class=&quot;arc-hero-art&quot;&gt;&lt;/div&gt;&lt;div class=&quot;arc-tower arc-tower--left&quot;&gt;&lt;/div&gt;&lt;div class=&quot;arc-tower arc-tower--right&quot;&gt;&lt;/div&gt;&lt;div class=&quot;arc-hero-copy&quot;&gt;&lt;div class=&quot;arc-logo&quot;&gt;${esc(z[0])}&lt;/div&gt;&lt;div class=&quot;arc-menu-stack&quot;&gt;${z.slice(1).map((x,i)=&gt;`&lt;div class=&quot;arc-menu-item&quot;&gt;${i===0?&#x27;◆ &#x27;:&#x27;&#x27;}${esc(x)}&lt;/div&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;`;
+    }
+    if (variant.layout === &#x27;path&#x27;) {
+      return frame(`&lt;div class=&quot;arc-path&quot;&gt;${z.slice(1).map(x=&gt;`&lt;div class=&quot;arc-node&quot;&gt;${esc(x)}&lt;/div&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;`, z[0], &#x27;Колода 18 · Артефакты 3&#x27;);
+    }
+    if (variant.layout === &#x27;arena&#x27;) {
+      return `&lt;div class=&quot;arc-game-frame&quot;&gt;&lt;div class=&quot;arc-stage&quot; style=&quot;inset:10px 0 112px&quot;&gt;&lt;div class=&quot;arc-arena&quot;&gt;&lt;div class=&quot;arc-va-side&quot;&gt;&lt;div class=&quot;arc-va-hud&quot;&gt;&lt;strong&gt;${esc(z[0])}&lt;/strong&gt;&lt;div class=&quot;arc-resources&quot;&gt;🧱12(+2) 💎7(+1) 🐾4(+2)&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;arc-fortress arc-fortress--enemy&quot;&gt;&lt;div class=&quot;arc-building arc-building--tower&quot;&gt;&lt;span class=&quot;arc-building-value&quot;&gt;Башня 31&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;arc-building arc-building--wall&quot;&gt;&lt;span class=&quot;arc-building-value&quot;&gt;Стена 8&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;arc-turn&quot;&gt;${esc(z[1])} · Огненный шар → Башня −6&lt;/div&gt;&lt;div class=&quot;arc-va-side arc-va-side--player&quot;&gt;&lt;div class=&quot;arc-fortress arc-fortress--player&quot;&gt;&lt;div class=&quot;arc-building arc-building--wall&quot;&gt;&lt;span class=&quot;arc-building-value&quot;&gt;Стена 12&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;arc-building arc-building--tower is-short&quot;&gt;&lt;span class=&quot;arc-building-value&quot;&gt;Башня 25&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;arc-va-hud&quot;&gt;&lt;strong&gt;${esc(z[2])}&lt;/strong&gt;&lt;div class=&quot;arc-resources&quot;&gt;🧱9(+2) 💎5(+1) 🐾6(+2)&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;arc-game-foot&quot; style=&quot;min-height:112px&quot;&gt;&lt;div&gt;&lt;div class=&quot;arc-hand&quot;&gt;${[&#x27;Стена&#x27;,&#x27;Архимаг&#x27;,&#x27;Дракон&#x27;,&#x27;Бастион&#x27;,&#x27;Гоблин&#x27;].map(x=&gt;`&lt;span&gt;${x}&lt;/span&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;&lt;div class=&quot;text-small&quot; style=&quot;margin-top:6px&quot;&gt;${esc(z[3])}&lt;/div&gt;&lt;/div&gt;&lt;button type=&quot;button&quot; class=&quot;arc-game-action arc-game-action--main&quot;&gt;${esc(z[4])}&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;`;
+    }
+    if (variant.layout === &#x27;cards&#x27;) {
+      return frame(`&lt;div class=&quot;arc-cards&quot;&gt;${z.slice(0,3).map((x,i)=&gt;`&lt;div class=&quot;arc-card-mini&quot;&gt;&lt;strong&gt;${esc(x)}&lt;/strong&gt;&lt;div class=&quot;arc-card-art&quot;&gt;&lt;/div&gt;&lt;span&gt;${i===2?&#x27;Редкая награда&#x27;:&#x27;Эффект и стоимость&#x27;}&lt;/span&gt;&lt;/div&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;`, screen.name, `${z[3] || &#x27;&#x27;} · ${z[4] || &#x27;&#x27;}`);
+    }
+    if (variant.layout === &#x27;story&#x27; || variant.layout === &#x27;choices&#x27;) {
+      return frame(`&lt;div class=&quot;arc-story&quot;&gt;&lt;div class=&quot;arc-story-art&quot;&gt;&lt;/div&gt;&lt;div class=&quot;arc-choice-stack&quot;&gt;&lt;h3&gt;${esc(z[0])}&lt;/h3&gt;${z.slice(1,4).map((x,i)=&gt;`&lt;div class=&quot;arc-choice&quot;&gt;&lt;strong&gt;${esc(x)}&lt;/strong&gt;&lt;em&gt;${i===0?&#x27;Гарантированный эффект&#x27;:&#x27;Решение игрока&#x27;}&lt;/em&gt;&lt;/div&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;&lt;/div&gt;`, screen.name, z[4]);
+    }
+    if (variant.layout === &#x27;summary&#x27;) {
+      return frame(`&lt;div class=&quot;arc-summary&quot;&gt;&lt;div class=&quot;arc-score&quot;&gt;&lt;span&gt;${esc(z[0])}&lt;/span&gt;&lt;strong&gt;${esc(z[1])}&lt;/strong&gt;&lt;span&gt;Новый личный результат&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;arc-timeline&quot;&gt;${z.slice(2).map(x=&gt;`&lt;div&gt;${esc(x)}&lt;/div&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;&lt;/div&gt;`, screen.name, &#x27;Поделиться · Новый забег&#x27;);
+    }
+    if (variant.layout === &#x27;profile&#x27;) {
+      return frame(`&lt;div class=&quot;arc-profile&quot;&gt;&lt;div class=&quot;arc-profile-nav&quot;&gt;${z.slice(1,4).map((x,i)=&gt;`&lt;div class=&quot;${i===0?&#x27;is-active&#x27;:&#x27;&#x27;}&quot;&gt;${esc(x)}&lt;/div&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;&lt;div class=&quot;arc-profile-main&quot;&gt;&lt;h3&gt;${esc(z[0])}&lt;/h3&gt;&lt;div class=&quot;arc-upgrade-grid&quot;&gt;${[&#x27;Башня +5&#x27;,&#x27;Карьер +1&#x27;,&#x27;Редкая карта&#x27;,&#x27;Рука +1&#x27;].map((x,i)=&gt;`&lt;div class=&quot;arc-upgrade&quot;&gt;&lt;strong&gt;${x}&lt;/strong&gt;&lt;div class=&quot;text-small&quot;&gt;${i&lt;2?&#x27;ур. 2/5 · 200 ✦&#x27;:&#x27;следующая цель&#x27;}&lt;/div&gt;&lt;/div&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;`, screen.name, z[4]);
+    }
+    if (variant.layout === &#x27;mobile&#x27;) {
+      return `&lt;div class=&quot;arc-game-frame&quot;&gt;&lt;div class=&quot;arc-phone-wrap&quot;&gt;&lt;div class=&quot;arc-phone&quot;&gt;&lt;div class=&quot;arc-phone-head&quot;&gt;${esc(z[0])}&lt;/div&gt;&lt;div class=&quot;arc-phone-body&quot;&gt;${z.slice(1,4).map(x=&gt;`&lt;div class=&quot;arc-phone-item&quot;&gt;${esc(x)}&lt;/div&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;&lt;div class=&quot;arc-phone-tabs&quot;&gt;${esc(z[4])}&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;`;
+    }
+    return frame(`&lt;div class=&quot;arc-split&quot;&gt;&lt;div class=&quot;arc-pane&quot;&gt;&lt;h3&gt;${esc(z[0])}&lt;/h3&gt;${z.slice(1,3).map(x=&gt;`&lt;div class=&quot;arc-row&quot;&gt;&lt;span&gt;${esc(x)}&lt;/span&gt;&lt;span&gt;›&lt;/span&gt;&lt;/div&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;&lt;div class=&quot;arc-pane&quot;&gt;&lt;h3&gt;${esc(z[3] || &#x27;Детали&#x27;)}&lt;/h3&gt;&lt;div class=&quot;arc-row&quot;&gt;&lt;span&gt;${esc(z[4] || &#x27;Выбранное действие&#x27;)}&lt;/span&gt;&lt;span&gt;✓&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;arc-row&quot;&gt;&lt;span&gt;Контекст и последствия&lt;/span&gt;&lt;span&gt;i&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;`, screen.name, &#x27;Назад · Сохранено&#x27;);
+  }
+
+  function render() {
+    const screen = screens[screenIndex];
+    const variant = screen.variants[variantIndex];
+    select.value = String(screenIndex);
+    title.textContent = screen.name;
+    meta.innerHTML = `&lt;span class=&quot;arc-tag&quot;&gt;&lt;span class=&quot;arc-dot&quot;&gt;&lt;/span&gt;${esc(screen.priority)}&lt;/span&gt;&lt;span&gt;${esc(screen.source)}&lt;/span&gt;&lt;span&gt;${screenIndex + 1} / ${screens.length}&lt;/span&gt;`;
+    current.textContent = screen.current;
+    addList.innerHTML = listHtml(screen.add);
+    removeList.innerHTML = listHtml(screen.remove);
+    variantButtons.innerHTML = screen.variants.map((item, index) =&gt; `&lt;button type=&quot;button&quot; class=&quot;btn ${item.rec?&#x27;btn-primary&#x27;:&#x27;&#x27;}&quot; data-variant=&quot;${index}&quot; aria-pressed=&quot;${index===variantIndex}&quot;&gt;${item.rec?&#x27;★ &#x27;:&#x27;&#x27;}${esc(item.name)}&lt;/button&gt;`).join(&#x27;&#x27;);
+    variantNote.innerHTML = `${variant.rec?&#x27;&lt;span class=&quot;arc-rec&quot;&gt;Рекомендовано · &lt;/span&gt;&#x27;:&#x27;&#x27;}${esc(variant.thesis)}`;
+    mock.innerHTML = renderMock(screen, variant);
+    tradeoff.textContent = `Компромисс: ${variant.tradeoff}`;
+    variantButtons.querySelectorAll(&#x27;button&#x27;).forEach(button =&gt; button.addEventListener(&#x27;click&#x27;, () =&gt; {
+      variantIndex = Number(button.dataset.variant);
+      render();
+    }));
+  }
+
+  screens.forEach((screen, index) =&gt; {
+    const option = document.createElement(&#x27;option&#x27;);
+    option.value = String(index);
+    option.textContent = `${index + 1}. ${screen.name}`;
+    select.appendChild(option);
+  });
+  select.addEventListener(&#x27;change&#x27;, () =&gt; { screenIndex = Number(select.value); variantIndex = 0; render(); });
+  root.querySelector(&#x27;#arc-prev&#x27;).addEventListener(&#x27;click&#x27;, () =&gt; { screenIndex = (screenIndex - 1 + screens.length) % screens.length; variantIndex = 0; render(); });
+  root.querySelector(&#x27;#arc-next&#x27;).addEventListener(&#x27;click&#x27;, () =&gt; { screenIndex = (screenIndex + 1) % screens.length; variantIndex = 0; render(); });
+  render();
+})();
+&lt;/script&gt;
+
+&lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+
+  const getTrigger = (target) =&gt;
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest(&quot;[data-tooltip]&quot;)
+      : null;
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handleLeave = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    document.removeEventListener(&quot;pointerover&quot;, handlePointerOpen);
+    document.removeEventListener(&quot;pointerout&quot;, handleLeave);
+    document.removeEventListener(&quot;focusin&quot;, handleFocusIn);
+    document.removeEventListener(&quot;focusout&quot;, handleLeave);
+    document.removeEventListener(&quot;keydown&quot;, handleKeyDown);
+    document.removeEventListener(&quot;contextmenu&quot;, handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener(&quot;pointerover&quot;, handlePointerOpen);
+  document.addEventListener(&quot;pointerout&quot;, handleLeave);
+  document.addEventListener(&quot;focusin&quot;, handleFocusIn);
+  document.addEventListener(&quot;focusout&quot;, handleLeave);
+  document.addEventListener(&quot;keydown&quot;, handleKeyDown);
+  document.addEventListener(&quot;contextmenu&quot;, handleContextMenu);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+</body>
+</html>
