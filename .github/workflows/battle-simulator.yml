@@ -2,7 +2,7 @@ name: Battle Simulator (баланс-профилирование)
 
 # ARC-084/ARC-054: необязательный ручной запуск tools/battle_simulator.gd —
 # сотни ИИ-против-ИИ боёв для отчётов по картам/матчапам стратегий/типам
-# победы (ARC-084). Отдельный workflow, а не job внутри ci.yml, специально:
+# победы (ARC-084), ходам и остаткам ресурсов (ARC-096).
 # ci.yml тоже слушает workflow_dispatch на уровне всего файла, и job внутри
 # него можно только гейтить через if (github.event_name == 'workflow_dispatch'),
 # а не давать ему свой независимый триггер — ручной запуск ci.yml тогда
@@ -98,6 +98,14 @@ jobs:
               echo "|---|---:|---:|"
               tail -n +2 balance_report.csv | awk -F, '$2+0>=20 && $4!="n/a"' | sort -t, -k4 -n | head -10 | awk -F, '{printf "| %s | %s | %s |\n", $1, $2, $4}'
             fi
+            echo ""
+            echo "### Темп и остатки ресурсов"
+            echo ""
+            if [ -f balance_report_games.csv ]; then
+              awk -F, 'NR>1 {n++; turns+=$8; ar+=$10+$11+$12; br+=$13+$14+$15; if($6=="a"){starts_a++; if($7=="a") starter_wins++} else {if($7=="b") starter_wins++}} END {if(n>0) printf "- Игр: %d\n- Среднее ходов: %.1f\n- Средний остаток A: %.1f\n- Средний остаток B: %.1f\n- Побед первого игрока: %.1f%%\n", n, turns/n, ar/n, br/n, 100*starter_wins/n}' balance_report_games.csv
+            else
+              echo "_balance_report_games.csv не найден._"
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Приложить отчёты
@@ -109,5 +117,6 @@ jobs:
             balance_report.csv
             balance_report_matchups.csv
             balance_report_win_types.csv
+            balance_report_games.csv
           if-no-files-found: warn
           retention-days: 30

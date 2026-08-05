@@ -4,7 +4,10 @@ extends Node
 
 enum State { START_MATCH, PLAYER_TURN, PROCESS_CARD, AI_TURN, CHECK_WIN, END_MATCH }
 
-const WIN_TOWER_HEIGHT = 100
+## ARC-096 balance experiment: the previous target (100 from a 20-point start)
+## produced 0 tower-height wins across three large simulator runs. 65 is the
+## first tested target in the 25 / 8 / 65 package.
+const WIN_TOWER_HEIGHT = 65
 const WIN_RESOURCE_AMOUNT = 300
 
 ## ARC-084 (gdlint class-definitions-order): все const этого файла собраны в
@@ -154,6 +157,7 @@ var current_state: State = State.START_MATCH
 var player_data: PlayerData
 var enemy_data: PlayerData
 var last_actor: PlayerData
+var auto_execute_ai_turn: bool = true
 
 ## ARC-084 (профилирование симулятора, tools/battle_simulator.gd): тип
 ## последней победы — "tower_height" (своя башня достигла WIN_TOWER_HEIGHT),
@@ -190,10 +194,16 @@ func pick_random_regular_ai_strategy() -> Resource:
 ## Пустой массив (дефолт) — тестовый бой из главного меню, без забега: тогда
 ## используется старый _initialize_test_deck() как и раньше.
 func setup_match(
-	p_player: PlayerData, p_enemy: PlayerData, p_run_deck: Array[CardData] = []
+	p_player: PlayerData,
+	p_enemy: PlayerData,
+	p_run_deck: Array[CardData] = [],
+	p_apply_player_progression: bool = true,
+	p_starting_side: int = 0,
+	p_auto_execute_ai_turn: bool = true
 ) -> void:
 	player_data = p_player
 	enemy_data = p_enemy
+	auto_execute_ai_turn = p_auto_execute_ai_turn
 
 	# ARC-002: setup_match() теперь может вызываться повторно за сессию (карта
 	# мира -> бой -> карта -> следующий бой) — без сброса сюда бы утекали карты
@@ -213,7 +223,7 @@ func setup_match(
 	# (ProfileManager.UPGRADE_CATALOG), покупаются за Славу в MetaShopScreen,
 	# по умолчанию 0 (см. комментарий в profile_manager.gd).
 	var profile_manager = get_node_or_null("/root/ProfileManager")
-	if profile_manager:
+	if profile_manager and p_apply_player_progression:
 		player_data.tower_hp += profile_manager.get_upgrade_bonus("tower")
 		player_data.wall_hp += profile_manager.get_upgrade_bonus("wall")
 		player_data.quarry += profile_manager.get_upgrade_bonus("quarry")
@@ -224,14 +234,17 @@ func setup_match(
 
 	# ARC-013: постоянные усиления забега с узлов «Отдых» — тем же механизмом,
 	# что и бонусы ProfileManager чуть выше.
-	player_data.tower_hp += MatchSettings.run_tower_bonus
-	player_data.quarry += MatchSettings.run_quarry_bonus
-	player_data.magic += MatchSettings.run_magic_bonus
-	player_data.dungeon += MatchSettings.run_dungeon_bonus
+	if p_apply_player_progression:
+		player_data.tower_hp += MatchSettings.run_tower_bonus
+		player_data.quarry += MatchSettings.run_quarry_bonus
+		player_data.magic += MatchSettings.run_magic_bonus
+		player_data.dungeon += MatchSettings.run_dungeon_bonus
 
 	# ARC-015: артефакты забега (награда за бой) — копия, не сама run_artifacts,
 	# по аналогии с run_deck ниже.
-	player_data.active_artifacts = MatchSettings.run_artifacts.duplicate()
+	player_data.active_artifacts = (
+		MatchSettings.run_artifacts.duplicate() if p_apply_player_progression else []
+	)
 
 	# ARC-016: в match_manager.deck кладём ШУФЛ-КОПИЮ run_deck, а не саму
 	# run_deck — карты, разыгранные/сброшенные за бой, не должны пропадать из
@@ -261,7 +274,10 @@ func setup_match(
 
 	current_state = State.START_MATCH
 	GameEvents.match_started.emit(player_data, enemy_data)
-	start_turn(player_data)
+	# ARC-096: real campaign calls keep the historical player-first default.
+	# Balance simulations pass 0/1 explicitly and alternate the starter inside
+	# each paired run, removing the structural extra-turn advantage from side A.
+	start_turn(player_data if p_starting_side == 0 else enemy_data)
 
 
 ## ARC-095: используется теперь только аварийным доливом в _draw_from_deck()
@@ -397,7 +413,8 @@ func start_turn(player: PlayerData) -> void:
 		current_state = State.PLAYER_TURN
 	else:
 		current_state = State.AI_TURN
-		execute_ai_turn()
+		if auto_execute_ai_turn:
+			execute_ai_turn()
 
 
 func execute_ai_turn() -> void:

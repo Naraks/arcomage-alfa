@@ -26,6 +26,7 @@ func before_each() -> void:
 	MatchManager.player_hand = []
 	MatchManager.enemy_hand = []
 	MatchManager.current_state = MatchManager.State.PLAYER_TURN
+	MatchManager.auto_execute_ai_turn = true
 
 
 # --- apply_damage ---
@@ -683,6 +684,46 @@ func test_resolve_ai_turn_ends_player_turn_and_hands_off_to_enemy_when_hand_empt
 
 
 # --- setup_match / ProfileManager (регрессия ARC-001: непримененные бонусы) ---
+
+
+func test_player_data_uses_25_8_balance_package_defaults() -> void:
+	var live_defaults := PlayerData.new()
+	assert_eq(live_defaults.tower_hp, 25, "Пакет ARC-096: стартовая башня")
+	assert_eq(live_defaults.wall_hp, 8, "Пакет ARC-096: стартовая стена")
+	assert_eq(MatchManager.WIN_TOWER_HEIGHT, 65, "Пакет ARC-096: цель строительной победы")
+
+
+func test_setup_match_can_disable_all_player_progression_for_simulation() -> void:
+	var p := TestFixtures.make_player()
+	var e := TestFixtures.make_player()
+	var artifact: ArtifactData = load(DWARF_PICKAXE_PATH)
+	var saved_upgrades: Dictionary = ProfileManager.profile.get("upgrades", {}).duplicate()
+	ProfileManager.profile["upgrades"] = {"tower": 2, "quarry": 2}
+	MatchSettings.run_tower_bonus = 5
+	MatchSettings.run_quarry_bonus = 3
+	MatchSettings.run_artifacts = [artifact]
+
+	MatchManager.setup_match(p, e, [], false)
+
+	assert_eq(p.tower_hp, 20, "Симулятор не должен получать meta/run bonus стороны A")
+	assert_eq(p.quarry, 1, "Генератор стороны A должен остаться симметричным стороне B")
+	assert_true(p.active_artifacts.is_empty(), "Артефакты забега не участвуют в чистом A/B")
+
+	ProfileManager.profile["upgrades"] = saved_upgrades
+	MatchSettings.run_tower_bonus = 0
+	MatchSettings.run_quarry_bonus = 0
+	MatchSettings.run_artifacts = []
+
+
+func test_setup_match_can_start_enemy_side_for_paired_simulation() -> void:
+	var p := TestFixtures.make_player()
+	var e := TestFixtures.make_player()
+
+	MatchManager.setup_match(p, e, [], false, 1, false)
+
+	assert_eq(MatchManager.current_state, MatchManager.State.AI_TURN)
+	assert_eq(p.bricks, 5, "Сторона A не должна получить доход до своего первого хода")
+	assert_eq(e.bricks, 6, "Стартующая сторона B должна получить доход своего первого хода")
 
 
 func test_setup_match_applies_profile_manager_bonuses() -> void:

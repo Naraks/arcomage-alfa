@@ -8,17 +8,19 @@ extends Node
 ##     --games=500 --out=balance_report.csv
 ##
 ## Аргументы (все необязательные):
-##   --games=N   сколько игр прогнать (по умолчанию 500, см. ARC-023: "выборка ≥500")
+##   --games=N   сколько игр прогнать (нечётное значение округляется вверх до пары)
 ##   --out=PATH  путь для CSV со статистикой по картам (по умолчанию res://balance_report.csv)
 ##   --seed=N    зерно RNG для воспроизводимого прогона (по умолчанию не задаётся —
 ##               каждый запуск другой)
 ##
-## Пишет три CSV (не один): <out> — по картам, <out>_matchups.csv — по матчапам
+## Пишет четыре CSV: <out> — по картам, <out>_matchups.csv — по матчапам
 ## стратегий, <out>_win_types.csv — ARC-084, тип победы (tower_destroyed/
 ## tower_height/resource_bricks/resource_gems/resource_beasts/draw) с долей от
 ## общего числа игр. Последний нужен для критерия 3 ARC-084 — насколько вообще
 ## достижима ресурсная победа (WIN_RESOURCE_AMOUNT=300) при текущем темпе
-## притока по сравнению с боевыми путями к победе.
+## притока по сравнению с боевыми путями к победе; <out>_games.csv — ARC-096,
+## одна строка на бой: парный seed/leg, кто ходил первым, число ходов и
+## остатки каждого ресурса у обеих сторон на момент окончания партии.
 ##
 ## Почему обычная сцена, а не `-s tools/battle_simulator.gd` (как GUT в CI,
 ## .github/workflows/ci.yml): скрипт, переданный через `-s`, компилируется
@@ -40,16 +42,10 @@ extends Node
 ## execute_ai_turn() (та существует только ради комфорта игрока-человека перед
 ## реальным battle_screen.gd; см. комментарий в match_manager.gd).
 ##
-## Известная погрешность: MatchManager.setup_match() применяет бонусы
-## ProfileManager (tower_hp/quarry) только к первому аргументу (player_data,
-## "сторона A") — это специально асимметрично для реального single-player боя
-## (мета-прогрессия у игрока-человека), но здесь превращается в небольшое
-## систематическое преимущество той стороны, чья стратегия в конкретной игре
-## оказалась на позиции A. Т.к. назначение стратегии на A/B рандомизируется
-## независимо от самой стратегии, при достаточном числе игр эффект должен
-## размываться, но для формально строгого сравнения матчапов эту асимметрию
-## стоит иметь в виду — отчёт снят как приближённая эвристика (тот же уровень
-## строгости, что у tools/coverage_report.py, ARC-077), не строгий A/B-тест.
+## ARC-096: симуляция намеренно отключает односторонние профильные/run-бонусы.
+## Игры идут парами с одинаковыми стратегиями и seed: leg A начинает сторона
+## A, leg B — сторона B. Это нейтрализует структурный лишний ход первого игрока
+## и делает позиционный winrate проверяемым, не меняя single-player кампанию.
 
 const MAX_TURNS_PER_GAME := 300  # защита от зависшей игры без победителя (deck-out и т.п.)
 
@@ -71,35 +67,44 @@ var _game_card_plays: Array = []  # за текущую игру: [{"name": Stri
 var _current_winner_side: String = ""
 var _current_win_reason: String = ""
 var _current_win_resource: String = ""
+var _game_rows: Array[Dictionary] = []
 
 
 func _ready() -> void:
 	var args := _parse_args()
-	var num_games: int = args.get("games", 500)
+	var requested_games: int = args.get("games", 500)
+	var num_games: int = requested_games if requested_games % 2 == 0 else requested_games + 1
 	var out_path: String = args.get("out", "res://balance_report.csv")
+	var scheduler := RandomNumberGenerator.new()
 	if args.has("seed"):
-		seed(args["seed"])
+		scheduler.seed = args["seed"]
+	else:
+		scheduler.randomize()
 
 	_seed_card_stats_from_all_cards()
 	GameEvents.card_played.connect(_on_card_played)
 
 	var strategy_names: Array = STRATEGY_PATHS.keys()
 
-	for i in range(num_games):
-		var strat_a: String = strategy_names[randi() % strategy_names.size()]
-		var strat_b: String = strategy_names[randi() % strategy_names.size()]
-		_run_one_game(strat_a, strat_b)
-		if (i + 1) % 50 == 0:
-			print("... ", i + 1, "/", num_games, " игр")
+	for pair_index in range(int(num_games / 2)):
+		var strat_a: String = strategy_names[scheduler.randi() % strategy_names.size()]
+		var strat_b: String = strategy_names[scheduler.randi() % strategy_names.size()]
+		var pair_seed: int = scheduler.randi()
+		_run_one_game(strat_a, strat_b, pair_index, "a", pair_seed)
+		_run_one_game(strat_a, strat_b, pair_index, "b", pair_seed)
+		if (pair_index + 1) % 25 == 0:
+			print("... ", (pair_index + 1) * 2, "/", num_games, " игр")
 
 	_write_card_report(out_path)
 	_write_matchup_report(out_path.get_basename() + "_matchups.csv")
 	_write_win_reason_report(out_path.get_basename() + "_win_types.csv")
+	_write_game_report(out_path.get_basename() + "_games.csv")
 
 	print("Готово: ", num_games, " игр.")
 	print("Отчёт по картам: ", out_path)
 	print("Отчёт по матчапам стратегий: ", out_path.get_basename() + "_matchups.csv")
 	print("Отчёт по типам победы: ", out_path.get_basename() + "_win_types.csv")
+	print("Построчный отчёт по боям: ", out_path.get_basename() + "_games.csv")
 	get_tree().quit()
 
 
@@ -132,7 +137,10 @@ func _on_card_played(card: CardData, player: Resource) -> void:
 	_game_card_plays.append({"name": card.card_name, "side": side})
 
 
-func _run_one_game(strat_a_name: String, strat_b_name: String) -> void:
+func _run_one_game(
+	strat_a_name: String, strat_b_name: String, pair_id: int, starting_side: String, pair_seed: int
+) -> void:
+	seed(pair_seed)
 	var p_a := PlayerData.new()
 	var p_b := PlayerData.new()
 	p_a.ai_strategy = load(STRATEGY_PATHS[strat_a_name]).new()
@@ -152,19 +160,9 @@ func _run_one_game(strat_a_name: String, strat_b_name: String) -> void:
 		_current_win_resource = MatchManager.last_win_resource
 	GameEvents.match_ended.connect(on_match_ended, CONNECT_ONE_SHOT)
 
-	# setup_match(p_run_deck=...) даёт полный пул карт стороне A (player_data), но
-	# для стороны B (enemy_data) нет параметра — её колода всегда строится из
-	# STARTER_DECK_CARD_PATHS (11 карт, см. _build_generic_card_pool()). Без
-	# переопределения ниже сторона B (и значит половина сыгранных карт по всем
-	# играм) никогда не видела бы 55 из 66 карт — usage-rate отчёт был бы
-	# бессмысленным для всего контента ARC-019/020. Переопределяем колоду и
-	# руку B на тот же полный пул сразу после setup_match() (та уже успела
-	# раздать стартовую руку B из старого, ограниченного enemy_deck).
-	MatchManager.setup_match(p_a, p_b, _build_full_card_pool())
-	MatchManager.enemy_deck = _build_full_card_pool()
-	MatchManager.enemy_hand = []
-	for i in range(5):
-		MatchManager.draw_card(MatchManager.enemy_data)
+	# Пустой run_deck использует симметричный полный пул ARC-095 для обеих сторон.
+	# false отключает одностороннюю прогрессию; 0/1 задаёт стартера парного leg.
+	MatchManager.setup_match(p_a, p_b, [], false, 0 if starting_side == "a" else 1, false)
 
 	var turns := 0
 	while MatchManager.current_state != MatchManager.State.END_MATCH and turns < MAX_TURNS_PER_GAME:
@@ -183,6 +181,71 @@ func _run_one_game(strat_a_name: String, strat_b_name: String) -> void:
 	_record_card_plays(winner_label)
 	_record_matchup(strat_a_name, strat_b_name, winner_label)
 	_record_win_reason(winner_label)
+	_record_game(pair_id, starting_side, pair_seed, strat_a_name, strat_b_name, winner_label, turns)
+
+
+func _record_game(
+	pair_id: int,
+	starting_side: String,
+	pair_seed: int,
+	strat_a: String,
+	strat_b: String,
+	winner: String,
+	turns: int
+) -> void:
+	(
+		_game_rows
+		. append(
+			{
+				"pair_id": pair_id,
+				"leg": starting_side,
+				"seed": pair_seed,
+				"strategy_a": strat_a,
+				"strategy_b": strat_b,
+				"starting_side": starting_side,
+				"winner_side": winner,
+				"turns": turns,
+				"win_type": _win_reason_key(winner),
+				"a_bricks": MatchManager.player_data.bricks,
+				"a_gems": MatchManager.player_data.gems,
+				"a_beasts": MatchManager.player_data.beasts,
+				"b_bricks": MatchManager.enemy_data.bricks,
+				"b_gems": MatchManager.enemy_data.gems,
+				"b_beasts": MatchManager.enemy_data.beasts,
+			}
+		)
+	)
+
+
+func _write_game_report(out_path: String) -> void:
+	var file := FileAccess.open(out_path, FileAccess.WRITE)
+	if not file:
+		print("[ERROR] Не удалось открыть построчный отчёт симулятора: ", out_path)
+		return
+	var columns := [
+		"pair_id",
+		"leg",
+		"seed",
+		"strategy_a",
+		"strategy_b",
+		"starting_side",
+		"winner_side",
+		"turns",
+		"win_type",
+		"a_bricks",
+		"a_gems",
+		"a_beasts",
+		"b_bricks",
+		"b_gems",
+		"b_beasts"
+	]
+	file.store_line(",".join(PackedStringArray(columns)))
+	for row in _game_rows:
+		var values: Array[String] = []
+		for column in columns:
+			values.append(str(row[column]))
+		file.store_line(",".join(PackedStringArray(values)))
+	file.close()
 
 
 func _record_card_plays(winner_label: String) -> void:
