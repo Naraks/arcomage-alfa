@@ -3,6 +3,67 @@ extends Control
 const WorldMapData = preload("res://data/resources/world_map_data.gd")
 const MapNodeData = preload("res://data/resources/map_node_data.gd")
 
+## ARC-017: "выше стартовые HP/генераторы, чуть агрессивнее" (design doc,
+## раздел 6) для элиты/босса — конкретные числа нигде не заданы, взяты как
+## разумная прогрессия (босс вдвое злее элиты).
+const ELITE_TOWER_BONUS := 10
+const ELITE_WALL_BONUS := 5
+const ELITE_GENERATOR_BONUS := 1
+const BOSS_TOWER_BONUS := 20
+const BOSS_WALL_BONUS := 10
+const BOSS_GENERATOR_BONUS := 2
+
+## ARC-027: тип узла определяет не только бонусы к статам (ARC-017), но и то,
+## какой ai_strategy достаётся противнику.
+## - BATTLE: без бонусов к статам, случайный профиль из всех четырёх — обычный
+##   бой не должен ощущаться усиленным, но должен давать разнообразие
+##   ("случайный/сбалансированный профиль" из описания тикета). До этого
+##   тикета BATTLE вообще не выставлял ai_strategy — MatchManager._resolve_ai_turn
+##   молча подставлял DefaultAIStrategy с [ERROR]-принтом в консоль на каждый
+##   ход ИИ; теперь это явное и разнообразное назначение, принт больше не
+##   появляется.
+## - ELITE_BATTLE: бонусы к статам как раньше, но профиль теперь случайно
+##   Aggressive ИЛИ Builder — буквально "усиленная версия (Aggressive/Builder)"
+##   из описания тикета, а не всегда фиксированный Aggressive, как было
+##   временным приближением в ARC-017.
+## - BOSS: свои (более высокие) бонусы, всегда BossAIStrategy — "отдельная
+##   скриптованная гибридная стратегия" (data/resources/boss_ai_strategy.gd:
+##   переключается между Aggressive/Builder по угрозе поражения/окну для
+##   добивания — именно то, что в ARC-017 было отложено как "отдельная, более
+##   крупная задача про ИИ").
+##
+## Массивы держат сами GDScript-объекты через preload() (гарантированно
+## константное выражение), а не bare class_name-идентификаторы вроде
+## DefaultAIStrategy — компилятор не считает их константным выражением внутри
+## const-массива (`Assigned value for constant "..." isn't a constant
+## expression`), несмотря на то, что вне const-контекста (`enemy.ai_strategy =
+## AggressiveAIStrategy.new()`, как было до ARC-027) обращение к ним работает
+## нормально.
+## ARC-085: REGULAR_STRATEGY_SCRIPTS переехал в MatchManager.REGULAR_STRATEGY_SCRIPTS —
+## переиспользуется ещё и в main_menu.gd (Быстрый бой). ELITE_STRATEGY_SCRIPTS
+## остаётся здесь — используется только этим экраном.
+const AggressiveAIStrategyScript = preload("res://data/resources/aggressive_ai_strategy.gd")
+const BuilderAIStrategyScript = preload("res://data/resources/builder_ai_strategy.gd")
+const BossAIStrategyScript = preload("res://data/resources/boss_ai_strategy.gd")
+
+const ELITE_STRATEGY_SCRIPTS: Array = [AggressiveAIStrategyScript, BuilderAIStrategyScript]
+
+## ARC-029: рост сложности от глубины карты (MapNodeData.floor_index,
+## 0-based) — НЕЗАВИСИМО от типа узла, поверх бонусов ELITE/BOSS (ARC-017):
+## дальний обычный BATTLE должен быть ощутимо опаснее самого первого, а не
+## только элита/босс, у которых до этого тикета сложность вообще не зависела
+## от того, на каком этаже они встретились. floor_index=0 (первый этаж, а
+## также любой узел, созданный не через генератор — тестовые/отладочные)
+## даёт нулевой бонус — старое поведение ELITE/BOSS-тестов не меняется.
+##
+## tower_hp/wall_hp растут линейно на каждый этаж; генераторы — раз в
+## FLOOR_GENERATOR_INTERVAL этажей, а не на каждый: базовый генератор = 1,
+## линейный рост на каждый из 12-15 этажей карты (WorldMapGenerator) был бы
+## взрывным (генератор x12+ к последнему этажу).
+const FLOOR_TOWER_HP_PER_FLOOR := 2
+const FLOOR_WALL_HP_PER_FLOOR := 1
+const FLOOR_GENERATOR_INTERVAL := 3
+
 @export var map_data: Resource
 
 @onready var _map_content: Control = $ScrollContainer/MapContent
@@ -147,73 +208,8 @@ func _generate_debug_node_bar() -> void:
 		row.add_child(button)
 
 
-## ARC-017: "выше стартовые HP/генераторы, чуть агрессивнее" (design doc,
-## раздел 6) для элиты/босса — конкретные числа нигде не заданы, взяты как
-## разумная прогрессия (босс вдвое злее элиты).
-const ELITE_TOWER_BONUS := 10
-const ELITE_WALL_BONUS := 5
-const ELITE_GENERATOR_BONUS := 1
-const BOSS_TOWER_BONUS := 20
-const BOSS_WALL_BONUS := 10
-const BOSS_GENERATOR_BONUS := 2
-
-## ARC-027: тип узла определяет не только бонусы к статам (ARC-017), но и то,
-## какой ai_strategy достаётся противнику.
-## - BATTLE: без бонусов к статам, случайный профиль из всех четырёх — обычный
-##   бой не должен ощущаться усиленным, но должен давать разнообразие
-##   ("случайный/сбалансированный профиль" из описания тикета). До этого
-##   тикета BATTLE вообще не выставлял ai_strategy — MatchManager._resolve_ai_turn
-##   молча подставлял DefaultAIStrategy с [ERROR]-принтом в консоль на каждый
-##   ход ИИ; теперь это явное и разнообразное назначение, принт больше не
-##   появляется.
-## - ELITE_BATTLE: бонусы к статам как раньше, но профиль теперь случайно
-##   Aggressive ИЛИ Builder — буквально "усиленная версия (Aggressive/Builder)"
-##   из описания тикета, а не всегда фиксированный Aggressive, как было
-##   временным приближением в ARC-017.
-## - BOSS: свои (более высокие) бонусы, всегда BossAIStrategy — "отдельная
-##   скриптованная гибридная стратегия" (data/resources/boss_ai_strategy.gd:
-##   переключается между Aggressive/Builder по угрозе поражения/окну для
-##   добивания — именно то, что в ARC-017 было отложено как "отдельная, более
-##   крупная задача про ИИ").
-##
-## Массивы держат сами GDScript-объекты через preload() (гарантированно
-## константное выражение), а не bare class_name-идентификаторы вроде
-## DefaultAIStrategy — компилятор не считает их константным выражением внутри
-## const-массива (`Assigned value for constant "..." isn't a constant
-## expression`), несмотря на то, что вне const-контекста (`enemy.ai_strategy =
-## AggressiveAIStrategy.new()`, как было до ARC-027) обращение к ним работает
-## нормально.
-const DefaultAIStrategyScript = preload("res://data/resources/default_ai_strategy.gd")
-const AggressiveAIStrategyScript = preload("res://data/resources/aggressive_ai_strategy.gd")
-const BuilderAIStrategyScript = preload("res://data/resources/builder_ai_strategy.gd")
-const EconomistAIStrategyScript = preload("res://data/resources/economist_ai_strategy.gd")
-const BossAIStrategyScript = preload("res://data/resources/boss_ai_strategy.gd")
-
-const REGULAR_STRATEGY_SCRIPTS: Array = [
-	DefaultAIStrategyScript, AggressiveAIStrategyScript, BuilderAIStrategyScript, EconomistAIStrategyScript
-]
-const ELITE_STRATEGY_SCRIPTS: Array = [AggressiveAIStrategyScript, BuilderAIStrategyScript]
-
-
 func _pick_random_strategy(scripts: Array) -> AIStrategy:
 	return scripts[randi() % scripts.size()].new()
-
-
-## ARC-029: рост сложности от глубины карты (MapNodeData.floor_index,
-## 0-based) — НЕЗАВИСИМО от типа узла, поверх бонусов ELITE/BOSS (ARC-017):
-## дальний обычный BATTLE должен быть ощутимо опаснее самого первого, а не
-## только элита/босс, у которых до этого тикета сложность вообще не зависела
-## от того, на каком этаже они встретились. floor_index=0 (первый этаж, а
-## также любой узел, созданный не через генератор — тестовые/отладочные)
-## даёт нулевой бонус — старое поведение ELITE/BOSS-тестов не меняется.
-##
-## tower_hp/wall_hp растут линейно на каждый этаж; генераторы — раз в
-## FLOOR_GENERATOR_INTERVAL этажей, а не на каждый: базовый генератор = 1,
-## линейный рост на каждый из 12-15 этажей карты (WorldMapGenerator) был бы
-## взрывным (генератор x12+ к последнему этажу).
-const FLOOR_TOWER_HP_PER_FLOOR := 2
-const FLOOR_WALL_HP_PER_FLOOR := 1
-const FLOOR_GENERATOR_INTERVAL := 3
 
 
 func _apply_floor_difficulty(enemy: PlayerData, floor_index: int) -> void:
@@ -230,7 +226,7 @@ func _apply_node_difficulty(enemy: PlayerData, node_type: int, floor_index: int 
 
 	match node_type:
 		MapNodeData.NodeType.BATTLE:
-			enemy.ai_strategy = _pick_random_strategy(REGULAR_STRATEGY_SCRIPTS)
+			enemy.ai_strategy = _pick_random_strategy(MatchManager.REGULAR_STRATEGY_SCRIPTS)
 		MapNodeData.NodeType.ELITE_BATTLE:
 			enemy.tower_hp += ELITE_TOWER_BONUS
 			enemy.wall_hp += ELITE_WALL_BONUS

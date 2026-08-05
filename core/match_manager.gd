@@ -15,6 +15,24 @@ const WIN_RESOURCE_AMOUNT = 300
 
 const DEFAULT_AI_STRATEGY_PATH := "res://data/resources/default_ai_strategy.gd"
 
+## ARC-085: вынесено сюда из ui/map/world_map_screen.gd, чтобы Быстрый бой
+## (ui/main_menu.gd::_on_battle_pressed()) тоже мог давать случайный обычный
+## архетип, а не только обычный бой на карте мира — вместо дублирования
+## одного и того же списка/рандомайзера в двух экранах. world_map_screen.gd
+## по-прежнему держит свой ELITE_STRATEGY_SCRIPTS локально — он не переиспользуется
+## больше нигде.
+const DefaultAIStrategyScript = preload("res://data/resources/default_ai_strategy.gd")
+const AggressiveAIStrategyScript = preload("res://data/resources/aggressive_ai_strategy.gd")
+const BuilderAIStrategyScript = preload("res://data/resources/builder_ai_strategy.gd")
+const EconomistAIStrategyScript = preload("res://data/resources/economist_ai_strategy.gd")
+
+const REGULAR_STRATEGY_SCRIPTS: Array = [
+	DefaultAIStrategyScript,
+	AggressiveAIStrategyScript,
+	BuilderAIStrategyScript,
+	EconomistAIStrategyScript
+]
+
 ## Базовый пул карт — единственное место, где перечислены пути .tres. Общий
 ## источник для тестовой колоды игрока, колоды ИИ и стартовой колоды забега
 ## (см. _build_generic_card_pool ниже).
@@ -157,6 +175,14 @@ var deck: Array[CardData] = []
 ## стороны делили один общий пул ("для простоты прототипа"), из-за чего ИИ
 ## мог тянуть и разыгрывать уникальные наградные карты игрока.
 var enemy_deck: Array[CardData] = []
+
+
+## ARC-085: вынесено сюда из ui/map/world_map_screen.gd, чтобы Быстрый бой
+## (ui/main_menu.gd::_on_battle_pressed()) тоже мог давать случайный обычный
+## архетип, а не только обычный бой на карте мира — вместо дублирования
+## одного и того же рандомайзера в двух экранах.
+func pick_random_regular_ai_strategy() -> Resource:
+	return REGULAR_STRATEGY_SCRIPTS[randi() % REGULAR_STRATEGY_SCRIPTS.size()].new()
 
 
 ## ARC-016: p_run_deck — колода забега (MatchSettings.run_deck), собственность

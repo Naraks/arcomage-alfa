@@ -52,8 +52,15 @@ func _on_campaign_pressed():
 	print("Change scene result: ", err)
 
 
+## ARC-085: раньше не передавал стратегию вовсе — enemy_data.ai_strategy
+## оставался null, и MatchManager.setup_match() молча подставлял
+## DefaultAIStrategy («Сбалансированный»), из-за чего Быстрый бой никогда не
+## давал Агрессора/Строителя/Мага-Экономиста, хотя design doc §6.3 описывает
+## его как "случайный архетип среднего уровня". Теперь переиспользует тот же
+## пул и рандомайзер, что и обычный бой карты мира (world_map_screen.gd,
+## ARC-027), вынесенный в MatchManager.pick_random_regular_ai_strategy().
 func _on_battle_pressed():
-	_start_test_battle()
+	_start_test_battle(MatchManager.pick_random_regular_ai_strategy())
 
 
 ## ARC-095: вынесено из _on_battle_pressed(), чтобы debug-панель ниже

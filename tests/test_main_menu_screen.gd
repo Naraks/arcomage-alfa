@@ -32,9 +32,14 @@ func test_prepare_test_battle_settings_resets_run_state() -> void:
 
 
 func test_prepare_test_battle_settings_without_strategy_leaves_enemy_ai_unset() -> void:
-	# Обычная кнопка «Битва» — без явной стратегии enemy_data.ai_strategy
-	# остаётся null, дальше подстрахует DefaultAIStrategy-фоллбэк в
-	# MatchManager.setup_match() (ARC-078).
+	# _prepare_test_battle_settings() сам по себе, без переданной стратегии,
+	# оставляет enemy_data.ai_strategy равным null — дальше подстрахует
+	# DefaultAIStrategy-фоллбэк в MatchManager.setup_match() (ARC-078). С
+	# ARC-085 обычная кнопка «Битва» (_on_battle_pressed()) больше не зовёт
+	# этот метод без стратегии — она передаёт случайный обычный архетип
+	# (см. test_pick_random_regular_ai_strategy_returns_all_four_archetypes в
+	# tests/test_match_manager.gd) — но сам метод остаётся пригоден для
+	# явного null (используется debug-кнопками не отсюда).
 	var menu := MainMenuScript.new()
 	menu._prepare_test_battle_settings()
 

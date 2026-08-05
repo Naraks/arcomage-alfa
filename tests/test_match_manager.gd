@@ -833,3 +833,33 @@ func test_setup_match_resets_hands_from_previous_match() -> void:
 		MatchManager.player_hand.size(), 5, "Рука игрока должна начинаться с нуля, а не копиться"
 	)
 	assert_eq(MatchManager.enemy_hand.size(), 5, "Рука ИИ должна начинаться с нуля, а не копиться")
+
+
+# --- pick_random_regular_ai_strategy (ARC-085) ---
+
+
+func test_pick_random_regular_ai_strategy_returns_all_four_archetypes() -> void:
+	# Регрессия ARC-085 (issue #86): Быстрый бой (main_menu.gd::_on_battle_pressed())
+	# не передавал ai_strategy вовсе, и setup_match() молча подставлял только
+	# DefaultAIStrategy — случайный архетип никогда не встречался. Тест по
+	# аналогии с test_apply_node_difficulty_battle_assigns_random_strategy_from_all_four
+	# в tests/test_world_map_screen.gd, чей REGULAR_STRATEGY_SCRIPTS/рандомайзер
+	# теперь общий с этим методом.
+	var seen_types := {}
+
+	for i in range(200):
+		var strategy = MatchManager.pick_random_regular_ai_strategy()
+		assert_true(
+			(
+				strategy is DefaultAIStrategy
+				or strategy is AggressiveAIStrategy
+				or strategy is BuilderAIStrategy
+				or strategy is EconomistAIStrategy
+			),
+			"Должен возвращаться один из четырёх обычных архетипов"
+		)
+		seen_types[strategy.get_script()] = true
+
+	assert_true(
+		seen_types.size() > 1, "За 200 попыток должно встретиться больше одного типа стратегии"
+	)
