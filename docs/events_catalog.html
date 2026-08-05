@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Башни магов: Дуэль — каталог событий</title>
+  <style>
+    @font-face{font-family:Kurale;src:url('../fonts/Kurale-Regular.ttf') format('truetype');font-display:swap}
+    @font-face{font-family:Yeseva;src:url('../fonts/YesevaOne-Regular.ttf') format('truetype');font-display:swap}
+    :root{--bg:#0b0907;--paper:#17120d;--paper2:#21180f;--ink:#f4ead8;--muted:#b9a98f;--gold:#e8bd65;--line:#604a2d;--risk:#d78362;--safe:#83b393}
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;background:radial-gradient(circle at 50% -20%,#332313 0,#110d09 38rem,var(--bg) 70rem);color:var(--ink);font-family:Kurale,Georgia,serif;min-height:100vh}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;background-image:linear-gradient(90deg,transparent 49.7%,#dbb76408 50%,transparent 50.3%),linear-gradient(#ffffff05 1px,transparent 1px);background-size:180px 100%,100% 5px}
+    header{max-width:1440px;margin:auto;padding:56px 28px 26px;text-align:center}
+    .kicker{color:var(--gold);letter-spacing:.18em;text-transform:uppercase;font-size:.88rem}
+    h1{font-family:Yeseva,Georgia,serif;font-weight:400;font-size:clamp(2.25rem,6vw,5.2rem);line-height:1;margin:.18em 0;color:#f4d58b;text-shadow:0 3px 24px #000}
+    .lead{max-width:760px;margin:0 auto;color:var(--muted);font-size:clamp(1rem,2vw,1.22rem)}
+    .toolbar{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center;justify-content:center;padding:14px 24px;background:#0b0907e8;border-block:1px solid #6e542d80;backdrop-filter:blur(12px)}
+    .toolbar input{width:min(560px,70vw);background:#17120d;border:1px solid var(--line);border-radius:8px;color:var(--ink);font:inherit;padding:11px 14px;outline:none}.toolbar input:focus{border-color:var(--gold);box-shadow:0 0 0 3px #e8bd6522}
+    .count{white-space:nowrap;color:var(--gold)}
+    main{max-width:1440px;margin:auto;padding:28px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+    article{display:flex;flex-direction:column;min-width:0;background:linear-gradient(145deg,var(--paper2),var(--paper));border:1px solid #725630;border-radius:14px;overflow:hidden;box-shadow:0 18px 48px #0007;transition:transform .2s,border-color .2s}
+    article:hover{transform:translateY(-4px);border-color:#bd9251}
+    figure{position:relative;margin:0;aspect-ratio:16/9;background:#100d0a;overflow:hidden;border-bottom:1px solid #725630}
+    canvas{display:block;width:100%;height:100%}.index{position:absolute;top:12px;left:12px;min-width:34px;height:34px;display:grid;place-items:center;border:1px solid #f0c76c88;border-radius:50%;background:#0b0907bb;color:#f0c76c;font-family:Yeseva}
+    .body{display:flex;flex-direction:column;flex:1;padding:20px}
+    h2{font-family:Yeseva,Georgia,serif;font-weight:400;color:#f1ce83;font-size:1.55rem;line-height:1.12;margin:0 0 10px}
+    .description{color:#d7c9b2;font-size:1.02rem;line-height:1.5;margin:0 0 18px;min-height:4.5em}
+    .choices-title{margin-top:auto;color:#8f7c62;text-transform:uppercase;letter-spacing:.12em;font-size:.74rem;border-top:1px solid #5d472d;padding-top:14px}
+    ol{margin:8px 0 0;padding-left:1.3rem;color:#efe3cf}li{padding:4px 0 4px 5px;line-height:1.3}li::marker{color:var(--gold)}
+    .tag{display:inline-flex;align-items:center;gap:6px;margin-top:16px;padding:5px 9px;width:max-content;border-radius:99px;background:#0b090777;border:1px solid #6e542d;color:#bda989;font-size:.78rem}
+    footer{text-align:center;color:#82735e;padding:20px 28px 54px}.hidden{display:none}
+    @media(max-width:1050px){main{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:680px){header{padding-top:36px}.toolbar{padding-inline:12px}main{grid-template-columns:1fr;padding:16px;gap:18px}.description{min-height:0}.body{padding:18px}}
+    @media print{body{background:#fff;color:#111}.toolbar{display:none}main{grid-template-columns:repeat(2,1fr);padding:0}article{break-inside:avoid;background:#fff;color:#111;box-shadow:none}h1,h2,.description,ol{color:#111}figure{print-color-adjust:exact}.tag{color:#333}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="kicker">Башни магов: Дуэль · ARC-088</div>
+    <h1>События путешествия</h1>
+    <p class="lead">Полный каталог из 15 случайных встреч карты мира. Каждая история сопровождается собственной процедурной иллюстрацией и доступными игроку действиями.</p>
+  </header>
+  <div class="toolbar">
+    <input id="search" type="search" placeholder="Найти событие или действие…" aria-label="Поиск по событиям">
+    <span class="count" id="count">15 событий</span>
+  </div>
+  <main id="catalog"></main>
+  <footer>Источник данных: <code>data/events/*.tres</code> · Иллюстрации генерируются локально и не требуют внешних ресурсов.</footer>
+  <script>
+    const events=[
+      {title:'Заброшенный склад',description:'У дороги стоит полуразрушенный склад. Внутри поблёскивают сундуки, но прогнивший пол едва держится.',actions:['Обыскать склад','Не рисковать'],icon:'▦',kind:'руины'},
+      {title:'Древний алтарь',description:'Посреди руин стоит алтарь с двумя чашами: каменной и хрустальной. Руны требуют подношения.',actions:['Положить 10 золота в каменную чашу','Положить 7 золота в хрустальную чашу','Не трогать алтарь'],icon:'♢',kind:'магия'},
+      {title:'Звериный аукцион',description:'Кочевники продают боевых зверей. Рядом лежит дешёвое яйцо, происхождение которого никто не гарантирует.',actions:['Нанять орка за 7 золота','Купить загадочное яйцо за 4 золота','Не участвовать'],icon:'◉',kind:'звери'},
+      {title:'Звериное логово',description:'В овраге прячется стая. Хорошая приманка позволит приручить её, но можно рискнуть и без подготовки.',actions:['Купить приманку за 6 золота','Подкрасться к логову','Обойти овраг'],icon:'♞',kind:'звери'},
+      {title:'Обрушившаяся шахта',description:'За завалом слышен звон кирок. Шахтёры обещают поделиться знаниями или найденным золотом.',actions:['Нанять рабочих за 6 золота','Искать обход самостоятельно','Не задерживаться'],icon:'⚒',kind:'камень'},
+      {title:'Игра костей',description:'В придорожной таверне идёт игра на золото. Хозяин предлагает обычную или высокую ставку.',actions:['Поставить 5 золота','Поставить 10 золота','Не играть'],icon:'⚄',kind:'риск'},
+      {title:'Караван гномов',description:'Гномий караван застрял на размытой дороге. Купцы предлагают чертежи или долю выручки за помощь.',actions:['Купить чертёж за 6 золота','Помочь вытолкнуть повозки','Продолжить путь'],icon:'▰',kind:'торговля'},
+      {title:'Загадка горгулий',description:'Каменные горгульи охраняют мост и требуют ответить на загадку или принести плату.',actions:['Ответить на загадку','Заплатить каменщикам 6 золота','Найти другой путь'],icon:'?',kind:'тайна'},
+      {title:'Учения у мастера',description:'Старый мастер предлагает безопасный полный курс или бесплатное, но суровое испытание.',actions:['Оплатить полный курс за 6 золота','Пройти испытание','Отказаться'],icon:'✦',kind:'обучение'},
+      {title:'Магическая буря',description:'Над дорогой бушует поток сырой магии. Его можно заземлить или попытаться направить в свои каналы.',actions:['Установить громоотводы за 7 золота','Войти в поток без защиты','Переждать бурю'],icon:'ϟ',kind:'магия'},
+      {title:'Лунный колодец',description:'Вода в старом колодце отражает не небо, а возможное будущее. На бортике вырезаны руны подношения.',actions:['Бросить 7 золота в воду','Купить руну за 3 золота','Не смотреть в будущее'],icon:'☾',kind:'магия'},
+      {title:'Разорённая мастерская',description:'В мастерской осадных инженеров уцелели инструменты и несколько незаконченных механизмов.',actions:['Восстановить катапульту за 8 золота','Порыться среди обломков','Оставить руины'],icon:'⚙',kind:'механизмы'},
+      {title:'Рунный каменщик',description:'Мастер высекания рун предлагает укрепить основание Башни или продать готовую каменную плиту.',actions:['Заказать укрепление за 8 золота','Купить плиту за 2 золота','Отказаться'],icon:'⌘',kind:'камень'},
+      {title:'Карточный шулер',description:'У костра сидит шулер с тремя запечатанными картами. За шесть монет он разрешит вытянуть одну.',actions:['Заплатить 6 золота и вытянуть карту','Не играть'],icon:'♠',kind:'карты'},
+      {title:'Раненый путник',description:'У дороги лежит раненый рыцарь. Ему нужны припасы, чтобы снова встать на ноги.',actions:['Купить припасы за 3 золота','Показать дорогу к ближайшему поселению'],icon:'♙',kind:'путники'}
+    ];
+    const catalog=document.querySelector('#catalog');
+    function card(event,index){const article=document.createElement('article');article.dataset.search=(event.title+' '+event.description+' '+event.actions.join(' ')+' '+event.kind).toLowerCase();article.innerHTML=`<figure><canvas width="720" height="405" aria-label="Иллюстрация: ${event.title}"></canvas><span class="index">${String(index+1).padStart(2,'0')}</span></figure><div class="body"><h2>${event.title}</h2><p class="description">${event.description}</p><div class="choices-title">Варианты действий</div><ol>${event.actions.map(x=>`<li>${x}</li>`).join('')}</ol><span class="tag">✧ ${event.kind}</span></div>`;catalog.append(article);draw(article.querySelector('canvas'),event,index)}
+    function hash(text){let h=2166136261;for(const c of text){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+    function draw(canvas,event,index){const c=canvas.getContext('2d'),w=canvas.width,h=canvas.height,seed=hash(event.title),hue=(seed%360);const g=c.createLinearGradient(0,0,0,h);g.addColorStop(0,`hsl(${hue} 36% 24%)`);g.addColorStop(.62,`hsl(${(hue+24)%360} 42% 10%)`);g.addColorStop(1,'#080706');c.fillStyle=g;c.fillRect(0,0,w,h);
+      c.globalAlpha=.72;c.fillStyle='#efd185';c.beginPath();c.arc(w*.76,h*.24,36,0,Math.PI*2);c.fill();c.globalAlpha=1;
+      c.fillStyle='#0a0807';c.beginPath();c.moveTo(0,h*.74);for(let x=0;x<=w;x+=60)c.lineTo(x,h*(.68+((seed+x*13)%45)/500));c.lineTo(w,h);c.lineTo(0,h);c.fill();
+      tower(c,w*.15,h*.72,42,150);tower(c,w*.86,h*.7,34,112);c.fillStyle='#6d4b2b99';c.beginPath();c.moveTo(w*.44,h);c.lineTo(w*.59,h);c.lineTo(w*.54,h*.69);c.lineTo(w*.5,h*.69);c.fill();
+      c.font='128px Georgia';c.textAlign='center';c.textBaseline='middle';c.fillStyle='#f4cf78';c.shadowColor='#e8a93f';c.shadowBlur=26;c.fillText(event.icon,w*.5,h*.45);c.shadowBlur=0;
+      for(let i=0;i<18;i++){const x=(seed+i*137)%w,y=(seed+i*83)%(h*.68);c.fillStyle=`hsla(${(hue+i*9)%360} 80% 72% / ${.25+(i%4)*.1})`;c.beginPath();c.arc(x,y,2+i%3,0,Math.PI*2);c.fill()}
+      const vignette=c.createRadialGradient(w/2,h/2,80,w/2,h/2,w*.65);vignette.addColorStop(.4,'transparent');vignette.addColorStop(1,'#000b');c.fillStyle=vignette;c.fillRect(0,0,w,h);c.strokeStyle='#d7ae5d88';c.lineWidth=3;c.strokeRect(2,2,w-4,h-4)}
+    function tower(c,x,y,w,h){c.fillStyle='#090706';c.fillRect(x-w/2,y-h,w,h);c.beginPath();c.moveTo(x-w*.8,y-h);c.lineTo(x,y-h-w*.65);c.lineTo(x+w*.8,y-h);c.fill();c.fillStyle='#e59e35bb';c.fillRect(x-4,y-h*.58,8,18)}
+    events.forEach(card);const search=document.querySelector('#search'),count=document.querySelector('#count');search.addEventListener('input',()=>{const q=search.value.trim().toLowerCase();let visible=0;document.querySelectorAll('article').forEach(el=>{const show=!q||el.dataset.search.includes(q);el.classList.toggle('hidden',!show);visible+=show?1:0});count.textContent=`${visible} из ${events.length}`});
+  </script>
+</body>
+</html>
