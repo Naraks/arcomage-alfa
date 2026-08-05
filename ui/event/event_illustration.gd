@@ -20,7 +20,7 @@ func _ready() -> void:
 
 func _draw() -> void:
 	var bounds := Rect2(Vector2.ZERO, size)
-	var seed_value := abs(_event_title.hash())
+	var seed_value: int = absi(_event_title.hash())
 	var hue := float(seed_value % 1000) / 1000.0
 	var sky_top := Color.from_hsv(hue, 0.42, 0.22)
 	var sky_bottom := Color.from_hsv(fmod(hue + 0.08, 1.0), 0.48, 0.08)
