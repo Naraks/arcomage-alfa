@@ -9,6 +9,10 @@ const MapNodeData = preload("res://data/resources/map_node_data.gd")
 ## пределы экрана. Теперь высота колонки жёстко ограничена MAX_VISUAL_BLOCKS.
 const MAX_VISUAL_BLOCKS := 20
 
+## ARC-089: временный placeholder — card_hover_rustle.wav используется пока
+## нет отдельного файла card_denied.wav. Заменить на правильный ассет.
+const CARD_DENIED_SOUND = preload("res://audio/sfx/card_hover_rustle.wav")
+
 @export var card_scene: PackedScene = preload("res://entities/card/card.tscn")
 
 var e_tower_visuals: VBoxContainer
@@ -416,6 +420,7 @@ func _on_card_clicked(card_node: Node) -> void:
 	# Проверка ресурсов
 	if not MatchManager.can_afford(card_data, MatchManager.player_data):
 		print("[DEBUG] Not enough resources!")
+		AudioManager.play_sfx(CARD_DENIED_SOUND, -3.0)
 		var tween = create_tween()
 		var original_pos = card_node.position
 		tween.tween_property(card_node, "position", original_pos + Vector2(10, 0), 0.05)
