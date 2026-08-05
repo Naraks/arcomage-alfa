@@ -39,7 +39,7 @@ func _ready() -> void:
 func _draw() -> void:
 	var bounds := Rect2(Vector2.ZERO, size)
 	if _art_texture != null:
-		_draw_art_cover(bounds, _art_texture)
+		_draw_art_layered(bounds, _art_texture)
 		draw_rect(bounds, Color(0.82, 0.62, 0.28, 0.74), false, 2.0)
 		return
 
@@ -108,6 +108,32 @@ func _draw_art_cover(bounds: Rect2, texture: Texture2D) -> void:
 		source_rect.size.y = texture_size.x / bounds_aspect
 		source_rect.position.y = (texture_size.y - source_rect.size.y) / 2.0
 	draw_texture_rect_region(texture, bounds, source_rect)
+
+
+func _draw_art_layered(bounds: Rect2, texture: Texture2D) -> void:
+	_draw_art_cover(bounds, texture)
+	draw_rect(bounds, Color(0.015, 0.012, 0.02, 0.68))
+
+	var art_rect := _contain_rect(bounds, texture.get_size())
+	if art_rect.size.x <= 0.0 or art_rect.size.y <= 0.0:
+		return
+	var shadow_rect := art_rect.grow(6.0)
+	draw_rect(shadow_rect, Color(0.0, 0.0, 0.0, 0.48))
+	draw_texture_rect(texture, art_rect, false)
+	draw_rect(art_rect, Color(0.82, 0.62, 0.28, 0.82), false, 2.0)
+
+
+func _contain_rect(bounds: Rect2, texture_size: Vector2) -> Rect2:
+	if (
+		texture_size.x <= 0.0
+		or texture_size.y <= 0.0
+		or bounds.size.x <= 0.0
+		or bounds.size.y <= 0.0
+	):
+		return Rect2()
+	var scale_factor := minf(bounds.size.x / texture_size.x, bounds.size.y / texture_size.y)
+	var render_size := texture_size * scale_factor
+	return Rect2(bounds.position + (bounds.size - render_size) / 2.0, render_size)
 
 
 func _draw_tower(base: Vector2, tower_height: float) -> void:

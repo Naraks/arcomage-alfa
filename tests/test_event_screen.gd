@@ -162,6 +162,17 @@ func test_event_illustration_uses_art_when_available_and_fallback_otherwise() ->
 	illustration.free()
 
 
+func test_event_illustration_contains_wide_art_without_cropping() -> void:
+	var illustration = EventIllustrationScript.new()
+
+	assert_eq(
+		illustration._contain_rect(Rect2(0, 0, 400, 400), Vector2(1600, 900)),
+		Rect2(0, 87.5, 400, 225)
+	)
+
+	illustration.free()
+
+
 func test_event_draw_pile_has_no_repeats_before_exhaustion() -> void:
 	var screen = EventScreenScript.new()
 	var map := WorldMapData.new()
