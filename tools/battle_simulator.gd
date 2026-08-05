@@ -145,6 +145,11 @@ func _run_one_game(
 	var p_b := PlayerData.new()
 	p_a.ai_strategy = load(STRATEGY_PATHS[strat_a_name]).new()
 	p_b.ai_strategy = load(STRATEGY_PATHS[strat_b_name]).new()
+	# Две детерминированные колоды пары. Во втором leg они меняются сторонами
+	# вместе со стартером: иначе одинаковый seed сохранял скрытое преимущество
+	# конкретной раздачи за A или B и pair был зеркальным только по первому ходу.
+	var pair_deck_a := _build_full_card_pool()
+	var pair_deck_b := _build_full_card_pool()
 
 	_game_card_plays = []
 	_current_winner_side = ""
@@ -163,6 +168,13 @@ func _run_one_game(
 	# Пустой run_deck использует симметричный полный пул ARC-095 для обеих сторон.
 	# false отключает одностороннюю прогрессию; 0/1 задаёт стартера парного leg.
 	MatchManager.setup_match(p_a, p_b, [], false, 0 if starting_side == "a" else 1, false)
+	MatchManager.deck = (pair_deck_a if starting_side == "a" else pair_deck_b).duplicate()
+	MatchManager.enemy_deck = (pair_deck_b if starting_side == "a" else pair_deck_a).duplicate()
+	MatchManager.player_hand = []
+	MatchManager.enemy_hand = []
+	for i in range(5):
+		MatchManager.draw_card(MatchManager.player_data)
+		MatchManager.draw_card(MatchManager.enemy_data)
 
 	var turns := 0
 	while MatchManager.current_state != MatchManager.State.END_MATCH and turns < MAX_TURNS_PER_GAME:
