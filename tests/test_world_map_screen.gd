@@ -149,6 +149,52 @@ func test_can_enter_node_allows_only_reachable_uncompleted_nodes() -> void:
 	screen.free()
 
 
+func test_horizontal_layout_centers_route_on_wide_viewport() -> void:
+	var left := _make_node(MapNodeData.NodeType.BATTLE)
+	left.position = Vector2(160, 100)
+	var right := _make_node(MapNodeData.NodeType.EVENT)
+	right.position = Vector2(640, 100)
+	var map := WorldMapData.new()
+	map.map_nodes = [left, right]
+	var screen = WorldMapScreenScript.new()
+	screen.map_data = map
+
+	var layout: Vector2 = screen._calculate_horizontal_layout(1280.0)
+	var visual_center := (
+		(
+			left.position.x
+			+ layout.x
+			+ right.position.x
+			+ layout.x
+			+ WorldMapScreenScript.NODE_SIZE.x
+		)
+		/ 2.0
+	)
+
+	assert_eq(layout.y, 1280.0)
+	assert_almost_eq(visual_center, 640.0, 0.01, "Маршрут должен быть по центру широкого экрана")
+
+	screen.free()
+
+
+func test_horizontal_layout_keeps_padding_and_scroll_on_narrow_viewport() -> void:
+	var left := _make_node(MapNodeData.NodeType.BATTLE)
+	left.position = Vector2(160, 100)
+	var right := _make_node(MapNodeData.NodeType.EVENT)
+	right.position = Vector2(640, 100)
+	var map := WorldMapData.new()
+	map.map_nodes = [left, right]
+	var screen = WorldMapScreenScript.new()
+	screen.map_data = map
+
+	var layout: Vector2 = screen._calculate_horizontal_layout(360.0)
+
+	assert_true(layout.y > 360.0, "Широкий маршрут должен включать горизонтальную прокрутку")
+	assert_almost_eq(left.position.x + layout.x, 32.0, 0.01, "Слева сохраняется безопасное поле")
+
+	screen.free()
+
+
 # --- _apply_node_difficulty (ARC-017: усиленный противник на элите/боссе) ---
 
 

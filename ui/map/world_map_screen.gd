@@ -26,6 +26,7 @@ const NODE_PRESENTATION := {
 	{"icon": "♜", "title": "Босс", "preview": "Финальное испытание этого маршрута."},
 }
 const NODE_SIZE := Vector2(132, 62)
+const MAP_SIDE_PADDING := 32.0
 
 ## ARC-017: "выше стартовые HP/генераторы, чуть агрессивнее" (design doc,
 ## раздел 6) для элиты/босса — конкретные числа нигде не заданы, взяты как
@@ -90,6 +91,9 @@ const FLOOR_GENERATOR_INTERVAL := 3
 
 @export var map_data: Resource
 
+var _map_offset_x := 0.0
+
+@onready var _scroll_container: ScrollContainer = $ScrollContainer
 @onready var _map_content: Control = $ScrollContainer/MapContent
 @onready var _hud_label: Label = $Header/Hud
 @onready var _preview_label: Label = $Preview
@@ -125,7 +129,10 @@ func _generate_map_ui() -> void:
 	for node in map_data.map_nodes:
 		for connected in node.connected_nodes:
 			var line = Line2D.new()
-			line.points = [node.position + NODE_SIZE / 2.0, connected.position + NODE_SIZE / 2.0]
+			line.points = [
+				_map_position(node) + NODE_SIZE / 2.0,
+				_map_position(connected) + NODE_SIZE / 2.0,
+			]
 			line.width = 4
 			line.default_color = Color(0.55, 0.45, 0.28, 0.8)
 			_map_content.add_child(line)
@@ -140,7 +147,7 @@ func _generate_map_ui() -> void:
 		var state := _node_state(node, available_nodes)
 		button.text = _node_label(node, state)
 		button.tooltip_text = _node_preview(node, state)
-		button.position = node.position
+		button.position = _map_position(node)
 		button.custom_minimum_size = NODE_SIZE
 
 		# LOCKED остаётся кликабельным только для понятной обратной связи;
@@ -159,12 +166,35 @@ func _generate_map_ui() -> void:
 ## поэтому ScrollContainer должен знать реальный размер контента заранее —
 ## иначе он не покажет скроллбар и обрежет карту по размеру экрана.
 func _fit_map_content_size() -> void:
-	var max_x := 0.0
 	var max_y := 0.0
 	for node in map_data.map_nodes:
-		max_x = max(max_x, node.position.x)
 		max_y = max(max_y, node.position.y)
-	_map_content.custom_minimum_size = Vector2(max_x + 220, max_y + 170)
+	var horizontal_layout := _calculate_horizontal_layout(_scroll_container.size.x)
+	_map_offset_x = horizontal_layout.x
+	_map_content.custom_minimum_size = Vector2(horizontal_layout.y, max_y + 170)
+
+
+## Генератор хранит координаты в своей фиксированной сетке. На широком
+## экране эта сетка раньше оставалась у левого края ScrollContainer. Здесь
+## вычисляется единый сдвиг для всех узлов и линий: маршрут центрируется,
+## если помещается, либо получает безопасные поля и горизонтальный скролл.
+## Vector2.x = offset, Vector2.y = итоговая ширина MapContent.
+func _calculate_horizontal_layout(viewport_width: float) -> Vector2:
+	if map_data == null or map_data.map_nodes.is_empty():
+		return Vector2(MAP_SIDE_PADDING, maxf(viewport_width, NODE_SIZE.x + MAP_SIDE_PADDING * 2.0))
+	var min_x := INF
+	var max_x := -INF
+	for node in map_data.map_nodes:
+		min_x = minf(min_x, node.position.x)
+		max_x = maxf(max_x, node.position.x)
+	var route_width := max_x - min_x + NODE_SIZE.x
+	var content_width := maxf(viewport_width, route_width + MAP_SIDE_PADDING * 2.0)
+	var offset := (content_width - route_width) / 2.0 - min_x
+	return Vector2(offset, content_width)
+
+
+func _map_position(node: Resource) -> Vector2:
+	return node.position + Vector2(_map_offset_x, 0)
 
 
 func _update_hud() -> void:
