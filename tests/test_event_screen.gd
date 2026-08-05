@@ -6,6 +6,7 @@ extends GutTest
 ## _return_to_map() (трогает get_tree()) здесь не тестируется.
 
 const EventScreenScript = preload("res://ui/event/event_screen.gd")
+const EventIllustrationScript = preload("res://ui/event/event_illustration.gd")
 const SUPPORTED_EVENT_EFFECT_TYPES := [
 	"gold",
 	"add_card",
@@ -148,6 +149,17 @@ func test_content_minimum_size_uses_available_viewport_height() -> void:
 	assert_eq(screen._content_minimum_size_for_viewport(Vector2(240, 200)), Vector2(280, 320))
 
 	screen.free()
+
+
+func test_event_illustration_uses_art_when_available_and_fallback_otherwise() -> void:
+	var illustration = EventIllustrationScript.new()
+
+	assert_eq(
+		illustration._art_path_for_title("Караван гномов"), "res://assets/events/dwarf_caravan.png"
+	)
+	assert_eq(illustration._art_path_for_title("Загадка горгулий"), "")
+
+	illustration.free()
 
 
 func test_event_draw_pile_has_no_repeats_before_exhaustion() -> void:

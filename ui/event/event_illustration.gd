@@ -1,15 +1,33 @@
 extends Control
-## UI 07/13 (#102): процедурная иллюстрация для текстовых событий.
-## Это намеренный качественный fallback до появления отдельного арта для
-## каждого из 15 EventData: палитра детерминирована заголовком, а силуэты
-## башен, дороги, луны и магических частиц поддерживают общий образ игры.
+## UI 07/13 (#102): иллюстрация текстового события. Для событий с готовым
+## PNG используется полноэкранный арт с центральным кадрированием; остальные
+## EventData сохраняют детерминированный процедурный fallback.
+
+const EVENT_ART_PATHS := {
+	"Заброшенный склад": "res://assets/events/abandoned_warehouse.png",
+	"Звериный аукцион": "res://assets/events/beast_auction.png",
+	"Звериное логово": "res://assets/events/beast_den.png",
+	"Караван гномов": "res://assets/events/dwarf_caravan.png",
+	"Магическая буря": "res://assets/events/magic_storm.png",
+	"Лунный колодец": "res://assets/events/moon_well.png",
+	"Карточный шулер": "res://assets/events/cardsharp.png",
+}
 
 var _event_title := "Событие"
+var _art_texture: Texture2D
 
 
 func configure(event_title: String) -> void:
 	_event_title = event_title
+	_art_texture = null
+	var art_path := _art_path_for_title(event_title)
+	if not art_path.is_empty() and ResourceLoader.exists(art_path):
+		_art_texture = load(art_path) as Texture2D
 	queue_redraw()
+
+
+func _art_path_for_title(event_title: String) -> String:
+	return String(EVENT_ART_PATHS.get(event_title, ""))
 
 
 func _ready() -> void:
@@ -20,6 +38,11 @@ func _ready() -> void:
 
 func _draw() -> void:
 	var bounds := Rect2(Vector2.ZERO, size)
+	if _art_texture != null:
+		_draw_art_cover(bounds, _art_texture)
+		draw_rect(bounds, Color(0.82, 0.62, 0.28, 0.74), false, 2.0)
+		return
+
 	var seed_value: int = absi(_event_title.hash())
 	var hue := float(seed_value % 1000) / 1000.0
 	var sky_top := Color.from_hsv(hue, 0.42, 0.22)
@@ -69,6 +92,22 @@ func _draw() -> void:
 		draw_circle(Vector2(x, y), radius, Color(0.96, 0.72, 0.28, 0.64))
 
 	draw_rect(bounds, Color(0.82, 0.62, 0.28, 0.74), false, 2.0)
+
+
+func _draw_art_cover(bounds: Rect2, texture: Texture2D) -> void:
+	var texture_size := texture.get_size()
+	if texture_size.x <= 0.0 or texture_size.y <= 0.0 or bounds.size.y <= 0.0:
+		return
+	var source_rect := Rect2(Vector2.ZERO, texture_size)
+	var texture_aspect := texture_size.x / texture_size.y
+	var bounds_aspect := bounds.size.x / bounds.size.y
+	if texture_aspect > bounds_aspect:
+		source_rect.size.x = texture_size.y * bounds_aspect
+		source_rect.position.x = (texture_size.x - source_rect.size.x) / 2.0
+	else:
+		source_rect.size.y = texture_size.x / bounds_aspect
+		source_rect.position.y = (texture_size.y - source_rect.size.y) / 2.0
+	draw_texture_rect_region(texture, bounds, source_rect)
 
 
 func _draw_tower(base: Vector2, tower_height: float) -> void:
