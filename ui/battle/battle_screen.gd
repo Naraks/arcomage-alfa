@@ -9,9 +9,8 @@ const MapNodeData = preload("res://data/resources/map_node_data.gd")
 ## пределы экрана. Теперь высота колонки жёстко ограничена MAX_VISUAL_BLOCKS.
 const MAX_VISUAL_BLOCKS := 20
 
-## ARC-089: временный placeholder — card_hover_rustle.wav используется пока
-## нет отдельного файла card_denied.wav. Заменить на правильный ассет.
-const CARD_DENIED_SOUND = preload("res://audio/sfx/card_hover_rustle.wav")
+## ARC-089: короткий нисходящий тон при попытке разыграть недоступную карту.
+const CARD_DENIED_SOUND = preload("res://audio/sfx/card_denied.wav")
 
 @export var card_scene: PackedScene = preload("res://entities/card/card.tscn")
 
