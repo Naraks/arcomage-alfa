@@ -141,6 +141,15 @@ func test_layout_modes_cover_wide_four_by_three_and_portrait() -> void:
 	screen.free()
 
 
+func test_content_minimum_size_uses_available_viewport_height() -> void:
+	var screen = EventScreenScript.new()
+
+	assert_eq(screen._content_minimum_size_for_viewport(Vector2(1280, 720)), Vector2(1232, 688))
+	assert_eq(screen._content_minimum_size_for_viewport(Vector2(240, 200)), Vector2(280, 320))
+
+	screen.free()
+
+
 func test_event_draw_pile_has_no_repeats_before_exhaustion() -> void:
 	var screen = EventScreenScript.new()
 	var map := WorldMapData.new()

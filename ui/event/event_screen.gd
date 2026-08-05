@@ -53,6 +53,10 @@ func _layout_mode_for_size(viewport_size: Vector2) -> String:
 	return "wide" if viewport_size.x / viewport_size.y >= WIDE_LAYOUT_MIN_ASPECT else "stacked"
 
 
+func _content_minimum_size_for_viewport(viewport_size: Vector2) -> Vector2:
+	return Vector2(maxf(280.0, viewport_size.x - 48.0), maxf(320.0, viewport_size.y - 32.0))
+
+
 func _build_ui() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	var bg := ColorRect.new()
@@ -81,7 +85,8 @@ func _build_ui() -> void:
 		content = VBoxContainer.new()
 	content.add_theme_constant_override("separation", 20)
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	content.custom_minimum_size.x = maxf(280.0, get_viewport_rect().size.x - 48.0)
+	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	content.custom_minimum_size = _content_minimum_size_for_viewport(get_viewport_rect().size)
 	scroll.add_child(content)
 
 	content.add_child(_build_story_panel())
@@ -92,6 +97,7 @@ func _build_ui() -> void:
 func _build_story_panel() -> PanelContainer:
 	var panel := PanelContainer.new()
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	panel.size_flags_stretch_ratio = 0.9
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 12)
@@ -100,6 +106,7 @@ func _build_story_panel() -> PanelContainer:
 	var illustration = EventIllustrationScript.new()
 	illustration.configure(_event.event_title)
 	illustration.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	illustration.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	box.add_child(illustration)
 
 	var title := Label.new()
@@ -120,6 +127,7 @@ func _build_story_panel() -> PanelContainer:
 func _build_decision_panel() -> PanelContainer:
 	var panel := PanelContainer.new()
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	panel.size_flags_stretch_ratio = 1.1
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 12)
@@ -139,6 +147,7 @@ func _build_decision_panel() -> PanelContainer:
 
 	_options_list = VBoxContainer.new()
 	_options_list.add_theme_constant_override("separation", 10)
+	_options_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	box.add_child(_options_list)
 
 	_result_panel = VBoxContainer.new()
@@ -174,6 +183,7 @@ func _refresh_options() -> void:
 func _build_option_panel(option: Dictionary) -> PanelContainer:
 	var state := _option_state(option, MatchSettings.run_gold)
 	var panel := PanelContainer.new()
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 5)
 	panel.add_child(box)
@@ -181,6 +191,7 @@ func _build_option_panel(option: Dictionary) -> PanelContainer:
 	button.text = String(option.get("text", ""))
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	button.custom_minimum_size.y = 50
+	button.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	button.disabled = not state.available or _choice_resolved
 	button.tooltip_text = state.unavailable_reason
 	button.pressed.connect(_on_option_chosen.bind(option))
