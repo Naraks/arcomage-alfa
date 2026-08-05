@@ -5,7 +5,7 @@
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
 card_name = "Маг-ученик"
-description = "Увеличивает добычу самоцветов на 2."
+description = "Генератор Гемов +2, 1 урон башне врага."
 cost = 1
 type = 1
-effects = Array[Dictionary]([{"target": "self", "type": "mod_magic", "value": 2}])
+effects = Array[Dictionary]([{"target": "self", "type": "mod_magic", "value": 2}, {"target": "enemy", "type": "direct_damage", "value": 1}])

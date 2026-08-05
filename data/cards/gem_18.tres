@@ -5,8 +5,8 @@
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
 card_name = "Архимаг"
-description = "Генератор Гемов +7, сразу +5 Гемов."
+description = "Генератор Гемов +4, 6 урона башне врага."
 cost = 6
 type = 1
 rarity = 2
-effects = Array[Dictionary]([{"target": "self", "type": "mod_magic", "value": 7}, {"target": "self", "type": "gain_resource", "resource": "gems", "value": 5}])
+effects = Array[Dictionary]([{"target": "self", "type": "mod_magic", "value": 4}, {"target": "enemy", "type": "direct_damage", "value": 6}])
