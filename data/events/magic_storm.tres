@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EventData" format=3]
+[ext_resource type="Script" path="res://data/resources/event_data.gd" id="1_event"]
+[resource]
+script = ExtResource("1_event")
+event_title = "Магическая буря"
+event_description = "Над дорогой бушует поток сырой магии. Его можно заземлить или попытаться направить в свои каналы."
+options = Array[Dictionary]([{
+"text": "Установить громоотводы за 7 золота",
+"outcomes": [{"chance": 100, "result_text": "Пойманная энергия навсегда усиливает Магию забега.", "effects": [{"type": "gold", "value": -7}, {"type": "run_magic_bonus", "value": 1}]}]
+}, {
+"text": "Войти в поток без защиты",
+"outcomes": [{"chance": 55, "result_text": "Вы подчиняете бурю и усиливаете Магию.", "effects": [{"type": "run_magic_bonus", "value": 1}]}, {"chance": 45, "result_text": "Разряд уничтожает часть припасов.", "effects": [{"type": "gold", "value": -6}]}]
+}, {
+"text": "Переждать бурю",
+"outcomes": [{"chance": 100, "result_text": "Буря стихает, не причинив вреда.", "effects": []}]
+}])

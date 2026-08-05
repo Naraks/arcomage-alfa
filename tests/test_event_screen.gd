@@ -1,14 +1,23 @@
 extends GutTest
 ## Юнит-тесты EventScreen (ARC-014): выбор исхода по вероятности, худший
 ## денежный расход варианта, применение эффектов к MatchSettings, и проверка
-## структуры всех 5 .tres событий. Экземпляр создаётся через load().new() без
+## структуры всего пула .tres событий. Экземпляр создаётся через load().new() без
 ## добавления в дерево сцены, как в tests/test_shop_screen.gd —
 ## _return_to_map() (трогает get_tree()) здесь не тестируется.
 
 const EventScreenScript = preload("res://ui/event/event_screen.gd")
+const SUPPORTED_EVENT_EFFECT_TYPES := [
+	"gold",
+	"add_card",
+	"run_tower_bonus",
+	"run_quarry_bonus",
+	"run_magic_bonus",
+	"run_dungeon_bonus",
+]
 
 
 func before_each() -> void:
+	MatchSettings.world_map_data = null
 	MatchSettings.run_gold = 0
 	MatchSettings.run_deck = []
 	MatchSettings.run_tower_bonus = 0
@@ -66,7 +75,8 @@ func test_min_gold_delta_zero_when_no_gold_effects() -> void:
 func test_min_gold_delta_picks_worst_outcome() -> void:
 	var screen = EventScreenScript.new()
 	var option := {
-		"outcomes": [
+		"outcomes":
+		[
 			{"chance": 70, "effects": [{"type": "gold", "value": 15}]},
 			{"chance": 30, "effects": [{"type": "gold", "value": -5}]},
 		]
@@ -74,6 +84,40 @@ func test_min_gold_delta_picks_worst_outcome() -> void:
 
 	assert_eq(screen._min_gold_delta(option), -5)
 
+	screen.free()
+
+
+func test_option_label_marks_risk_without_revealing_outcome() -> void:
+	var screen = EventScreenScript.new()
+	var option := {
+		"text": "Испытать удачу",
+		"outcomes": [{"chance": 50}, {"chance": 50}],
+	}
+
+	var label: String = screen._option_label(option)
+
+	assert_true(label.contains("Риск"))
+	assert_true(label.contains("Испытать удачу"))
+	assert_false(label.contains("50"), "UI не должен раскрывать точные шансы/исходы")
+
+	screen.free()
+
+
+func test_event_draw_pile_has_no_repeats_before_exhaustion() -> void:
+	var screen = EventScreenScript.new()
+	var map := WorldMapData.new()
+	MatchSettings.world_map_data = map
+	var all_paths: Array[String] = screen._all_event_paths()
+	var drawn: Array[String] = []
+
+	for i in range(all_paths.size()):
+		var path := screen._pick_random_event_path()
+		assert_false(drawn.has(path), "Событие не должно повторяться до исчерпания shuffle bag")
+		drawn.append(path)
+
+	assert_eq(drawn.size(), all_paths.size())
+	assert_true(map.event_draw_pile.is_empty())
+	MatchSettings.world_map_data = null
 	screen.free()
 
 
@@ -115,15 +159,14 @@ func test_apply_effects_add_card_appends_to_run_deck() -> void:
 
 func test_apply_effects_run_bonuses() -> void:
 	var screen = EventScreenScript.new()
+	var effects: Array = [
+		{"type": "run_tower_bonus", "value": 3},
+		{"type": "run_quarry_bonus", "value": 1},
+		{"type": "run_magic_bonus", "value": 1},
+		{"type": "run_dungeon_bonus", "value": 1},
+	]
 
-	screen._apply_effects(
-		[
-			{"type": "run_tower_bonus", "value": 3},
-			{"type": "run_quarry_bonus", "value": 1},
-			{"type": "run_magic_bonus", "value": 1},
-			{"type": "run_dungeon_bonus", "value": 1},
-		]
-	)
+	screen._apply_effects(effects)
 
 	assert_eq(MatchSettings.run_tower_bonus, 3)
 	assert_eq(MatchSettings.run_quarry_bonus, 1)
@@ -137,23 +180,52 @@ func test_apply_effects_run_bonuses() -> void:
 
 
 func test_all_events_have_valid_structure() -> void:
-	for path in EventScreenScript.EVENT_PATHS:
+	var screen = EventScreenScript.new()
+	var paths: Array[String] = screen._all_event_paths()
+	assert_gte(paths.size(), 15, "ARC-088: пул должен содержать минимум 15 событий")
+	var titles := {}
+	for path in paths:
 		var event: EventData = load(path)
 
 		assert_true(event != null, "Событие должно загружаться: %s" % path)
 		assert_false(event.event_title.is_empty(), "Пустой заголовок: %s" % path)
 		assert_false(event.event_description.is_empty(), "Пустое описание: %s" % path)
+		assert_false(
+			titles.has(event.event_title), "Заголовок события должен быть уникален: %s" % path
+		)
+		titles[event.event_title] = true
 		assert_true(
 			event.options.size() >= 2 and event.options.size() <= 3,
 			"2-3 варианта выбора: %s" % path
 		)
+		var has_safe_exit := false
 
 		for option in event.options:
-			assert_false(String(option.get("text", "")).is_empty(), "Пустой текст варианта: %s" % path)
+			assert_false(
+				String(option.get("text", "")).is_empty(), "Пустой текст варианта: %s" % path
+			)
 			var outcomes: Array = option.get("outcomes", [])
 			assert_false(outcomes.is_empty(), "Вариант без исходов: %s" % path)
+			if outcomes.size() == 1 and outcomes[0].get("chance", 0) == 100:
+				has_safe_exit = outcomes[0].get("effects", []).is_empty() or has_safe_exit
 
 			var total_chance := 0
 			for outcome in outcomes:
 				total_chance += int(outcome.get("chance", 0))
+				assert_false(
+					String(outcome.get("result_text", "")).is_empty(), "Пустой результат: %s" % path
+				)
+				for effect in outcome.get("effects", []):
+					var effect_type: String = effect.get("type", "")
+					assert_true(
+						SUPPORTED_EVENT_EFFECT_TYPES.has(effect_type),
+						"Неизвестный эффект %s: %s" % [effect_type, path]
+					)
+					if effect_type == "add_card":
+						assert_true(
+							ResourceLoader.exists(effect.get("card_path", "")),
+							"Нет карты: %s" % path
+						)
 			assert_eq(total_chance, 100, "Сумма chance должна быть 100: %s" % path)
+		assert_true(has_safe_exit, "У события должен быть безопасный выход без расходов: %s" % path)
+	screen.free()

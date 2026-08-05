@@ -17,4 +17,6 @@ extends Resource
 ## run_deck), "run_tower_bonus"/"run_quarry_bonus"/"run_magic_bonus"/
 ## "run_dungeon_bonus" (value — дельта соответствующего поля MatchSettings,
 ## тот же механизм, что у узла «Отдых», ARC-013).
+## ARC-088: сами ресурсы автоматически обнаруживаются в data/events, а
+## WorldMapData.event_draw_pile выдаёт их без повторов до исчерпания пула.
 @export var options: Array[Dictionary] = []

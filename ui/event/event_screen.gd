@@ -1,17 +1,11 @@
 extends Control
 ## ARC-014: узел «Событие» (docs/game_design_doc.md 7.1). Случайное EventData
-## из EVENT_PATHS показывает текст + 2-3 варианта; выбор разыгрывает исход
+## из data/events показывает текст + 2-3 варианта; выбор разыгрывает исход
 ## (возможен риск — несколько outcomes с вероятностями), применяет эффекты к
 ## MatchSettings и показывает результат перед возвратом на карту. Разметка
 ## строится кодом в _ready(), как и в ui/shop/shop_screen.gd.
 
-const EVENT_PATHS := [
-	"res://data/events/abandoned_warehouse.tres",
-	"res://data/events/wandering_merchant.tres",
-	"res://data/events/ancient_altar.tres",
-	"res://data/events/hermit_training.tres",
-	"res://data/events/wounded_traveler.tres",
-]
+const EVENTS_DIRECTORY := "res://data/events"
 
 var _event: EventData
 var _gold_label: Label
@@ -26,7 +20,30 @@ func _ready() -> void:
 
 
 func _pick_random_event_path() -> String:
-	return EVENT_PATHS[randi() % EVENT_PATHS.size()]
+	var paths := _all_event_paths()
+	if paths.is_empty():
+		return ""
+	var map_data = MatchSettings.world_map_data
+	if map_data == null:
+		return paths[randi() % paths.size()]
+	if map_data.event_draw_pile.is_empty():
+		map_data.event_draw_pile.assign(paths)
+		map_data.event_draw_pile.shuffle()
+	var path: String = map_data.event_draw_pile.pop_back()
+	# Фиксируем выбор немедленно: перезагрузка страницы не должна позволять
+	# перебрасывать событие или возвращать его обратно в очередь.
+	if is_inside_tree():
+		RunSaveManager.save_run()
+	return path
+
+
+func _all_event_paths() -> Array[String]:
+	var paths: Array[String] = []
+	for file_name in DirAccess.get_files_at(EVENTS_DIRECTORY):
+		if file_name.ends_with(".tres"):
+			paths.append("%s/%s" % [EVENTS_DIRECTORY, file_name])
+	paths.sort()
+	return paths
 
 
 func _build_ui() -> void:
@@ -99,10 +116,16 @@ func _refresh_options() -> void:
 
 	for option in _event.options:
 		var button := Button.new()
-		button.text = option.get("text", "")
+		button.text = _option_label(option)
 		button.disabled = MatchSettings.run_gold + _min_gold_delta(option) < 0
 		button.pressed.connect(_on_option_chosen.bind(option))
 		_options_list.add_child(button)
+
+
+func _option_label(option: Dictionary) -> String:
+	var outcomes: Array = option.get("outcomes", [])
+	var marker := "⚠ Риск" if outcomes.size() > 1 else "✓ Гарантированно"
+	return "%s · %s" % [marker, option.get("text", "")]
 
 
 ## Худший возможный расход золота среди всех outcomes варианта — на нём

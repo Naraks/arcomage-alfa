@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EventData" format=3]
+[ext_resource type="Script" path="res://data/resources/event_data.gd" id="1_event"]
+[resource]
+script = ExtResource("1_event")
+event_title = "Обрушившаяся шахта"
+event_description = "За завалом слышен звон кирок. Шахтёры обещают поделиться знаниями или найденным золотом."
+options = Array[Dictionary]([{
+"text": "Нанять рабочих за 6 золота",
+"outcomes": [{"chance": 100, "result_text": "Проход расчищен, а шахтёры улучшают ваш Карьер.", "effects": [{"type": "gold", "value": -6}, {"type": "run_quarry_bonus", "value": 1}]}]
+}, {
+"text": "Искать обход самостоятельно",
+"outcomes": [{"chance": 65, "result_text": "В боковом тоннеле обнаружен тайник.", "effects": [{"type": "gold", "value": 10}]}, {"chance": 35, "result_text": "Новый обвал повреждает часть снаряжения.", "effects": [{"type": "gold", "value": -5}]}]
+}, {
+"text": "Не задерживаться",
+"outcomes": [{"chance": 100, "result_text": "Вы оставляете шахту позади.", "effects": []}]
+}])

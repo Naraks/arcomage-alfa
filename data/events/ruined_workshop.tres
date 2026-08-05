@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EventData" format=3]
+[ext_resource type="Script" path="res://data/resources/event_data.gd" id="1_event"]
+[resource]
+script = ExtResource("1_event")
+event_title = "Разорённая мастерская"
+event_description = "В мастерской осадных инженеров уцелели инструменты и несколько незаконченных механизмов."
+options = Array[Dictionary]([{
+"text": "Восстановить катапульту за 8 золота",
+"outcomes": [{"chance": 100, "result_text": "Инженеры заканчивают сборку «Катапульты».", "effects": [{"type": "gold", "value": -8}, {"type": "add_card", "card_path": "res://data/cards/brick_17.tres"}]}]
+}, {
+"text": "Порыться среди обломков",
+"outcomes": [{"chance": 65, "result_text": "Вы находите целый набор для ремонта.", "effects": [{"type": "add_card", "card_path": "res://data/cards/brick_15.tres"}]}, {"chance": 35, "result_text": "Неустойчивая крыша обрушивается на припасы.", "effects": [{"type": "gold", "value": -5}]}]
+}, {
+"text": "Оставить руины",
+"outcomes": [{"chance": 100, "result_text": "Вы решаете не испытывать удачу.", "effects": []}]
+}])

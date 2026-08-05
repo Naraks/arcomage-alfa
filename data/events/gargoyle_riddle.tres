@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EventData" format=3]
+[ext_resource type="Script" path="res://data/resources/event_data.gd" id="1_event"]
+[resource]
+script = ExtResource("1_event")
+event_title = "Загадка горгулий"
+event_description = "Каменные горгульи охраняют мост и требуют ответить на загадку или принести плату."
+options = Array[Dictionary]([{
+"text": "Ответить на загадку",
+"outcomes": [{"chance": 60, "result_text": "Горгульи смеются и открывают сундук с золотом.", "effects": [{"type": "gold", "value": 12}]}, {"chance": 40, "result_text": "Ответ неверен, и горгульи забирают штраф.", "effects": [{"type": "gold", "value": -4}]}]
+}, {
+"text": "Заплатить каменщикам 6 золота",
+"outcomes": [{"chance": 100, "result_text": "Каменщики укрепляют вашу Башню и отвлекают стражей.", "effects": [{"type": "gold", "value": -6}, {"type": "run_tower_bonus", "value": 2}]}]
+}, {
+"text": "Найти другой путь",
+"outcomes": [{"chance": 100, "result_text": "Обход занимает время, но сохраняет припасы.", "effects": []}]
+}])

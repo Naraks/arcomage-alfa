@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EventData" format=3]
+[ext_resource type="Script" path="res://data/resources/event_data.gd" id="1_event"]
+[resource]
+script = ExtResource("1_event")
+event_title = "Звериный аукцион"
+event_description = "Кочевники продают боевых зверей. Рядом лежит дешёвое яйцо, происхождение которого никто не гарантирует."
+options = Array[Dictionary]([{
+"text": "Нанять орка за 7 золота",
+"outcomes": [{"chance": 100, "result_text": "Орк принимает плату и вступает в ваш отряд.", "effects": [{"type": "gold", "value": -7}, {"type": "add_card", "card_path": "res://data/cards/beast_15.tres"}]}]
+}, {
+"text": "Купить загадочное яйцо за 4 золота",
+"outcomes": [{"chance": 50, "result_text": "Из яйца появляется молодой зверь вместе со Звероловом.", "effects": [{"type": "gold", "value": -4}, {"type": "add_card", "card_path": "res://data/cards/beast_1.tres"}]}, {"chance": 50, "result_text": "Из яйца вылупляется бойкий гоблин.", "effects": [{"type": "gold", "value": -4}, {"type": "add_card", "card_path": "res://data/cards/beast_3.tres"}]}]
+}, {
+"text": "Не участвовать",
+"outcomes": [{"chance": 100, "result_text": "Вы покидаете шумный аукцион.", "effects": []}]
+}])

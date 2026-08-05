@@ -4,20 +4,12 @@
 
 [resource]
 script = ExtResource("1_event")
-event_title = "Странствующий торговец"
-event_description = "На перекрёстке вам встречается торговец с потрёпанной телегой карт. \"Всего 10 золота — и одна из них твоя\", — говорит он."
+event_title = "Карточный шулер"
+event_description = "У костра сидит шулер с тремя запечатанными картами. За шесть монет он разрешит вытянуть одну."
 options = Array[Dictionary]([{
-"text": "Купить карту за 10 золота",
-"outcomes": [{
-"chance": 100,
-"result_text": "Торговец протягивает вам карту «Маг-новичок».",
-"effects": [{"type": "gold", "value": -10}, {"type": "add_card", "card_path": "res://data/cards/gem_1.tres"}]
-}]
+"text": "Заплатить 6 золота и вытянуть карту",
+"outcomes": [{"chance": 40, "result_text": "Вам достаётся «Огненный шар».", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/gem_4.tres"}]}, {"chance": 30, "result_text": "Вам достаётся «Катапульта».", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/brick_17.tres"}]}, {"chance": 30, "result_text": "Вам достаётся «Волчья стая».", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/beast_8.tres"}]}]
 }, {
-"text": "Отказаться",
-"outcomes": [{
-"chance": 100,
-"result_text": "Вы вежливо отказываетесь и идёте дальше.",
-"effects": []
-}]
+"text": "Не играть",
+"outcomes": [{"chance": 100, "result_text": "Вы не доверяете улыбке шулера и уходите.", "effects": []}]
 }])

@@ -5,23 +5,14 @@
 [resource]
 script = ExtResource("1_event")
 event_title = "Учения у мастера"
-event_description = "Отшельник у дороги предлагает поделиться секретами ремесла — правда, без каких-либо гарантий."
+event_description = "Старый мастер предлагает безопасный полный курс или бесплатное, но суровое испытание."
 options = Array[Dictionary]([{
-"text": "Тренироваться",
-"outcomes": [{
-"chance": 60,
-"result_text": "Мастер доволен вашими успехами — Карьер в каждом бою будет работать лучше.",
-"effects": [{"type": "run_quarry_bonus", "value": 1}]
+"text": "Оплатить полный курс за 6 золота",
+"outcomes": [{"chance": 100, "result_text": "Вы осваиваете новые способы разработки камня.", "effects": [{"type": "gold", "value": -6}, {"type": "run_quarry_bonus", "value": 1}]}]
 }, {
-"chance": 40,
-"result_text": "Урок не задался — время потрачено впустую.",
-"effects": []
-}]
+"text": "Пройти испытание",
+"outcomes": [{"chance": 60, "result_text": "Мастер признаёт ваш талант и раскрывает секрет Карьера.", "effects": [{"type": "run_quarry_bonus", "value": 1}]}, {"chance": 40, "result_text": "Испытание провалено; на восстановление снаряжения уходит золото.", "effects": [{"type": "gold", "value": -5}]}]
 }, {
 "text": "Отказаться",
-"outcomes": [{
-"chance": 100,
-"result_text": "Вы благодарите отшельника и идёте дальше.",
-"effects": []
-}]
+"outcomes": [{"chance": 100, "result_text": "Вы благодарите мастера и продолжаете путь.", "effects": []}]
 }])

@@ -5,23 +5,11 @@
 [resource]
 script = ExtResource("1_event")
 event_title = "Заброшенный склад"
-event_description = "Вы наткнулись на полуразрушенный склад у обочины дороги. Судя по всему, его никто не проверял уже давно."
+event_description = "У дороги стоит полуразрушенный склад. Внутри поблёскивают сундуки, но прогнивший пол едва держится."
 options = Array[Dictionary]([{
 "text": "Обыскать склад",
-"outcomes": [{
-"chance": 70,
-"result_text": "Под досками нашлось немного золота.",
-"effects": [{"type": "gold", "value": 15}]
+"outcomes": [{"chance": 70, "result_text": "Под досками нашёлся кошель с монетами.", "effects": [{"type": "gold", "value": 12}]}, {"chance": 30, "result_text": "Пол рухнул, и часть припасов пришлось бросить.", "effects": [{"type": "gold", "value": -6}]}]
 }, {
-"chance": 30,
-"result_text": "Пол оказался трухлявым — вы провалились и потеряли часть припасов.",
-"effects": [{"type": "gold", "value": -5}]
-}]
-}, {
-"text": "Не рисковать и пройти мимо",
-"outcomes": [{
-"chance": 100,
-"result_text": "Вы решаете не тратить время и продолжаете путь.",
-"effects": []
-}]
+"text": "Не рисковать",
+"outcomes": [{"chance": 100, "result_text": "Вы оставляете ненадёжное здание позади.", "effects": []}]
 }])

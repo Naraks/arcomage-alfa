@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EventData" format=3]
+[ext_resource type="Script" path="res://data/resources/event_data.gd" id="1_event"]
+[resource]
+script = ExtResource("1_event")
+event_title = "Рунный каменщик"
+event_description = "Мастер высекания рун предлагает укрепить основание Башни или продать готовую каменную плиту."
+options = Array[Dictionary]([{
+"text": "Заказать укрепление за 8 золота",
+"outcomes": [{"chance": 100, "result_text": "Рунная кладка усиливает Башню на весь забег.", "effects": [{"type": "gold", "value": -8}, {"type": "run_tower_bonus", "value": 3}]}]
+}, {
+"text": "Купить плиту за 2 золота",
+"outcomes": [{"chance": 100, "result_text": "Каменщик передаёт вам карту «Основание».", "effects": [{"type": "gold", "value": -2}, {"type": "add_card", "card_path": "res://data/cards/brick_13.tres"}]}]
+}, {
+"text": "Отказаться",
+"outcomes": [{"chance": 100, "result_text": "Вы оставляете мастера за работой.", "effects": []}]
+}])
