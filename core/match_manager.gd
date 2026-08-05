@@ -5,9 +5,10 @@ extends Node
 enum State { START_MATCH, PLAYER_TURN, PROCESS_CARD, AI_TURN, CHECK_WIN, END_MATCH }
 
 ## ARC-096 balance experiment: the previous target (100 from a 20-point start)
-## produced 0 tower-height wins across three large simulator runs. 65 is the
-## first tested target in the 25 / 8 / 65 package.
-const WIN_TOWER_HEIGHT = 65
+## produced 0 tower-height wins across three large simulator runs. ARC-096
+## tested 65; ARC-097 lowers the target to 55 after generator-income reduction
+## pushed tower-height victories back down to 3.2%.
+const WIN_TOWER_HEIGHT = 55
 const WIN_RESOURCE_AMOUNT = 300
 
 ## ARC-084 (gdlint class-definitions-order): все const этого файла собраны в

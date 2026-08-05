@@ -690,7 +690,7 @@ func test_player_data_uses_25_8_balance_package_defaults() -> void:
 	var live_defaults := PlayerData.new()
 	assert_eq(live_defaults.tower_hp, 25, "Пакет ARC-096: стартовая башня")
 	assert_eq(live_defaults.wall_hp, 8, "Пакет ARC-096: стартовая стена")
-	assert_eq(MatchManager.WIN_TOWER_HEIGHT, 65, "Пакет ARC-096: цель строительной победы")
+	assert_eq(MatchManager.WIN_TOWER_HEIGHT, 55, "Калибровка ARC-097: цель строительной победы")
 
 
 func test_setup_match_can_disable_all_player_progression_for_simulation() -> void:
