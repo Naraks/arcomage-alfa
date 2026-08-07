@@ -17,7 +17,11 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 config/name="Башни магов: Дуэль"
 run/main_scene="res://ui/main_menu.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
-config/icon="res://icon.svg"
+config/icon="res://art/branding/app_icon.png"
+boot_splash/image="res://art/branding/loading_splash.png"
+boot_splash/bg_color=Color(0.027, 0.025, 0.022, 1)
+boot_splash/fullsize=true
+boot_splash/use_filter=true
 
 [autoload]
 

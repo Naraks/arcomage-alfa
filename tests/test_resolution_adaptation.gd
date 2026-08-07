@@ -31,6 +31,7 @@ const SCREEN_SCENES := [
 	"res://ui/settings/settings_screen.tscn",
 	"res://ui/run_summary/run_summary_screen.tscn",
 ]
+const BASE_THEME := preload("res://ui/theme/base_theme.tres")
 
 # Рекомендация ARC-044: логический тач-таргет не меньше 44x44 пикселя.
 const MIN_TOUCH_TARGET := 44.0
@@ -64,8 +65,28 @@ func test_global_theme_is_registered() -> void:
 	assert_true(ResourceLoader.exists(theme_path), "тема должна реально существовать по этому пути")
 
 
+func test_custom_branding_assets_replace_godot_defaults() -> void:
+	var icon_path: String = ProjectSettings.get_setting("application/config/icon")
+	var splash_path: String = ProjectSettings.get_setting("application/boot_splash/image")
+
+	assert_eq(icon_path, "res://art/branding/app_icon.png")
+	assert_true(ResourceLoader.exists(icon_path), "Иконка приложения должна импортироваться")
+	assert_eq(splash_path, "res://art/branding/loading_splash.png")
+	assert_true(ResourceLoader.exists(splash_path), "Загрузочная заставка должна импортироваться")
+	assert_true("boot_splash/fullsize=true" in FileAccess.get_file_as_string("res://project.godot"))
+
+
+func test_web_export_uses_project_icon_and_pwa_sizes() -> void:
+	var presets := FileAccess.get_file_as_string("res://export_presets.cfg")
+
+	assert_true("html/export_icon=true" in presets)
+	assert_true('progressive_web_app/icon_144x144="res://art/branding/app_icon_144.png"' in presets)
+	assert_true('progressive_web_app/icon_180x180="res://art/branding/app_icon_180.png"' in presets)
+	assert_true('progressive_web_app/icon_512x512="res://art/branding/app_icon.png"' in presets)
+
+
 func test_button_theme_meets_minimum_touch_target_height() -> void:
-	var theme: Theme = load("res://ui/theme/base_theme.tres")
+	var theme: Theme = BASE_THEME
 	assert_not_null(theme)
 
 	for state in ["normal", "hover", "pressed", "disabled"]:
@@ -81,12 +102,15 @@ func test_button_theme_meets_minimum_touch_target_height() -> void:
 			# Godot).
 			assert_true(
 				vertical_padding >= (MIN_TOUCH_TARGET - 16.0),
-				"Button/%s: вертикальный content_margin (%s) слишком мал для тач-таргета" % [state, vertical_padding]
+				(
+					"Button/%s: вертикальный content_margin (%s) слишком мал для тач-таргета"
+					% [state, vertical_padding]
+				)
 			)
 
 
 func test_theme_default_font_size_is_readable_on_mobile() -> void:
-	var theme: Theme = load("res://ui/theme/base_theme.tres")
+	var theme: Theme = BASE_THEME
 	# Дефолт Godot — 16px, рассчитан на десктоп с обычного расстояния до
 	# монитора; для мобильного браузера чуть крупнее читается надёжнее.
 	assert_true(theme.default_font_size >= 18)
