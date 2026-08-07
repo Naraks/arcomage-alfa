@@ -28,16 +28,12 @@ func _build_ui() -> void:
 	for side in ["left", "right", "top", "bottom"]:
 		outer_margin.add_theme_constant_override("margin_%s" % side, 16)
 	add_child(outer_margin)
-	var center := CenterContainer.new()
-	center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	center.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	outer_margin.add_child(center)
 	var scroll := ScrollContainer.new()
 	scroll.name = "SettingsScroll"
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	center.add_child(scroll)
+	outer_margin.add_child(scroll)
 
 	var panel := PanelContainer.new()
 	panel.name = "SettingsPanel"

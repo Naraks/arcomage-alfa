@@ -111,3 +111,20 @@ func test_confirm_reset_restores_defaults_without_touching_progress() -> void:
 	assert_false(screen._reset_confirmation.visible)
 
 	screen.free()
+
+
+func test_runtime_layout_keeps_settings_panel_visible() -> void:
+	var screen = SettingsScreenScript.new()
+	screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child_autoqfree(screen)
+	await wait_frames(2)
+
+	var panel := screen.find_child("SettingsPanel", true, false) as Control
+	var scroll := screen.find_child("SettingsScroll", true, false) as Control
+	assert_not_null(panel)
+	assert_not_null(scroll)
+	assert_true(panel.is_visible_in_tree())
+	assert_true(scroll.size.x > 0.0, "Область прокрутки не должна схлопываться по ширине")
+	assert_true(scroll.size.y > 0.0, "Область прокрутки не должна схлопываться по высоте")
+	assert_true(panel.size.x > 0.0, "Панель должна иметь ненулевую ширину в дереве сцены")
+	assert_true(panel.size.y > 0.0, "Панель должна иметь ненулевую высоту в дереве сцены")
