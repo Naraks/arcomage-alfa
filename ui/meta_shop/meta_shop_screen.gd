@@ -11,6 +11,8 @@ extends Control
 ## блокквоте ARC-037 ("нет тикетов на unlock-систему на тот момент"). Теперь
 ## есть — ProfileManager.is_card_unlocked()/unlock_card().
 
+signal profile_state_changed
+
 ## Порядок отображения строк — фиксированный, не порядок ключей в
 ## ProfileManager.UPGRADE_CATALOG (Dictionary в GDScript не гарантирует
 ## порядок вставки при итерации так же надёжно, как явный список; плюс так
@@ -18,6 +20,8 @@ extends Control
 ## "Мастерство ресурсов" (quarry/magic/dungeon) и утилити (hand_size) —
 ## та же группировка, что в game_design_doc.md §9.2).
 const UPGRADE_ORDER := ["tower", "wall", "quarry", "magic", "dungeon", "hand_size"]
+
+@export var embedded_in_profile := false
 
 var _fame_label: Label
 var _upgrade_list: VBoxContainer
@@ -31,36 +35,39 @@ func _ready() -> void:
 func _build_ui() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 
-	var bg := ColorRect.new()
-	bg.color = Color(0.1, 0.1, 0.12)
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(bg)
+	if not embedded_in_profile:
+		var bg := ColorRect.new()
+		bg.color = Color(0.1, 0.1, 0.12)
+		bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+		add_child(bg)
 
 	var root_margin := MarginContainer.new()
 	root_margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root_margin.add_theme_constant_override("margin_left", 24)
-	root_margin.add_theme_constant_override("margin_right", 24)
-	root_margin.add_theme_constant_override("margin_top", 24)
-	root_margin.add_theme_constant_override("margin_bottom", 24)
+	var margin := 12 if embedded_in_profile else 24
+	root_margin.add_theme_constant_override("margin_left", margin)
+	root_margin.add_theme_constant_override("margin_right", margin)
+	root_margin.add_theme_constant_override("margin_top", margin)
+	root_margin.add_theme_constant_override("margin_bottom", margin)
 	add_child(root_margin)
 
 	var root_vbox := VBoxContainer.new()
 	root_vbox.add_theme_constant_override("separation", 16)
 	root_margin.add_child(root_vbox)
 
-	var header := HBoxContainer.new()
-	root_vbox.add_child(header)
+	if not embedded_in_profile:
+		var header := HBoxContainer.new()
+		root_vbox.add_child(header)
 
-	var title := Label.new()
-	title.text = "МАГАЗИН ПРОКАЧКИ"
-	title.add_theme_font_size_override("font_size", 28)
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header.add_child(title)
+		var title := Label.new()
+		title.text = "МАГАЗИН ПРОКАЧКИ"
+		title.add_theme_font_size_override("font_size", 28)
+		title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		header.add_child(title)
 
-	_fame_label = Label.new()
-	_fame_label.add_theme_font_size_override("font_size", 22)
-	header.add_child(_fame_label)
-	_update_fame_label()
+		_fame_label = Label.new()
+		_fame_label.add_theme_font_size_override("font_size", 22)
+		header.add_child(_fame_label)
+		_update_fame_label()
 
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -91,17 +98,19 @@ func _build_ui() -> void:
 	_unlock_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll_vbox.add_child(_unlock_list)
 
-	var back_button := Button.new()
-	back_button.text = "Назад в меню"
-	back_button.pressed.connect(_on_back_pressed)
-	root_vbox.add_child(back_button)
+	if not embedded_in_profile:
+		var back_button := Button.new()
+		back_button.text = "Назад в меню"
+		back_button.pressed.connect(_on_back_pressed)
+		root_vbox.add_child(back_button)
 
 	_refresh_upgrade_list()
 	_refresh_unlock_list()
 
 
 func _update_fame_label() -> void:
-	_fame_label.text = "Слава: %d" % ProfileManager.profile.get("fame", 0)
+	if _fame_label:
+		_fame_label.text = "Слава: %d" % ProfileManager.profile.get("fame", 0)
 
 
 ## ARC-037: строка с названием улучшения, текущим уровнем/максимумом и
@@ -160,6 +169,7 @@ func _on_buy_pressed(key: String) -> void:
 		return
 	_update_fame_label()
 	_refresh_upgrade_list()
+	profile_state_changed.emit()
 
 
 ## ARC-038: пути всех RARE-карт игры — источник для секции "ОТКРЫТИЯ".
@@ -238,6 +248,7 @@ func _on_unlock_pressed(path: String) -> void:
 		return
 	_update_fame_label()
 	_refresh_unlock_list()
+	profile_state_changed.emit()
 
 
 func _on_back_pressed() -> void:

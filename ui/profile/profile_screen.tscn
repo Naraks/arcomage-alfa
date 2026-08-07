@@ -21,14 +21,18 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+tabs_visible = false
 
 [node name="Прокачка" parent="Tabs" instance=ExtResource("2_upgrades")]
 layout_mode = 2
+embedded_in_profile = true
 
 [node name="Статистика" parent="Tabs" instance=ExtResource("3_stats")]
 visible = false
 layout_mode = 2
+embedded_in_profile = true
 
-[node name="Коллекция" parent="Tabs" instance=ExtResource("4_deck")]
+[node name="Колода" parent="Tabs" instance=ExtResource("4_deck")]
 visible = false
 layout_mode = 2
+embedded_in_profile = true

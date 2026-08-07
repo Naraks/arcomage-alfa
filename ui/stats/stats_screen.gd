@@ -9,6 +9,8 @@ extends Control
 
 const RewardScreenScript = preload("res://ui/reward/reward_screen.gd")
 
+@export var embedded_in_profile := false
+
 
 func _ready() -> void:
 	_build_ui()
@@ -42,40 +44,47 @@ func _unlocked_artifacts_text() -> String:
 func _build_ui() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 
-	var bg := ColorRect.new()
-	bg.color = Color(0.1, 0.1, 0.12)
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(bg)
+	if not embedded_in_profile:
+		var bg := ColorRect.new()
+		bg.color = Color(0.1, 0.1, 0.12)
+		bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+		add_child(bg)
 
 	var root_margin := MarginContainer.new()
 	root_margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root_margin.add_theme_constant_override("margin_left", 24)
-	root_margin.add_theme_constant_override("margin_right", 24)
-	root_margin.add_theme_constant_override("margin_top", 24)
-	root_margin.add_theme_constant_override("margin_bottom", 24)
+	var margin := 12 if embedded_in_profile else 24
+	root_margin.add_theme_constant_override("margin_left", margin)
+	root_margin.add_theme_constant_override("margin_right", margin)
+	root_margin.add_theme_constant_override("margin_top", margin)
+	root_margin.add_theme_constant_override("margin_bottom", margin)
 	add_child(root_margin)
 
 	var root_vbox := VBoxContainer.new()
 	root_vbox.add_theme_constant_override("separation", 12)
 	root_margin.add_child(root_vbox)
 
-	var title := Label.new()
-	title.text = "СТАТИСТИКА"
-	title.add_theme_font_size_override("font_size", 28)
-	root_vbox.add_child(title)
+	if not embedded_in_profile:
+		var title := Label.new()
+		title.text = "СТАТИСТИКА"
+		title.add_theme_font_size_override("font_size", 28)
+		root_vbox.add_child(title)
 
 	_add_stat_label(root_vbox, "Побед: %d" % ProfileManager.profile.get("total_wins", 0))
-	_add_stat_label(root_vbox, "Завершено забегов: %d" % ProfileManager.profile.get("total_runs", 0))
 	_add_stat_label(
-		root_vbox, "Максимальная высота Башни: %d" % ProfileManager.profile.get("max_tower_height", 0)
+		root_vbox, "Завершено забегов: %d" % ProfileManager.profile.get("total_runs", 0)
+	)
+	_add_stat_label(
+		root_vbox,
+		"Максимальная высота Башни: %d" % ProfileManager.profile.get("max_tower_height", 0)
 	)
 	_add_stat_label(root_vbox, _unlocked_cards_text())
 	_add_stat_label(root_vbox, _unlocked_artifacts_text())
 
-	var back_button := Button.new()
-	back_button.text = "Назад в меню"
-	back_button.pressed.connect(_on_back_pressed)
-	root_vbox.add_child(back_button)
+	if not embedded_in_profile:
+		var back_button := Button.new()
+		back_button.text = "Назад в меню"
+		back_button.pressed.connect(_on_back_pressed)
+		root_vbox.add_child(back_button)
 
 
 func _add_stat_label(parent: VBoxContainer, text: String) -> void:

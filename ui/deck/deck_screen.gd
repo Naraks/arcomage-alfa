@@ -15,6 +15,8 @@ extends Control
 ## комментарий) — тот же список карт, что реально получит игрок при старте
 ## кампании, просто не побайтово тот же порядок/дубликаты.
 
+@export var embedded_in_profile := false
+
 var _deck_list: VBoxContainer
 var _source_label: Label
 
@@ -26,17 +28,19 @@ func _ready() -> void:
 func _build_ui() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 
-	var bg := ColorRect.new()
-	bg.color = Color(0.1, 0.1, 0.12)
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(bg)
+	if not embedded_in_profile:
+		var bg := ColorRect.new()
+		bg.color = Color(0.1, 0.1, 0.12)
+		bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+		add_child(bg)
 
 	var root_margin := MarginContainer.new()
 	root_margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root_margin.add_theme_constant_override("margin_left", 24)
-	root_margin.add_theme_constant_override("margin_right", 24)
-	root_margin.add_theme_constant_override("margin_top", 24)
-	root_margin.add_theme_constant_override("margin_bottom", 24)
+	var margin := 12 if embedded_in_profile else 24
+	root_margin.add_theme_constant_override("margin_left", margin)
+	root_margin.add_theme_constant_override("margin_right", margin)
+	root_margin.add_theme_constant_override("margin_top", margin)
+	root_margin.add_theme_constant_override("margin_bottom", margin)
 	add_child(root_margin)
 
 	var root_vbox := VBoxContainer.new()
@@ -46,13 +50,16 @@ func _build_ui() -> void:
 	var header := HBoxContainer.new()
 	root_vbox.add_child(header)
 
-	var title := Label.new()
-	title.text = "КОЛОДА"
-	title.add_theme_font_size_override("font_size", 28)
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header.add_child(title)
+	if not embedded_in_profile:
+		var title := Label.new()
+		title.text = "КОЛОДА"
+		title.add_theme_font_size_override("font_size", 28)
+		title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		header.add_child(title)
 
 	_source_label = Label.new()
+	_source_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_source_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(_source_label)
 
 	var scroll := ScrollContainer.new()
@@ -64,10 +71,11 @@ func _build_ui() -> void:
 	_deck_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(_deck_list)
 
-	var back_button := Button.new()
-	back_button.text = "Назад в меню"
-	back_button.pressed.connect(_on_back_pressed)
-	root_vbox.add_child(back_button)
+	if not embedded_in_profile:
+		var back_button := Button.new()
+		back_button.text = "Назад в меню"
+		back_button.pressed.connect(_on_back_pressed)
+		root_vbox.add_child(back_button)
 
 	_refresh(_load_deck_to_show())
 
