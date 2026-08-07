@@ -50,7 +50,7 @@ func test_panel_width_fits_portrait_and_is_capped_on_wide_screen() -> void:
 	var screen = SettingsScreenScript.new()
 
 	assert_eq(screen._panel_width_for_viewport(Vector2(360, 640)), 328.0)
-	assert_eq(screen._panel_width_for_viewport(Vector2(1280, 720)), 720.0)
+	assert_eq(screen._panel_width_for_viewport(Vector2(1280, 720)), 1040.0)
 
 	screen.free()
 
@@ -120,11 +120,17 @@ func test_runtime_layout_keeps_settings_panel_visible() -> void:
 	await wait_frames(2)
 
 	var panel := screen.find_child("SettingsPanel", true, false) as Control
+	var panel_center := screen.find_child("PanelCenter", true, false) as Control
 	var scroll := screen.find_child("SettingsScroll", true, false) as Control
 	assert_not_null(panel)
+	assert_not_null(panel_center)
 	assert_not_null(scroll)
 	assert_true(panel.is_visible_in_tree())
 	assert_true(scroll.size.x > 0.0, "Область прокрутки не должна схлопываться по ширине")
 	assert_true(scroll.size.y > 0.0, "Область прокрутки не должна схлопываться по высоте")
 	assert_true(panel.size.x > 0.0, "Панель должна иметь ненулевую ширину в дереве сцены")
 	assert_true(panel.size.y > 0.0, "Панель должна иметь ненулевую высоту в дереве сцены")
+	assert_true(
+		panel.position.x > 0.0,
+		"Широкая панель должна быть центрирована, а не прижата к левому краю"
+	)

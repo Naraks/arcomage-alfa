@@ -5,7 +5,7 @@ extends Control
 ## ProfileManager. Сброс требует отдельного подтверждения.
 
 const MIN_TOUCH_TARGET := 44.0
-const PANEL_MAX_WIDTH := 720.0
+const PANEL_MAX_WIDTH := 1040.0
 
 var _volume_slider: HSlider
 var _volume_value_label: Label
@@ -34,13 +34,18 @@ func _build_ui() -> void:
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	outer_margin.add_child(scroll)
+	var viewport_size := get_viewport_rect().size if is_inside_tree() else Vector2(1280, 720)
+	var panel_center := CenterContainer.new()
+	panel_center.name = "PanelCenter"
+	panel_center.custom_minimum_size.x = maxf(280.0, viewport_size.x - 32.0)
+	panel_center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(panel_center)
 
 	var panel := PanelContainer.new()
 	panel.name = "SettingsPanel"
-	var viewport_size := get_viewport_rect().size if is_inside_tree() else Vector2(1280, 720)
 	panel.custom_minimum_size.x = _panel_width_for_viewport(viewport_size)
 	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	scroll.add_child(panel)
+	panel_center.add_child(panel)
 	var margin := MarginContainer.new()
 	for side in ["left", "right"]:
 		margin.add_theme_constant_override("margin_%s" % side, 24)
