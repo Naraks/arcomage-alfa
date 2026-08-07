@@ -421,8 +421,14 @@ func start_turn(player: PlayerData) -> void:
 
 func execute_ai_turn() -> void:
 	# Небольшая задержка для визуального комфорта
-	await get_tree().create_timer(1.0).timeout
+	# ARC-043: process_always=false — задержка замораживается вместе с деревом
+	# при потере фокуса вкладки и продолжает отсчёт только после возврата.
+	await _create_ai_turn_timer().timeout
 	_resolve_ai_turn(enemy_data)
+
+
+func _create_ai_turn_timer(delay_seconds: float = 1.0) -> SceneTreeTimer:
+	return get_tree().create_timer(delay_seconds, false)
 
 
 ## ARC-054: чистая логика "сходить за actor'а его ai_strategy" без await/

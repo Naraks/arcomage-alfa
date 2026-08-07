@@ -34,6 +34,7 @@ ProfileManager="*res://core/profile_manager.gd"
 RunSaveManager="*res://core/run_save_manager.gd"
 ArtifactManager="*res://core/artifact_manager.gd"
 AudioManager="*res://core/audio_manager.gd"
+FocusPauseManager="*res://core/focus_pause_manager.gd"
 
 [display]
 
