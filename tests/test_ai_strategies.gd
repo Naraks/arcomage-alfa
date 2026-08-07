@@ -1,8 +1,5 @@
 extends GutTest
-## Юнит-тесты профилей ИИ (ARC-025 «Строитель», ARC-026 «Маг/Экономист»).
-## AIStrategy — Resource, не Node, поэтому создаётся через .new() напрямую,
-## без сцены (как data/resources/*_ai_strategy.gd вообще не участвуют в
-## дереве сцены — их use-site — MatchManager, не UI).
+## Тесты стратегий ИИ.
 
 const BuilderAIStrategy = preload("res://data/resources/builder_ai_strategy.gd")
 const EconomistAIStrategy = preload("res://data/resources/economist_ai_strategy.gd")
@@ -15,9 +12,6 @@ var enemy: PlayerData
 func before_each() -> void:
 	player = TestFixtures.make_player()
 	enemy = TestFixtures.make_player()
-
-
-# --- BuilderAIStrategy (ARC-025) ---
 
 
 func test_builder_prefers_build_tower_over_damage_card() -> void:
@@ -81,11 +75,6 @@ func test_builder_get_best_card_returns_null_when_nothing_affordable() -> void:
 
 
 func test_builder_faster_tower_growth_than_default_over_simulated_turns() -> void:
-	# Акцептанс-критерий ARC-025: "в тестовом бою Строитель реально быстрее
-	# отстраивает башню, чем разыгрывает атакующие карты" — симулируем
-	# несколько ходов подряд одной и той же рукой (build_tower/mod_quarry
-	# против damage) и проверяем, что Строитель растит tower_hp, а не
-	# разменивает ходы на атаку, когда альтернатива есть.
 	var strategy := BuilderAIStrategy.new()
 	var hand: Array[CardData] = [
 		TestFixtures.make_card(
@@ -107,9 +96,6 @@ func test_builder_faster_tower_growth_than_default_over_simulated_turns() -> voi
 	assert_eq(
 		player.tower_hp, tower_hp_before + 12, "Три хода подряд должны были уйти в рост Башни"
 	)
-
-
-# --- EconomistAIStrategy (ARC-026) ---
 
 
 func test_economist_prefers_mod_magic_over_damage_card() -> void:
@@ -176,12 +162,6 @@ func test_economist_get_best_card_returns_null_when_nothing_affordable() -> void
 
 
 func test_economist_weighs_steal_resource_higher_than_default_which_now_sees_it_too() -> void:
-	# Акцептанс-критерий ARC-026: "тест показывает иное поведение
-	# относительно Default/Aggressive/Builder". До ARC-093 DefaultAIStrategy
-	# вообще не оценивал steal_resource (буквальный вес 0, не заниженный) —
-	# это и был найденный симулятором гэп. После ARC-093 Default тоже видит
-	# эффект, но Экономист как специалист весит его заметно выше — вот в чём
-	# теперь разница.
 	var economist := EconomistAIStrategy.new()
 	var default_ai := DefaultAIStrategy.new()
 	var steal_card := TestFixtures.make_card(
@@ -220,15 +200,6 @@ func test_economist_differs_from_builder_on_mod_magic_vs_mod_quarry() -> void:
 	assert_eq(
 		builder.get_best_card(hand, player, enemy), quarry_card, "Строитель — про Кирпичи, не Гемы"
 	)
-
-
-# --- ARC-093: устранение слепых зон calculate_card_priority() ---
-#
-# До этого тикета gain_resource/steal_resource/drain_resource/draw_card не
-# оценивались Default/Aggressive/Builder вовсе (буквальный вес 0, не просто
-# низкий), а reduce_wall/conditional не оценивались ни одной из четырёх
-# стратегий. Ниже — прямые проверки, что теперь у каждого из этих типов
-# ненулевой вес там, где раньше был гарантированный 0.
 
 
 func test_default_no_longer_ignores_gain_resource() -> void:
@@ -270,9 +241,6 @@ func test_aggressive_no_longer_ignores_reduce_wall() -> void:
 
 
 func test_aggressive_prefers_damage_over_economic_at_full_enemy_tower() -> void:
-	# ARC-085 regression: до фикса при tower_hp=200 mod_quarry(3) набирал 6.0
-	# (3*2.0), а damage(5) — только 5.0 (5*(200/200)), и экономическая карта
-	# побеждала. После фикса: floor=2.5 на урон + вес экономики снижен до 0.5.
 	var strategy := AggressiveAIStrategy.new()
 	enemy.tower_hp = 200
 	var damage_card := TestFixtures.make_card(
@@ -292,8 +260,6 @@ func test_aggressive_prefers_damage_over_economic_at_full_enemy_tower() -> void:
 
 
 func test_aggressive_get_best_card_picks_damage_at_full_enemy_tower() -> void:
-	# ARC-085 regression: get_best_card() должен возвращать атакующую карту,
-	# а не экономическую, даже когда башня врага на максимальном HP.
 	var strategy := AggressiveAIStrategy.new()
 	enemy.tower_hp = 200
 	player.gems = 10
@@ -332,9 +298,8 @@ func _repair_like_conditional_effect() -> Dictionary:
 
 
 func test_default_conditional_scores_then_branch_when_condition_true() -> void:
-	# "Ремонт" (brick_15.tres): если Стена < 3 — Стена +3, иначе +1.
 	var strategy := DefaultAIStrategy.new()
-	player.wall_hp = 1  # < порог 3 → должна сработать ветка "then"
+	player.wall_hp = 1
 	var conditional_card := TestFixtures.make_card(
 		1, CardData.ResourceType.BRICKS, [_repair_like_conditional_effect()]
 	)
@@ -356,7 +321,6 @@ func test_default_conditional_scores_then_branch_when_condition_true() -> void:
 
 func test_default_conditional_scores_else_branch_when_condition_false() -> void:
 	var strategy := DefaultAIStrategy.new()
-	# player.wall_hp остаётся дефолтным (5) — условие "< 3" ложно, "else".
 	var conditional_card := TestFixtures.make_card(
 		1, CardData.ResourceType.BRICKS, [_repair_like_conditional_effect()]
 	)
@@ -377,9 +341,6 @@ func test_default_conditional_scores_else_branch_when_condition_false() -> void:
 
 
 func test_builder_conditional_branch_selection_matches_default() -> void:
-	# Ветка then/else резолвится общей логикой базового класса (AIStrategy) —
-	# у Builder должен сработать тот же branch, что и у Default, при одном и
-	# том же состоянии игрока, различаться должен только итоговый вес.
 	var builder := BuilderAIStrategy.new()
 	player.wall_hp = 1
 	var conditional_card := TestFixtures.make_card(
@@ -397,14 +358,6 @@ func test_builder_conditional_branch_selection_matches_default() -> void:
 	assert_eq(conditional_priority, expected_priority)
 
 
-# --- BossAIStrategy (ARC-027) ---
-#
-# Aggressive не оценивает build_tower вовсе (calculate_card_priority без ветки
-# "build_tower" в aggressive_ai_strategy.gd) — при равном value damage_card
-# всегда выигрывает у tower_card, поэтому этой парой удобно проверять, какой
-# из двух делегатов (_aggressive/_builder) реально выбрал ход.
-
-
 func _boss_hand() -> Array[CardData]:
 	var tower_card := TestFixtures.make_card(
 		1, CardData.ResourceType.BRICKS, [{"type": "build_tower", "target": "self", "value": 4}]
@@ -418,7 +371,7 @@ func _boss_hand() -> Array[CardData]:
 func test_boss_plays_aggressive_when_enemy_tower_is_lethally_low() -> void:
 	var strategy := BossAIStrategy.new()
 	var hand := _boss_hand()
-	enemy.tower_hp = BossAIStrategy.LETHAL_ENEMY_TOWER_HP  # на грани — уже "добивать"
+	enemy.tower_hp = BossAIStrategy.LETHAL_ENEMY_TOWER_HP
 
 	assert_eq(
 		strategy.get_best_card(hand, player, enemy),
@@ -430,8 +383,8 @@ func test_boss_plays_aggressive_when_enemy_tower_is_lethally_low() -> void:
 func test_boss_plays_aggressive_when_own_tower_in_danger() -> void:
 	var strategy := BossAIStrategy.new()
 	var hand := _boss_hand()
-	enemy.tower_hp = 20  # враг не при смерти — не режим добивания
-	player.tower_hp = BossAIStrategy.DANGER_OWN_TOWER_HP  # но сам Босс под угрозой
+	enemy.tower_hp = 20
+	player.tower_hp = BossAIStrategy.DANGER_OWN_TOWER_HP
 
 	assert_eq(
 		strategy.get_best_card(hand, player, enemy),
@@ -443,8 +396,8 @@ func test_boss_plays_aggressive_when_own_tower_in_danger() -> void:
 func test_boss_plays_builder_when_safe() -> void:
 	var strategy := BossAIStrategy.new()
 	var hand := _boss_hand()
-	enemy.tower_hp = 20  # не при смерти
-	player.tower_hp = 20  # сам Босс не под угрозой
+	enemy.tower_hp = 20
+	player.tower_hp = 20
 
 	assert_eq(
 		strategy.get_best_card(hand, player, enemy),
@@ -454,9 +407,6 @@ func test_boss_plays_builder_when_safe() -> void:
 
 
 func test_boss_switches_mode_within_same_instance_as_state_changes() -> void:
-	# ARC-027 требует именно динамическую реакцию "по угрозе поражения", а не
-	# фиксированный на момент создания режим — один и тот же экземпляр должен
-	# менять выбор при изменении tower_hp между вызовами.
 	var strategy := BossAIStrategy.new()
 	var hand := _boss_hand()
 	enemy.tower_hp = 20

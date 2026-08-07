@@ -1,10 +1,5 @@
 extends Control
-## UI 13/13 (#108): кинематографичное и адаптивное главное меню.
-##
-## Существующие переходы и подготовка MatchSettings сохранены без изменения:
-## этот проход меняет иерархию CTA и визуальное представление, но не правила
-## старта/продолжения забега. Разметка строится в _ready() -> _build_ui(), как
-## остальные современные экраны проекта. Процедурный фон — fallback до #92.
+## Главное меню и точки входа в игровые режимы.
 
 const DefaultAIStrategyScript = preload("res://data/resources/default_ai_strategy.gd")
 const AggressiveAIStrategyScript = preload("res://data/resources/aggressive_ai_strategy.gd")
@@ -45,9 +40,6 @@ func _ready() -> void:
 	_build_ui()
 	_version_label.text = BuildVersion.get_display_string()
 
-	# ARC-018 + UI 13/13: без сейва «Продолжить» не занимает главный слот —
-	# главным действием становится «Новый забег». При наличии сейва показываем
-	# реальный следующий этаж, не загружая забег в MatchSettings заранее.
 	var has_saved_run := RunSaveManager.has_saved_run()
 	var progress_text := _read_saved_run_progress() if has_saved_run else ""
 	_configure_run_actions(has_saved_run, progress_text)
@@ -71,8 +63,6 @@ func _build_ui() -> void:
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
 
-	# Лёгкое затемнение по всему экрану сохраняет контраст на любом будущем
-	# арте и делает fallback достаточно спокойным для длинных русских строк.
 	var veil := ColorRect.new()
 	veil.name = "ContrastVeil"
 	veil.color = Color(0.02, 0.025, 0.055, 0.18)
@@ -195,8 +185,6 @@ func _build_ui() -> void:
 	add_child(_version_label)
 
 
-## Чистое состояние CTA вынесено отдельно, чтобы GUT проверял оба сценария
-## без чтения пользовательского user:// сейва.
 func _run_cta_state(has_saved_run: bool, progress_text: String = "") -> Dictionary:
 	var safe_progress := progress_text.strip_edges()
 	if safe_progress.is_empty():
@@ -221,8 +209,6 @@ func _configure_run_actions(has_saved_run: bool, progress_text: String = "") -> 
 	_apply_button_style(_campaign_button, state.new_run_is_primary)
 
 
-## Краткий прогресс считывается напрямую из Resource, не вызывая load_run():
-## главное меню не должно менять MatchSettings до нажатия «Продолжить».
 func _read_saved_run_progress() -> String:
 	var data = ResourceLoader.load(RunSaveManager.SAVE_PATH, "", ResourceLoader.CACHE_MODE_IGNORE)
 	if data == null or not (data is RunSaveData):
@@ -366,57 +352,33 @@ func _on_continue_pressed():
 func _on_campaign_pressed():
 	print("Campaign pressed - loading world map")
 
-	# ARC-010: процедурная генерация карты вместо хардкода из 2 узлов.
-	# Сид не фиксируется здесь намеренно — обычный забег каждый раз получает
-	# новую карту; фиксированный сид (для "дневных забегов") — задел на будущее.
 	MatchSettings.world_map_data = WorldMapGenerator.generate_map(randi())
 
-	# ARC-016: новый забег начинается со стартовой колоды — она же и есть
-	# "колода забега", которую увидит match_manager.setup_match() в каждом
-	# бою этой кампании, и которая будет расти от наград/магазина.
 	MatchSettings.run_deck = MatchManager.build_starting_run_deck()
 
-	# ARC-012: стартовое золото забега.
 	MatchSettings.run_gold = MatchManager.STARTING_RUN_GOLD
 
-	# ARC-013: сброс бонусов с «Отдыха» — иначе протекли бы из прошлой кампании.
 	MatchSettings.run_tower_bonus = 0
 	MatchSettings.run_quarry_bonus = 0
 	MatchSettings.run_magic_bonus = 0
 	MatchSettings.run_dungeon_bonus = 0
 
-	# ARC-015: новый забег начинается без артефактов прошлой кампании.
 	MatchSettings.run_artifacts = []
 
 	var err = get_tree().change_scene_to_file("res://ui/map/world_map_screen.tscn")
 	print("Change scene result: ", err)
 
 
-## ARC-085: раньше не передавал стратегию вовсе — enemy_data.ai_strategy
-## оставался null, и MatchManager.setup_match() молча подставлял
-## DefaultAIStrategy («Сбалансированный»), из-за чего Быстрый бой никогда не
-## давал Агрессора/Строителя/Мага-Экономиста, хотя design doc §6.3 описывает
-## его как "случайный архетип среднего уровня". Теперь переиспользует тот же
-## пул и рандомайзер, что и обычный бой карты мира (world_map_screen.gd,
-## ARC-027), вынесенный в MatchManager.pick_random_regular_ai_strategy().
 func _on_battle_pressed():
 	_start_test_battle(MatchManager.pick_random_regular_ai_strategy())
 
 
-## ARC-095: вынесено из _on_battle_pressed(), чтобы debug-панель ниже
-## (_generate_debug_ai_picker_bar()) могла запускать тот же тестовый бой без
-## забега, но с конкретной (не дефолтной) стратегией ИИ соперника — только
-## enemy_ai_strategy отличается от обычной кнопки «Битва».
 func _start_test_battle(enemy_ai_strategy: Resource = null) -> void:
 	print("Battle pressed - loading battle screen")
 	_prepare_test_battle_settings(enemy_ai_strategy)
 	get_tree().change_scene_to_file("res://ui/battle/battle_screen.tscn")
 
 
-## ARC-095: вынесено из _start_test_battle() отдельно от get_tree() — только
-## MatchSettings-присваивания, без обращения к дереву сцены, чтобы юнит-тест
-## мог проверить их напрямую (main_menu.gd не добавляется в дерево в тестах,
-## см. tests/test_resolution_adaptation.gd — instantiate() без add_child()).
 func _prepare_test_battle_settings(enemy_ai_strategy: Resource = null) -> void:
 	var p_data = PlayerData.new()
 	var e_data = PlayerData.new()
@@ -425,15 +387,9 @@ func _prepare_test_battle_settings(enemy_ai_strategy: Resource = null) -> void:
 	MatchSettings.player_data = p_data
 	MatchSettings.enemy_data = e_data
 
-	# ARC-002: прямой тестовый бой из меню, не с карты — на случай, если
-	# came_from_map остался true после предыдущего боя, начатого с карты.
 	MatchSettings.came_from_map = false
 	MatchSettings.current_map_node = null
-	# ARC-016/ARC-095: не должна протечь колода забега из предыдущей кампании —
-	# это отдельный тестовый бой, не часть забега, setup_match() должен взять
-	# полный пул уникальных карт игры (_build_full_card_pool()), не run_deck.
 	MatchSettings.run_deck = []
-	# ARC-012/013/015: аналогично — не должны протечь золото/бонусы/артефакты прошлой кампании.
 	MatchSettings.run_gold = 0
 	MatchSettings.run_tower_bonus = 0
 	MatchSettings.run_quarry_bonus = 0
@@ -442,9 +398,6 @@ func _prepare_test_battle_settings(enemy_ai_strategy: Resource = null) -> void:
 	MatchSettings.run_artifacts = []
 
 
-## ARC-095 + UI 13/13: выбор конкретной стратегии остаётся доступен только в
-## debug-сборках, но теперь свёрнут в один overlay MenuButton. Так служебные
-## кнопки не занимают нижнюю полосу и не меняют композицию релизного меню.
 func _generate_debug_ai_picker_bar() -> void:
 	var layer := CanvasLayer.new()
 	layer.name = "DebugOverlay"
@@ -480,9 +433,5 @@ func _on_settings_pressed():
 	get_tree().change_scene_to_file("res://ui/settings/settings_screen.tscn")
 
 
-## ARC-046: «Колода», «Прокачка» и «Статистика» были тремя отдельными
-## кнопками/экранами — теперь один "Профиль" открывает единый экран с
-## вкладками (ui/profile/profile_screen.tscn), см. блокквот ARC-046 в
-## docs/dev_plan_tickets.md.
 func _on_profile_pressed():
 	get_tree().change_scene_to_file("res://ui/profile/profile_screen.tscn")

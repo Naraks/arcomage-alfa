@@ -1,11 +1,5 @@
 extends Control
-## ARC-039: экран статистики профиля (game_design_doc.md §9.3) — побед,
-## максимальная высота Башни, число забегов, открытые карты/артефакты.
-## Данные копятся в ProfileManager (record_run_finished()/
-## record_artifact_collected()/_on_match_ended() для max_tower_height) —
-## этот экран только читает и показывает, ничего не пишет. Открывается из
-## главного меню (кнопка «Статистика»). Разметка строится кодом в _ready(),
-## тот же паттерн, что в ui/shop/shop_screen.gd.
+## Статистика профиля.
 
 const RewardScreenScript = preload("res://ui/reward/reward_screen.gd")
 
@@ -16,10 +10,6 @@ func _ready() -> void:
 	_build_ui()
 
 
-## Пути всех RARE-карт игры — знаменатель для "открытых карт". Независимая
-## копия той же идеи, что MetaShopScreen._rare_card_paths() — тот же паттерн,
-## что уже используют shop_screen.gd/battle_screen.gd/deck_screen.gd для
-## _compare_cards() (каждый экран держит свою маленькую копию, не общий модуль).
 func _rare_card_paths() -> Array:
 	var result: Array = []
 	for path in MatchManager.ALL_CARD_PATHS:

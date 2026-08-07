@@ -1,15 +1,10 @@
 extends Control
+## Интерфейс боя и синхронизация с состоянием матча.
 
 const MapNodeData = preload("res://data/resources/map_node_data.gd")
 
-## ARC-080: раньше рендерился один Panel(20x10) на каждую единицу HP без
-## ограничения сверху. wall_hp ничем не капается в бою (build_wall копится
-## весь матч) — колонка блоков разрасталась на сотни пикселей, раздувала
-## верхний StatsHBox и выталкивала остальной UI (в т.ч. ресурсы игрока) за
-## пределы экрана. Теперь высота колонки жёстко ограничена MAX_VISUAL_BLOCKS.
 const MAX_VISUAL_BLOCKS := 20
 
-## ARC-089: короткий нисходящий тон при попытке разыграть недоступную карту.
 const CARD_DENIED_SOUND = preload("res://audio/sfx/card_denied.wav")
 
 @export var card_scene: PackedScene = preload("res://entities/card/card.tscn")
@@ -38,7 +33,6 @@ var p_wall_visuals: VBoxContainer
 
 
 func _ready() -> void:
-	# Подписываемся на события
 	GameEvents.match_started.connect(_on_match_started)
 	GameEvents.resource_changed.connect(_on_resource_changed)
 	GameEvents.turn_started.connect(_on_turn_started)
@@ -46,15 +40,10 @@ func _ready() -> void:
 	GameEvents.value_built.connect(_on_value_built)
 	GameEvents.match_ended.connect(_on_match_ended)
 
-	# ARC-016: просмотр колоды по клику на её "рубашку" внизу слева.
 	deck_pile_button.pressed.connect(_on_deck_pile_pressed)
 
-	# Тестовый запуск матча, если мы в этой сцене напрямую
 	_setup_visual_containers()
 	if MatchSettings.player_data:
-		# ARC-016: run_deck пуст для тестового боя из главного меню (main_menu.gd
-		# явно сбрасывает его) — setup_match() тогда сама уйдёт на старую
-		# тестовую колоду.
 		MatchManager.setup_match(
 			MatchSettings.player_data, MatchSettings.enemy_data, MatchSettings.run_deck
 		)
@@ -63,7 +52,6 @@ func _ready() -> void:
 
 
 func _setup_visual_containers() -> void:
-	# Enemy visuals container
 	var enemy_visuals_hbox = HBoxContainer.new()
 	enemy_visuals_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	e_tower_bar.get_parent().add_child(enemy_visuals_hbox)
@@ -76,7 +64,6 @@ func _setup_visual_containers() -> void:
 	e_tower_visuals.alignment = BoxContainer.ALIGNMENT_END
 	enemy_visuals_hbox.add_child(e_tower_visuals)
 
-	# Player visuals container
 	var player_visuals_hbox = HBoxContainer.new()
 	player_visuals_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	p_tower_bar.get_parent().add_child(player_visuals_hbox)
@@ -92,19 +79,16 @@ func _setup_visual_containers() -> void:
 
 func _update_visuals(container: VBoxContainer, amount: int, color: Color) -> void:
 	var visible_amount = clampi(amount, 0, MAX_VISUAL_BLOCKS)
-	# Ensure count is correct: Remove panels from the TOP (Index 0)
 	while container.get_child_count() > visible_amount:
 		var child = container.get_child(0)
 		container.remove_child(child)
 		child.free()
 
-	# Add new panels at the BOTTOM if we don't have enough
 	while container.get_child_count() < visible_amount:
 		var panel = Panel.new()
 		panel.custom_minimum_size = Vector2(20, 10)
 		container.add_child(panel)
 
-	# Update style and color for all panels to ensure consistency
 	for panel in container.get_children():
 		var style = StyleBoxFlat.new()
 		style.bg_color = color
@@ -116,12 +100,6 @@ func _update_visuals(container: VBoxContainer, amount: int, color: Color) -> voi
 		panel.add_theme_stylebox_override("panel", style)
 
 
-## ARC-016: set_anchors_preset(PRESET_CENTER) на control, у которого ещё нет
-## реального size (создан только что через .new(), в дерево не добавлен),
-## считает офсеты от нулевого size — сам center-якорь (0.5/0.5) становится
-## ЛЕВЫМ ВЕРХНИМ углом попапа, а не его центром, и попап уезжает вправо-вниз.
-## Явно выставляем офсеты под половину нужного размера, чтобы центр совпадал
-## с центром якоря независимо от текущего size в момент вызова.
 func _center_control(control: Control, target_size: Vector2) -> void:
 	control.set_anchors_preset(Control.PRESET_CENTER)
 	control.custom_minimum_size = target_size
@@ -154,21 +132,11 @@ func _on_match_ended(winner: PlayerData) -> void:
 	var button = Button.new()
 
 	if MatchSettings.came_from_map and is_victory:
-		# ARC-015: победа с карты ведёт на экран награды, а не сразу на карту —
-		# is_completed/current_node_index (раньше выставлялись прямо здесь,
-		# ARC-002/011) теперь выставляет сам reward_screen.gd при возврате на
-		# карту, came_from_map/current_map_node остаются как есть до тех пор.
 		button.text = "Забрать награду"
 		button.pressed.connect(
 			func(): get_tree().change_scene_to_file("res://ui/reward/reward_screen.tscn")
 		)
 	elif MatchSettings.came_from_map:
-		# ARC-002: поражение просто возвращает на карту, узел остаётся доступен
-		# для повторной попытки — наград не бывает. ARC-017: кроме босса —
-		# поражение от него завершает забег (design doc формулирует "проигрыш =
-		# конец забега" явно для BOSS). Обычные/элитные поражения этот тикет не
-		# трогает — design doc на самом деле требует того же для любого боя, но
-		# менять уже подтверждённое поведение ARC-002 без явного запроса не стал.
 		var is_boss_defeat: bool = (
 			MatchSettings.current_map_node != null
 			and MatchSettings.current_map_node.node_type == MapNodeData.NodeType.BOSS
@@ -197,23 +165,14 @@ func _on_match_ended(winner: PlayerData) -> void:
 	vbox.add_child(button)
 
 
-## ARC-016: просмотр содержимого колоды (MatchManager.deck) — read-only,
-## открывается кликом по "рубашке" внизу слева (%DeckPileButton).
 func _on_deck_pile_pressed() -> void:
 	_show_card_list_popup("Колода (%d)" % MatchManager.deck.size(), MatchManager.deck)
 
 
-## Общий попап "список карт" — переиспользуем и для будущих "Сброс"/"Просмотр
-## награды" и т.п., не только для колоды. Карты рендерятся через entities/card
-## (card_scene) как в руке, но без подписки на card_clicked/card_right_clicked —
-## это read-only просмотр, клик по карте здесь ничего не делает.
 func _show_card_list_popup(title_text: String, cards: Array) -> void:
 	var layer = CanvasLayer.new()
 	add_child(layer)
 
-	# Полноэкранная полупрозрачная подложка — клик по ней (не по панели поверх
-	# неё) закрывает попап. Panel сверху по умолчанию останавливает mouse-ввод
-	# (MOUSE_FILTER_STOP), поэтому клики внутри попапа сюда не доходят.
 	var backdrop = ColorRect.new()
 	backdrop.color = Color(0, 0, 0, 0.6)
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -275,9 +234,6 @@ func _show_card_list_popup(title_text: String, cards: Array) -> void:
 		empty_label.text = "Пусто"
 		grid.add_child(empty_label)
 	else:
-		# Сортируем по типу ресурса, затем по стоимости — так проще пробежаться
-		# глазами по колоде, чем по её реальному (перемешанному) порядку тяги,
-		# который в любом случае не должен "спойлерить" следующую карту.
 		var sorted_cards: Array = cards.duplicate()
 		sorted_cards.sort_custom(_compare_cards_for_view)
 		for card_data in sorted_cards:
@@ -295,12 +251,6 @@ func _compare_cards_for_view(a: CardData, b: CardData) -> bool:
 
 
 func _test_setup() -> void:
-	# Баг: раньше переиспользовал MatchSettings.player_data/enemy_data, если они
-	# были заданы — на Restart после поражения это были те же самые, уже
-	# побитые PlayerData из проигранного матча (tower_hp/wall_hp не сбрасывались,
-	# только рука). _test_setup() вызывается либо для прямого дебаг-запуска сцены
-	# (тогда MatchSettings.player_data и так null), либо из Restart — в обоих
-	# случаях нужны свежие данные, а не то, что осталось от предыдущего боя.
 	var p := PlayerData.new()
 	var e := PlayerData.new()
 	e.ai_strategy = load("res://data/resources/aggressive_ai_strategy.gd").new()
@@ -321,10 +271,6 @@ func _on_turn_started(player: PlayerData) -> void:
 	update_all_ui()
 	if player == MatchManager.player_data:
 		refresh_hand()
-		# ARC-028: play_card_by_index()/discard_card_by_index() оба безусловно
-		# завершают ход (см. match_manager.gd) — рука не меняется в течение
-		# одного PLAYER_TURN без завершения хода, поэтому достаточно проверить
-		# играбельность один раз здесь, а не отслеживать её по ходу.
 		if not MatchManager.player_hand.is_empty() and not _has_playable_card():
 			status_label.text = "Нет доступных карт — сбросьте одну (ПКМ по карте)"
 		else:
@@ -333,9 +279,6 @@ func _on_turn_started(player: PlayerData) -> void:
 		status_label.text = "ENEMY TURN"
 
 
-## ARC-028: у ИИ авто-сброс в патовой ситуации уже был (execute_ai_turn), у
-## игрока — нет: без подсказки непонятно, что делать, если ни одна карта в
-## руке не по карману (в интерфейсе просто ничего не происходит по клику).
 func _has_playable_card() -> bool:
 	for card in MatchManager.player_hand:
 		if MatchManager.can_afford(card, MatchManager.player_data):
@@ -345,8 +288,6 @@ func _has_playable_card() -> bool:
 
 func _on_damage_applied(_target: Resource, _amount: int, _hit_wall: bool) -> void:
 	update_all_ui()
-	# Тряска экрана при получении урона (ARC-004: раньше определялась по знаку
-	# amount у health_changed; теперь damage_applied сам по себе — только урон).
 	var original_position = position
 	var tween = create_tween()
 	tween.tween_property(self, "position", original_position + Vector2(10, 0), 0.05)
@@ -375,9 +316,6 @@ func update_all_ui() -> void:
 	_update_visuals(p_tower_visuals, p.tower_hp, Color.GRAY)
 	_update_visuals(p_wall_visuals, p.wall_hp, Color.DARK_GRAY)
 
-	# ARC-091: название ресурса словом убрано — теперь его показывает иконка
-	# рядом с числом (ui/battle/battle_screen.tscn::*ResourcesHBox/*Box/Icon),
-	# см. docs/art_prompts.md §6.
 	bricks_label.text = "%d (+%d)" % [p.bricks, p.quarry]
 	gems_label.text = "%d (+%d)" % [p.gems, p.magic]
 	beasts_label.text = "%d (+%d)" % [p.beasts, p.dungeon]
@@ -386,17 +324,14 @@ func update_all_ui() -> void:
 	e_gems_label.text = "%d (+%d)" % [e.gems, e.magic]
 	e_beasts_label.text = "%d (+%d)" % [e.beasts, e.dungeon]
 
-	# ARC-016: счётчик на "рубашке" колоды внизу слева.
 	deck_pile_button.text = "Колода\n%d" % MatchManager.deck.size()
 
 
 func refresh_hand() -> void:
 	print("[DEBUG] Refreshing hand, cards count: ", MatchManager.player_hand.size())
-	# Очищаем старую руку
 	for child in hand_container.get_children():
 		child.queue_free()
 
-	# Добавляем карты из MatchManager
 	for card in MatchManager.player_hand:
 		add_card_to_hand(card)
 
@@ -416,7 +351,6 @@ func _on_card_clicked(card_node: Node) -> void:
 		print("[DEBUG] Not player turn! Current state: ", MatchManager.current_state)
 		return
 
-	# Проверка ресурсов
 	if not MatchManager.can_afford(card_data, MatchManager.player_data):
 		print("[DEBUG] Not enough resources!")
 		AudioManager.play_sfx(CARD_DENIED_SOUND, -3.0)
@@ -427,7 +361,6 @@ func _on_card_clicked(card_node: Node) -> void:
 		tween.tween_property(card_node, "position", original_pos, 0.05)
 		return
 
-	# Анимация проигрывания карты
 	card_node.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var tween = create_tween()
 	tween.tween_property(card_node, "position", Vector2(400, 300), 0.3).set_trans(Tween.TRANS_QUART)

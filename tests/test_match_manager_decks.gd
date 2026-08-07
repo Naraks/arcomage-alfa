@@ -1,15 +1,5 @@
 extends GutTest
-## Юнит-тесты MatchManager, связанные с колодами/пулами карт (ARC-016 run_deck,
-## ARC-012 build_shop_offer, ARC-095 полный пул для тестового боя).
-##
-## Вынесено из test_match_manager.gd отдельным файлом (не по сути, а по
-## необходимости): gdlint max-file-lines (порог 1000) не даёт держать всё в
-## одном файле, а per-file/per-directory override gdlint не поддерживает (та
-## же причина, по которой max-public-methods отключено целиком в .gdlintrc,
-## см. комментарий там). Этот блок тестов не зависел от before_each()/player/
-## enemy основного файла (каждый тест сам строит PlayerData через
-## TestFixtures.make_player()), поэтому перенос — чистый copy-paste без
-## изменения логики.
+## Тесты колод и карточных пулов.
 
 
 func test_setup_match_uses_run_deck_when_provided() -> void:
@@ -37,10 +27,6 @@ func test_setup_match_falls_back_to_test_deck_when_run_deck_empty() -> void:
 
 
 func test_setup_match_without_run_deck_uses_full_card_pool() -> void:
-	# ARC-095: тестовый бой без забега («Битва» в главном меню) теперь берёт
-	# полный пул уникальных карт (ALL_CARD_PATHS), а не урезанный 11-карточный
-	# STARTER_DECK_CARD_PATHS с паддингом до 20. Начальная раздача (5 карт)
-	# уже ушла в руку, поэтому сравниваем deck+hand, а не только deck.
 	MatchManager.setup_match(TestFixtures.make_player(), TestFixtures.make_player())
 
 	assert_eq(
@@ -56,8 +42,6 @@ func test_setup_match_without_run_deck_uses_full_card_pool() -> void:
 
 
 func test_setup_match_with_run_deck_does_not_touch_full_card_pool() -> void:
-	# Реальный забег (p_run_deck непустой) не должен затрагиваться ARC-095 —
-	# колода ИИ там как раньше, из урезанного генерик-пула (<= 20 карт).
 	var run_deck: Array[CardData] = []
 	for i in range(12):
 		run_deck.append(TestFixtures.make_card(1, CardData.ResourceType.BRICKS))
@@ -72,8 +56,6 @@ func test_setup_match_with_run_deck_does_not_touch_full_card_pool() -> void:
 
 
 func test_ai_does_not_draw_from_players_run_deck() -> void:
-	# Раньше игрок и ИИ делили один общий deck — уникальная карта из run_deck
-	# игрока могла оказаться в руке ИИ. Теперь у ИИ отдельная колода (enemy_deck).
 	var marker_card := TestFixtures.make_card(1, CardData.ResourceType.BRICKS)
 	var run_deck: Array[CardData] = [marker_card]
 	for i in range(19):
@@ -131,8 +113,6 @@ func test_build_starting_run_deck_is_not_empty() -> void:
 
 
 func test_build_starting_run_deck_survives_initial_draw() -> void:
-	# Регрессия: без паддинга стартовая колода (11 карт) почти опустошалась уже
-	# начальной раздачей setup_match() (5 игроку + 5 ИИ) — оставалась 1 карта.
 	var starting_deck: Array[CardData] = MatchManager.build_starting_run_deck()
 
 	assert_gt(
@@ -140,9 +120,6 @@ func test_build_starting_run_deck_survives_initial_draw() -> void:
 		10,
 		"Стартовая колода должна пережить начальную раздачу (5 игроку + 5 ИИ) с запасом"
 	)
-
-
-# ARC-012: предложение магазина (MatchManager.build_shop_offer).
 
 
 func test_build_shop_offer_returns_requested_count() -> void:
@@ -161,12 +138,6 @@ func test_build_shop_offer_has_no_duplicate_cards() -> void:
 
 
 func test_build_shop_offer_clamps_to_pool_size_without_error() -> void:
-	# ARC-038: build_shop_offer() теперь фильтрует RARE-карты, не купленные за
-	# Славу (ProfileManager.is_card_unlocked()) — без этого при 0 разблокировок
-	# по умолчанию фактически доступный пул меньше ALL_CARD_PATHS.size(), и
-	# сравнение ниже сломалось бы ещё до проверки самого клэмпа. Разблокируем
-	# всё явно, чтобы тест проверял именно клэмп, а не фильтр (у фильтра свои
-	# тесты в test_profile_manager.gd/test_reward_screen.gd).
 	var saved_unlocked: Array = ProfileManager.profile.get("unlocked_cards", []).duplicate()
 	ProfileManager.profile["unlocked_cards"] = MatchManager.ALL_CARD_PATHS.duplicate()
 

@@ -1,15 +1,6 @@
 extends GutTest
-## Юнит-тесты MatchManager (ARC-073). MatchManager — autoload-синглтон,
-## поэтому тесты используют его напрямую, приводя состояние к известному
-## в before_each(), а не создают отдельный экземпляр.
-##
-## PlayerData/CardData собираются через TestFixtures (ARC-074, tests/fixtures.gd) —
-## не читаются из боевого контента data/cards/*.tres, который часто меняется
-## из-за баланса (Эпик C) и не должен ломать тесты логики.
+## Тесты правил матча.
 
-## ARC-084 (gdlint duplicated-load): пути, которые несколько тестов ниже
-## грузят по отдельности — вынесены в const, чтобы литеральная строка пути
-## встречалась в файле один раз, а не по три/два раза подряд.
 const DEFAULT_AI_STRATEGY_PATH := "res://data/resources/default_ai_strategy.gd"
 const DWARF_PICKAXE_PATH := "res://data/artifacts/dwarf_pickaxe.tres"
 
@@ -29,9 +20,6 @@ func before_each() -> void:
 	MatchManager.auto_execute_ai_turn = true
 
 
-# --- apply_damage ---
-
-
 func test_apply_damage_reduces_wall_first() -> void:
 	MatchManager.apply_damage(3, player, false)
 	assert_eq(player.wall_hp, 2, "Урон меньше HP стены должен полностью уйти в стену")
@@ -49,9 +37,6 @@ func test_apply_damage_ignore_wall_hits_tower_directly() -> void:
 	MatchManager.apply_damage(5, player, true)
 	assert_eq(player.wall_hp, 5, "Стена не должна пострадать при ignore_wall = true")
 	assert_eq(player.tower_hp, 15, "Весь урон должен уйти напрямую в башню")
-
-
-# --- draw_card / max_hand_size (ARC-003) ---
 
 
 func test_draw_card_does_not_exceed_max_hand_size() -> void:
@@ -79,9 +64,6 @@ func test_draw_card_draws_normally_below_max_hand_size() -> void:
 	assert_eq(MatchManager.deck.size(), 0, "Карта должна уйти из колоды в руку")
 
 
-# --- can_afford ---
-
-
 func test_can_afford_true_when_enough_bricks() -> void:
 	var card := TestFixtures.make_card(3, CardData.ResourceType.BRICKS)
 	assert_true(MatchManager.can_afford(card, player))
@@ -102,9 +84,6 @@ func test_can_afford_true_when_enough_beasts() -> void:
 	assert_true(MatchManager.can_afford(card, player))
 
 
-# --- play_card_by_index ---
-
-
 func test_play_card_by_index_deducts_resources() -> void:
 	var card := TestFixtures.make_card(3, CardData.ResourceType.BRICKS)
 	MatchManager.player_hand = [card]
@@ -112,9 +91,6 @@ func test_play_card_by_index_deducts_resources() -> void:
 	assert_eq(player.bricks, 2, "Стоимость карты должна списаться с нужного ресурса")
 
 
-## ARC-035: pre-play хук ("Счастливая Монета") — value=1.0 делает срабатывание
-## гарантированным (randf() < 1.0 всегда true, см. комментарий в
-## tests/test_artifact_manager.gd), поэтому тест детерминирован без seed.
 func test_play_card_by_index_skips_payment_when_artifact_guarantees_it() -> void:
 	var card := TestFixtures.make_card(3, CardData.ResourceType.BRICKS)
 	MatchManager.player_hand = [card]
@@ -168,13 +144,6 @@ func test_play_card_by_index_applies_direct_damage_effect() -> void:
 	)
 
 
-## ARC-030/031: интеграционный тест на весь путь через РЕАЛЬНЫЙ сигнал
-## GameEvents.damage_applied (emitted из apply_damage() внутри
-## apply_card_effects() выше) — в отличие от tests/test_artifact_manager.gd,
-## который дёргает ArtifactManager._on_damage_taken() напрямую, этот тест
-## подтверждает, что ArtifactManager реально подключён как autoload
-## (project.godot) и получает source (атакующего) через сигнал, не только
-## в изоляции.
 func test_play_card_by_index_damage_triggers_reflect_damage_artifact_on_defender() -> void:
 	enemy.active_artifacts = [
 		TestFixtures.make_artifact(
@@ -196,9 +165,6 @@ func test_play_card_by_index_damage_triggers_reflect_damage_artifact_on_defender
 	)
 
 
-# --- resolve_target (ARC-005) ---
-
-
 func test_resolve_target_self_prefix_returns_actor() -> void:
 	assert_eq(
 		MatchManager.resolve_target(player, enemy, "self_wall"),
@@ -216,9 +182,6 @@ func test_resolve_target_non_self_returns_enemy() -> void:
 
 
 func test_apply_card_effects_build_wall_targets_enemy() -> void:
-	# build_wall/build_tower уже поддерживают любой target (self/enemy) через
-	# resolve_target() — отдельный generic "build" тип был избыточен и убран (ARC-005),
-	# т.к. использовался ровно одной картой (wall_card.tres) и дублировал build_wall.
 	var card := TestFixtures.make_card(
 		1,
 		CardData.ResourceType.BRICKS,
@@ -232,9 +195,6 @@ func test_apply_card_effects_build_wall_targets_enemy() -> void:
 		enemy_wall_before + 3,
 		"build_wall с target=enemy_wall должен прибавлять wall_hp врагу"
 	)
-
-
-# --- apply_card_effects: draw_card/steal_resource/conditional (ARC-021) ---
 
 
 func test_effect_draw_card_draws_into_target_hand() -> void:
@@ -372,8 +332,6 @@ func test_effect_conditional_applies_else_branch_when_condition_false() -> void:
 
 
 func test_effect_conditional_nested_effect_target_independent_of_condition_target() -> void:
-	# Условие проверяется на self (wall_hp игрока), но вложенный эффект бьёт enemy —
-	# target условия и target вложенного эффекта резолвятся независимо друг от друга.
 	player.wall_hp = 5
 	var enemy_wall_before: int = enemy.wall_hp
 	var card := (
@@ -399,10 +357,6 @@ func test_effect_conditional_nested_effect_target_independent_of_condition_targe
 	assert_eq(
 		enemy.wall_hp, enemy_wall_before - 4, "Вложенный then-эффект должен бить enemy, а не self"
 	)
-
-
-# --- apply_card_effects: gain_resource/drain_resource/reduce_wall/random steal,
-# --- generator floor (ARC-020) ---
 
 
 func test_effect_mod_quarry_does_not_go_below_zero() -> void:
@@ -506,9 +460,6 @@ func test_effect_steal_resource_random_moves_exactly_one_resource_type() -> void
 		assert_eq(nonzero_deltas[0], 5, "Должно быть украдено ровно value")
 
 
-# --- discard_card_by_index ---
-
-
 func test_discard_card_by_index_removes_card() -> void:
 	var card := TestFixtures.make_card(1, CardData.ResourceType.BRICKS)
 	MatchManager.player_hand = [card]
@@ -521,9 +472,6 @@ func test_discard_card_by_index_blocked_for_wrong_actor_on_player_turn() -> void
 	MatchManager.enemy_hand = [card]
 	MatchManager.discard_card_by_index(0, enemy)
 	assert_eq(MatchManager.enemy_hand.size(), 1, "На ходу игрока ИИ не может сбрасывать карты")
-
-
-# --- check_win ---
 
 
 func test_check_win_false_when_no_condition_met() -> void:
@@ -545,12 +493,6 @@ func test_check_win_true_when_resource_target_reached() -> void:
 	assert_true(MatchManager.check_win())
 
 
-## ARC-084: check_win() теперь также записывает ЗА СЧЁТ ЧЕГО произошла победа
-## (last_win_reason/last_win_resource) — нужно tools/battle_simulator.gd для
-## профилирования типов победы. Проверяем все 4 варианта: высота башни,
-## уничтожение башни, и ресурсная победа по каждому из трёх типов ресурса.
-
-
 func test_check_win_reason_is_tower_height() -> void:
 	player.tower_hp = MatchManager.WIN_TOWER_HEIGHT
 	MatchManager.check_win()
@@ -566,9 +508,6 @@ func test_check_win_reason_is_tower_destroyed() -> void:
 
 
 func test_check_win_reason_prioritizes_destruction_over_own_height() -> void:
-	# Оба условия истинны одновременно (искусственный кейс, на практике один
-	# apply_card_effects() почти никогда не двигает обе оси разом) — по
-	# комментарию в match_manager.gd уничтожение приоритетнее.
 	player.tower_hp = MatchManager.WIN_TOWER_HEIGHT
 	enemy.tower_hp = 0
 	MatchManager.check_win()
@@ -594,9 +533,6 @@ func test_check_win_reason_is_resource_beasts() -> void:
 	MatchManager.check_win()
 	assert_eq(MatchManager.last_win_reason, "resource")
 	assert_eq(MatchManager.last_win_resource, "beasts")
-
-
-# --- setup_match / execute_ai_turn (регрессия ARC-078: зависающий ход ИИ) ---
 
 
 func test_setup_match_assigns_default_ai_strategy_when_missing() -> void:
@@ -640,13 +576,7 @@ func test_execute_ai_turn_returns_turn_to_player_when_hand_empty() -> void:
 	)
 
 
-# --- _resolve_ai_turn (ARC-054: обобщена на любого actor, не только enemy_data,
-# --- чтобы её мог использовать tools/battle_simulator.gd для обеих сторон) ---
-
-
 func test_resolve_ai_turn_plays_best_card_for_player_actor_too() -> void:
-	# execute_ai_turn() всегда ведёт enemy_data — _resolve_ai_turn() должна уметь
-	# то же самое и для player_data (симулятору нужны обе стороны под ИИ).
 	player.ai_strategy = load(DEFAULT_AI_STRATEGY_PATH).new()
 	var card := TestFixtures.make_card(
 		1, CardData.ResourceType.BRICKS, [{"type": "build_wall", "target": "self", "value": 3}]
@@ -681,9 +611,6 @@ func test_resolve_ai_turn_ends_player_turn_and_hands_off_to_enemy_when_hand_empt
 		MatchManager.State.AI_TURN,
 		"Пустая рука игрока должна передать ход ИИ (AI_TURN), а не зависнуть"
 	)
-
-
-# --- setup_match / ProfileManager (регрессия ARC-001: непримененные бонусы) ---
 
 
 func test_player_data_uses_25_8_balance_package_defaults() -> void:
@@ -727,12 +654,6 @@ func test_setup_match_can_start_enemy_side_for_paired_simulation() -> void:
 
 
 func test_setup_match_applies_profile_manager_bonuses() -> void:
-	# ARC-037: раньше bonuses читались из плоского profile.player_stats
-	# (убран), теперь — из ProfileManager.UPGRADE_CATALOG через
-	# get_upgrade_bonus(), с уровнями из profile.upgrades. Ставим известные
-	# уровни явно (не полагаемся на то, что случайно накопилось в синглтоне
-	# от других тестов) и восстанавливаем после — ProfileManager делится
-	# состоянием со всеми тестовыми файлами.
 	var p := TestFixtures.make_player()
 	var e := TestFixtures.make_player()
 	var orig_tower_hp: int = p.tower_hp
@@ -771,9 +692,6 @@ func test_setup_match_applies_profile_manager_bonuses() -> void:
 	ProfileManager.profile["upgrades"] = saved_upgrades
 
 
-# --- setup_match / run_*_bonus (ARC-013: постоянные усиления с узлов «Отдых») ---
-
-
 func test_setup_match_applies_rest_run_bonuses() -> void:
 	var p := TestFixtures.make_player()
 	var e := TestFixtures.make_player()
@@ -782,8 +700,6 @@ func test_setup_match_applies_rest_run_bonuses() -> void:
 	var orig_magic: int = p.magic
 	var orig_dungeon: int = p.dungeon
 
-	# Изолируем от бонусов ProfileManager (ARC-037) — этот тест только про
-	# run_*_bonus с узлов «Отдых», не про магазин прокачки.
 	var saved_upgrades: Dictionary = ProfileManager.profile.get("upgrades", {}).duplicate()
 	ProfileManager.profile["upgrades"] = {}
 
@@ -808,8 +724,6 @@ func test_setup_match_applies_rest_run_bonuses() -> void:
 
 
 func test_setup_match_does_not_apply_rest_bonuses_to_enemy() -> void:
-	# Бонусы с «Отдыха» — экипировка ИГРОКА забега, у ИИ нет run_deck/run_gold/
-	# run_*_bonus (см. ARC-016) — только своя независимая колода на каждый бой.
 	var p := TestFixtures.make_player()
 	var e := TestFixtures.make_player()
 	var orig_enemy_tower_hp: int = e.tower_hp
@@ -824,9 +738,6 @@ func test_setup_match_does_not_apply_rest_bonuses_to_enemy() -> void:
 	)
 
 	MatchSettings.run_tower_bonus = 0
-
-
-# --- setup_match / run_artifacts (ARC-015: артефакты как награда за бой) ---
 
 
 func test_setup_match_applies_run_artifacts_to_player() -> void:
@@ -855,37 +766,19 @@ func test_setup_match_does_not_apply_run_artifacts_to_enemy() -> void:
 	MatchSettings.run_artifacts = []
 
 
-# --- setup_match / повторный вызов (регрессия ARC-002: карта -> бой -> карта -> бой) ---
-
-
 func test_setup_match_resets_hands_from_previous_match() -> void:
-	# Раньше setup_match() дописывал новые карты поверх текущей руки, не очищая
-	# её. Пока карту мира нельзя было пройти больше одного боя за сессию (сам
-	# баг ARC-002), это было незаметно — теперь несколько боёв подряд реальны.
 	MatchManager.player_hand = [TestFixtures.make_card(1, CardData.ResourceType.BRICKS)]
 	MatchManager.enemy_hand = [TestFixtures.make_card(1, CardData.ResourceType.BRICKS)]
 
 	MatchManager.setup_match(TestFixtures.make_player(), TestFixtures.make_player())
 
-	# 5 карт из начальной раздачи заполняют руку до max_hand_size (ARC-003);
-	# доборная карта в start_turn(player_data) в конце setup_match() блокируется
-	# лимитом руки, поэтому обе руки останавливаются на 5, а не копятся выше.
 	assert_eq(
 		MatchManager.player_hand.size(), 5, "Рука игрока должна начинаться с нуля, а не копиться"
 	)
 	assert_eq(MatchManager.enemy_hand.size(), 5, "Рука ИИ должна начинаться с нуля, а не копиться")
 
 
-# --- pick_random_regular_ai_strategy (ARC-085) ---
-
-
 func test_pick_random_regular_ai_strategy_returns_all_four_archetypes() -> void:
-	# Регрессия ARC-085 (issue #86): Быстрый бой (main_menu.gd::_on_battle_pressed())
-	# не передавал ai_strategy вовсе, и setup_match() молча подставлял только
-	# DefaultAIStrategy — случайный архетип никогда не встречался. Тест по
-	# аналогии с test_apply_node_difficulty_battle_assigns_random_strategy_from_all_four
-	# в tests/test_world_map_screen.gd, чей REGULAR_STRATEGY_SCRIPTS/рандомайзер
-	# теперь общий с этим методом.
 	var seen_types := {}
 
 	for i in range(200):

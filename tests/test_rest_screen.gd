@@ -1,6 +1,5 @@
 extends GutTest
-## Юнит-тесты RestScreen (ARC-013, UI 08/13): превью, лимиты, двухшаговый
-## выбор и защита применения от двойного ввода.
+## Тесты узла отдыха.
 
 const RestScreenScript = preload("res://ui/rest/rest_screen.gd")
 

@@ -1,67 +1,9 @@
 extends Node
-## ProfileManager (ARC-001): управляет мета-прогрессией и сохранениями.
-## Автозагружен под именем ProfileManager (см. [autoload] в project.godot) —
-## этого достаточно для глобального доступа, поэтому class_name здесь не
-## ставим: он конфликтует с именем автозагрузки и роняет её загрузку с
-## "hides an autoload singleton" (тот же баг уже был и починен в
-## core/build_version.gd, см. ARC-069).
+## Мета-прогрессия, настройки и сохранение профиля.
 
-## ARC-036: profile.currency из акцептанс-критерия — это уже существующий
-## "fame" (Слава), а не новое поле. "fame" реализован в ARC-017 и по факту
-## является постоянной мета-валютой из game_design_doc.md §9.1 ("Слава ...
-## принципиально отдельна от золота забега"); заводить второе, параллельное
-## поле currency с тем же смыслом под именем из черновика тикета ("Золото/
-## Эссенция", устарело — дизайн-док впоследствии остановился на "Слава") —
-## неоправданное дублирование. upgrades — теперь реально используемое поле
-## (ARC-037): {upgrade_key: level}, level по умолчанию 0 для любого ключа
-## (см. get_upgrade_level ниже).
-##
-## ARC-037: "player_stats" (tower_hp_bonus=5, resource_gain_bonus=1) убран —
-## это был плоский, всегда включённый бонус-заглушка ещё с ARC-001, до того
-## как появился настоящий магазин прокачки. Теперь тот же бонус (и ещё 4
-## новых) — часть UPGRADE_CATALOG ниже, покупается за Славу, начинается с
-## уровня 0 (без бонуса). Сознательный даунгрейд "бесплатного" стартового
-## бонуса в "заработанный" — так и задуман прогресс-магазин; см. блокквот
-## ARC-037 в dev_plan_tickets.md.
-## ARC-039: "total_wins"/"unlocked_artifacts" существуют с ARC-001, но до
-## этого тикета ничто в игре их не писало (мёртвые заглушки — total_wins
-## всегда оставался 0, unlocked_artifacts всегда []). Здесь оба наконец
-## получают реальных писателей (см. record_run_finished()/
-## record_artifact_collected() ниже) и появляются total_runs/max_tower_height —
-## данные для экрана статистики (game_design_doc.md §9.3).
-## ARC-038: правило блокировки — просто CardData.rarity == RARE. Никакого
-## отдельного списка "какие пути залочены" не заводим (ещё один список,
-## который надо было бы вручную поддерживать в синхроне с data/cards/*.tres —
-## именно та болезнь, что чинили в ARC-024): редкость уже читается прямо из
-## ресурса карты, единственного источника истины. profile.unlocked_cards
-## хранит resource_path уже купленных RARE-карт; всё, что НЕ RARE, всегда
-## доступно и никогда не появляется в этом списке.
-##
-## Заодно закрывает пробел, отмеченный (но отложенный) в комментарии у
-## MatchManager.ALL_CARD_PATHS ещё с ARC-020: пул карт был общим для всех
-## редкостей, и RARE-карты могли выпасть в награду обычного боя/магазин
-## наравне с Common/Uncommon, хотя design doc §5.3 явно резервирует RARE за
-## "награда за элитный бой/босса, мета-разблокировки". С фильтром по
-## is_card_unlocked() (см. MatchManager.build_shop_offer(),
-## ui/reward/reward_screen.gd) это по конструкции больше не может произойти.
 const DEFAULT_SETTINGS := {"volume": 1.0}
 const RARE_CARD_UNLOCK_COST := 150
 
-## ARC-037: каталог покупаемых мета-улучшений — общий источник и для
-## MetaShopScreen (что показывать и почём), и для MatchManager.setup_match()
-## (какой бонус применить к PlayerData). "per_level" — прибавка за один
-## купленный уровень; "max_level" — сколько уровней всего можно купить;
-## цена уровня (level+1) = base_cost + level*cost_step (линейный рост, не
-## экспонента — с base_cost/cost_step/max_level ниже цена макс. уровня
-## остаётся в разумных пределах десятка забегов, а не сотен).
-##
-## "quarry"/"magic"/"dungeon" — конкретная реализация категории "Мастерство
-## ресурсов" из game_design_doc.md §9.2 (там пример — "+10% урона картам
-## определённого типа"). Выбрал бонус генератора вместо множителя урона:
-## это то же самое "усилить всё, что связано с ресурсом X" по духу, но не
-## требует трогать интерпретатор эффектов карт (apply_card_effects) —
-## осознанно меньший объём работы при сохранении сути критерия приёмки
-## ("реально влияющих на setup_match()").
 const UPGRADE_CATALOG := {
 	"tower":
 	{
@@ -133,24 +75,10 @@ var profile: Dictionary = {
 
 func _ready() -> void:
 	load_profile()
-	# ARC-042: "применяется... между сессиями" — не только сохранить значение,
-	# но и реально приложить его к AudioServer сразу при старте, а не только
-	# когда игрок зайдёт в экран настроек и подвигает слайдер.
 	_apply_volume_to_audio_server(get_volume())
-	# ARC-039: "максимальная высота Башни" — пик МОЖЕТ случиться в любом бою
-	# забега, не обязательно в последнем (run_summary_screen.gd видит только
-	# состояние на момент конца ЗАБЕГА в целом, не пики по ходу него) —
-	# поэтому слушаем конец КАЖДОГО отдельного боя напрямую, тем же паттерном,
-	# что ArtifactManager подписывается на GameEvents в своём _ready().
 	GameEvents.match_ended.connect(_on_match_ended)
 
 
-## ARC-039: сравниваем tower_hp ИГРОКА (MatchManager.player_data), не
-## победителя матча (winner может быть врагом) — высокая башня, до которой
-## игрок дорос перед поражением, всё равно личный рекорд. Отслеживается для
-## ЛЮБОГО боя (в т.ч. тестового "Битва" из главного меню, не только забегов
-## кампании) — то же допущение, что и у "открытых карт": простая, всегда
-## работающая метрика вместо специального различения "это часть забега?".
 func _on_match_ended(_winner: Resource) -> void:
 	if not MatchManager.player_data:
 		return
@@ -160,23 +88,11 @@ func _on_match_ended(_winner: Resource) -> void:
 		save_profile()
 
 
-## ARC-017: Слава — постоянная мета-валюта (design doc 9.1), начисляется по
-## итогам каждого забега (ui/run_summary/run_summary_screen.gd). profile.get()
-## с дефолтом — на случай старого save-файла без ключа "fame" (load_profile()
-## целиком заменяет profile содержимым JSON, см. ниже).
 func add_fame(amount: int) -> void:
 	profile["fame"] = profile.get("fame", 0) + amount
 	save_profile()
 
 
-## ARC-039: вызывается из run_summary_screen.gd._ready() — единственной
-## точки конца ЗАБЕГА целиком (см. её же комментарий/ARC-018), тем же
-## способом, что она уже вызывает add_fame(). total_runs растёт всегда
-## (забег закончился — неважно, победой или поражением боссу); total_wins —
-## только при victory. "победа" здесь = победа над боссом (MatchSettings.
-## run_victory), а не победа в отдельном бою — так же, как "число забегов"
-## считает завершённые ЗАБЕГИ, а не отдельные бои внутри них (иначе эти два
-## числа значили бы почти одно и то же и не несли раздельного смысла).
 func record_run_finished(victory: bool) -> void:
 	profile["total_runs"] = profile.get("total_runs", 0) + 1
 	if victory:
@@ -184,17 +100,6 @@ func record_run_finished(victory: bool) -> void:
 	save_profile()
 
 
-## ARC-039: вызывается из ui/reward/reward_screen.gd._apply_slot() при выборе
-## слота-артефакта. "Открытые" здесь = "хоть раз получены в награду за
-## какой-либо забег", НАВСЕГДА, в отличие от MatchSettings.run_artifacts
-## (которые обнуляются каждый новый забег) — лифетайм-достижение/коллекция,
-## не то же самое понятие, что "разблокировка" у карт (ARC-038): у
-## артефактов нет отдельного гейта "нужно купить, чтобы выпадали" — они
-## всегда могут выпасть, но факт "видел ли игрок эту награду хоть раз" сам
-## по себе интересен как коллекционная статистика (design doc §9.3,
-## docs/ui_wireframes.html#profile-screen, вкладка "Коллекция").
-## artifact.resource_path — тот же способ идентификации, что unlocked_cards
-## у ARC-038.
 func record_artifact_collected(artifact: ArtifactData) -> void:
 	var collected: Array = profile.get("unlocked_artifacts", [])
 	if not collected.has(artifact.resource_path):
@@ -203,23 +108,16 @@ func record_artifact_collected(artifact: ArtifactData) -> void:
 		save_profile()
 
 
-## ARC-037: текущий купленный уровень улучшения key (0, если ни разу не
-## покупалось, или ключ вообще не из UPGRADE_CATALOG — тот же дефолтный "0",
-## что и для отсутствующего ключа, разницы вызывающему коду не нужно).
 func get_upgrade_level(key: String) -> int:
 	return profile.get("upgrades", {}).get(key, 0)
 
 
-## Бонус к соответствующему полю PlayerData, который должен применить
-## MatchManager.setup_match() — уровень * per_level. 0 для неизвестного key.
 func get_upgrade_bonus(key: String) -> int:
 	if not UPGRADE_CATALOG.has(key):
 		return 0
 	return get_upgrade_level(key) * UPGRADE_CATALOG[key]["per_level"]
 
 
-## Цена СЛЕДУЮЩЕГО уровня (перехода level -> level+1); -1, если key не из
-## каталога или уже на максимальном уровне — "покупать больше нечего".
 func get_upgrade_next_cost(key: String) -> int:
 	var def: Dictionary = UPGRADE_CATALOG.get(key, {})
 	if def.is_empty():
@@ -235,11 +133,6 @@ func can_afford_upgrade(key: String) -> bool:
 	return cost >= 0 and profile.get("fame", 0) >= cost
 
 
-## Покупка следующего уровня улучшения key: списывает Славу, поднимает
-## profile.upgrades[key] на 1, сохраняет профиль. Возвращает false и НИЧЕГО
-## не меняет, если key неизвестен каталогу, уже на максимуме или не хватает
-## Славы (can_afford_upgrade() покрывает оба случая через get_upgrade_next_cost()
-## == -1).
 func purchase_upgrade(key: String) -> bool:
 	if not can_afford_upgrade(key):
 		return false
@@ -252,22 +145,12 @@ func purchase_upgrade(key: String) -> bool:
 	return true
 
 
-## ARC-038: не-RARE карты всегда разблокированы (никогда не требуют
-## покупки). RARE — только если её resource_path уже в profile.unlocked_cards.
-## card без resource_path (напр. CardData.new() в тестах, без .tres-файла)
-## никогда не будет найден в unlocked_cards — для RARE это "всегда
-## заблокирована", что нормально: у синтетических тестовых карт нет
-## реального пути для разблокировки, но обычно они и не RARE (rarity по
-## умолчанию COMMON), так что на практике это не мешает.
 func is_card_unlocked(card: CardData) -> bool:
 	if card.rarity != CardData.Rarity.RARE:
 		return true
 	return profile.get("unlocked_cards", []).has(card.resource_path)
 
 
-## Цена разблокировки card: RARE_CARD_UNLOCK_COST, если она RARE и ещё не
-## куплена; -1, если её вообще не нужно (не RARE) или уже куплена — "нечего
-## покупать", тот же контракт по -1, что и у get_upgrade_next_cost().
 func get_card_unlock_cost(card: CardData) -> int:
 	if is_card_unlocked(card):
 		return -1
@@ -279,9 +162,6 @@ func can_afford_card_unlock(card: CardData) -> bool:
 	return cost >= 0 and profile.get("fame", 0) >= cost
 
 
-## Покупка разблокировки card: списывает Славу, добавляет resource_path в
-## profile.unlocked_cards, сохраняет профиль. false и ничего не меняет, если
-## нечего покупать (не RARE/уже разблокирована) или не хватает Славы.
 func unlock_card(card: CardData) -> bool:
 	if not can_afford_card_unlock(card):
 		return false
@@ -293,20 +173,10 @@ func unlock_card(card: CardData) -> bool:
 	return true
 
 
-## ARC-042: линейная громкость 0.0..1.0 (не дБ — так интуитивнее для UI-слайдера,
-## конвертация в дБ только в _apply_volume_to_audio_server()). float() —
-## подстраховка от _restore_int_types() (см. её комментарий ниже): ровно 1.0
-## после JSON save/load round-trip превращается в int(1), get_volume() должен
-## всё равно вернуть float для единообразия с вызывающим кодом (слайдер и
-## linear_to_db() одинаково хорошо съедят и int, и float, но контракт функции
-## честнее как float).
 func get_volume() -> float:
 	return float(profile.get("settings", {}).get("volume", 1.0))
 
 
-## Клэмп 0..1 — на случай кривого ручного значения (напр. из старого/битого
-## save-файла или программной ошибки вызывающего кода), а не только
-## доверие UI-слайдеру, у которого и так min/max выставлены на 0/1.
 func set_volume(value: float) -> void:
 	var clamped: float = clamp(value, 0.0, 1.0)
 	var settings: Dictionary = profile.get("settings", {})
@@ -316,19 +186,12 @@ func set_volume(value: float) -> void:
 	save_profile()
 
 
-## UI 04/13 (#99): сбрасывает только пользовательские настройки. Прогресс,
-## статистика, разблокировки и валюта профиля не затрагиваются.
 func reset_settings() -> void:
 	profile["settings"] = DEFAULT_SETTINGS.duplicate(true)
 	_apply_volume_to_audio_server(get_volume())
 	save_profile()
 
 
-## В проекте пока нет собственного audio bus layout (default_bus_layout.tres) —
-## AudioServer всё равно всегда имеет встроенную шину "Master" даже без него,
-## этого достаточно для единственного пока регулятора "общая громкость".
-## linear_to_db(0.0) == -inf дБ, что AudioServer штатно трактует как полную
-## тишину — отдельная ветка на value==0.0 не нужна.
 func _apply_volume_to_audio_server(value: float) -> void:
 	var bus_index := AudioServer.get_bus_index("Master")
 	if bus_index != -1:
@@ -357,16 +220,6 @@ func load_profile() -> void:
 			print("[DEBUG] Profile loaded")
 
 
-## ARC-036: JSON.parse() в Godot возвращает АБСОЛЮТНО ВСЕ числа как float —
-## формат JSON сам по себе не различает int/float, и движок не пытается
-## угадать. Без этого прохода "fame"/"total_wins"/значения в "upgrades" (по
-## смыслу всегда целые — счётчики, уровни прокачки) после каждой перезагрузки
-## профиля тихо превращались бы в float (2 -> 2.0). Само по себе `2 == 2.0`
-## в GDScript истинно, но строгое сравнение словарей (тесты; в будущем —
-## сравнение уровня апгрейда в match/switch-подобной логике ARC-037) уже
-## различает их. Рекурсивно приводит float без дробной части к int во
-## вложенных Dictionary/Array; в profile нет полей, которым намеренно нужна
-## именно дробная точность, так что это допущение безопасно для всего дерева.
 func _restore_int_types(value):
 	if value is Dictionary:
 		var result := {}

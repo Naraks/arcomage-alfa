@@ -1,11 +1,5 @@
 extends GutTest
-## Юнит-тесты RunSaveManager (ARC-018). RunSaveManager — autoload, как
-## ProfileManager/MatchManager — тесты приводят состояние MatchSettings к
-## известному в before_each()/after_each(), как test_rest_screen.gd делает для
-## run_*_bonus. Проверяются только build_save_data()/apply_save_data() —
-## чистый маппинг полей без обращения к диску (save_run()/load_run()/
-## clear_run() читают/пишут user://, что штатно работает в реальном Godot, но
-## незачем гонять файловый I/O ради проверки логики маппинга).
+## Тесты сохранения забега.
 
 const WorldMapData = preload("res://data/resources/world_map_data.gd")
 
@@ -56,11 +50,6 @@ func test_build_save_data_copies_all_run_fields() -> void:
 
 
 func test_build_save_data_duplicates_arrays_not_same_reference() -> void:
-	# run_deck/run_artifacts должны копироваться (duplicate()), а не шариться
-	# по ссылке — иначе дальнейшие изменения MatchSettings.run_deck/
-	# run_artifacts после сохранения незаметно "просочились" бы в уже
-	# сохранённый снимок. (Array == сравнивает содержимое, а не ссылку, так
-	# что тут проверяем эффект мутации, а не assert_ne по значению.)
 	MatchSettings.run_deck = [TestFixtures.make_card(1, CardData.ResourceType.BRICKS)]
 	MatchSettings.run_artifacts = [TestFixtures.make_artifact()]
 
@@ -69,7 +58,9 @@ func test_build_save_data_duplicates_arrays_not_same_reference() -> void:
 	MatchSettings.run_artifacts.append(TestFixtures.make_artifact())
 
 	assert_eq(
-		data.run_deck.size(), 1, "Снимок run_deck не должен расти при мутации MatchSettings.run_deck после сохранения"
+		data.run_deck.size(),
+		1,
+		"Снимок run_deck не должен расти при мутации MatchSettings.run_deck после сохранения"
 	)
 	assert_eq(
 		data.run_artifacts.size(),
@@ -114,8 +105,6 @@ func test_build_then_apply_round_trip_preserves_state() -> void:
 	MatchSettings.run_artifacts = [TestFixtures.make_artifact()]
 
 	var data := RunSaveManager.build_save_data()
-	# Имитация "закрыли вкладку и открыли заново" — состояние в MatchSettings
-	# сбрасывается, восстанавливаем его только из снимка.
 	before_each()
 
 	RunSaveManager.apply_save_data(data)

@@ -1,12 +1,10 @@
 class_name PlayerData
 extends Resource
+## Боевые характеристики игрока или противника.
 
 @export_group("Logic")
-## ARC-096: first tempo experiment from the balance review (25 / 8 / 65).
 @export var tower_hp: int = 25
 @export var wall_hp: int = 8
-## ARC-003: лимит карт в руке. По умолчанию 5 (правила Arcomage), артефакт
-## «Книга Мудрости» (ARC-034) увеличивает это поле точечно для владельца.
 @export var max_hand_size: int = 5
 
 @export_group("Resources")

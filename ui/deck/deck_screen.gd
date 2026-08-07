@@ -1,19 +1,5 @@
 extends Control
-## ARC-041: экран «Колода» — просмотр (не редактирование, MVP) состава
-## колоды. Изначально открывался напрямую из главного меню; с ARC-046 —
-## переиспользуется как вкладка «Коллекция» внутри единого
-## ui/profile/profile_screen.tscn (см. блокквоты ARC-041/ARC-046 в
-## dev_plan_tickets.md), сам файл/скрипт не менялся — только точка входа.
-## Разметка строится кодом в _ready(), тот же паттерн, что в
-## ui/shop/shop_screen.gd.
-##
-## Что показывает: колоду ТЕКУЩЕГО забега, если есть сохранённый
-## (RunSaveManager.has_saved_run()) — то же самое, что игрок увидит, нажав
-## «Продолжить»; иначе — превью стартовой колоды новой кампании
-## (MatchManager.build_starting_run_deck()). Это превью НЕ детерминировано
-## (build_starting_run_deck() каждый раз мешает случайные повторы — см. её
-## комментарий) — тот же список карт, что реально получит игрок при старте
-## кампании, просто не побайтово тот же порядок/дубликаты.
+## Просмотр состава колоды.
 
 @export var embedded_in_profile := false
 
@@ -80,9 +66,6 @@ func _build_ui() -> void:
 	_refresh(_load_deck_to_show())
 
 
-## Решает, чью колоду показывать, и подписывает _source_label. Отдельно от
-## _refresh() — какая колода показывается, не то же самое, что как она
-## отрисовывается (группировка/сортировка тестируется без реального сейва).
 func _load_deck_to_show() -> Array[CardData]:
 	if RunSaveManager.has_saved_run():
 		RunSaveManager.load_run()
@@ -110,11 +93,6 @@ func _refresh(cards: Array[CardData]) -> void:
 		_deck_list.add_child(row)
 
 
-## Группирует одинаковые CardData по identity (колода часто содержит
-## несколько ссылок на один и тот же ресурс .tres — та же ситуация, что
-## shop_screen._refresh_remove_list() решает по индексу, но там нужен именно
-## индекс для точечного удаления; здесь нужен только счётчик, поэтому проще
-## через Dictionary с CardData-ключом) и сортирует: тип ресурса → cost → имя.
 func _group_cards(cards: Array[CardData]) -> Array:
 	var counts: Dictionary = {}
 	var order: Array[CardData] = []
@@ -132,10 +110,6 @@ func _group_cards(cards: Array[CardData]) -> Array:
 	return result
 
 
-## Та же сортировка (тип → cost → имя), что в ui/shop/shop_screen.gd —
-## независимая копия, не общая функция: тот же паттерн уже используют
-## shop_screen.gd и battle_screen.gd (обе хранят свою копию _compare_cards),
-## не общий модуль.
 func _compare_cards(a: CardData, b: CardData) -> bool:
 	if a.type != b.type:
 		return a.type < b.type

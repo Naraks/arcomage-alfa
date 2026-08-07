@@ -1,9 +1,6 @@
 extends Control
+## Маршрут забега, состояния узлов и переходы.
 
-## UI 02/13 (#97): состояние узла — отдельная семантика, а не оттенок.
-## Browser fix: пиктограммы узлов — PNG-текстуры, а не Unicode-глифы,
-## наличие которых зависит от системных шрифтов браузера.
-## Текущий узел остаётся последним посещённым; доступными являются его выходы.
 enum NodeState { CURRENT, AVAILABLE, COMPLETED, LOCKED }
 
 const WorldMapData = preload("res://data/resources/world_map_data.gd")
@@ -50,9 +47,6 @@ const NODE_PRESENTATION := {
 const NODE_SIZE := Vector2(132, 62)
 const MAP_SIDE_PADDING := 32.0
 
-## ARC-017: "выше стартовые HP/генераторы, чуть агрессивнее" (design doc,
-## раздел 6) для элиты/босса — конкретные числа нигде не заданы, взяты как
-## разумная прогрессия (босс вдвое злее элиты).
 const ELITE_TOWER_BONUS := 10
 const ELITE_WALL_BONUS := 5
 const ELITE_GENERATOR_BONUS := 1
@@ -60,53 +54,12 @@ const BOSS_TOWER_BONUS := 20
 const BOSS_WALL_BONUS := 10
 const BOSS_GENERATOR_BONUS := 2
 
-## ARC-027: тип узла определяет не только бонусы к статам (ARC-017), но и то,
-## какой ai_strategy достаётся противнику.
-## - BATTLE: без бонусов к статам, случайный профиль из всех четырёх — обычный
-##   бой не должен ощущаться усиленным, но должен давать разнообразие
-##   ("случайный/сбалансированный профиль" из описания тикета). До этого
-##   тикета BATTLE вообще не выставлял ai_strategy — MatchManager._resolve_ai_turn
-##   молча подставлял DefaultAIStrategy с [ERROR]-принтом в консоль на каждый
-##   ход ИИ; теперь это явное и разнообразное назначение, принт больше не
-##   появляется.
-## - ELITE_BATTLE: бонусы к статам как раньше, но профиль теперь случайно
-##   Aggressive ИЛИ Builder — буквально "усиленная версия (Aggressive/Builder)"
-##   из описания тикета, а не всегда фиксированный Aggressive, как было
-##   временным приближением в ARC-017.
-## - BOSS: свои (более высокие) бонусы, всегда BossAIStrategy — "отдельная
-##   скриптованная гибридная стратегия" (data/resources/boss_ai_strategy.gd:
-##   переключается между Aggressive/Builder по угрозе поражения/окну для
-##   добивания — именно то, что в ARC-017 было отложено как "отдельная, более
-##   крупная задача про ИИ").
-##
-## Массивы держат сами GDScript-объекты через preload() (гарантированно
-## константное выражение), а не bare class_name-идентификаторы вроде
-## DefaultAIStrategy — компилятор не считает их константным выражением внутри
-## const-массива (`Assigned value for constant "..." isn't a constant
-## expression`), несмотря на то, что вне const-контекста (`enemy.ai_strategy =
-## AggressiveAIStrategy.new()`, как было до ARC-027) обращение к ним работает
-## нормально.
-## ARC-085: REGULAR_STRATEGY_SCRIPTS переехал в MatchManager.REGULAR_STRATEGY_SCRIPTS —
-## переиспользуется ещё и в main_menu.gd (Быстрый бой). ELITE_STRATEGY_SCRIPTS
-## остаётся здесь — используется только этим экраном.
 const AggressiveAIStrategyScript = preload("res://data/resources/aggressive_ai_strategy.gd")
 const BuilderAIStrategyScript = preload("res://data/resources/builder_ai_strategy.gd")
 const BossAIStrategyScript = preload("res://data/resources/boss_ai_strategy.gd")
 
 const ELITE_STRATEGY_SCRIPTS: Array = [AggressiveAIStrategyScript, BuilderAIStrategyScript]
 
-## ARC-029: рост сложности от глубины карты (MapNodeData.floor_index,
-## 0-based) — НЕЗАВИСИМО от типа узла, поверх бонусов ELITE/BOSS (ARC-017):
-## дальний обычный BATTLE должен быть ощутимо опаснее самого первого, а не
-## только элита/босс, у которых до этого тикета сложность вообще не зависела
-## от того, на каком этаже они встретились. floor_index=0 (первый этаж, а
-## также любой узел, созданный не через генератор — тестовые/отладочные)
-## даёт нулевой бонус — старое поведение ELITE/BOSS-тестов не меняется.
-##
-## tower_hp/wall_hp растут линейно на каждый этаж; генераторы — раз в
-## FLOOR_GENERATOR_INTERVAL этажей, а не на каждый: базовый генератор = 1,
-## линейный рост на каждый из 12-15 этажей карты (WorldMapGenerator) был бы
-## взрывным (генератор x12+ к последнему этажу).
 const FLOOR_TOWER_HP_PER_FLOOR := 2
 const FLOOR_WALL_HP_PER_FLOOR := 1
 const FLOOR_GENERATOR_INTERVAL := 3
@@ -129,25 +82,16 @@ func _ready() -> void:
 	if map_data:
 		_update_hud()
 		_generate_map_ui()
-		# ARC-018: единая точка автосохранения — сюда возвращаются после любого
-		# узла (shop/rest/event/reward уже успели проставить is_completed/
-		# current_node_index до перехода), и сюда же попадают сразу после
-		# генерации нового забега.
 		RunSaveManager.save_run()
 
 	if OS.is_debug_build():
 		_generate_debug_node_bar()
 
 
-## Карта может быть выше/шире экрана (12-15 этажей) — раньше узлы и
-## линии добавлялись прямо в корневой Control без прокрутки, из-за чего нижние
-## этажи были не видны и недоступны для клика. Теперь всё содержимое карты
-## живёт в $ScrollContainer/MapContent, а не в самом экране.
 func _generate_map_ui() -> void:
 	print("Generating map UI, nodes count: ", map_data.map_nodes.size())
 	_fit_map_content_size()
 
-	# Отрисовка путей
 	for node in map_data.map_nodes:
 		for connected in node.connected_nodes:
 			var line = Line2D.new()
@@ -159,25 +103,18 @@ func _generate_map_ui() -> void:
 			line.default_color = Color(0.55, 0.45, 0.28, 0.8)
 			_map_content.add_child(line)
 
-	# ARC-011: кликабельны только узлы, соединённые с current_node_index и ещё
-	# не пройденные — остальные задизейблены и визуально приглушены.
 	var available_nodes: Array = _compute_available_nodes()
 
-	# Отрисовка узлов
 	for node in map_data.map_nodes:
 		var button = Button.new()
 		var state := _node_state(node, available_nodes)
 		button.text = _node_label(node, state)
-		# Левая полоса зарезервирована под PNG-иконку: выравнивание вправо
-		# не даёт длинному статусу («ДОСТУПНО»/«ПРОЙДЕНО») заходить под неё.
 		button.alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		button.tooltip_text = _node_preview(node, state)
 		button.position = _map_position(node)
 		button.custom_minimum_size = NODE_SIZE
 		_add_node_icon(button, node, state)
 
-		# LOCKED остаётся кликабельным только для понятной обратной связи;
-		# _can_enter_node — единый guard, поэтому переход невозможен.
 		button.disabled = state == NodeState.COMPLETED or state == NodeState.CURRENT
 		_style_node_button(button, state)
 
@@ -188,9 +125,6 @@ func _generate_map_ui() -> void:
 		print("Added button at: ", node.position)
 
 
-## Узлы позиционируются абсолютно (node.position, см. world_map_generator.gd),
-## поэтому ScrollContainer должен знать реальный размер контента заранее —
-## иначе он не покажет скроллбар и обрежет карту по размеру экрана.
 func _fit_map_content_size() -> void:
 	var max_y := 0.0
 	for node in map_data.map_nodes:
@@ -200,11 +134,6 @@ func _fit_map_content_size() -> void:
 	_map_content.custom_minimum_size = Vector2(horizontal_layout.y, max_y + 170)
 
 
-## Генератор хранит координаты в своей фиксированной сетке. На широком
-## экране эта сетка раньше оставалась у левого края ScrollContainer. Здесь
-## вычисляется единый сдвиг для всех узлов и линий: маршрут центрируется,
-## если помещается, либо получает безопасные поля и горизонтальный скролл.
-## Vector2.x = offset, Vector2.y = итоговая ширина MapContent.
 func _calculate_horizontal_layout(viewport_width: float) -> Vector2:
 	if map_data == null or map_data.map_nodes.is_empty():
 		return Vector2(MAP_SIDE_PADDING, maxf(viewport_width, NODE_SIZE.x + MAP_SIDE_PADDING * 2.0))
@@ -277,8 +206,6 @@ func _add_node_icon(button: Button, node: Resource, state: int) -> void:
 	if state == NodeState.LOCKED:
 		icon.modulate = Color(0.55, 0.53, 0.5)
 	button.add_child(icon)
-	# TextureRect пересчитывает minimum size при входе в дерево; поэтому
-	# фиксируем прямоугольник после add_child, иначе 128px-исходник перекрывает подпись.
 	icon.position = Vector2(8, 17)
 	icon.size = Vector2(28, 28)
 
@@ -300,10 +227,6 @@ func _can_enter_node(node: Resource) -> bool:
 	return _compute_available_nodes().has(node)
 
 
-## Доступные для клика узлы — соединённые с текущей позицией на карте
-## (map_data.current_node_index) и ещё не пройденные. current_node_index == -1
-## — сентинел WorldMapGenerator "забег только начался": тогда доступны узлы
-## первого этажа, у которых нет ни одной входящей связи ни от одного узла карты.
 func _compute_available_nodes() -> Array:
 	if map_data.current_node_index == -1:
 		var roots: Array = []
@@ -331,9 +254,6 @@ func _has_incoming_edge(target_node: Resource) -> bool:
 	return false
 
 
-## Состояния различаются одновременно подписью, формой и контрастом рамки:
-## круглее всего текущий узел, доступный выделен толстой рамкой, пройденный
-## почти прямоугольный, заблокированный — прямоугольный и приглушённый.
 func _style_node_button(button: Button, state: int) -> void:
 	var palette: Array = {
 		NodeState.CURRENT: [Color("5b3c20"), Color("f6d58a"), 18],
@@ -355,11 +275,6 @@ func _style_node_button(button: Button, state: int) -> void:
 	button.add_theme_font_size_override("font_size", 14)
 
 
-## Панель отладки: по одной всегда доступной кнопке на каждый NodeType, не
-## привязанной к основному пути (узлы синтетические, не входят в
-## map_data.map_nodes — клик по ним не может испортить прохождение забега,
-## см. guard'ы на .find() в battle_screen/shop_screen/rest_screen). Только в
-## debug-сборках — не попадёт в релизный экспорт для Яндекс Игр.
 func _generate_debug_node_bar() -> void:
 	var layer := CanvasLayer.new()
 	add_child(layer)
@@ -425,40 +340,28 @@ func _on_node_pressed(node: Resource) -> void:
 		_preview_label.text = "Этот путь пока закрыт. Выберите узел с пометкой «ДОСТУПНО»."
 		return
 
-	# ARC-015: ELITE_BATTLE/BOSS запускают тот же battle_screen, что и обычный
-	# BATTLE — отличается пул наград после победы (reward_screen.gd читает
-	# node_type из current_map_node) и, с ARC-017, характеристики противника
-	# (_apply_node_difficulty).
 	if (
 		node.node_type == MapNodeData.NodeType.BATTLE
 		or node.node_type == MapNodeData.NodeType.ELITE_BATTLE
 		or node.node_type == MapNodeData.NodeType.BOSS
 	):
-		# Заглушка для PlayerData
 		var p_data = PlayerData.new()
 		var e_data = PlayerData.new()
 		_apply_node_difficulty(e_data, node.node_type, node.floor_index)
 		MatchSettings.player_data = p_data
 		MatchSettings.enemy_data = e_data
 
-		# ARC-002: помечаем, что бой начат с карты — battle_screen прочитает это
-		# в _on_match_ended(), чтобы при победе увести на экран награды (ARC-015),
-		# а при поражении вернуть сюда без отметки узла пройденным.
 		MatchSettings.came_from_map = true
 		MatchSettings.current_map_node = node
 
 		get_tree().change_scene_to_file("res://ui/battle/battle_screen.tscn")
 	elif node.node_type == MapNodeData.NodeType.SHOP:
-		# ARC-012: небоевой узел — завершение (is_completed) делает сам
-		# shop_screen.gd по кнопке "Уйти на карту".
 		MatchSettings.current_map_node = node
 		get_tree().change_scene_to_file("res://ui/shop/shop_screen.tscn")
 	elif node.node_type == MapNodeData.NodeType.REST:
-		# ARC-013: тот же переход, что и у Магазина.
 		MatchSettings.current_map_node = node
 		get_tree().change_scene_to_file("res://ui/rest/rest_screen.tscn")
 	elif node.node_type == MapNodeData.NodeType.EVENT:
-		# ARC-014: тот же переход, что и у Магазина/Отдыха.
 		MatchSettings.current_map_node = node
 		get_tree().change_scene_to_file("res://ui/event/event_screen.tscn")
 	else:

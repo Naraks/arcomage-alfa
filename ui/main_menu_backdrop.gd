@@ -1,11 +1,5 @@
 extends Control
-## UI 13/13 (#108): процедурный fallback-фон главного меню.
-##
-## Финальный иллюстративный арт ведётся отдельно в #92. Пока его нет, этот
-## Control переиспользует качественный battlefield-арт как среду и дорисовывает
-## стену с двумя узнаваемыми башнями. Фон масштабируется от landscape к portrait
-## и намеренно оставляет спокойную область под меню: слева на широком экране и
-## снизу на узком. Никаких интерактивных элементов здесь нет.
+## Процедурный фон главного меню.
 
 const BACKGROUND_TEXTURE := preload("res://art/battle/background_battlefield.png")
 
@@ -31,8 +25,6 @@ func _draw() -> void:
 
 
 func _draw_background() -> void:
-	# Cover, а не stretch: landscape-арт не искажается на 4:3/9:16, лишние
-	# края безопасно обрезаются вокруг центральной точки схода.
 	var texture_size := BACKGROUND_TEXTURE.get_size()
 	var cover_scale := maxf(size.x / texture_size.x, size.y / texture_size.y)
 	var source_size := size / cover_scale
@@ -41,8 +33,6 @@ func _draw_background() -> void:
 		BACKGROUND_TEXTURE, Rect2(Vector2.ZERO, size), Rect2(source_position, source_size)
 	)
 
-	# Цветовой grade связывает фиолетовую среду с золотыми CTA и гарантирует
-	# контраст даже после будущей замены исходной текстуры.
 	var zenith := Color(0.01, 0.02, 0.06, 0.34)
 	var horizon := Color(0.28, 0.11, 0.12, 0.22)
 	var band_count := 28
@@ -53,8 +43,6 @@ func _draw_background() -> void:
 		var band_height := size.y / float(band_count) + 1.0
 		draw_rect(Rect2(0.0, index * band_height, size.x, band_height), color)
 
-	# Тёплое зарево является визуальным фокусом справа/сверху и не спорит с
-	# текстом меню на тёмной подложке.
 	var glow_center := Vector2(size.x * 0.76, size.y * 0.33)
 	var glow_radius := minf(size.x, size.y) * 0.11
 	for ring in range(8, 0, -1):
@@ -65,8 +53,6 @@ func _draw_background() -> void:
 
 
 func _draw_atmosphere() -> void:
-	# Небольшое число детерминированных звёзд: фон не мерцает и не создаёт
-	# визуальный шум при каждом открытии меню.
 	var stars: Array[Vector2] = [
 		Vector2(0.08, 0.10),
 		Vector2(0.17, 0.22),
@@ -104,7 +90,6 @@ func _draw_castle_scene(left_x: float, right_x: float, ground_y: float, max_heig
 	_draw_tower(left_x, ground_y, max_height, max_height * 0.30, Color("#263247"), false)
 	_draw_tower(right_x, ground_y, max_height * 0.82, max_height * 0.28, Color("#33283d"), true)
 
-	# Линия света связывает две стороны дуэли и подчёркивает силуэты.
 	draw_line(
 		Vector2(left_x, ground_y + 2.0),
 		Vector2(right_x, ground_y + 2.0),
@@ -166,15 +151,12 @@ func _draw_tower(
 				color
 			)
 
-	# Узкие светящиеся окна помогают башне читаться архитектурой, а не
-	# вертикальной полосой прогресса.
 	for row in range(3):
 		var window_y := body_top + height * (0.24 + 0.22 * row)
 		var window_rect := Rect2(center_x - width * 0.045, window_y, width * 0.09, height * 0.08)
 		draw_rect(window_rect, Color("#0b101c"))
 		draw_rect(window_rect.grow(-2.0), Color(0.96, 0.63, 0.26, 0.76))
 
-	# Ворота и основание завершают силуэт.
 	var gate_width := body_width * 0.30
 	draw_rect(
 		Rect2(center_x - gate_width * 0.5, ground_y - height * 0.14, gate_width, height * 0.14),

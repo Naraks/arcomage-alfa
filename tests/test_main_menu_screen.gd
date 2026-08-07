@@ -1,11 +1,5 @@
 extends GutTest
-## Юнит-тесты MainMenu (ARC-095 + UI 13/13, GitHub issue #108).
-##
-## main_menu.gd — не autoload и без class_name (обычный Control-скрипт сцены
-## main_menu.tscn), поэтому экземпляр создаётся через load().new() и НЕ
-## добавляется в дерево сцены (тот же паттерн, что в test_world_map_screen.gd):
-## _ready() при этом не вызывается. Для CTA-тестов явно вызываем _build_ui()
-## и передаём состояние сейва параметром — user:// тестами не затрагивается.
+## Тесты главного меню.
 
 const MainMenuScript = preload("res://ui/main_menu.gd")
 const AggressiveAIStrategyScript = preload("res://data/resources/aggressive_ai_strategy.gd")
@@ -112,10 +106,6 @@ func test_built_menu_uses_clear_quick_battle_label_and_touch_targets() -> void:
 func test_layout_uses_side_panel_for_landscape_and_bottom_panel_for_portrait() -> void:
 	var menu := MainMenuScript.new()
 	menu._build_ui()
-	# В рантайме размер полноэкранного корня задаёт viewport. В изолированном
-	# тесте родительского viewport нет, поэтому временно сводим anchors в одну
-	# точку перед ручной установкой size — иначе Godot предупреждает, что
-	# разнесённые anchors впоследствии переопределят этот размер.
 	menu.set_anchors_preset(Control.PRESET_TOP_LEFT)
 
 	for viewport_size in [Vector2(1280, 720), Vector2(960, 720)]:
@@ -135,8 +125,6 @@ func test_layout_uses_side_panel_for_landscape_and_bottom_panel_for_portrait() -
 
 
 func test_prepare_test_battle_settings_resets_run_state() -> void:
-	# Симулируем "протёкшее" состояние прошлой кампании — метод должен
-	# сбросить всё до нуля независимо от того, что было раньше (ARC-002/016).
 	MatchSettings.run_deck = [TestFixtures.make_card(1, CardData.ResourceType.BRICKS)]
 	MatchSettings.run_gold = 999
 	MatchSettings.came_from_map = true
@@ -155,14 +143,6 @@ func test_prepare_test_battle_settings_resets_run_state() -> void:
 
 
 func test_prepare_test_battle_settings_without_strategy_leaves_enemy_ai_unset() -> void:
-	# _prepare_test_battle_settings() сам по себе, без переданной стратегии,
-	# оставляет enemy_data.ai_strategy равным null — дальше подстрахует
-	# DefaultAIStrategy-фоллбэк в MatchManager.setup_match() (ARC-078). С
-	# ARC-085 обычная кнопка «Битва» (_on_battle_pressed()) больше не зовёт
-	# этот метод без стратегии — она передаёт случайный обычный архетип
-	# (см. test_pick_random_regular_ai_strategy_returns_all_four_archetypes в
-	# tests/test_match_manager.gd) — но сам метод остаётся пригоден для
-	# явного null (используется debug-кнопками не отсюда).
 	var menu := MainMenuScript.new()
 	menu._prepare_test_battle_settings()
 
@@ -171,8 +151,6 @@ func test_prepare_test_battle_settings_without_strategy_leaves_enemy_ai_unset() 
 
 
 func test_prepare_test_battle_settings_assigns_requested_debug_strategy() -> void:
-	# Debug-кнопки (_generate_debug_ai_picker_bar()) передают конкретную
-	# стратегию — она должна дойти до MatchSettings.enemy_data как есть.
 	var strategy := AggressiveAIStrategyScript.new()
 	var menu := MainMenuScript.new()
 

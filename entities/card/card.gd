@@ -1,26 +1,17 @@
 extends Control
+## Отображение и ввод игровой карты.
 
 signal card_clicked(card_node: Node)
 signal card_right_clicked(card_node: Node)
 
-# ARC-091: preload как тип вместо class_name CurvedLabel напрямую — не
-# зависит от того, подхватил ли редактор глобальный кэш скриптовых классов
-# для только что добавленного файла (class_name в curved_label.gd оставлен
-# для читаемости/автокомплита, но здесь на него не полагаемся).
 const CurvedLabelScript = preload("res://entities/card/curved_label.gd")
 
-## ARC-091 (docs/art_prompts.md §5): "материал печати = редкость" — три отдельные
-## текстуры печати (форма/материал), не 9 (цвет ресурса накладывается сверху
-## через modulate, как и на ленте).
 const SEAL_TEXTURES := {
 	CardData.Rarity.COMMON: preload("res://art/card_frame/seal_common.png"),
 	CardData.Rarity.UNCOMMON: preload("res://art/card_frame/seal_uncommon.png"),
 	CardData.Rarity.RARE: preload("res://art/card_frame/seal_rare.png"),
 }
 
-## ARC-089: шелест пергамента при наведении на карту — через AudioManager
-## (core/audio_manager.gd, автозагрузка), не отдельным AudioStreamPlayer на
-## самой карте (единая точка воспроизведения SFX, см. критерий приёмки тикета).
 const HOVER_RUSTLE_SOUND = preload("res://audio/sfx/card_hover_rustle.wav")
 
 @export var card_data: CardData:
@@ -61,25 +52,11 @@ func update_ui() -> void:
 	name_label.text = card_data.card_name
 	cost_label.text = str(card_data.cost)
 	description_label.text = card_data.description
-	# ARC-022: icon — плейсхолдер-арт по типу ресурса (может отсутствовать у
-	# карт, добавленных до этого тикета, — тогда просто ничего не показываем).
 	icon_texture.texture = card_data.icon
 	icon_texture.visible = card_data.icon != null
 
-	# ARC-091 (docs/art_prompts.md §5): пергамент фона — ВСЕГДА одного цвета
-	# (без подтона по ресурсу — правка по фидбеку: слабый подтон парчмента
-	# сливался с лентой-баннером того же тона, цвет было не отличить).
-	# Цветовое кодирование ресурса теперь целиком на ленте и печати —
-	# они маленькие и декоративные, поэтому тон может быть насыщенным, не
-	# рискуя убить текстуру всей карты, как было бы с сплошной заливкой фона.
 	background.modulate = Color(1, 1, 1, 1)
 
-	# ARC-091: печать стоимости — материал/форма зависит от редкости карты
-	# (простая бечёвка/серебро/золото), цвет воска — от типа ресурса.
-	# Раньше цвет ресурса дублировался ещё и на ленте-баннере имени — лента
-	# убрана (не вписывалась в пергамент/сепийную иллюстрацию, см.
-	# docs/dev_plan_tickets.md), печать осталась ЕДИНСТВЕННЫМ носителем
-	# цветового кодирования ресурса на карте (GDD §11.2).
 	seal_badge.texture = SEAL_TEXTURES.get(card_data.rarity, SEAL_TEXTURES[CardData.Rarity.COMMON])
 
 	var resource_tint := Color(1, 1, 1, 1)

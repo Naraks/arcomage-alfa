@@ -1,24 +1,8 @@
 extends Control
-## ARC-037: экран мета-магазина — тратит постоянную Славу (ProfileManager.
-## profile.fame) на уровни из ProfileManager.UPGRADE_CATALOG, и (ARC-038) на
-## разблокировку конкретных RARE-карт. Открывается из главного меню
-## (ui/main_menu.gd/.tscn), не из забега — прокачка не привязана к
-## конкретной кампании. Разметка строится кодом в _ready(), как и в
-## ui/shop/shop_screen.gd (тот же паттерн этого проекта для экранов без
-## сложной вёрстки).
-##
-## ARC-038: секция "ОТКРЫТИЯ" ниже — та самая категория, отложенная в
-## блокквоте ARC-037 ("нет тикетов на unlock-систему на тот момент"). Теперь
-## есть — ProfileManager.is_card_unlocked()/unlock_card().
+## Покупка постоянных улучшений и открытие карт.
 
 signal profile_state_changed
 
-## Порядок отображения строк — фиксированный, не порядок ключей в
-## ProfileManager.UPGRADE_CATALOG (Dictionary в GDScript не гарантирует
-## порядок вставки при итерации так же надёжно, как явный список; плюс так
-## проще сознательно сгруппировать "Основание" (tower/wall) перед
-## "Мастерство ресурсов" (quarry/magic/dungeon) и утилити (hand_size) —
-## та же группировка, что в game_design_doc.md §9.2).
 const UPGRADE_ORDER := ["tower", "wall", "quarry", "magic", "dungeon", "hand_size"]
 
 @export var embedded_in_profile := false
@@ -113,10 +97,6 @@ func _update_fame_label() -> void:
 		_fame_label.text = "Слава: %d" % ProfileManager.profile.get("fame", 0)
 
 
-## ARC-037: строка с названием улучшения, текущим уровнем/максимумом и
-## описанием эффекта на СЛЕДУЮЩИЙ уровень (не на текущий — игрок покупает то,
-## что получит, а не то, что уже есть). При max_level показывает текущий
-## суммарный эффект вместо "следующего", т.к. следующего не будет.
 func _row_label_text(key: String) -> String:
 	var def: Dictionary = ProfileManager.UPGRADE_CATALOG.get(key, {})
 	if def.is_empty():
@@ -128,7 +108,6 @@ func _row_label_text(key: String) -> String:
 	return "%s — %s (ур. %d/%d)" % [def["name"], def["desc"] % shown_value, level, max_level]
 
 
-## Текст кнопки покупки: цена следующего уровня или "МАКС." на пределе.
 func _buy_button_text(key: String) -> String:
 	var cost := ProfileManager.get_upgrade_next_cost(key)
 	if cost < 0:
@@ -172,14 +151,6 @@ func _on_buy_pressed(key: String) -> void:
 	profile_state_changed.emit()
 
 
-## ARC-038: пути всех RARE-карт игры — источник для секции "ОТКРЫТИЯ".
-## MatchManager.ALL_CARD_PATHS — тот же пул, что фильтрует
-## ProfileManager.is_card_unlocked() в build_shop_offer()/reward_screen.gd,
-## так что здесь показываются ровно те карты, которые реально имеет смысл
-## разблокировать (появятся в магазине/награде обычного боя/элиты после
-## покупки). Загружать и проверять rarity каждой карты — не идеально быстро,
-## но пул небольшой (десятки, не тысячи путей) и этот экран открывается не
-## каждый кадр, а по нажатию кнопки в главном меню.
 func _rare_card_paths() -> Array:
 	var result: Array = []
 	for path in MatchManager.ALL_CARD_PATHS:

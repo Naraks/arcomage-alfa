@@ -1,10 +1,5 @@
 extends GutTest
-## Юнит-тесты SettingsScreen (ARC-042, UI 04/13): загрузка текущего значения,
-## применение/сохранение, подтверждаемый сброс и доступные размеры контролов.
-##
-## ProfileManager — общий синглтон с другими тестовыми файлами (см.
-## tests/test_profile_manager.gd), поэтому profile сохраняется/
-## восстанавливается в before_each()/after_each().
+## Тесты настроек.
 
 const SettingsScreenScript = preload("res://ui/settings/settings_screen.gd")
 
@@ -39,8 +34,6 @@ func test_volume_percent_text_at_full() -> void:
 func test_volume_percent_text_rounds_instead_of_truncating() -> void:
 	var screen = SettingsScreenScript.new()
 
-	# 0.95 * 100 = 94.999... из-за погрешности float — round(), не int()/floor(),
-	# должен всё равно дать "95%", не "94%".
 	assert_eq(screen._volume_percent_text(0.95), "95%")
 
 	screen.free()
@@ -57,9 +50,6 @@ func test_panel_width_fits_portrait_and_is_capped_on_wide_screen() -> void:
 
 func test_on_volume_changed_updates_profile_manager() -> void:
 	var screen = SettingsScreenScript.new()
-	# _on_volume_changed() зовёт ProfileManager.set_volume() напрямую (не
-	# трогает @onready-поля кроме _volume_value_label) — строим полный UI,
-	# как test_meta_shop_screen.gd делает для _on_buy_pressed().
 	screen._build_ui()
 
 	screen._on_volume_changed(0.3)

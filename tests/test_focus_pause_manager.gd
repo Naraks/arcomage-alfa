@@ -1,6 +1,5 @@
 extends GutTest
-## ARC-043: пауза при потере фокуса, безопасное возобновление и таймер ИИ,
-## который не истекает, пока SceneTree находится на паузе.
+## Тесты паузы при потере фокуса.
 
 const FocusPauseManagerScript = preload("res://core/focus_pause_manager.gd")
 

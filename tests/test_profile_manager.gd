@@ -1,8 +1,5 @@
 extends GutTest
-## Юнит-тесты ProfileManager.add_fame() (ARC-017) и структуры
-## currency/upgrades (ARC-036). ProfileManager — autoload, тесты приводят
-## profile к известному состоянию в before_each() и восстанавливают в
-## after_each(), как test_match_manager.gd делает для MatchManager.
+## Тесты профиля и мета-прогрессии.
 
 const _FAKE_RARE_CARD_PATH := "res://data/cards/__test_only_fake_rare_card__.tres"
 const DWARF_PICKAXE := preload("res://data/artifacts/dwarf_pickaxe.tres")
@@ -33,8 +30,6 @@ func test_add_fame_accumulates_across_calls() -> void:
 
 
 func test_add_fame_handles_missing_key_in_old_profile() -> void:
-	# Регрессия: старый save-файл может не содержать "fame" вообще, если
-	# load_profile() целиком заменил profile содержимым JSON без этого ключа.
 	ProfileManager.profile = {"total_wins": 3}
 
 	ProfileManager.add_fame(20)
@@ -42,14 +37,7 @@ func test_add_fame_handles_missing_key_in_old_profile() -> void:
 	assert_eq(ProfileManager.profile["fame"], 20)
 
 
-# --- ARC-036: profile.currency (= fame, см. комментарий в profile_manager.gd) / upgrades ---
-
-
 func test_default_profile_has_currency_and_upgrades_fields() -> void:
-	# Свежий экземпляр скрипта (не сам синглтон — у него profile уже мог быть
-	# подменён другими тестами/load_profile()), не добавлен в дерево — _ready()
-	# (а значит и load_profile()) не вызывается, значение поля — буквально
-	# объявленный по умолчанию словарь.
 	var pm = preload("res://core/profile_manager.gd").new()
 
 	assert_true(
@@ -70,9 +58,6 @@ func test_save_and_load_round_trip_preserves_fame_and_upgrades() -> void:
 
 	assert_eq(ProfileManager.profile["fame"], 42)
 	assert_eq(ProfileManager.profile["upgrades"], {"wall_tier": 2, "unlock_dragon": true})
-
-
-# --- ARC-037: UPGRADE_CATALOG / get_upgrade_* / purchase_upgrade ---
 
 
 func test_get_upgrade_level_defaults_to_zero_without_purchases() -> void:
@@ -185,18 +170,6 @@ func test_purchase_upgrade_next_cost_increases_after_purchase() -> void:
 	assert_eq(ProfileManager.get_upgrade_next_cost("tower"), cost_before + def["cost_step"])
 
 
-# --- ARC-038: is_card_unlocked / get_card_unlock_cost / unlock_card ---
-
-
-## ФЕЙКОВЫЙ путь, не указывающий на реальный .tres — намеренно, НЕ путь
-## настоящей RARE-карты вроде "res://data/cards/gem_10.tres". Присвоение
-## card.resource_path = <путь, уже занятый другим загруженным ресурсом в
-## ResourceCache> валит движок ("Method/function failed") — а к моменту, как
-## этот файл тестов выполняется, gem_10.tres/brick_1.tres почти наверняка уже
-## реально загружены где-то ещё (test_reward_screen.gd/test_meta_shop_screen.gd
-## и т.п., GUT гоняет все файлы в одном процессе). Синтетическая CardData.new()
-## здесь никогда не грузится через load() — ей нужна просто уникальная
-## строка-ключ для bookkeeping в profile.unlocked_cards, не настоящий файл.
 func _make_card(rarity: int, path: String = "") -> CardData:
 	var card := CardData.new()
 	card.rarity = rarity
@@ -304,9 +277,6 @@ func test_unlock_card_fails_when_already_unlocked() -> void:
 	)
 
 
-# --- ARC-042: get_volume / set_volume ---
-
-
 func test_get_volume_defaults_to_one_without_settings_key() -> void:
 	ProfileManager.profile = {"fame": 0}
 
@@ -357,17 +327,11 @@ func test_reset_settings_restores_volume_and_preserves_profile_data() -> void:
 func test_volume_persists_across_save_and_load() -> void:
 	ProfileManager.set_volume(0.25)
 
-	# Подменяем profile целиком (другим значением громкости) перед load_profile(),
-	# чтобы доказать, что 0.25 реально пришёл с диска, а не просто уцелел в
-	# памяти — тот же приём, что test_save_and_load_round_trip_preserves_fame_and_upgrades.
 	ProfileManager.profile = {"fame": 0, "settings": {"volume": 0.9}}
 
 	ProfileManager.load_profile()
 
 	assert_eq(ProfileManager.get_volume(), 0.25)
-
-
-# --- ARC-039: record_run_finished / record_artifact_collected / _on_match_ended ---
 
 
 func test_record_run_finished_always_increments_total_runs() -> void:

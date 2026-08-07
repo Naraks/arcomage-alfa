@@ -1,13 +1,5 @@
 extends GutTest
-## Юнит-тесты чистых хелперов MetaShopScreen (ARC-037): текст строки
-## улучшения и кнопки покупки. Экземпляр создаётся через preload().new() без
-## добавления в дерево сцены, как в tests/test_shop_screen.gd/
-## test_reward_screen.gd — эти методы не трогают @onready-поля
-## (_fame_label/_upgrade_list, заполняются только в _build_ui()).
-##
-## ProfileManager — общий синглтон с другими тестовыми файлами, поэтому
-## profile сохраняется/восстанавливается в before_each()/after_each(), как в
-## tests/test_profile_manager.gd.
+## Тесты постоянных улучшений.
 
 const MetaShopScreenScript = preload("res://ui/meta_shop/meta_shop_screen.gd")
 
@@ -24,9 +16,6 @@ func after_each() -> void:
 
 
 func test_upgrade_order_covers_the_whole_catalog() -> void:
-	# Регрессия: если кто-то добавит новый ключ в UPGRADE_CATALOG и забудет
-	# дописать его в UPGRADE_ORDER, строка для него просто не появится на
-	# экране — тихая пропажа, не ошибка. Проверяем оба множества совпадают.
 	var screen = MetaShopScreenScript.new()
 
 	var order_set := {}
@@ -58,10 +47,6 @@ func test_row_label_text_shows_next_level_bonus_before_max() -> void:
 
 	var text := screen._row_label_text("quarry")
 
-	# На уровне 1 из max_level=5 следующая покупка даёт ещё +per_level, не
-	# суммарный текущий бонус — строка должна показывать per_level (1), не
-	# level*per_level (1*1=1, совпадает случайно на этом уровне, поэтому берём
-	# другой уровень ниже для однозначной проверки).
 	assert_true(text.contains("+%d" % ProfileManager.UPGRADE_CATALOG["quarry"]["per_level"]))
 
 	screen.free()
@@ -132,10 +117,6 @@ func test_on_buy_pressed_purchases_and_updates_fame_label_via_profile_manager() 
 	var cost: int = ProfileManager.UPGRADE_CATALOG["tower"]["base_cost"]
 	ProfileManager.profile["fame"] = cost
 
-	# _on_buy_pressed() зовёт _update_fame_label()/_refresh_upgrade_list(),
-	# которым нужны реальные _fame_label/_upgrade_list — строим полный UI
-	# (не добавляя сцену в дерево, как test_reward_screen.gd делает для
-	# полноценных сценариев, не только чистых хелперов).
 	screen._build_ui()
 
 	screen._on_buy_pressed("tower")
@@ -146,9 +127,6 @@ func test_on_buy_pressed_purchases_and_updates_fame_label_via_profile_manager() 
 	screen.free()
 
 
-# --- ARC-038: "ОТКРЫТИЯ" — разблокировка RARE-карт ---
-
-
 func test_rare_card_paths_only_contains_rare_cards() -> void:
 	var screen = MetaShopScreenScript.new()
 
@@ -157,7 +135,9 @@ func test_rare_card_paths_only_contains_rare_cards() -> void:
 	assert_false(paths.is_empty(), "В ALL_CARD_PATHS должна быть хотя бы одна RARE-карта")
 	for path in paths:
 		var card: CardData = load(path)
-		assert_eq(card.rarity, CardData.Rarity.RARE, "%s не RARE, не место в списке разблокировок" % path)
+		assert_eq(
+			card.rarity, CardData.Rarity.RARE, "%s не RARE, не место в списке разблокировок" % path
+		)
 
 	screen.free()
 
@@ -191,7 +171,9 @@ func test_unlock_button_text_shows_cost_when_locked() -> void:
 	ProfileManager.profile["unlocked_cards"] = []
 	var path: String = screen._rare_card_paths()[0]
 
-	assert_eq(screen._unlock_button_text(path), "Открыть за %d" % ProfileManager.RARE_CARD_UNLOCK_COST)
+	assert_eq(
+		screen._unlock_button_text(path), "Открыть за %d" % ProfileManager.RARE_CARD_UNLOCK_COST
+	)
 
 	screen.free()
 
@@ -254,8 +236,6 @@ func test_on_unlock_pressed_unlocks_and_updates_fame() -> void:
 	var path: String = screen._rare_card_paths()[0]
 	ProfileManager.profile["fame"] = ProfileManager.RARE_CARD_UNLOCK_COST
 
-	# Как test_on_buy_pressed_..._via_profile_manager выше — _on_unlock_pressed()
-	# зовёт _update_fame_label()/_refresh_unlock_list(), нужен реальный UI.
 	screen._build_ui()
 
 	screen._on_unlock_pressed(path)

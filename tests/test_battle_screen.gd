@@ -1,13 +1,10 @@
 extends GutTest
-## Юнит-тест BattleScreen._compare_cards_for_view() (ARC-016 — попап просмотра
-## колоды сортирует карты для читаемости вместо показа реального порядка тяги).
-##
-## battle_screen.gd — обычный Control-скрипт сцены (без class_name), поэтому
-## экземпляр создаётся через load().new() и НЕ добавляется в дерево сцены:
-## _compare_cards_for_view() не трогает @onready-поля/сцену, только сравнивает
-## два переданных CardData.
+## Тесты интерфейсной логики боя.
 
 const BattleScreenScript = preload("res://ui/battle/battle_screen.gd")
+
+var _prev_player_data: PlayerData
+var _prev_player_hand: Array
 
 
 func _make_card(type: int, cost: int, card_name: String) -> CardData:
@@ -38,14 +35,6 @@ func test_compare_cards_sorts_by_type_then_cost_then_name() -> void:
 	screen.free()
 
 
-## ARC-028: _has_playable_card() читает MatchManager.player_hand/player_data
-## напрямую (тот же паттерн, что в tests/test_match_manager.gd) — не требует
-## сцены/@onready-полей, поэтому screen.new() без add_child здесь тоже ок.
-
-var _prev_player_data: PlayerData
-var _prev_player_hand: Array
-
-
 func before_each() -> void:
 	_prev_player_data = MatchManager.player_data
 	_prev_player_hand = MatchManager.player_hand
@@ -61,7 +50,10 @@ func test_has_playable_card_true_when_affordable_card_in_hand() -> void:
 	var screen = BattleScreenScript.new()
 	MatchManager.player_hand = [TestFixtures.make_card(1, CardData.ResourceType.BRICKS)]
 
-	assert_true(screen._has_playable_card(), "Карта по карману (bricks=5 >= cost=1) должна считаться играбельной")
+	assert_true(
+		screen._has_playable_card(),
+		"Карта по карману (bricks=5 >= cost=1) должна считаться играбельной"
+	)
 
 	screen.free()
 
@@ -73,7 +65,9 @@ func test_has_playable_card_false_when_nothing_affordable() -> void:
 		TestFixtures.make_card(99, CardData.ResourceType.GEMS),
 	]
 
-	assert_false(screen._has_playable_card(), "Ни одна карта не по карману (cost=99) — играбельных нет")
+	assert_false(
+		screen._has_playable_card(), "Ни одна карта не по карману (cost=99) — играбельных нет"
+	)
 
 	screen.free()
 

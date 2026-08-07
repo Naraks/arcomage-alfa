@@ -1,17 +1,5 @@
 extends GutTest
-## Юнит-тесты чистых хелперов DeckScreen (ARC-041): группировка одинаковых
-## карт по количеству и сортировка. Экземпляр создаётся через preload().new()
-## без добавления в дерево сцены, как в tests/test_shop_screen.gd —
-## _group_cards()/_compare_cards() не трогают @onready-поля
-## (_deck_list/_source_label, заполняются только в _build_ui()).
-##
-## _load_deck_to_show() (какую колоду показать — текущий забег или превью
-## стартовой) намеренно не тестируется здесь: она читает реальный
-## RunSaveManager.has_saved_run()/load_run() (файловый I/O в user://), а этот
-## путь в проекте нигде не покрыт GUT-тестами — то же решение, что и для
-## RunSaveManager.save_run()/load_run() самих по себе (см. блокквот ARC-018
-## в dev_plan_tickets.md: "штатно работает в реальном Godot... нужна ручная
-## проверка в редакторе").
+## Тесты просмотра колоды.
 
 const DeckScreenScript = preload("res://ui/deck/deck_screen.gd")
 

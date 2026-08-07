@@ -1,9 +1,5 @@
 extends GutTest
-## Юнит-тесты EventScreen (ARC-014, UI 07/13): выбор исхода, цена/доступность
-## решения, однократное применение, адаптивный макет и проверка структуры
-## всего пула .tres событий. Экземпляр создаётся через load().new() без
-## добавления в дерево сцены, как в tests/test_shop_screen.gd —
-## _return_to_map() (трогает get_tree()) здесь не тестируется.
+## Тесты случайных событий.
 
 const EventScreenScript = preload("res://ui/event/event_screen.gd")
 const EventIllustrationScript = preload("res://ui/event/event_illustration.gd")
@@ -25,9 +21,6 @@ func before_each() -> void:
 	MatchSettings.run_quarry_bonus = 0
 	MatchSettings.run_magic_bonus = 0
 	MatchSettings.run_dungeon_bonus = 0
-
-
-# --- _resolve_outcome ---
 
 
 func test_resolve_outcome_returns_only_outcome_when_guaranteed() -> void:
@@ -59,9 +52,6 @@ func test_resolve_outcome_returns_empty_dict_for_empty_outcomes() -> void:
 	assert_eq(screen._resolve_outcome([]), {})
 
 	screen.free()
-
-
-# --- _min_gold_delta ---
 
 
 func test_min_gold_delta_zero_when_no_gold_effects() -> void:
@@ -201,9 +191,6 @@ func test_event_draw_pile_has_no_repeats_before_exhaustion() -> void:
 	screen.free()
 
 
-# --- _apply_effects ---
-
-
 func test_apply_effects_gold_delta() -> void:
 	var screen = EventScreenScript.new()
 	MatchSettings.run_gold = 20
@@ -254,9 +241,6 @@ func test_apply_effects_run_bonuses() -> void:
 	assert_eq(MatchSettings.run_dungeon_bonus, 1)
 
 	screen.free()
-
-
-# --- данные событий ---
 
 
 func test_all_events_have_valid_structure() -> void:

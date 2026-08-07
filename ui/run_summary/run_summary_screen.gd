@@ -1,15 +1,8 @@
 extends Control
-## ARC-017: экран итогов забега — единственная точка выхода после боя с
-## боссом (победа или поражение, MatchSettings.run_victory). Показывает
-## статистику забега и начисляет Славу (постоянную мета-валюту, design doc
-## 9.1) через ProfileManager.add_fame(). Разметка строится кодом в _ready(),
-## как и в ui/shop/shop_screen.gd.
+## Итоги завершённого забега.
 
 const MapNodeData = preload("res://data/resources/map_node_data.gd")
 
-## Числа нигде не заданы конкретно (design doc 9.1 говорит только "формула,
-## учитывающая число пройденных этажей, побеждённых элит и итоговый исход") —
-## взяты как разумная прогрессия, легко перебалансировать одной константой.
 const FAME_PER_FLOOR := 10
 const FAME_PER_ELITE := 15
 const FAME_BOSS_VICTORY_BONUS := 100
@@ -21,16 +14,11 @@ func _ready() -> void:
 	var fame_earned := _calculate_fame(floors_passed, elites_defeated, MatchSettings.run_victory)
 
 	ProfileManager.add_fame(fame_earned)
-	# ARC-039: тот же единственный хук конца забега, что уже используется для
-	# add_fame() чуть выше — total_runs/total_wins (экран статистики).
 	ProfileManager.record_run_finished(MatchSettings.run_victory)
 
 	_build_ui(floors_passed, elites_defeated, fame_earned)
 
 
-## "Пройденные этажи" считаем как число пройденных узлов — на каждом этаже
-## игрок посещает ровно один узел своего маршрута, так что это надёжная
-## прокси-метрика без отдельного отслеживания индекса этажа.
 func _count_completed_nodes() -> int:
 	if not MatchSettings.world_map_data:
 		return 0
@@ -93,9 +81,9 @@ func _build_ui(floors_passed: int, elites_defeated: int, fame_earned: int) -> vo
 		_add_stat_label(root_vbox, "  · %s" % artifact.artifact_name)
 
 	var fame_label := Label.new()
-	fame_label.text = "Слава за забег: +%d (всего: %d)" % [
-		fame_earned, ProfileManager.profile.get("fame", 0)
-	]
+	fame_label.text = (
+		"Слава за забег: +%d (всего: %d)" % [fame_earned, ProfileManager.profile.get("fame", 0)]
+	)
 	fame_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	fame_label.add_theme_font_size_override("font_size", 20)
 	root_vbox.add_child(fame_label)
@@ -114,8 +102,5 @@ func _add_stat_label(parent: VBoxContainer, text: String) -> void:
 
 
 func _on_menu_pressed() -> void:
-	# ARC-018: run_summary_screen — единственная точка выхода после боя с
-	# боссом (победа или поражение), т.е. забег гарантированно закончен —
-	# автосейв (ARC-018) больше не должен предлагать "Продолжить" его.
 	RunSaveManager.clear_run()
 	get_tree().change_scene_to_file("res://ui/main_menu.tscn")

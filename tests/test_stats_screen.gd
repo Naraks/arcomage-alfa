@@ -1,13 +1,5 @@
 extends GutTest
-## Юнит-тесты чистых хелперов StatsScreen (ARC-039): текст строк
-## открытых карт/артефактов. Экземпляр создаётся через preload().new() без
-## добавления в дерево сцены, как в tests/test_shop_screen.gd —
-## _rare_card_paths()/_unlocked_cards_text()/_unlocked_artifacts_text() не
-## трогают @onready-поля (их тут и нет — весь UI строится и сразу
-## показывается в _build_ui(), без промежуточного состояния).
-##
-## ProfileManager — общий синглтон с другими тестовыми файлами, поэтому
-## profile сохраняется/восстанавливается в before_each()/after_each().
+## Тесты статистики профиля.
 
 const StatsScreenScript = preload("res://ui/stats/stats_screen.gd")
 const RewardScreenScript = preload("res://ui/reward/reward_screen.gd")

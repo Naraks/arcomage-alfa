@@ -1,51 +1,5 @@
 extends Node
-## ARC-054: headless-симулятор «ИИ против ИИ» для сбора статистики по картам
-## (нужен ARC-023 для балансировки cost/value).
-##
-## Запуск: обычная сцена (НЕ -s/SceneTree — см. ниже, почему), явно
-## указанная как main scene этого конкретного запуска:
-##   godot --headless --path . res://tools/battle_simulator.tscn -- \
-##     --games=500 --out=balance_report.csv
-##
-## Аргументы (все необязательные):
-##   --games=N   сколько игр прогнать (нечётное значение округляется вверх до пары)
-##   --out=PATH  путь для CSV со статистикой по картам (по умолчанию res://balance_report.csv)
-##   --seed=N    зерно RNG для воспроизводимого прогона (по умолчанию не задаётся —
-##               каждый запуск другой)
-##
-## Пишет четыре CSV: <out> — по картам, <out>_matchups.csv — по матчапам
-## стратегий, <out>_win_types.csv — ARC-084, тип победы (tower_destroyed/
-## tower_height/resource_bricks/resource_gems/resource_beasts/draw) с долей от
-## общего числа игр. Последний нужен для критерия 3 ARC-084 — насколько вообще
-## достижима ресурсная победа (WIN_RESOURCE_AMOUNT=300) при текущем темпе
-## притока по сравнению с боевыми путями к победе; <out>_games.csv — ARC-096,
-## одна строка на бой: парный seed/leg, кто ходил первым, число ходов и
-## остатки каждого ресурса у обеих сторон на момент окончания партии.
-##
-## Почему обычная сцена, а не `-s tools/battle_simulator.gd` (как GUT в CI,
-## .github/workflows/ci.yml): скрипт, переданный через `-s`, компилируется
-## движком ДО регистрации автозагрузок как глобальных идентификаторов — при
-## попытке так запустить этот файл раньше был "Compile Error: Identifier not
-## found: GameEvents" (подтверждено реальным запуском). addons/gut/gut_cmdln.gd
-## сам этот -s-скрипт никогда не трогает автозагрузки проекта напрямую — только
-## grузит через load() свои же addon-файлы (gut_cli.gd), и уже ОНИ, скомпилированные
-## позже как обычные Node-скрипты, свободно используют MatchManager/GameEvents.
-## Обычная сцена (этот файл, как battle_screen.gd и вообще любой скрипт
-## проекта) компилируется уже после полного бутстрапа движка и автозагрузок —
-## поэтому здесь MatchManager/GameEvents/PlayerData/CardData можно использовать
-## как обычно, bare-идентификаторами.
-##
-## Каждая игра — независимый бой через MatchManager (тот же автозагруз, что использует
-## battle_screen.gd и GUT-тесты), между двумя случайно выбранными профилями ИИ
-## (Default/Aggressive/Builder/Economist, ARC-025/026). Обе стороны ведёт
-## MatchManager._resolve_ai_turn(actor) напрямую — БЕЗ await/секундной задержки
-## execute_ai_turn() (та существует только ради комфорта игрока-человека перед
-## реальным battle_screen.gd; см. комментарий в match_manager.gd).
-##
-## ARC-096: симуляция намеренно отключает односторонние профильные/run-бонусы.
-## Игры идут парами с одинаковыми стратегиями и seed: leg A начинает сторона
-## A, leg B — сторона B. Это нейтрализует структурный лишний ход первого игрока
-## и делает позиционный winrate проверяемым, не меняя single-player кампанию.
+## Headless-симулятор боёв между стратегиями ИИ.
 
 const MAX_TURNS_PER_GAME := 300  # защита от зависшей игры без победителя (deck-out и т.п.)
 
@@ -58,10 +12,6 @@ const STRATEGY_PATHS := {
 
 var _card_stats: Dictionary = {}  # card_name -> {"played": int, "wins": int}
 var _matchup_stats: Dictionary = {}  # "a_vs_b" -> {"a_wins": int, "b_wins": int, "draws": int}
-## ARC-084: тип победы по каждой сыгранной партии — key см. _win_reason_key(),
-## значение — счётчик игр. Профилирование "чем вообще заканчиваются игры"
-## (высота башни/уничтожение башни/ресурсы, и каким именно ресурсом), запрошено
-## отдельно от per-card/per-matchup статистики, которая уже была.
 var _win_reason_stats: Dictionary = {}
 var _game_card_plays: Array = []  # за текущую игру: [{"name": String, "side": "a"/"b"}]
 var _current_winner_side: String = ""
@@ -108,9 +58,6 @@ func _ready() -> void:
 	get_tree().quit()
 
 
-## Заранее заносит в _card_stats ВСЕ карты игры с нулевыми счётчиками — иначе
-## карты, которые ни разу не были разыграны (самый интересный сигнал для
-## ARC-023 — "почти никогда не разыгрываются"), просто не попали бы в отчёт.
 func _seed_card_stats_from_all_cards() -> void:
 	for path in MatchManager.ALL_CARD_PATHS:
 		var card: CardData = load(path)
@@ -118,10 +65,6 @@ func _seed_card_stats_from_all_cards() -> void:
 			_card_stats[card.card_name] = {"played": 0, "wins": 0}
 
 
-## Полный, перемешанный пул всех карт игры (MatchManager.ALL_CARD_PATHS) — в
-## отличие от MatchManager._build_generic_card_pool() (ограниченный
-## STARTER_DECK_CARD_PATHS, ~11 уникальных карт), нужен, чтобы обе стороны
-## симуляции реально видели весь контент, а не только стартовый набор.
 func _build_full_card_pool() -> Array[CardData]:
 	var pool: Array[CardData] = []
 	for path in MatchManager.ALL_CARD_PATHS:
@@ -145,9 +88,6 @@ func _run_one_game(
 	var p_b := PlayerData.new()
 	p_a.ai_strategy = load(STRATEGY_PATHS[strat_a_name]).new()
 	p_b.ai_strategy = load(STRATEGY_PATHS[strat_b_name]).new()
-	# Две детерминированные колоды пары. Во втором leg они меняются сторонами
-	# вместе со стартером: иначе одинаковый seed сохранял скрытое преимущество
-	# конкретной раздачи за A или B и pair был зеркальным только по первому ходу.
 	var pair_deck_a := _build_full_card_pool()
 	var pair_deck_b := _build_full_card_pool()
 
@@ -155,18 +95,12 @@ func _run_one_game(
 	_current_winner_side = ""
 	_current_win_reason = ""
 	_current_win_resource = ""
-	# ARC-084: снимаем last_win_reason/last_win_resource ВНУТРИ колбэка, в
-	# момент самого match_ended — check_win() выставляет их непосредственно
-	# перед emit(), так что на этот момент они гарантированно относятся к
-	# только что закончившейся игре, а не к какой-то из следующих.
 	var on_match_ended := func(winner):
 		_current_winner_side = "a" if winner == MatchManager.player_data else "b"
 		_current_win_reason = MatchManager.last_win_reason
 		_current_win_resource = MatchManager.last_win_resource
 	GameEvents.match_ended.connect(on_match_ended, CONNECT_ONE_SHOT)
 
-	# Пустой run_deck использует симметричный полный пул ARC-095 для обеих сторон.
-	# false отключает одностороннюю прогрессию; 0/1 задаёт стартера парного leg.
 	MatchManager.setup_match(p_a, p_b, [], false, 0 if starting_side == "a" else 1, false)
 	MatchManager.deck = (pair_deck_a if starting_side == "a" else pair_deck_b).duplicate()
 	MatchManager.enemy_deck = (pair_deck_b if starting_side == "a" else pair_deck_a).duplicate()
@@ -282,13 +216,6 @@ func _record_matchup(strat_a_name: String, strat_b_name: String, winner_label: S
 		_matchup_stats[key]["draws"] += 1
 
 
-## ARC-084: сводит last_win_reason/last_win_resource в один ключ отчёта —
-## "resource" разбивается на "resource_bricks"/"resource_gems"/
-## "resource_beasts" (иначе три типа ресурсной победы слились бы в одну
-## строку и потеряли бы как раз то, что запросили — "по какому ресурсу").
-## "draw" — партия дошла до MAX_TURNS_PER_GAME без победителя, on_match_ended
-## тогда вообще не срабатывал, _current_win_reason/_current_win_resource
-## остаются пустыми с начала _run_one_game().
 func _win_reason_key(winner_label: String) -> String:
 	if winner_label == "draw":
 		return "draw"
@@ -313,10 +240,6 @@ func _write_win_reason_report(out_path: String) -> void:
 		total += count
 
 	file.store_line("win_type,games,share")
-	# Фиксированный порядок строк (не просто keys().sort()) — читаемее: сначала
-	# оба "боевых" типа, потом три ресурсных по порядку типов ресурса, потом
-	# draw, и только в конце — любые неожиданные ключи (не должно случаться,
-	# но не молчать, если вдруг появится).
 	var known_order := [
 		"tower_destroyed",
 		"tower_height",

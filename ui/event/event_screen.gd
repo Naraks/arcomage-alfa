@@ -1,9 +1,5 @@
 extends Control
-## ARC-014 / UI 07/13 (#102): иллюстрированная сцена решения. EventData
-## выбирается без повторов через сохранённую shuffle bag (ARC-088), затем
-## показывается в адаптивной сюжетной карточке. Варианты отдельно сообщают
-## гарантированную цену, риск и причину недоступности; применение защищено от
-## двойного клика флагом _choice_resolved.
+## Экран выбора в случайном событии.
 
 const EventIllustrationScript = preload("res://ui/event/event_illustration.gd")
 const EVENTS_DIRECTORY := "res://data/events"
@@ -48,8 +44,6 @@ func _all_event_paths() -> Array[String]:
 	return paths
 
 
-## Экспортированный PCK может перечислять remap-файлы вместо исходных .tres.
-## Возвращаем исходный resource path, который ResourceLoader разрешит через remap.
 func _event_resource_name(file_name: String) -> String:
 	if file_name.ends_with(".tres"):
 		return file_name

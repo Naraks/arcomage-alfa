@@ -1,4 +1,5 @@
 extends Node
+## Безопасная интеграция с Yandex Games SDK.
 
 var _window = JavaScriptBridge.get_interface("window")
 var _ysdk
@@ -6,9 +7,6 @@ var _ysdk
 
 func _ready():
 	if _window:
-		# _window — JavaScriptObject, а не обычный Object: has_method() звал бы
-		# несуществующий window.has_method() в JS (см. ARC-075). Проще прочитать
-		# свойство напрямую — для отсутствующего вернётся null без ошибки.
 		_ysdk = _window.ysdk
 		if not _ysdk:
 			print("[YandexSDK] Running in debug/local mode (stub active)")
@@ -32,5 +30,6 @@ func show_rewarded_video(callback_name: String):
 			}
 		)
 	else:
+		# Локальная заглушка позволяет тестировать награду без SDK.
 		print("[YandexSDK] Stub: Reward granted for ", callback_name)
 		get_tree().call_group("ads", callback_name)

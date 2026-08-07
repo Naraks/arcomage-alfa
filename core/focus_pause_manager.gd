@@ -1,12 +1,11 @@
 extends Node
-## ARC-043: глобальная пауза при потере фокуса окна или вкладки браузера.
-## PROCESS_MODE_ALWAYS нужен, чтобы получить focus-in и снять только ту
-## паузу, которую этот менеджер установил сам; чужая игровая пауза сохраняется.
+## Пауза игры при потере фокуса окна или вкладки.
 
 var _paused_by_focus := false
 
 
 func _ready() -> void:
+	# Менеджер должен получить focus-in, даже когда остальное дерево остановлено.
 	process_mode = Node.PROCESS_MODE_ALWAYS
 
 
@@ -27,6 +26,7 @@ func _set_application_focused(focused: bool) -> void:
 			tree.paused = true
 			_paused_by_focus = true
 		return
+	# Не снимаем паузу, установленную другой игровой системой.
 	if _paused_by_focus:
 		tree.paused = false
 		_paused_by_focus = false

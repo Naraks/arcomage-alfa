@@ -1,15 +1,6 @@
 class_name WorldMapGenerator
 extends RefCounted
-## Процедурный генератор карты мира (ARC-010). Реализует схему из
-## docs/world_map_design.md: 12-15 этажей, 2-4 узла на этаж, ветвящиеся и
-## сходящиеся пути без "сирот" (узлов без входящих связей), гарантированный
-## путь до BOSS с любого узла карты, детерминизм по seed.
-##
-## Единственная точка входа — статический generate_map(seed_value). Функция
-## чистая: одинаковый seed_value всегда даёт одинаковый WorldMapData (тот же
-## floor_count, те же типы узлов, те же связи) — это используется юнит-тестом
-## (tests/test_world_map_generator.gd) и в будущем позволит воспроизводить
-## "дневные забеги" с общим сидом.
+## Процедурная генерация связного маршрута забега.
 
 const MapNodeData = preload("res://data/resources/map_node_data.gd")
 const WorldMapData = preload("res://data/resources/world_map_data.gd")
@@ -19,7 +10,6 @@ const MAX_FLOOR_COUNT := 15
 const MIN_NODES_PER_FLOOR := 2
 const MAX_NODES_PER_FLOOR := 4
 
-## Базовые веса типов узлов для обычного этажа (не первого, не предпоследнего).
 const BASE_WEIGHTS := {
 	MapNodeData.NodeType.BATTLE: 45,
 	MapNodeData.NodeType.ELITE_BATTLE: 15,
@@ -28,7 +18,6 @@ const BASE_WEIGHTS := {
 	MapNodeData.NodeType.EVENT: 15,
 }
 
-## Первый этаж: только BATTLE/EVENT — игрок ещё не готов к элите/тратам золота.
 const FIRST_FLOOR_WEIGHTS := {
 	MapNodeData.NodeType.BATTLE: 70,
 	MapNodeData.NodeType.EVENT: 30,
@@ -40,10 +29,6 @@ const TOP_MARGIN_Y := 100.0
 const CENTER_X := 400.0
 
 
-## Генерирует полную карту забега по seed_value. `current_node_index` в
-## результате всегда -1 — сентинел "игрок ещё не встал ни на один узел",
-## доступны узлы первого этажа (у них нет входящих связей). ARC-011 должен
-## трактовать -1 как "показать все узлы без входящих рёбер".
 static func generate_map(seed_value: int) -> Resource:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
@@ -77,10 +62,6 @@ static func generate_map(seed_value: int) -> Resource:
 	return map
 
 
-## Строит один обычный этаж: подбирает тип каждого узла по весам, затем
-## принудительно чинит два инварианта, которые веса могут случайно нарушить
-## (docs/world_map_design.md, раздел 4): наличие боя и, на предпоследнем
-## этаже, наличие REST.
 static func _build_floor(
 	rng: RandomNumberGenerator, floor_index: int, last_regular_floor: int, node_count: int
 ) -> Array:
@@ -113,7 +94,6 @@ static func _weights_for_floor(floor_index: int, last_regular_floor: int) -> Dic
 	return weights
 
 
-## Возвращает значение NodeType (int) выбранное по весам из weights.
 static func _pick_weighted_type(rng: RandomNumberGenerator, weights: Dictionary) -> int:
 	var total := 0
 	for weight in weights.values():
@@ -129,7 +109,6 @@ static func _pick_weighted_type(rng: RandomNumberGenerator, weights: Dictionary)
 	return weights.keys()[0]
 
 
-## Полностью "мирный" этаж запрещён — это боевая игра (docs/world_map_design.md).
 static func _ensure_has_battle(rng: RandomNumberGenerator, floor_nodes: Array) -> void:
 	for node in floor_nodes:
 		if (
@@ -142,10 +121,6 @@ static func _ensure_has_battle(rng: RandomNumberGenerator, floor_nodes: Array) -
 	floor_nodes[forced_index].node_type = MapNodeData.NodeType.BATTLE
 
 
-## Предпоследний этаж обязан давать шанс отдохнуть перед боссом. Выбирает
-## индекс, отличный от уже гарантированного BATTLE/ELITE_BATTLE, чтобы не
-## затирать инвариант, обеспеченный _ensure_has_battle — на этажах с
-## MIN_NODES_PER_FLOOR (2) узлами индексов ровно достаточно для обоих правил.
 static func _ensure_has_rest(rng: RandomNumberGenerator, floor_nodes: Array) -> void:
 	for node in floor_nodes:
 		if node.node_type == MapNodeData.NodeType.REST:
@@ -173,16 +148,6 @@ static func _lane_position(floor_index: int, lane: int, node_count: int) -> Vect
 	return Vector2(start_x + lane * LANE_SPACING_X, TOP_MARGIN_Y + floor_index * FLOOR_SPACING_Y)
 
 
-## Соединяет этаж с "лейном" (нормализованной позицией 0..1) следующего этажа:
-## каждый узел всегда получает хотя бы одно исходящее ребро к ближайшему по
-## лейну узлу следующего этажа (иногда — второе, к соседнему по близости, для
-## ветвления), что минимизирует пересечения "в обратную сторону". После этого
-## любой узел следующего этажа без входящих рёбер (сирота) принудительно
-## получает ребро от ближайшего по лейну узла текущего этажа.
-##
-## Особый случай — предпоследний этаж перед BOSS: там ровно один узел на
-## следующем этаже, и с ним соединяются все узлы текущего этажа (иначе гарантия
-## пути до босса потребовала бы отдельной проверки).
 static func _connect_floors(
 	rng: RandomNumberGenerator, current_floor: Array, next_floor: Array
 ) -> void:
@@ -218,8 +183,6 @@ static func _normalized_lane(index: int, count: int) -> float:
 	return float(index) / float(count - 1)
 
 
-## Возвращает индексы 0..count-1, отсортированные по близости их нормализованного
-## лейна к target_lane (ближайший — первым).
 static func _order_by_lane_distance(target_lane: float, count: int) -> Array:
 	var indices: Array = range(count)
 	indices.sort_custom(

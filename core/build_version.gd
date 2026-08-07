@@ -1,12 +1,5 @@
 extends Node
-## Версия сборки (ARC-069). Автозагружен под именем BuildVersion (см. [autoload]
-## в project.godot) — этого достаточно для глобального доступа, поэтому class_name
-## здесь не нужен (и не может быть выставлен: он конфликтует с именем автозагрузки
-## и роняет её загрузку с "hides an autoload singleton").
-##
-## CI пишет res://build_version.json перед экспортом (см. .github/workflows/ci.yml),
-## используя `git describe --tags` на теге вида vX.Y.Z. В редакторе/локальных запусках
-## файла нет — используются значения по умолчанию ниже, отображается как "dev".
+## Загрузка и отображение версии сборки.
 
 const VERSION_FILE := "res://build_version.json"
 
@@ -36,7 +29,6 @@ func _load() -> void:
 	built_at = data.get("built_at", built_at)
 
 
-## Короткая строка для UI ("v0.1.0 (a1b2c3d)") и багрепортов от плейтестеров.
 func get_display_string() -> String:
 	if commit.is_empty():
 		return version

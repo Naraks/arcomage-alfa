@@ -1,9 +1,5 @@
 extends GutTest
-## Юнит-тесты RunSummaryScreen (ARC-017): подсчёт пройденных этажей/элит и
-## формула Славы. Экземпляр создаётся через load().new() без добавления в
-## дерево сцены (см. tests/test_world_map_screen.gd) — _ready() (который
-## трогает ProfileManager/сцену) здесь не вызывается, тестируются только
-## чистые методы подсчёта.
+## Тесты итогов забега.
 
 const RunSummaryScreenScript = preload("res://ui/run_summary/run_summary_screen.gd")
 const WorldMapData = preload("res://data/resources/world_map_data.gd")
@@ -61,8 +57,7 @@ func test_calculate_fame_scales_with_floors_and_elites() -> void:
 	var fame := screen._calculate_fame(5, 2, false)
 
 	assert_eq(
-		fame,
-		5 * RunSummaryScreenScript.FAME_PER_FLOOR + 2 * RunSummaryScreenScript.FAME_PER_ELITE
+		fame, 5 * RunSummaryScreenScript.FAME_PER_FLOOR + 2 * RunSummaryScreenScript.FAME_PER_ELITE
 	)
 
 	screen.free()

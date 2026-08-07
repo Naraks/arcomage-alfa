@@ -1,6 +1,5 @@
 extends GutTest
-## Юнит-тесты ShopScreen (ARC-012, UI 06/13): цена, покупка, недостаток
-## золота, защищённое удаление, отмена и блокировка повторного ввода.
+## Тесты магазина забега.
 
 const ShopScreenScript = preload("res://ui/shop/shop_screen.gd")
 

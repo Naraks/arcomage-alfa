@@ -1,38 +1,16 @@
 extends Control
-## ARC-015: экран награды после победы в бою с карты мира
-## (docs/ui_wireframes.html#reward-screen). Всегда 3 слота (карта или
-## артефакт), состав зависит от типа узла (MatchSettings.current_map_node).
-## Выбор — сначала клик по слоту (подсветка), потом подтверждение; "Пропустить"
-## — осознанный отказ от всех вариантов. Разметка строится кодом в _ready(),
-## как и в ui/shop/shop_screen.gd.
+## Выбор награды после победы.
 
 const MapNodeData = preload("res://data/resources/map_node_data.gd")
 
 const REGULAR_SLOT_COUNT := 3
 const ELITE_ARTIFACT_CHANCE := 30
 
-## Гарантированные редкие карты награды элиты/босса — независимо от
-## разблокировки (design doc §5.3: "награда за элитный бой/босса,
-## мета-разблокировки" — оба пути равноправны, см. ARC-038/_unlocked_paths()).
-##
-## ARC-038: несмотря на комментарий, который тут был раньше ("не входят в
-## магазин") — оба пути ФАКТИЧЕСКИ есть и в MatchManager.ALL_CARD_PATHS тоже
-## (общий пул для всей игры, ARC-012/020). gem_10.tres (Армагеддон) при этом
-## настоящая RARE (rarity=2) — до ARC-038 могла случайно выпасть в награду
-## обычного боя/магазин наравне с обычными картами (тот самый отложенный баг
-## из комментария у ALL_CARD_PATHS), теперь это исключено фильтром
-## is_card_unlocked(). brick_6.tres (Осадное орудие) при этом на деле
-## rarity=1 (Необычная, не RARE) — просто конкретно выбранная карта для
-## гарантированного слота элиты/босса кирпичного типа, не "редкая" в смысле
-## enum; фильтром ARC-038 не затрагивается и не должна.
 const HIGH_RARITY_CARD_PATHS := [
 	"res://data/cards/brick_6.tres",
 	"res://data/cards/gem_10.tres",
 ]
 
-## Все артефакты игры (ARC-015 — первый реальный источник артефактов в
-## забеге; ARC-030..035 добавили ещё пять) — при добавлении новых достаточно
-## дописать сюда.
 const ALL_ARTIFACT_PATHS := [
 	"res://data/artifacts/dwarf_pickaxe.tres",
 	"res://data/artifacts/spiky_wall.tres",
@@ -90,8 +68,6 @@ func _build_elite_slots() -> Array[Dictionary]:
 
 	var available := _available_artifacts()
 	if not available.is_empty() and randi() % 100 < ELITE_ARTIFACT_CHANCE:
-		# Заменяем один из ДВУХ обычных слотов (0 или 1) — редкая карта на
-		# индексе 2 гарантирована и не должна пропасть, даже если выпал артефакт.
 		var replace_index := randi() % 2
 		slots[replace_index] = _artifact_slot(available[randi() % available.size()])
 
@@ -107,8 +83,6 @@ func _build_boss_slots() -> Array[Dictionary]:
 	if not available.is_empty():
 		slots.append(_artifact_slot(available[randi() % available.size()]))
 	else:
-		# Все артефакты уже собраны — добиваем обычной картой, чтобы слотов
-		# осталось 3, а не 2.
 		var common_paths := _unlocked_paths(MatchManager.ALL_CARD_PATHS)
 		common_paths.shuffle()
 		slots.append(_card_slot(common_paths[0]))
@@ -116,12 +90,6 @@ func _build_boss_slots() -> Array[Dictionary]:
 	return slots
 
 
-## ARC-038: убирает из пула карты, которые ещё не разблокированы (RARE, не
-## купленные за Славу в MetaShopScreen — см. ProfileManager.is_card_unlocked()).
-## HIGH_RARITY_CARD_PATHS ниже НЕ фильтруется этой функцией и не должен —
-## гарантированная редкая карта в награде элиты/босса это ВТОРОЙ, независимый
-## от мета-разблокировки путь получить RARE-карту (design doc §5.3: "награда
-## за элитный бой/босса, МЕТА-разблокировки" — оба варианта равноправны).
 func _unlocked_paths(paths: Array) -> Array:
 	var result: Array = []
 	for path in paths:
@@ -139,8 +107,6 @@ func _artifact_slot(artifact: ArtifactData) -> Dictionary:
 	return {"kind": "artifact", "artifact": artifact}
 
 
-## Артефакты, которых ещё нет в MatchSettings.run_artifacts — чтобы награда
-## не предлагала то, что уже собрано.
 func _available_artifacts() -> Array:
 	var owned: Array = MatchSettings.run_artifacts
 	var available: Array = []
@@ -270,8 +236,6 @@ func _on_confirm_pressed() -> void:
 func _apply_slot(slot: Dictionary) -> void:
 	if slot.get("kind") == "artifact":
 		MatchSettings.run_artifacts.append(slot["artifact"])
-		# ARC-039: лифетайм-коллекция для экрана статистики — отдельно от
-		# run_artifacts выше (тот обнуляется каждый новый забег).
 		ProfileManager.record_artifact_collected(slot["artifact"])
 	else:
 		MatchSettings.run_deck.append(slot["card"])
@@ -281,12 +245,7 @@ func _on_skip_pressed() -> void:
 	_return_to_map()
 
 
-## Как shop_screen._on_back_pressed(): помечаем узел пройденным и обновляем
-## current_node_index, иначе соседние узлы не откроются. Раньше (до ARC-015)
-## это делал battle_screen сразу по победе — теперь после экрана награды.
 func _return_to_map() -> void:
-	# ARC-017: победа над боссом — это не просто "открыть соседний узел", а
-	# конец забега, см. MatchSettings.run_victory.
 	var was_boss: bool = (
 		MatchSettings.current_map_node != null
 		and MatchSettings.current_map_node.node_type == MapNodeData.NodeType.BOSS
