@@ -114,7 +114,8 @@ func test_runtime_shell_has_focusable_touch_navigation_and_one_back_button() -> 
 	assert_true(back_button.custom_minimum_size.y >= 44.0)
 	assert_true(back_button.pressed.is_connected(screen._on_back_pressed))
 	assert_eq(_count_labels_with_text(screen, "ПРОФИЛЬ"), 1)
-	assert_eq(_count_buttons_with_text(screen, "← Назад"), 1)
+	assert_eq(_count_buttons_with_text(screen, "Назад"), 1)
+	assert_eq(screen._fame_label.text, "Слава: 1280")
 	assert_eq(_count_labels_with_text(screen, "МАГАЗИН ПРОКАЧКИ"), 0)
 
 	screen._apply_layout(Vector2(720, 1280))

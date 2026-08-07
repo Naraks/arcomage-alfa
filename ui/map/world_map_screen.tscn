@@ -33,7 +33,7 @@ theme_override_constants/separation = 6
 
 [node name="Title" type="Label" parent="Header"]
 layout_mode = 2
-text = "МАРШРУТ: СТАРТ  ↓  ФИНАЛ"
+text = "МАРШРУТ: СТАРТ — ФИНАЛ"
 horizontal_alignment = 1
 theme_override_colors/font_color = Color(0.94, 0.82, 0.55, 1)
 theme_override_font_sizes/font_size = 22

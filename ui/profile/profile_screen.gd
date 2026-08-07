@@ -67,7 +67,7 @@ func _build_shell() -> void:
 
 	var back_button := Button.new()
 	back_button.name = "BackButton"
-	back_button.text = "← Назад"
+	back_button.text = "Назад"
 	back_button.custom_minimum_size = Vector2(108, MIN_TOUCH_TARGET)
 	back_button.pressed.connect(_on_back_pressed)
 	primary_row.add_child(back_button)
@@ -222,7 +222,7 @@ func _collection_progress_text() -> String:
 
 func _update_shared_state() -> void:
 	if _fame_label:
-		_fame_label.text = "Слава: %d ✦" % ProfileManager.profile.get("fame", 0)
+		_fame_label.text = "Слава: %d" % ProfileManager.profile.get("fame", 0)
 	if _profile_label:
 		_profile_label.text = _profile_identifier()
 	if _collection_label:

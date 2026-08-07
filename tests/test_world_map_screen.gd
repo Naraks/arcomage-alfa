@@ -13,6 +13,17 @@ const WorldMapData = preload("res://data/resources/world_map_data.gd")
 const MapNodeData = preload("res://data/resources/map_node_data.gd")
 
 
+func test_route_header_uses_browser_safe_separator() -> void:
+	var scene: PackedScene = load("res://ui/map/world_map_screen.tscn")
+	var screen = scene.instantiate()
+	var title: Label = screen.get_node("Header/Title")
+
+	assert_eq(title.text, "МАРШРУТ: СТАРТ — ФИНАЛ")
+	assert_false("↓" in title.text, "Стрелка отсутствует в браузерном шрифте")
+
+	screen.free()
+
+
 func _make_node(node_type: int, completed: bool = false) -> MapNodeData:
 	var node := MapNodeData.new()
 	node.node_type = node_type
