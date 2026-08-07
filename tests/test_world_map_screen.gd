@@ -100,14 +100,14 @@ func test_node_states_distinguish_current_available_completed_and_locked() -> vo
 	screen.free()
 
 
-func test_node_labels_include_stable_type_and_non_color_state() -> void:
+func test_node_labels_and_images_include_stable_type_and_non_color_state() -> void:
 	var node := _make_node(MapNodeData.NodeType.SHOP)
 	var screen = WorldMapScreenScript.new()
 
 	var available_label: String = screen._node_label(node, WorldMapScreenScript.NodeState.AVAILABLE)
 	var locked_label: String = screen._node_label(node, WorldMapScreenScript.NodeState.LOCKED)
 
-	assert_true(available_label.contains("¤"), "Магазин должен иметь устойчивую пиктограмму")
+	assert_not_null(screen._node_icon(node), "Магазин должен иметь PNG-пиктограмму")
 	assert_true(available_label.contains("Магазин"))
 	assert_true(available_label.contains("ДОСТУПНО"))
 	assert_true(

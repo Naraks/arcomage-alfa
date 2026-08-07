@@ -1,6 +1,8 @@
 extends Control
 
 ## UI 02/13 (#97): состояние узла — отдельная семантика, а не оттенок.
+## Browser fix: пиктограммы узлов — PNG-текстуры, а не Unicode-глифы,
+## наличие которых зависит от системных шрифтов браузера.
 ## Текущий узел остаётся последним посещённым; доступными являются его выходы.
 enum NodeState { CURRENT, AVAILABLE, COMPLETED, LOCKED }
 
@@ -9,21 +11,41 @@ const MapNodeData = preload("res://data/resources/map_node_data.gd")
 
 const NODE_PRESENTATION := {
 	MapNodeData.NodeType.BATTLE:
-	{"icon": "⚔", "title": "Бой", "preview": "Обычный бой. Награда — после победы."},
+	{
+		"icon": preload("res://art/map/nodes/battle.png"),
+		"title": "Бой",
+		"preview": "Обычный бой. Награда — после победы."
+	},
 	MapNodeData.NodeType.ELITE_BATTLE:
-	{"icon": "♛", "title": "Элита", "preview": "Опасный усиленный противник и ценная награда."},
+	{
+		"icon": preload("res://art/map/nodes/elite.png"),
+		"title": "Элита",
+		"preview": "Опасный усиленный противник и ценная награда."
+	},
 	MapNodeData.NodeType.SHOP:
-	{"icon": "¤", "title": "Магазин", "preview": "Покупка и удаление карт за золото."},
+	{
+		"icon": preload("res://art/map/nodes/shop.png"),
+		"title": "Магазин",
+		"preview": "Покупка и удаление карт за золото."
+	},
 	MapNodeData.NodeType.REST:
 	{
-		"icon": "♨",
+		"icon": preload("res://art/map/nodes/rest.png"),
 		"title": "Отдых",
 		"preview": "Безопасная остановка и постоянное усиление забега."
 	},
 	MapNodeData.NodeType.EVENT:
-	{"icon": "?", "title": "Событие", "preview": "Неизвестная встреча. Результат скрыт до входа."},
+	{
+		"icon": preload("res://art/map/nodes/event.png"),
+		"title": "Событие",
+		"preview": "Неизвестная встреча. Результат скрыт до входа."
+	},
 	MapNodeData.NodeType.BOSS:
-	{"icon": "♜", "title": "Босс", "preview": "Финальное испытание этого маршрута."},
+	{
+		"icon": preload("res://art/map/nodes/boss.png"),
+		"title": "Босс",
+		"preview": "Финальное испытание этого маршрута."
+	},
 }
 const NODE_SIZE := Vector2(132, 62)
 const MAP_SIDE_PADDING := 32.0
@@ -149,6 +171,7 @@ func _generate_map_ui() -> void:
 		button.tooltip_text = _node_preview(node, state)
 		button.position = _map_position(node)
 		button.custom_minimum_size = NODE_SIZE
+		_add_node_icon(button, node, state)
 
 		# LOCKED остаётся кликабельным только для понятной обратной связи;
 		# _can_enter_node — единый guard, поэтому переход невозможен.
@@ -226,16 +249,35 @@ func _node_state(node: Resource, available_nodes: Array = []) -> int:
 
 
 func _node_label(node: Resource, state: int) -> String:
-	var presentation: Dictionary = NODE_PRESENTATION.get(
-		node.node_type, {"icon": "?", "title": "Узел"}
-	)
+	var presentation: Dictionary = NODE_PRESENTATION.get(node.node_type, {"title": "Узел"})
 	var state_label: String = {
 		NodeState.CURRENT: "ВЫ ЗДЕСЬ",
 		NodeState.AVAILABLE: "ДОСТУПНО",
 		NodeState.COMPLETED: "ПРОЙДЕНО",
 		NodeState.LOCKED: "ЗАКРЫТО"
 	}[state]
-	return "%s  %s\n%s" % [presentation.icon, presentation.title, state_label]
+	return "%s\n%s" % [presentation.title, state_label]
+
+
+func _node_icon(node: Resource) -> Texture2D:
+	var presentation: Dictionary = NODE_PRESENTATION.get(node.node_type, {})
+	return presentation.get("icon")
+
+
+func _add_node_icon(button: Button, node: Resource, state: int) -> void:
+	var icon := TextureRect.new()
+	icon.name = "NodeIcon"
+	icon.texture = _node_icon(node)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if state == NodeState.LOCKED:
+		icon.modulate = Color(0.55, 0.53, 0.5)
+	button.add_child(icon)
+	# TextureRect пересчитывает minimum size при входе в дерево; поэтому
+	# фиксируем прямоугольник после add_child, иначе 128px-исходник перекрывает подпись.
+	icon.position = Vector2(8, 17)
+	icon.size = Vector2(28, 28)
 
 
 func _node_preview(node: Resource, state: int) -> String:
