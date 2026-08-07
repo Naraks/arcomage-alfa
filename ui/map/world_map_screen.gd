@@ -168,6 +168,9 @@ func _generate_map_ui() -> void:
 		var button = Button.new()
 		var state := _node_state(node, available_nodes)
 		button.text = _node_label(node, state)
+		# Левая полоса зарезервирована под PNG-иконку: выравнивание вправо
+		# не даёт длинному статусу («ДОСТУПНО»/«ПРОЙДЕНО») заходить под неё.
+		button.alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		button.tooltip_text = _node_preview(node, state)
 		button.position = _map_position(node)
 		button.custom_minimum_size = NODE_SIZE
