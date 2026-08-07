@@ -41,10 +41,21 @@ func _pick_random_event_path() -> String:
 func _all_event_paths() -> Array[String]:
 	var paths: Array[String] = []
 	for file_name in DirAccess.get_files_at(EVENTS_DIRECTORY):
-		if file_name.ends_with(".tres"):
-			paths.append("%s/%s" % [EVENTS_DIRECTORY, file_name])
+		var resource_name := _event_resource_name(file_name)
+		if not resource_name.is_empty():
+			paths.append("%s/%s" % [EVENTS_DIRECTORY, resource_name])
 	paths.sort()
 	return paths
+
+
+## Экспортированный PCK может перечислять remap-файлы вместо исходных .tres.
+## Возвращаем исходный resource path, который ResourceLoader разрешит через remap.
+func _event_resource_name(file_name: String) -> String:
+	if file_name.ends_with(".tres"):
+		return file_name
+	if file_name.ends_with(".tres.remap"):
+		return file_name.trim_suffix(".remap")
+	return ""
 
 
 func _layout_mode_for_size(viewport_size: Vector2) -> String:

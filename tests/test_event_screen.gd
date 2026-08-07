@@ -162,6 +162,16 @@ func test_event_illustration_uses_art_when_available_and_fallback_otherwise() ->
 	illustration.free()
 
 
+func test_exported_event_remap_name_resolves_to_original_resource() -> void:
+	var screen = EventScreenScript.new()
+
+	assert_eq(screen._event_resource_name("moon_well.tres"), "moon_well.tres")
+	assert_eq(screen._event_resource_name("moon_well.tres.remap"), "moon_well.tres")
+	assert_eq(screen._event_resource_name("readme.txt"), "")
+
+	screen.free()
+
+
 func test_event_illustration_contains_wide_art_without_cropping() -> void:
 	var illustration = EventIllustrationScript.new()
 
