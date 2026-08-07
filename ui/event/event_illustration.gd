@@ -3,12 +3,20 @@ extends Control
 
 const EVENT_ART_PATHS := {
 	"Заброшенный склад": "res://assets/events/abandoned_warehouse.png",
+	"Древний алтарь": "res://assets/events/ancient_altar.png",
 	"Звериный аукцион": "res://assets/events/beast_auction.png",
 	"Звериное логово": "res://assets/events/beast_den.png",
+	"Обрушившаяся шахта": "res://assets/events/collapsed_mine.png",
+	"Игра костей": "res://assets/events/dice_game.png",
 	"Караван гномов": "res://assets/events/dwarf_caravan.png",
+	"Загадка горгулий": "res://assets/events/gargoyle_riddle.png",
+	"Учения у мастера": "res://assets/events/hermit_training.png",
 	"Магическая буря": "res://assets/events/magic_storm.png",
 	"Лунный колодец": "res://assets/events/moon_well.png",
+	"Разорённая мастерская": "res://assets/events/ruined_workshop.png",
+	"Рунный каменщик": "res://assets/events/runic_mason.png",
 	"Карточный шулер": "res://assets/events/cardsharp.png",
+	"Раненый путник": "res://assets/events/wounded_traveler.png",
 }
 
 var _event_title := "Событие"

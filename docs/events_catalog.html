@@ -46,7 +46,7 @@
     <span class="count" id="count">15 событий</span>
   </div>
   <main id="catalog"></main>
-  <footer>Источник данных: <code>data/events/*.tres</code> · Иллюстрации генерируются локально и не требуют внешних ресурсов.</footer>
+  <footer>Источник данных: <code>data/events/*.tres</code> · Иллюстрации: <code>assets/events/*.png</code>.</footer>
   <script>
     const events=[
       {title:'Заброшенный склад',description:'У дороги стоит полуразрушенный склад. Внутри поблёскивают сундуки, но прогнивший пол едва держится.',actions:['Обыскать склад','Не рисковать'],icon:'▦',kind:'руины'},
@@ -66,16 +66,8 @@
       {title:'Раненый путник',description:'У дороги лежит раненый рыцарь. Ему нужны припасы, чтобы снова встать на ноги.',actions:['Купить припасы за 3 золота','Показать дорогу к ближайшему поселению'],icon:'♙',kind:'путники'}
     ];
     const catalog=document.querySelector('#catalog');
-    function card(event,index){const article=document.createElement('article'),artPath={0:'../assets/events/abandoned_warehouse.png',2:'../assets/events/beast_auction.png',3:'../assets/events/beast_den.png',6:'../assets/events/dwarf_caravan.png',9:'../assets/events/magic_storm.png',10:'../assets/events/moon_well.png',13:'../assets/events/cardsharp.png'}[index],art=artPath?`<img class="event-art" src="${artPath}" alt="Иллюстрация: ${event.title}">`:`<canvas width="720" height="405" aria-label="Иллюстрация: ${event.title}"></canvas>`;article.dataset.search=(event.title+' '+event.description+' '+event.actions.join(' ')+' '+event.kind).toLowerCase();article.innerHTML=`<figure>${art}<span class="index">${String(index+1).padStart(2,'0')}</span></figure><div class="body"><h2>${event.title}</h2><p class="description">${event.description}</p><div class="choices-title">Варианты действий</div><ol>${event.actions.map(x=>`<li>${x}</li>`).join('')}</ol><span class="tag">✧ ${event.kind}</span></div>`;catalog.append(article);const canvas=article.querySelector('canvas');if(canvas)draw(canvas,event,index)}
-    function hash(text){let h=2166136261;for(const c of text){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
-    function draw(canvas,event,index){const c=canvas.getContext('2d'),w=canvas.width,h=canvas.height,seed=hash(event.title),hue=(seed%360);const g=c.createLinearGradient(0,0,0,h);g.addColorStop(0,`hsl(${hue} 36% 24%)`);g.addColorStop(.62,`hsl(${(hue+24)%360} 42% 10%)`);g.addColorStop(1,'#080706');c.fillStyle=g;c.fillRect(0,0,w,h);
-      c.globalAlpha=.72;c.fillStyle='#efd185';c.beginPath();c.arc(w*.76,h*.24,36,0,Math.PI*2);c.fill();c.globalAlpha=1;
-      c.fillStyle='#0a0807';c.beginPath();c.moveTo(0,h*.74);for(let x=0;x<=w;x+=60)c.lineTo(x,h*(.68+((seed+x*13)%45)/500));c.lineTo(w,h);c.lineTo(0,h);c.fill();
-      tower(c,w*.15,h*.72,42,150);tower(c,w*.86,h*.7,34,112);c.fillStyle='#6d4b2b99';c.beginPath();c.moveTo(w*.44,h);c.lineTo(w*.59,h);c.lineTo(w*.54,h*.69);c.lineTo(w*.5,h*.69);c.fill();
-      c.font='128px Georgia';c.textAlign='center';c.textBaseline='middle';c.fillStyle='#f4cf78';c.shadowColor='#e8a93f';c.shadowBlur=26;c.fillText(event.icon,w*.5,h*.45);c.shadowBlur=0;
-      for(let i=0;i<18;i++){const x=(seed+i*137)%w,y=(seed+i*83)%(h*.68);c.fillStyle=`hsla(${(hue+i*9)%360} 80% 72% / ${.25+(i%4)*.1})`;c.beginPath();c.arc(x,y,2+i%3,0,Math.PI*2);c.fill()}
-      const vignette=c.createRadialGradient(w/2,h/2,80,w/2,h/2,w*.65);vignette.addColorStop(.4,'transparent');vignette.addColorStop(1,'#000b');c.fillStyle=vignette;c.fillRect(0,0,w,h);c.strokeStyle='#d7ae5d88';c.lineWidth=3;c.strokeRect(2,2,w-4,h-4)}
-    function tower(c,x,y,w,h){c.fillStyle='#090706';c.fillRect(x-w/2,y-h,w,h);c.beginPath();c.moveTo(x-w*.8,y-h);c.lineTo(x,y-h-w*.65);c.lineTo(x+w*.8,y-h);c.fill();c.fillStyle='#e59e35bb';c.fillRect(x-4,y-h*.58,8,18)}
+    const artPaths=['abandoned_warehouse','ancient_altar','beast_auction','beast_den','collapsed_mine','dice_game','dwarf_caravan','gargoyle_riddle','hermit_training','magic_storm','moon_well','ruined_workshop','runic_mason','cardsharp','wounded_traveler'];
+    function card(event,index){const article=document.createElement('article'),artPath=`../assets/events/${artPaths[index]}.png`,art=`<img class="event-art" src="${artPath}" alt="Иллюстрация: ${event.title}">`;article.dataset.search=(event.title+' '+event.description+' '+event.actions.join(' ')+' '+event.kind).toLowerCase();article.innerHTML=`<figure>${art}<span class="index">${String(index+1).padStart(2,'0')}</span></figure><div class="body"><h2>${event.title}</h2><p class="description">${event.description}</p><div class="choices-title">Варианты действий</div><ol>${event.actions.map(x=>`<li>${x}</li>`).join('')}</ol><span class="tag">✧ ${event.kind}</span></div>`;catalog.append(article)}
     events.forEach(card);const search=document.querySelector('#search'),count=document.querySelector('#count');search.addEventListener('input',()=>{const q=search.value.trim().toLowerCase();let visible=0;document.querySelectorAll('article').forEach(el=>{const show=!q||el.dataset.search.includes(q);el.classList.toggle('hidden',!show);visible+=show?1:0});count.textContent=`${visible} из ${events.length}`});
   </script>
 </body>

@@ -147,7 +147,16 @@ func test_event_illustration_uses_art_when_available_and_fallback_otherwise() ->
 	assert_eq(
 		illustration._art_path_for_title("Караван гномов"), "res://assets/events/dwarf_caravan.png"
 	)
-	assert_eq(illustration._art_path_for_title("Загадка горгулий"), "")
+	assert_eq(
+		illustration._art_path_for_title("Загадка горгулий"),
+		"res://assets/events/gargoyle_riddle.png"
+	)
+	assert_eq(illustration.EVENT_ART_PATHS.size(), 15)
+	for art_path in illustration.EVENT_ART_PATHS.values():
+		assert_true(
+			ResourceLoader.exists(art_path), "Иллюстрация должна существовать: %s" % art_path
+		)
+	assert_eq(illustration._art_path_for_title("Неизвестное событие"), "")
 
 	illustration.free()
 
