@@ -9,6 +9,8 @@ const GENERATOR_BONUS_AMOUNT := 1
 const MAX_TOWER_BONUS := 25
 const MAX_GENERATOR_BONUS := 5
 const WIDE_LAYOUT_MIN_ASPECT := 1.35
+const TOWER_ICON := preload("res://art/rest/tower_foundation.png")
+const GENERATOR_ICON := preload("res://art/rest/magic_source.png")
 
 const GENERATOR_LABELS := {
 	"quarry": "Карьер (Кирпичи)",
@@ -144,13 +146,13 @@ func _build_ui() -> void:
 
 	_option_panels = []
 	var tower_panel := _make_option_panel(
-		"tower", "▰", "Заложить фундамент", "Башня начинает каждый бой выше."
+		"tower", TOWER_ICON, "Заложить фундамент", "Башня начинает каждый бой выше."
 	)
 	options.add_child(tower_panel)
 	_option_panels.append(tower_panel)
 	var generator_panel := _make_option_panel(
 		"generator",
-		"✦",
+		GENERATOR_ICON,
 		"Улучшить источник",
 		"%s начинает каждый бой уровнем выше." % _generator_label(_offered_generator)
 	)
@@ -163,22 +165,19 @@ func _build_ui() -> void:
 	_selection_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(_selection_hint)
 
+	var confirm_row := HBoxContainer.new()
+	confirm_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	root.add_child(confirm_row)
 	_confirm_button = Button.new()
 	_confirm_button.text = "Подтвердить усиление"
 	_confirm_button.disabled = true
-	_confirm_button.custom_minimum_size.y = 54
+	_confirm_button.custom_minimum_size = Vector2(320, 54)
 	_confirm_button.pressed.connect(_on_confirm_pressed)
-	root.add_child(_confirm_button)
-
-	var route_hint := Label.new()
-	route_hint.text = "После отдыха вы вернётесь на маршрут →"
-	route_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	route_hint.add_theme_color_override("font_color", Color(0.7, 0.72, 0.68))
-	root.add_child(route_hint)
+	confirm_row.add_child(_confirm_button)
 
 
 func _make_option_panel(
-	option_key: String, icon_text: String, title_text: String, description_text: String
+	option_key: String, icon_texture: Texture2D, title_text: String, description_text: String
 ) -> PanelContainer:
 	var state := _option_state(option_key)
 	var panel := PanelContainer.new()
@@ -190,10 +189,12 @@ func _make_option_panel(
 	box.add_theme_constant_override("separation", 8)
 	panel.add_child(box)
 
-	var icon := Label.new()
-	icon.text = icon_text
-	icon.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	icon.add_theme_font_size_override("font_size", 34)
+	var icon := TextureRect.new()
+	icon.texture = icon_texture
+	icon.custom_minimum_size = Vector2(88, 88)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	box.add_child(icon)
 	var title := Label.new()
 	title.text = title_text
@@ -213,10 +214,9 @@ func _make_option_panel(
 		"font_color", Color(0.92, 0.48, 0.38) if not state.available else Color(0.55, 0.85, 0.5)
 	)
 	box.add_child(preview)
-	var duration := Label.new()
-	duration.text = "Срок: до конца забега"
-	duration.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	box.add_child(duration)
+	var spacer := Control.new()
+	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	box.add_child(spacer)
 	var select := Button.new()
 	select.text = "Недоступно" if not state.available else "Выбрать"
 	select.disabled = not state.available
