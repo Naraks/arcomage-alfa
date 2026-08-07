@@ -4,6 +4,9 @@ extends GutTest
 ## profile к известному состоянию в before_each() и восстанавливают в
 ## after_each(), как test_match_manager.gd делает для MatchManager.
 
+const _FAKE_RARE_CARD_PATH := "res://data/cards/__test_only_fake_rare_card__.tres"
+const DWARF_PICKAXE := preload("res://data/artifacts/dwarf_pickaxe.tres")
+
 var _saved_profile: Dictionary
 
 
@@ -49,7 +52,9 @@ func test_default_profile_has_currency_and_upgrades_fields() -> void:
 	# объявленный по умолчанию словарь.
 	var pm = preload("res://core/profile_manager.gd").new()
 
-	assert_true(pm.profile.has("fame"), "fame выполняет роль profile.currency из акцептанс-критерия ARC-036")
+	assert_true(
+		pm.profile.has("fame"), "fame выполняет роль profile.currency из акцептанс-критерия ARC-036"
+	)
 	assert_true(pm.profile.has("upgrades"))
 	assert_eq(pm.profile["upgrades"], {})
 
@@ -83,7 +88,10 @@ func test_get_upgrade_level_reads_from_profile_upgrades() -> void:
 func test_get_upgrade_bonus_is_level_times_per_level() -> void:
 	ProfileManager.profile["upgrades"] = {"quarry": 2}
 
-	assert_eq(ProfileManager.get_upgrade_bonus("quarry"), 2 * ProfileManager.UPGRADE_CATALOG["quarry"]["per_level"])
+	assert_eq(
+		ProfileManager.get_upgrade_bonus("quarry"),
+		2 * ProfileManager.UPGRADE_CATALOG["quarry"]["per_level"]
+	)
 
 
 func test_get_upgrade_bonus_unknown_key_is_zero() -> void:
@@ -91,7 +99,10 @@ func test_get_upgrade_bonus_unknown_key_is_zero() -> void:
 
 
 func test_get_upgrade_next_cost_at_level_zero_is_base_cost() -> void:
-	assert_eq(ProfileManager.get_upgrade_next_cost("wall"), ProfileManager.UPGRADE_CATALOG["wall"]["base_cost"])
+	assert_eq(
+		ProfileManager.get_upgrade_next_cost("wall"),
+		ProfileManager.UPGRADE_CATALOG["wall"]["base_cost"]
+	)
 
 
 func test_get_upgrade_next_cost_grows_with_level() -> void:
@@ -176,6 +187,7 @@ func test_purchase_upgrade_next_cost_increases_after_purchase() -> void:
 
 # --- ARC-038: is_card_unlocked / get_card_unlock_cost / unlock_card ---
 
+
 ## ФЕЙКОВЫЙ путь, не указывающий на реальный .tres — намеренно, НЕ путь
 ## настоящей RARE-карты вроде "res://data/cards/gem_10.tres". Присвоение
 ## card.resource_path = <путь, уже занятый другим загруженным ресурсом в
@@ -185,9 +197,6 @@ func test_purchase_upgrade_next_cost_increases_after_purchase() -> void:
 ## и т.п., GUT гоняет все файлы в одном процессе). Синтетическая CardData.new()
 ## здесь никогда не грузится через load() — ей нужна просто уникальная
 ## строка-ключ для bookkeeping в profile.unlocked_cards, не настоящий файл.
-const _FAKE_RARE_CARD_PATH := "res://data/cards/__test_only_fake_rare_card__.tres"
-
-
 func _make_card(rarity: int, path: String = "") -> CardData:
 	var card := CardData.new()
 	card.rarity = rarity
@@ -271,7 +280,9 @@ func test_unlock_card_fails_without_enough_fame() -> void:
 
 
 func test_unlock_card_fails_for_non_rare_card() -> void:
-	var card := _make_card(CardData.Rarity.COMMON, "res://data/cards/__test_only_fake_common_card__.tres")
+	var card := _make_card(
+		CardData.Rarity.COMMON, "res://data/cards/__test_only_fake_common_card__.tres"
+	)
 	ProfileManager.profile["fame"] = 999999
 
 	var result := ProfileManager.unlock_card(card)
@@ -288,7 +299,9 @@ func test_unlock_card_fails_when_already_unlocked() -> void:
 	var result := ProfileManager.unlock_card(card)
 
 	assert_false(result)
-	assert_eq(ProfileManager.profile["fame"], fame_before, "Повторная покупка не должна списывать Славу")
+	assert_eq(
+		ProfileManager.profile["fame"], fame_before, "Повторная покупка не должна списывать Славу"
+	)
 
 
 # --- ARC-042: get_volume / set_volume ---
@@ -329,6 +342,16 @@ func test_set_volume_applies_to_master_audio_bus() -> void:
 
 	var bus_index := AudioServer.get_bus_index("Master")
 	assert_almost_eq(AudioServer.get_bus_volume_db(bus_index), linear_to_db(0.5), 0.001)
+
+
+func test_reset_settings_restores_volume_and_preserves_profile_data() -> void:
+	ProfileManager.profile["fame"] = 77
+	ProfileManager.profile["settings"] = {"volume": 0.2}
+
+	ProfileManager.reset_settings()
+
+	assert_eq(ProfileManager.get_volume(), 1.0)
+	assert_eq(ProfileManager.profile["fame"], 77)
 
 
 func test_volume_persists_across_save_and_load() -> void:
@@ -375,7 +398,7 @@ func test_record_run_finished_handles_missing_keys_in_old_profile() -> void:
 
 
 func test_record_artifact_collected_adds_resource_path() -> void:
-	var artifact: ArtifactData = load("res://data/artifacts/dwarf_pickaxe.tres")
+	var artifact: ArtifactData = DWARF_PICKAXE
 	ProfileManager.profile["unlocked_artifacts"] = []
 
 	ProfileManager.record_artifact_collected(artifact)
@@ -384,7 +407,7 @@ func test_record_artifact_collected_adds_resource_path() -> void:
 
 
 func test_record_artifact_collected_does_not_duplicate() -> void:
-	var artifact: ArtifactData = load("res://data/artifacts/dwarf_pickaxe.tres")
+	var artifact: ArtifactData = DWARF_PICKAXE
 	ProfileManager.profile["unlocked_artifacts"] = [artifact.resource_path]
 
 	ProfileManager.record_artifact_collected(artifact)
@@ -415,6 +438,8 @@ func test_on_match_ended_does_not_lower_existing_record() -> void:
 
 	ProfileManager._on_match_ended(null)
 
-	assert_eq(ProfileManager.profile["max_tower_height"], 50, "Меньшая высота не должна затирать рекорд")
+	assert_eq(
+		ProfileManager.profile["max_tower_height"], 50, "Меньшая высота не должна затирать рекорд"
+	)
 
 	MatchManager.player_data = saved_player

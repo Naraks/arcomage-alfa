@@ -29,17 +29,6 @@ extends Node
 ## получают реальных писателей (см. record_run_finished()/
 ## record_artifact_collected() ниже) и появляются total_runs/max_tower_height —
 ## данные для экрана статистики (game_design_doc.md §9.3).
-var profile: Dictionary = {
-	"total_wins": 0,
-	"unlocked_artifacts": [],
-	"fame": 0,
-	"upgrades": {},
-	"unlocked_cards": [],
-	"settings": {"volume": 1.0},
-	"total_runs": 0,
-	"max_tower_height": 0,
-}
-
 ## ARC-038: правило блокировки — просто CardData.rarity == RARE. Никакого
 ## отдельного списка "какие пути залочены" не заводим (ещё один список,
 ## который надо было бы вручную поддерживать в синхроне с data/cards/*.tres —
@@ -55,6 +44,7 @@ var profile: Dictionary = {
 ## "награда за элитный бой/босса, мета-разблокировки". С фильтром по
 ## is_card_unlocked() (см. MatchManager.build_shop_offer(),
 ## ui/reward/reward_screen.gd) это по конструкции больше не может произойти.
+const DEFAULT_SETTINGS := {"volume": 1.0}
 const RARE_CARD_UNLOCK_COST := 150
 
 ## ARC-037: каталог покупаемых мета-улучшений — общий источник и для
@@ -73,7 +63,8 @@ const RARE_CARD_UNLOCK_COST := 150
 ## осознанно меньший объём работы при сохранении сути критерия приёмки
 ## ("реально влияющих на setup_match()").
 const UPGRADE_CATALOG := {
-	"tower": {
+	"tower":
+	{
 		"name": "Прочный Фундамент",
 		"desc": "Стартовая Башня +%d",
 		"per_level": 3,
@@ -81,7 +72,8 @@ const UPGRADE_CATALOG := {
 		"base_cost": 60,
 		"cost_step": 40,
 	},
-	"wall": {
+	"wall":
+	{
 		"name": "Крепостная Стена",
 		"desc": "Стартовая Стена +%d",
 		"per_level": 3,
@@ -89,7 +81,8 @@ const UPGRADE_CATALOG := {
 		"base_cost": 60,
 		"cost_step": 40,
 	},
-	"quarry": {
+	"quarry":
+	{
 		"name": "Мастерство Кирпичей",
 		"desc": "Генератор Кирпичей +%d",
 		"per_level": 1,
@@ -97,7 +90,8 @@ const UPGRADE_CATALOG := {
 		"base_cost": 80,
 		"cost_step": 50,
 	},
-	"magic": {
+	"magic":
+	{
 		"name": "Мастерство Гемов",
 		"desc": "Генератор Гемов +%d",
 		"per_level": 1,
@@ -105,7 +99,8 @@ const UPGRADE_CATALOG := {
 		"base_cost": 80,
 		"cost_step": 50,
 	},
-	"dungeon": {
+	"dungeon":
+	{
 		"name": "Мастерство Зверей",
 		"desc": "Генератор Зверей +%d",
 		"per_level": 1,
@@ -113,7 +108,8 @@ const UPGRADE_CATALOG := {
 		"base_cost": 80,
 		"cost_step": 50,
 	},
-	"hand_size": {
+	"hand_size":
+	{
 		"name": "Вместительная Рука",
 		"desc": "Лимит карт в руке +%d",
 		"per_level": 1,
@@ -121,6 +117,17 @@ const UPGRADE_CATALOG := {
 		"base_cost": 100,
 		"cost_step": 80,
 	},
+}
+
+var profile: Dictionary = {
+	"total_wins": 0,
+	"unlocked_artifacts": [],
+	"fame": 0,
+	"upgrades": {},
+	"unlocked_cards": [],
+	"settings": DEFAULT_SETTINGS.duplicate(true),
+	"total_runs": 0,
+	"max_tower_height": 0,
 }
 
 
@@ -306,6 +313,14 @@ func set_volume(value: float) -> void:
 	settings["volume"] = clamped
 	profile["settings"] = settings
 	_apply_volume_to_audio_server(clamped)
+	save_profile()
+
+
+## UI 04/13 (#99): сбрасывает только пользовательские настройки. Прогресс,
+## статистика, разблокировки и валюта профиля не затрагиваются.
+func reset_settings() -> void:
+	profile["settings"] = DEFAULT_SETTINGS.duplicate(true)
+	_apply_volume_to_audio_server(get_volume())
 	save_profile()
 
 
