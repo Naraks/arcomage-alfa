@@ -2433,9 +2433,28 @@ ARC-027).
 начальным ресурсам/генераторам в начале забега) в коде отсутствует.
 
 **Критерии приёмки:**
-- [ ] Добавлен `data/artifacts/founders_blessing.tres` с эффектом, описанным в `docs/artifacts_list.md`.
-- [ ] Артефакт корректно применяется через существующий триггерный механизм `ArtifactManager`.
-- [ ] Тест в `tests/test_artifact_manager.gd` на применение эффекта.
+- [x] Добавлен `data/artifacts/founders_blessing.tres` с эффектом, описанным в `docs/artifacts_list.md`.
+- [x] Артефакт корректно применяется через существующий триггерный механизм `ArtifactManager`.
+- [x] Тест в `tests/test_artifact_manager.gd` на применение эффекта.
+
+> ✅ **Реализовано и проверено.** `data/artifacts/founders_blessing.tres` — два эффекта на триггере
+> `match_started`: `{"type": "build_wall", "value": 5}` и `{"type": "build_tower", "value": 3}`. Оба типа
+> эффектов (`build_wall`/`build_tower`) уже существовали в `ArtifactManager.apply_artifact_effect()` —
+> новой логики в самом менеджере не потребовалось, только новый ресурс с двумя записями в `effects`
+> (тот же паттерн, что у `horn_of_plenty.tres`: несколько эффектов на одном триггере срабатывают
+> независимо через цикл в `_check_artifacts()`).
+>
+> Артефакт также добавлен в `ALL_ARTIFACT_PATHS` (`ui/reward/reward_screen.gd`) — иначе он существовал бы
+> как ресурс, но никогда не выпадал бы в наградах и не был бы доступен игроку; ни `test_reward_screen.gd`,
+> ни `test_stats_screen.gd` не завязаны на конкретный размер этого списка (используют `.size()`
+> динамически), так что добавление ничего не сломало.
+>
+> Тесты: прямой `test_apply_artifact_effect_*` не добавлялся отдельно (эффекты `build_wall`/`build_tower`
+> уже покрыты существующими тестами), вместо этого — интеграционные тесты через реальный `.tres` и
+> `_on_match_started()`: `test_founders_blessing_applies_wall_and_tower_bonus_on_match_started` и
+> `test_founders_blessing_does_not_affect_side_without_the_artifact` (проверяет, что эффект не
+> «протекает» на сторону без артефакта — `_on_match_started` вызывает `_check_artifacts` для обеих сторон
+> по отдельности).
 
 ---
 
@@ -2447,9 +2466,30 @@ ARC-027).
 тоже отсутствует среди `data/artifacts/*.tres`.
 
 **Критерии приёмки:**
-- [ ] Добавлен `data/artifacts/predator_fang.tres` с эффектом, описанным в `docs/artifacts_list.md`.
-- [ ] Артефакт корректно применяется через существующий триггерный механизм `ArtifactManager`.
-- [ ] Тест в `tests/test_artifact_manager.gd` на применение эффекта.
+- [x] Добавлен `data/artifacts/predator_fang.tres` с эффектом, описанным в `docs/artifacts_list.md`.
+- [x] Артефакт корректно применяется через существующий триггерный механизм `ArtifactManager`.
+- [x] Тест в `tests/test_artifact_manager.gd` на применение эффекта.
+
+> ✅ **Реализовано и проверено.** `data/artifacts/predator_fang.tres` — эффект
+> `{"trigger": "turn_started", "type": "mod_dungeon", "value": 1}` (`dungeon` — генератор Зверей, та же
+> роль, что `quarry` у Кирпичей). Тип эффекта `mod_dungeon` уже существовал в `ArtifactManager` — новой
+> логики не потребовалось.
+>
+> **Расхождение в формулировке этого тикета.** Текст критерия приёмки в скобках описывает эффект как
+> «бонус атакующим картам-Зверям», но сам `docs/artifacts_list.md` (источник истины, на который тикет и
+> ссылается) в таблице чётко даёт другое определение: триггер «В начале хода», эффект «+1 к приросту
+> Зверей сверх обычного дохода» — то есть зеркало «Кирки Гнома» (`dwarf_pickaxe.tres`, `turn_started` +
+> `mod_quarry`) для другого ресурса, а не эффект, завязанный на розыгрыш атакующих карт. Реализовано по
+> таблице `artifacts_list.md`, а не по скобочной формулировке самого тикета — там же в разделе «Логика
+> распределения» это явно подтверждается: «Начало хода (2): зеркальные бонусы для Кирпичей и Зверей».
+>
+> Артефакт добавлен в `ALL_ARTIFACT_PATHS` (`ui/reward/reward_screen.gd`) по тем же причинам, что и
+> ARC-086.
+>
+> Тесты: `test_apply_artifact_effect_mod_dungeon` (прямой вызов `apply_artifact_effect`, зеркало
+> `test_apply_artifact_effect_mod_quarry`), `test_predator_fang_increases_beast_generator_on_turn_started`
+> и `test_predator_fang_does_not_fire_on_other_triggers` — оба через реальный `.tres` и
+> `_on_turn_started()`/`_check_artifacts()`.
 
 ---
 

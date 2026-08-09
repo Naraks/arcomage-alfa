@@ -1,6 +1,9 @@
 extends GutTest
 ## Тесты эффектов артефактов.
 
+const FOUNDERS_BLESSING_PATH := "res://data/artifacts/founders_blessing.tres"
+const PREDATOR_FANG_PATH := "res://data/artifacts/predator_fang.tres"
+
 var player: PlayerData
 var enemy: PlayerData
 
@@ -24,6 +27,13 @@ func test_apply_artifact_effect_mod_magic() -> void:
 		TestFixtures.make_artifact(), {"type": "mod_magic", "value": 2}, player
 	)
 	assert_eq(player.magic, 3, "mod_magic должен увеличить прирост самоцветов")
+
+
+func test_apply_artifact_effect_mod_dungeon() -> void:
+	ArtifactManager.apply_artifact_effect(
+		TestFixtures.make_artifact(), {"type": "mod_dungeon", "value": 2}, player
+	)
+	assert_eq(player.dungeon, 3, "mod_dungeon должен увеличить прирост зверей")
 
 
 func test_apply_artifact_effect_build_wall() -> void:
@@ -291,4 +301,56 @@ func test_should_skip_payment_is_deterministic_with_fixed_seed() -> void:
 		results,
 		results_repeat,
 		"Одинаковый seed должен давать одинаковую последовательность срабатываний"
+	)
+
+
+func test_founders_blessing_applies_wall_and_tower_bonus_on_match_started() -> void:
+	var artifact: ArtifactData = load(FOUNDERS_BLESSING_PATH)
+	player.active_artifacts = [artifact]
+	var wall_before := player.wall_hp
+	var tower_before := player.tower_hp
+
+	ArtifactManager._on_match_started(player, enemy)
+
+	assert_eq(
+		player.wall_hp, wall_before + 5, "Благословение Основателя должно дать Стене +5 HP"
+	)
+	assert_eq(
+		player.tower_hp, tower_before + 3, "Благословение Основателя должно дать Башне +3 HP"
+	)
+
+
+func test_founders_blessing_does_not_affect_side_without_the_artifact() -> void:
+	var artifact: ArtifactData = load(FOUNDERS_BLESSING_PATH)
+	player.active_artifacts = [artifact]
+	var enemy_wall_before := enemy.wall_hp
+	var enemy_tower_before := enemy.tower_hp
+
+	ArtifactManager._on_match_started(player, enemy)
+
+	assert_eq(enemy.wall_hp, enemy_wall_before, "Эффект не должен затрагивать противника")
+	assert_eq(enemy.tower_hp, enemy_tower_before, "Эффект не должен затрагивать противника")
+
+
+func test_predator_fang_increases_beast_generator_on_turn_started() -> void:
+	var artifact: ArtifactData = load(PREDATOR_FANG_PATH)
+	player.active_artifacts = [artifact]
+	var dungeon_before := player.dungeon
+
+	ArtifactManager._on_turn_started(player)
+
+	assert_eq(
+		player.dungeon, dungeon_before + 1, "Клык Хищника должен дать +1 к приросту зверей"
+	)
+
+
+func test_predator_fang_does_not_fire_on_other_triggers() -> void:
+	var artifact: ArtifactData = load(PREDATOR_FANG_PATH)
+	player.active_artifacts = [artifact]
+	var dungeon_before := player.dungeon
+
+	ArtifactManager._check_artifacts(player, "card_played")
+
+	assert_eq(
+		player.dungeon, dungeon_before, "Клык Хищника триггерится только на начало хода"
 	)

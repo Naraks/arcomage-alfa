@@ -18,6 +18,8 @@ const ALL_ARTIFACT_PATHS := [
 	"res://data/artifacts/horn_of_plenty.tres",
 	"res://data/artifacts/book_of_wisdom.tres",
 	"res://data/artifacts/lucky_coin.tres",
+	"res://data/artifacts/founders_blessing.tres",
+	"res://data/artifacts/predator_fang.tres",
 ]
 
 var _slots: Array[Dictionary] = []
