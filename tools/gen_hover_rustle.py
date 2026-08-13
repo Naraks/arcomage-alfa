@@ -1,7 +1,7 @@
 """Generate card_hover_rustle.wav — dry "paper rustle" cue for card hover feedback.
 
 Regenerated to fix an audible "tripling" artifact in the previous version of this file
-(see docs/dev_plan_tickets.md, ARC-089 progress note): that version was synthesized with a
+(see GitHub Issue ARC-089): that version was synthesized with a
 sparse/coarse grain process whose amplitude envelope happened to cluster into three separate
 loud bursts separated by near-silent gaps (envelope dropping back down to the noise floor
 twice mid-clip) — audibly indistinguishable from the sound playing three times in a row.
