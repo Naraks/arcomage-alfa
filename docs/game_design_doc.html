@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Башни магов: Дуэль — Game Design Document</title>
+  <style>
+    @font-face{font-family:Kurale;src:url('../fonts/Kurale-Regular.ttf') format('truetype');font-display:swap}
+    @font-face{font-family:Yeseva;src:url('../fonts/YesevaOne-Regular.ttf') format('truetype');font-display:swap}
+    :root{--bg:#0b0907;--panel:#17120d;--panel2:#21180f;--ink:#f4ead8;--muted:#b9a98f;--gold:#e8bd65;--line:#604a2d;--green:#83b393;--blue:#79a9d8;--orange:#e29c61}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 50% -15%,#352415 0,#110d09 38rem,var(--bg) 72rem);color:var(--ink);font-family:Kurale,Georgia,serif;line-height:1.58}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;background-image:linear-gradient(#fff4 1px,transparent 1px);background-size:100% 5px}
+    a{color:#f0cb7a;text-decoration-color:#826438;text-underline-offset:3px}a:hover{color:#fff1c7}code{color:#d9c1ff;background:#0b090799;padding:.1em .35em;border-radius:4px}
+    .hero{max-width:1180px;margin:auto;padding:64px 28px 36px;text-align:center}.kicker{color:var(--gold);letter-spacing:.18em;text-transform:uppercase;font-size:.82rem}.hero h1{font-family:Yeseva,Georgia,serif;font-weight:400;font-size:clamp(2.5rem,7vw,5.5rem);line-height:1;margin:.2em 0;color:#f4d58b;text-shadow:0 4px 28px #000}.lead{max-width:800px;margin:auto;color:var(--muted);font-size:1.16rem}
+    .statusbar{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:24px}.pill,.status{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:99px;padding:5px 10px;background:#0d0a07aa;font-size:.82rem}.done{color:#b8ddc4;border-color:#52745d}.plan{color:#f0c094;border-color:#815837}
+    .layout{max-width:1260px;margin:auto;padding:0 28px 64px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:28px}.toc{position:sticky;top:18px;align-self:start;background:#110d09e8;border:1px solid var(--line);border-radius:14px;padding:18px;backdrop-filter:blur(12px)}.toc strong{font-family:Yeseva;color:var(--gold);font-weight:400}.toc ol{margin:12px 0 0;padding-left:1.35rem}.toc li{margin:.38rem 0}.toc a{color:var(--muted);text-decoration:none}.toc a:hover{color:var(--gold)}
+    main{min-width:0}section{margin-bottom:24px;padding:28px;background:linear-gradient(145deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;box-shadow:0 16px 50px #0005}h2,h3{font-family:Yeseva,Georgia,serif;font-weight:400;color:#f1ce83}h2{font-size:1.75rem;margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid #604a2d}h3{font-size:1.2rem;margin:24px 0 8px}p{margin:.6rem 0}ul,ol{padding-left:1.35rem}li{margin:.36rem 0}.muted{color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:16px 0}.card{padding:16px;border:1px solid #5b452c;border-radius:11px;background:#0e0b08aa}.card h3{margin:0 0 6px}.metric{font-family:Yeseva;font-size:1.65rem;color:var(--gold)}
+    table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.96rem}th,td{text-align:left;vertical-align:top;border-bottom:1px solid #554128;padding:10px 8px}th{color:#eac77e;font-weight:400}tr:last-child td{border-bottom:0}.callout{border-left:3px solid var(--blue);background:#10151bcc;padding:12px 15px;margin:14px 0}.warning{border-left-color:var(--orange);background:#1b120dcc}.links{display:flex;flex-wrap:wrap;gap:10px}.links a{display:inline-block;border:1px solid var(--line);border-radius:8px;padding:8px 12px;text-decoration:none;background:#0d0a07}
+    footer{text-align:center;color:#82735e;padding:0 28px 50px}.top{position:fixed;right:18px;bottom:18px;width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;background:#17120dee;text-decoration:none}
+    @media(max-width:850px){.layout{grid-template-columns:1fr}.toc{position:relative;top:0}.grid{grid-template-columns:1fr}section{padding:21px}.hero{padding-top:42px}}@media print{body{background:#fff;color:#111}.toc,.top{display:none}.layout{display:block;padding:0}.hero{padding:20px}.hero h1,h2,h3,.metric{color:#111}section{box-shadow:none;background:#fff;break-inside:avoid}.status{color:#111}}
+  </style>
+</head>
+<body id="top">
+  <header class="hero">
+    <div class="kicker">Game Design Document · актуальная редакция</div>
+    <h1>Башни магов: Дуэль</h1>
+    <p class="lead">Короткая карточная стратегия в духе Arcomage с roguelike-забегом, ветвящейся картой мира, развитием колоды и постоянной мета-прогрессией.</p>
+    <div class="statusbar"><span class="pill">Godot 4 · HTML5</span><span class="pill">Яндекс Игры</span><span class="status done">● Реализовано</span><span class="status plan">◇ Планируется</span></div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="Содержание"><strong>Содержание</strong><ol>
+      <li><a href="#vision">Видение</a></li><li><a href="#loop">Игровой цикл</a></li><li><a href="#battle">Боевая система</a></li><li><a href="#cards">Карты</a></li><li><a href="#ai">Противники</a></li><li><a href="#map">Карта мира</a></li><li><a href="#artifacts">Артефакты</a></li><li><a href="#progression">Прогрессия</a></li><li><a href="#screens">Экраны</a></li><li><a href="#style">Стиль и звук</a></li><li><a href="#platform">Платформа</a></li><li><a href="#sources">Источники данных</a></li>
+    </ol></nav>
+
+    <main>
+      <section id="vision"><h2>1. Видение игры <span class="status done">реализовано</span></h2>
+        <p><strong>Жанр:</strong> карточная стратегия с лёгким deck-building и roguelike-структурой. <strong>Целевая сессия:</strong> бой на 3–5 минут, забег — серия коротких решений. <strong>Аудитория:</strong> казуальные игроки браузерных и мобильных игр, а также поклонники Arcomage.</p>
+        <div class="grid"><div class="card"><h3>Ключевое решение</h3><p>Каждый ход игрок выбирает, во что превратить экономику: собственную постройку, развитие генераторов или давление на соперника.</p></div><div class="card"><h3>Тон</h3><p>Сказочное фэнтези с теплом настольной игры: каменоломни, маги, гномы и существа без мрачного натурализма.</p></div></div>
+        <p>Два режима: <strong>Кампания</strong> с картой мира и накоплением силы в рамках забега; <strong>Быстрый бой</strong> — отдельный матч против ИИ без последствий для забега.</p>
+      </section>
+
+      <section id="loop"><h2>2. Основной игровой цикл <span class="status done">реализовано</span></h2>
+        <ol><li>Начать новый забег или продолжить сохранённый.</li><li>Выбрать один из доступных узлов следующего этажа.</li><li>Пройти бой, магазин, отдых или событие.</li><li>После победы выбрать награду и развить колоду.</li><li>Победить босса либо завершить забег после поражения.</li><li>Получить Славу и потратить её на постоянные улучшения.</li></ol>
+        <div class="callout">Колода, золото, артефакты и усиления отдыха существуют только в текущем забеге. Слава, открытия и статистика сохраняются между забегами.</div>
+      </section>
+
+      <section id="battle"><h2>3. Боевая система <span class="status done">реализовано</span></h2>
+        <div class="grid"><div class="card"><div class="metric">25 / 8</div><p>Стартовые Башня / Стена</p></div><div class="card"><div class="metric">55 / 300</div><p>Высота Башни / запас ресурса для победы</p></div><div class="card"><div class="metric">5</div><p>Стартовый запас каждого ресурса и лимит руки</p></div><div class="card"><div class="metric">1</div><p>Стартовый уровень каждого генератора</p></div></div>
+        <h3>Ресурсы</h3><table><thead><tr><th>Ресурс</th><th>Генератор</th><th>Роль</th></tr></thead><tbody><tr><td>Кирпичи</td><td>Карьер</td><td>Стена, Башня, осадные эффекты</td></tr><tr><td>Гемы</td><td>Магия</td><td>Прямой урон и управление ресурсами</td></tr><tr><td>Звери</td><td>Подземелье</td><td>Атака и давление на укрепления</td></tr></tbody></table>
+        <h3>Ход</h3><p>В начале хода генераторы начисляют ресурсы, затем игрок добирает карту, если рука не заполнена. За ход нужно разыграть доступную карту или сбросить одну карту. После действия проверяются условия победы и ход переходит сопернику.</p>
+        <h3>Условия победы</h3><ul><li>поднять свою Башню до 55;</li><li>снизить Башню соперника до 0;</li><li>накопить 300 единиц одного ресурса.</li></ul>
+        <p>Обычный урон сначала поглощает Стена, остаток переходит в Башню. Прямой урон игнорирует Стену.</p>
+      </section>
+
+      <section id="cards"><h2>4. Карты <span class="status done">реализовано</span></h2>
+        <p>В игре <strong>68 карт</strong> трёх ресурсных типов и трёх редкостей. Карта содержит название, стоимость, ресурс, редкость, описание, арт и последовательность эффектов.</p>
+        <p>Редкость определяет частоту появления, но не отменяет стоимость: сильный эффект должен требовать более дорогой или узкой игровой ситуации. Эффекты выполняются в порядке записи и могут быть условными.</p>
+        <div class="links"><a href="cards_catalog.html">Открыть каталог карт</a><a href="effects_reference.md">Справочник эффектов</a></div>
+      </section>
+
+      <section id="ai"><h2>5. Противники <span class="status done">реализовано</span></h2>
+        <p>ИИ оценивает все доступные карты весовой функцией и выбирает наиболее полезную; при равном результате возможен случайный выбор. Если сыграть нечего, он сбрасывает карту.</p>
+        <table><thead><tr><th>Архетип</th><th>Поведение</th></tr></thead><tbody><tr><td>Сбалансированный</td><td>Реагирует на состояние боя без сильного перекоса.</td></tr><tr><td>Агрессор</td><td>Выше оценивает урон и добивание Башни.</td></tr><tr><td>Строитель</td><td>Предпочитает укрепления и рост Башни.</td></tr><tr><td>Экономист</td><td>Развивает генераторы и управляет ресурсами.</td></tr></tbody></table>
+        <p>С каждым этажом противник получает +2 к Башне, +1 к Стене и +1 ко всем генераторам за каждые три этажа. Элита дополнительно получает +10/+5/+1, босс — +20/+10/+2.</p>
+      </section>
+
+      <section id="map"><h2>6. Карта мира <span class="status done">реализовано</span></h2>
+        <p>Карта генерируется по сиду и содержит 12–15 этажей по 2–4 узла. На последнем этаже всегда находится босс; на предпоследнем гарантируется отдых, а на каждом обычном этаже — хотя бы один боевой путь.</p>
+        <table><thead><tr><th>Узел</th><th>Назначение</th></tr></thead><tbody><tr><td>Бой</td><td>Обычный противник и выбор одной из трёх карт.</td></tr><tr><td>Элита</td><td>Усиленный противник; редкая карта и 30% шанс артефакта в одном из слотов.</td></tr><tr><td>Магазин</td><td>3–5 карт и удаление карты из колоды за золото.</td></tr><tr><td>Отдых</td><td>Постоянный до конца забега бонус Башни или выбранного генератора.</td></tr><tr><td>Событие</td><td>Выбор с последствиями: золото, карта, артефакт или усиление.</td></tr><tr><td>Босс</td><td>Финальный бой; награда включает артефакт, если доступны неполученные.</td></tr></tbody></table>
+        <p>Стартовый запас золота — 20. Пройденные узлы нельзя посещать повторно; движение идёт только вперёд по связям графа.</p>
+        <div class="links"><a href="world_map_design.md">Технический дизайн карты</a><a href="events_catalog.html">Каталог событий</a></div>
+      </section>
+
+      <section id="artifacts"><h2>7. Артефакты <span class="status done">реализовано</span></h2>
+        <p>Реализованы все <strong>8 артефактов</strong>. Они действуют до конца забега и реагируют на начало боя, начало хода, розыгрыш карты, получение урона либо момент перед оплатой карты.</p>
+        <p>Обычный бой не выдаёт артефакт. Элита имеет 30% шанс заменить один из двух обычных слотов артефактом. Босс гарантирует артефакт, пока остаются ещё не собранные экземпляры. Магазин сейчас артефакты не продаёт.</p>
+        <div class="links"><a href="artifacts_catalog.html">Открыть каталог артефактов</a><a href="effects_reference.md#эффекты-артефактов">Формат эффектов</a></div>
+      </section>
+
+      <section id="progression"><h2>8. Прогрессия <span class="status done">реализовано</span></h2>
+        <p><strong>Слава</strong> начисляется после каждого забега: 10 за пройденный узел, 15 за побеждённую элиту и 100 дополнительно за победу над боссом.</p>
+        <p>В мета-магазине доступны постоянные улучшения стартовой Башни, Стены, трёх генераторов и размера руки, а также открытие редких карт. Профиль ведёт статистику побед, забегов, сыгранных карт и максимальной высоты Башни.</p>
+        <div class="callout warning"><strong>Текущее ограничение:</strong> профиль и незавершённый забег сохраняются локально. Облачная синхронизация через Yandex Player Data ещё не реализована.</div>
+      </section>
+
+      <section id="screens"><h2>9. Экраны и UX <span class="status done">реализовано</span></h2>
+        <p>Основной маршрут включает главное меню, карту мира, бой, награду, магазин, отдых, событие, итог забега, профиль, мета-магазин, колоду, настройки и справку. Интерфейс рассчитан на мышь, клавиатуру и сенсорный экран; при потере фокуса игра ставится на паузу.</p>
+        <p>Фактические визуальные правила, композиция и замечания по каждому экрану собраны отдельно:</p><div class="links"><a href="ui_screen_design_review.html">Обзор дизайна экранов</a><a href="ui_wireframes.html">Wireframes</a></div>
+      </section>
+
+      <section id="style"><h2>10. Арт-стиль и звук</h2>
+        <p><span class="status done">реализовано частично</span> Тёплое сказочное фэнтези, живописные иллюстрации, тёмный фон интерфейса, золото и пергамент в акцентах. Ресурсные семейства читаются цветом: кирпичи — красно-охристые, гемы — сине-фиолетовые, звери — зелёные.</p>
+        <p>Карты и основные экраны уже используют созданные арты; недостающие изображения генерируются только по единому руководству. Музыка и SFX разделяют бой, интерфейс, постройку и три ресурсных типа.</p>
+        <div class="links"><a href="art_prompts.md">Промты и визуальная библия</a><a href="audio_asset_guide.md">Руководство по аудио</a></div>
+      </section>
+
+      <section id="platform"><h2>11. Платформа и монетизация</h2>
+        <p><span class="status done">реализовано</span> Проект экспортируется в HTML5 для Яндекс Игр, работает без потоков и использует Compatibility renderer. Инициализация SDK встроена в веб-шаблон; предусмотрена локальная заглушка rewarded video.</p>
+        <p><span class="status plan">планируется</span> Полноценные rewarded-сценарии, interstitial, баннер, внутриигровые покупки и облачная синхронизация профиля. Эти механики не считаются частью текущей реализации и должны проектироваться с учётом актуальных требований платформы.</p>
+        <p>Монетизация не должна блокировать базовый цикл или вмешиваться в принятие решений во время боя.</p>
+      </section>
+
+      <section id="sources"><h2>12. Источники актуальных данных</h2>
+        <p>Этот документ фиксирует продуктовые правила и текущий игровой цикл. Детальные значения не дублируются там, где уже существует специализированный источник.</p>
+        <table><thead><tr><th>Область</th><th>Источник</th></tr></thead><tbody><tr><td>Карты</td><td><a href="cards_catalog.html"><code>cards_catalog.html</code></a> и <code>data/cards/*.tres</code></td></tr><tr><td>Артефакты</td><td><a href="artifacts_catalog.html"><code>artifacts_catalog.html</code></a> и <code>data/artifacts/*.tres</code></td></tr><tr><td>События</td><td><a href="events_catalog.html"><code>events_catalog.html</code></a> и <code>data/events/*.tres</code></td></tr><tr><td>Эффекты</td><td><a href="effects_reference.md"><code>effects_reference.md</code></a></td></tr><tr><td>Визуальный стиль</td><td><a href="art_prompts.md"><code>art_prompts.md</code></a></td></tr><tr><td>Реализация и задачи</td><td>Код проекта и GitHub Issues</td></tr></tbody></table>
+        <p class="muted">Актуализировано по состоянию проекта на 13 августа 2026 года.</p>
+      </section>
+    </main>
+  </div>
+  <a class="top" href="#top" aria-label="Наверх">↑</a>
+  <footer>Башни магов: Дуэль · Game Design Document</footer>
+</body>
+</html>
