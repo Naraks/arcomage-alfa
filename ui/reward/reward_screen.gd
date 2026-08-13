@@ -143,13 +143,13 @@ func _build_ui() -> void:
 	root_margin.add_child(root_vbox)
 
 	var title := Label.new()
-	title.text = "ПОБЕДА!"
+	title.text = tr("UI_REWARD_TITLE")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 28)
 	root_vbox.add_child(title)
 
 	var subtitle := Label.new()
-	subtitle.text = "Выберите одну награду"
+	subtitle.text = tr("UI_REWARD_SUBTITLE")
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	root_vbox.add_child(subtitle)
 
@@ -171,12 +171,12 @@ func _build_ui() -> void:
 	root_vbox.add_child(actions)
 
 	var skip_button := Button.new()
-	skip_button.text = "Пропустить"
+	skip_button.text = tr("UI_REWARD_SKIP")
 	skip_button.pressed.connect(_on_skip_pressed)
 	actions.add_child(skip_button)
 
 	_confirm_button = Button.new()
-	_confirm_button.text = "На карту →"
+	_confirm_button.text = tr("UI_REWARD_CONFIRM")
 	_confirm_button.disabled = true
 	_confirm_button.pressed.connect(_on_confirm_pressed)
 	actions.add_child(_confirm_button)
@@ -201,15 +201,15 @@ func _make_slot_panel(slot: Dictionary, index: int) -> Panel:
 
 	if slot.get("kind") == "artifact":
 		var artifact: ArtifactData = slot["artifact"]
-		name_label.text = artifact.artifact_name
-		desc_label.text = artifact.description
-		tag_label.text = "АРТЕФАКТ"
+		name_label.text = artifact.get_display_name()
+		desc_label.text = artifact.get_display_description()
+		tag_label.text = tr("UI_REWARD_ARTIFACT_TAG")
 		panel.modulate = Color(1.0, 0.9, 0.5)
 	else:
 		var card: CardData = slot["card"]
-		name_label.text = card.card_name
-		desc_label.text = card.description
-		tag_label.text = "%d💰" % card.cost
+		name_label.text = card.get_display_name()
+		desc_label.text = card.get_display_description()
+		tag_label.text = tr("UI_REWARD_COST_TAG") % card.cost
 
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(name_label)
@@ -217,7 +217,7 @@ func _make_slot_panel(slot: Dictionary, index: int) -> Panel:
 	vbox.add_child(desc_label)
 
 	var select_button := Button.new()
-	select_button.text = "Выбрать"
+	select_button.text = tr("COMMON_SELECT")
 	select_button.pressed.connect(_on_slot_pressed.bind(index))
 	vbox.add_child(select_button)
 

@@ -6,42 +6,44 @@ enum NodeState { CURRENT, AVAILABLE, COMPLETED, LOCKED }
 const WorldMapData = preload("res://data/resources/world_map_data.gd")
 const MapNodeData = preload("res://data/resources/map_node_data.gd")
 
+## "title"/"preview" здесь — ключи локализации (см. docs/localization_guide.md),
+## переводятся через tr() в местах использования, не читаются напрямую.
 const NODE_PRESENTATION := {
 	MapNodeData.NodeType.BATTLE:
 	{
 		"icon": preload("res://art/map/nodes/battle.png"),
-		"title": "Бой",
-		"preview": "Обычный бой. Награда — после победы."
+		"title": "UI_WORLD_MAP_NODE_BATTLE_TITLE",
+		"preview": "UI_WORLD_MAP_NODE_BATTLE_PREVIEW"
 	},
 	MapNodeData.NodeType.ELITE_BATTLE:
 	{
 		"icon": preload("res://art/map/nodes/elite.png"),
-		"title": "Элита",
-		"preview": "Опасный усиленный противник и ценная награда."
+		"title": "UI_WORLD_MAP_NODE_ELITE_TITLE",
+		"preview": "UI_WORLD_MAP_NODE_ELITE_PREVIEW"
 	},
 	MapNodeData.NodeType.SHOP:
 	{
 		"icon": preload("res://art/map/nodes/shop.png"),
-		"title": "Магазин",
-		"preview": "Покупка и удаление карт за золото."
+		"title": "UI_WORLD_MAP_NODE_SHOP_TITLE",
+		"preview": "UI_WORLD_MAP_NODE_SHOP_PREVIEW"
 	},
 	MapNodeData.NodeType.REST:
 	{
 		"icon": preload("res://art/map/nodes/rest.png"),
-		"title": "Отдых",
-		"preview": "Безопасная остановка и постоянное усиление забега."
+		"title": "UI_WORLD_MAP_NODE_REST_TITLE",
+		"preview": "UI_WORLD_MAP_NODE_REST_PREVIEW"
 	},
 	MapNodeData.NodeType.EVENT:
 	{
 		"icon": preload("res://art/map/nodes/event.png"),
-		"title": "Событие",
-		"preview": "Неизвестная встреча. Результат скрыт до входа."
+		"title": "UI_WORLD_MAP_NODE_EVENT_TITLE",
+		"preview": "UI_WORLD_MAP_NODE_EVENT_PREVIEW"
 	},
 	MapNodeData.NodeType.BOSS:
 	{
 		"icon": preload("res://art/map/nodes/boss.png"),
-		"title": "Босс",
-		"preview": "Финальное испытание этого маршрута."
+		"title": "UI_WORLD_MAP_NODE_BOSS_TITLE",
+		"preview": "UI_WORLD_MAP_NODE_BOSS_PREVIEW"
 	},
 }
 const NODE_SIZE := Vector2(132, 62)
@@ -76,6 +78,7 @@ var _map_offset_x := 0.0
 
 func _ready() -> void:
 	print("WorldMapScreen _ready")
+	_preview_label.text = tr("UI_WORLD_MAP_INITIAL_HINT")
 	if not map_data:
 		map_data = MatchSettings.world_map_data
 
@@ -157,7 +160,7 @@ func _update_hud() -> void:
 	if map_data.current_node_index >= 0 and map_data.current_node_index < map_data.map_nodes.size():
 		floor_number = map_data.map_nodes[map_data.current_node_index].floor_index + 1
 	_hud_label.text = (
-		"Этаж %d/%d  •  Золото %d\nБашня +%d  •  Колода %d  •  Артефакты %d"
+		tr("UI_WORLD_MAP_HUD")
 		% [
 			floor_number,
 			maxi(1, map_data.floor_count),
@@ -181,14 +184,16 @@ func _node_state(node: Resource, available_nodes: Array = []) -> int:
 
 
 func _node_label(node: Resource, state: int) -> String:
-	var presentation: Dictionary = NODE_PRESENTATION.get(node.node_type, {"title": "Узел"})
-	var state_label: String = {
-		NodeState.CURRENT: "ВЫ ЗДЕСЬ",
-		NodeState.AVAILABLE: "ДОСТУПНО",
-		NodeState.COMPLETED: "ПРОЙДЕНО",
-		NodeState.LOCKED: "ЗАКРЫТО"
+	var presentation: Dictionary = NODE_PRESENTATION.get(
+		node.node_type, {"title": "UI_WORLD_MAP_NODE_UNKNOWN_TITLE"}
+	)
+	var state_label_key: String = {
+		NodeState.CURRENT: "UI_WORLD_MAP_STATE_CURRENT",
+		NodeState.AVAILABLE: "UI_WORLD_MAP_STATE_AVAILABLE",
+		NodeState.COMPLETED: "UI_WORLD_MAP_STATE_COMPLETED",
+		NodeState.LOCKED: "UI_WORLD_MAP_STATE_LOCKED"
 	}[state]
-	return "%s\n%s" % [presentation.title, state_label]
+	return "%s\n%s" % [tr(presentation.title), tr(state_label_key)]
 
 
 func _node_icon(node: Resource) -> Texture2D:
@@ -212,11 +217,11 @@ func _add_node_icon(button: Button, node: Resource, state: int) -> void:
 
 func _node_preview(node: Resource, state: int) -> String:
 	if state == NodeState.LOCKED:
-		return "Путь закрыт: сначала завершите связанный доступный узел."
+		return tr("UI_WORLD_MAP_PATH_LOCKED")
 	var presentation: Dictionary = NODE_PRESENTATION.get(
-		node.node_type, {"preview": "Неизвестный узел."}
+		node.node_type, {"preview": "UI_WORLD_MAP_NODE_UNKNOWN_PREVIEW"}
 	)
-	return "Этаж %d. %s" % [node.floor_index + 1, presentation.preview]
+	return tr("UI_WORLD_MAP_NODE_FLOOR_PREVIEW") % [node.floor_index + 1, tr(presentation.preview)]
 
 
 func _show_node_preview(node: Resource, state: int) -> void:
@@ -337,7 +342,7 @@ func _apply_node_difficulty(enemy: PlayerData, node_type: int, floor_index: int 
 func _on_node_pressed(node: Resource) -> void:
 	print("Node pressed: ", node.node_type)
 	if map_data.map_nodes.has(node) and not _can_enter_node(node):
-		_preview_label.text = "Этот путь пока закрыт. Выберите узел с пометкой «ДОСТУПНО»."
+		_preview_label.text = tr("UI_WORLD_MAP_PATH_LOCKED_HINT")
 		return
 
 	if (

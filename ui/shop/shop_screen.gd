@@ -41,7 +41,7 @@ func _build_ui() -> void:
 	var header := HBoxContainer.new()
 	page.add_child(header)
 	var title := Label.new()
-	title.text = "МАГАЗИН"
+	title.text = tr("UI_SHOP_TITLE")
 	title.add_theme_font_size_override("font_size", 28)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
@@ -61,7 +61,7 @@ func _build_ui() -> void:
 	scroll.add_child(content)
 
 	_add_section_title(
-		content, "ВИТРИНА КАРТ", "Выберите карту — цена и доступность указаны рядом с покупкой."
+		content, tr("UI_SHOP_BUY_SECTION_TITLE"), tr("UI_SHOP_BUY_SECTION_HINT")
 	)
 	_buy_list = HFlowContainer.new()
 	_buy_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -73,8 +73,8 @@ func _build_ui() -> void:
 	content.add_child(separator)
 	_add_section_title(
 		content,
-		"ЧИСТКА КОЛОДЫ",
-		"Удаление стоит %d золота и всегда требует подтверждения." % REMOVE_CARD_PRICE
+		tr("UI_SHOP_REMOVE_SECTION_TITLE"),
+		tr("UI_SHOP_REMOVE_SECTION_HINT") % REMOVE_CARD_PRICE
 	)
 	_remove_list = VBoxContainer.new()
 	_remove_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -82,15 +82,15 @@ func _build_ui() -> void:
 	content.add_child(_remove_list)
 
 	var back_button := Button.new()
-	back_button.text = "Уйти на карту →"
+	back_button.text = tr("UI_SHOP_LEAVE_BUTTON")
 	back_button.custom_minimum_size.y = 48
 	back_button.pressed.connect(_on_back_pressed)
 	page.add_child(back_button)
 
 	_remove_dialog = ConfirmationDialog.new()
-	_remove_dialog.title = "Подтвердить чистку колоды"
-	_remove_dialog.ok_button_text = "Удалить за %d золота" % REMOVE_CARD_PRICE
-	_remove_dialog.cancel_button_text = "Отмена"
+	_remove_dialog.title = tr("UI_SHOP_REMOVE_DIALOG_TITLE")
+	_remove_dialog.ok_button_text = tr("UI_SHOP_REMOVE_DIALOG_OK") % REMOVE_CARD_PRICE
+	_remove_dialog.cancel_button_text = tr("COMMON_CANCEL")
 	_remove_dialog.confirmed.connect(_confirm_removal)
 	_remove_dialog.canceled.connect(_cancel_removal)
 	add_child(_remove_dialog)
@@ -122,7 +122,7 @@ func _layout_mode_for_size(viewport_size: Vector2) -> String:
 
 func _update_gold_label() -> void:
 	if _gold_label:
-		_gold_label.text = "Золото: %d" % MatchSettings.run_gold
+		_gold_label.text = tr("UI_GOLD_LABEL") % MatchSettings.run_gold
 
 
 func _card_price(card: CardData) -> int:
@@ -132,12 +132,17 @@ func _card_price(card: CardData) -> int:
 func _offer_state(card: CardData) -> Dictionary:
 	var price := _card_price(card)
 	if _bought_cards.has(card.get_instance_id()):
-		return {"available": false, "bought": true, "reason": "Уже куплено", "price": price}
+		return {
+			"available": false, "bought": true, "reason": tr("UI_SHOP_REASON_BOUGHT"), "price": price
+		}
 	if MatchSettings.run_gold < price:
 		return {
-			"available": false, "bought": false, "reason": "Недостаточно золота", "price": price
+			"available": false,
+			"bought": false,
+			"reason": tr("UI_SHOP_REASON_NOT_ENOUGH_GOLD"),
+			"price": price,
 		}
-	return {"available": true, "bought": false, "reason": "Доступно", "price": price}
+	return {"available": true, "bought": false, "reason": tr("UI_SHOP_REASON_AVAILABLE"), "price": price}
 
 
 func _refresh_all() -> void:
@@ -174,7 +179,7 @@ func _make_offer_panel(card: CardData) -> PanelContainer:
 	)
 	box.add_child(status)
 	var buy_button := Button.new()
-	buy_button.text = "Купить · %d золота" % state.price
+	buy_button.text = tr("UI_BUY_FOR_GOLD") % state.price
 	buy_button.custom_minimum_size.y = 46
 	buy_button.disabled = not state.available
 	buy_button.pressed.connect(_on_buy_pressed.bind(card))
@@ -195,12 +200,12 @@ func _refresh_remove_list() -> void:
 		var card: CardData = entry.card
 		var row := HBoxContainer.new()
 		var name_label := Label.new()
-		name_label.text = "%s  ·  стоимость карты: %d" % [card.card_name, card.cost]
+		name_label.text = tr("UI_SHOP_REMOVE_ROW_FORMAT") % [card.get_display_name(), card.cost]
 		name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		row.add_child(name_label)
 		var remove_button := Button.new()
-		remove_button.text = "Удалить · %d золота" % REMOVE_CARD_PRICE
+		remove_button.text = tr("UI_SHOP_REMOVE_BUTTON") % REMOVE_CARD_PRICE
 		var reason := _removal_block_reason(entry.index)
 		remove_button.disabled = not reason.is_empty()
 		remove_button.tooltip_text = reason
@@ -209,11 +214,11 @@ func _refresh_remove_list() -> void:
 		_remove_list.add_child(row)
 	if MatchSettings.run_deck.is_empty():
 		var empty := Label.new()
-		empty.text = "Колода пуста — удалять нечего."
+		empty.text = tr("UI_SHOP_REMOVE_EMPTY_DECK")
 		_remove_list.add_child(empty)
 	elif MatchSettings.run_deck.size() <= MIN_DECK_SIZE:
 		var warning := Label.new()
-		warning.text = "Последнюю карту удалить нельзя: колода должна оставаться пригодной для боя."
+		warning.text = tr("UI_SHOP_REMOVE_LAST_CARD_WARNING")
 		warning.add_theme_color_override("font_color", Color("d09a76"))
 		warning.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_remove_list.add_child(warning)
@@ -242,11 +247,11 @@ func _on_buy_pressed(card: CardData) -> void:
 
 func _removal_block_reason(deck_index: int) -> String:
 	if deck_index < 0 or deck_index >= MatchSettings.run_deck.size():
-		return "Карта больше не находится в колоде"
+		return tr("UI_SHOP_REASON_CARD_GONE")
 	if MatchSettings.run_deck.size() <= MIN_DECK_SIZE:
-		return "Нельзя удалить последнюю карту"
+		return tr("UI_SHOP_REASON_LAST_CARD")
 	if MatchSettings.run_gold < REMOVE_CARD_PRICE:
-		return "Недостаточно золота"
+		return tr("UI_SHOP_REASON_NOT_ENOUGH_GOLD")
 	return ""
 
 
@@ -257,8 +262,7 @@ func _request_removal(deck_index: int) -> bool:
 	if _remove_dialog:
 		var card: CardData = MatchSettings.run_deck[deck_index]
 		_remove_dialog.dialog_text = (
-			"Удалить «%s» из колоды?\nИтоговая цена: %d золота.\nЭто действие нельзя отменить."
-			% [card.card_name, REMOVE_CARD_PRICE]
+			tr("UI_SHOP_REMOVE_DIALOG_TEXT") % [card.get_display_name(), REMOVE_CARD_PRICE]
 		)
 		_remove_dialog.popup_centered(Vector2i(440, 210))
 	return true

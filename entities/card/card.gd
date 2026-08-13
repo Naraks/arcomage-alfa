@@ -52,9 +52,9 @@ func update_ui() -> void:
 	if not is_inside_tree() or not card_data:
 		return
 
-	name_label.text = card_data.card_name
+	name_label.text = card_data.get_display_name()
 	cost_label.text = str(card_data.cost)
-	description_label.text = card_data.description
+	description_label.text = card_data.get_display_description()
 	card_art_texture.texture = card_data.card_art
 	card_art_texture.visible = card_data.card_art != null
 	icon_texture.texture = card_data.icon

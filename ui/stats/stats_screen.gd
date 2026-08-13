@@ -24,13 +24,13 @@ func _rare_card_paths() -> Array:
 func _unlocked_cards_text() -> String:
 	var total := _rare_card_paths().size()
 	var unlocked: int = ProfileManager.profile.get("unlocked_cards", []).size()
-	return "Открыто редких карт: %d/%d" % [unlocked, total]
+	return tr("UI_STATS_UNLOCKED_CARDS") % [unlocked, total]
 
 
 func _unlocked_artifacts_text() -> String:
 	var total := RewardScreenScript.ALL_ARTIFACT_PATHS.size()
 	var collected: int = ProfileManager.profile.get("unlocked_artifacts", []).size()
-	return "Собрано артефактов: %d/%d" % [collected, total]
+	return tr("UI_STATS_UNLOCKED_ARTIFACTS") % [collected, total]
 
 
 func _build_ui() -> void:
@@ -45,24 +45,24 @@ func _build_ui() -> void:
 
 	if not embedded_in_profile:
 		var title := Label.new()
-		title.text = "СТАТИСТИКА"
+		title.text = tr("UI_STATS_TITLE")
 		title.add_theme_font_size_override("font_size", 28)
 		root_vbox.add_child(title)
 
-	_add_stat_label(root_vbox, "Побед: %d" % ProfileManager.profile.get("total_wins", 0))
+	_add_stat_label(root_vbox, tr("UI_STATS_WINS") % ProfileManager.profile.get("total_wins", 0))
 	_add_stat_label(
-		root_vbox, "Завершено забегов: %d" % ProfileManager.profile.get("total_runs", 0)
+		root_vbox, tr("UI_STATS_RUNS_COMPLETED") % ProfileManager.profile.get("total_runs", 0)
 	)
 	_add_stat_label(
 		root_vbox,
-		"Максимальная высота Башни: %d" % ProfileManager.profile.get("max_tower_height", 0)
+		tr("UI_STATS_MAX_TOWER_HEIGHT") % ProfileManager.profile.get("max_tower_height", 0)
 	)
 	_add_stat_label(root_vbox, _unlocked_cards_text())
 	_add_stat_label(root_vbox, _unlocked_artifacts_text())
 
 	if not embedded_in_profile:
 		var back_button := Button.new()
-		back_button.text = "Назад в меню"
+		back_button.text = tr("COMMON_BACK_TO_MENU")
 		back_button.pressed.connect(_on_back_pressed)
 		root_vbox.add_child(back_button)
 

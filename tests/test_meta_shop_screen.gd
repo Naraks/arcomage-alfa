@@ -38,9 +38,12 @@ func test_upgrade_groups_cover_catalog_once_and_match_real_functions() -> void:
 	assert_eq(grouped.size(), screen.UPGRADE_ORDER.size())
 	for key in screen.UPGRADE_ORDER:
 		assert_eq(grouped.count(key), 1, "%s должен входить ровно в одну категорию" % key)
-	assert_eq(screen.UPGRADE_GROUPS["Основание"], ["tower", "wall"])
-	assert_eq(screen.UPGRADE_GROUPS["Ресурсы"], ["quarry", "magic", "dungeon"])
-	assert_eq(screen.UPGRADE_GROUPS["Утилити"], ["hand_size"])
+	# ARC-локализация: UPGRADE_GROUPS теперь хранит ключи локали-независимыми
+	# идентификаторами ("foundation"/"resources"/"utility"), а не русским
+	# текстом — отображаемая подпись берётся из GROUP_LABEL_KEYS через tr().
+	assert_eq(screen.UPGRADE_GROUPS["foundation"], ["tower", "wall"])
+	assert_eq(screen.UPGRADE_GROUPS["resources"], ["quarry", "magic", "dungeon"])
+	assert_eq(screen.UPGRADE_GROUPS["utility"], ["hand_size"])
 
 	screen.free()
 
@@ -109,7 +112,7 @@ func test_row_label_text_shows_level_and_max() -> void:
 	var text := screen._row_label_text("tower")
 
 	assert_true(text.contains("2/%d" % ProfileManager.UPGRADE_CATALOG["tower"]["max_level"]))
-	assert_true(text.contains(ProfileManager.UPGRADE_CATALOG["tower"]["name"]))
+	assert_true(text.contains(tr(ProfileManager.UPGRADE_CATALOG["tower"]["name"])))
 
 	screen.free()
 

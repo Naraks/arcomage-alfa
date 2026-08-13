@@ -7,4 +7,4 @@ static func compare_by_type_cost_name(a: CardData, b: CardData) -> bool:
 		return a.type < b.type
 	if a.cost != b.cost:
 		return a.cost < b.cost
-	return a.card_name < b.card_name
+	return a.get_display_name() < b.get_display_name()

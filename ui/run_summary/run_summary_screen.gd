@@ -73,28 +73,30 @@ func _build_ui(floors_passed: int, elites_defeated: int, fame_earned: int) -> vo
 	root_margin.add_child(root_vbox)
 
 	var title := Label.new()
-	title.text = "ПОБЕДА НАД БОССОМ!" if MatchSettings.run_victory else "ЗАБЕГ ОКОНЧЕН"
+	title.text = tr("UI_RUN_SUMMARY_BOSS_VICTORY") if MatchSettings.run_victory else tr("UI_RUN_SUMMARY_RUN_OVER")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 30)
 	root_vbox.add_child(title)
 
-	_add_stat_label(root_vbox, "Пройдено этажей: %d" % floors_passed)
-	_add_stat_label(root_vbox, "Побеждено элит: %d" % elites_defeated)
-	_add_stat_label(root_vbox, "Золото забега (не сохранится): %d" % MatchSettings.run_gold)
-	_add_stat_label(root_vbox, "Собрано артефактов: %d" % MatchSettings.run_artifacts.size())
+	_add_stat_label(root_vbox, tr("UI_RUN_SUMMARY_FLOORS_PASSED") % floors_passed)
+	_add_stat_label(root_vbox, tr("UI_RUN_SUMMARY_ELITES_DEFEATED") % elites_defeated)
+	_add_stat_label(root_vbox, tr("UI_RUN_SUMMARY_GOLD_NOT_SAVED") % MatchSettings.run_gold)
+	_add_stat_label(
+		root_vbox, tr("UI_RUN_SUMMARY_ARTIFACTS_COLLECTED") % MatchSettings.run_artifacts.size()
+	)
 	for artifact in MatchSettings.run_artifacts:
-		_add_stat_label(root_vbox, "  · %s" % artifact.artifact_name)
+		_add_stat_label(root_vbox, tr("UI_RUN_SUMMARY_ARTIFACT_ROW") % artifact.get_display_name())
 
 	var fame_label := Label.new()
 	fame_label.text = (
-		"Слава за забег: +%d (всего: %d)" % [fame_earned, ProfileManager.profile.get("fame", 0)]
+		tr("UI_RUN_SUMMARY_FAME_EARNED") % [fame_earned, ProfileManager.profile.get("fame", 0)]
 	)
 	fame_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	fame_label.add_theme_font_size_override("font_size", 20)
 	root_vbox.add_child(fame_label)
 
 	var menu_button := Button.new()
-	menu_button.text = "В главное меню"
+	menu_button.text = tr("UI_RUN_SUMMARY_MENU_BUTTON")
 	menu_button.pressed.connect(_on_menu_pressed)
 	root_vbox.add_child(menu_button)
 

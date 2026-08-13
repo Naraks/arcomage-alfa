@@ -10,13 +10,18 @@ const MainMenuBackdropScript = preload("res://ui/main_menu_backdrop.gd")
 const TITLE_FONT: FontFile = preload("res://fonts/YesevaOne-Regular.ttf")
 
 const GAME_TITLE := "Башни магов: Дуэль"
-const GAME_TITLE_PRIMARY := "БАШНИ МАГОВ"
-const GAME_TITLE_SECONDARY := "ДУЭЛЬ"
 const INK := Color("#101522")
 const TEXT_PRIMARY := Color("#f6f0e4")
 const TEXT_MUTED := Color("#b7b3ad")
 
-const DEBUG_STRATEGY_NAMES := ["Сбалансированный", "Агрессор", "Строитель", "Экономист", "Босс"]
+## Ключи локализации имён debug-стратегий ИИ (только debug-сборка, см. docs/localization_guide.md).
+const DEBUG_STRATEGY_NAME_KEYS := [
+	"UI_MAIN_MENU_DEBUG_STRATEGY_BALANCED",
+	"UI_MAIN_MENU_DEBUG_STRATEGY_AGGRESSIVE",
+	"UI_MAIN_MENU_DEBUG_STRATEGY_BUILDER",
+	"UI_MAIN_MENU_DEBUG_STRATEGY_ECONOMIST",
+	"UI_MAIN_MENU_DEBUG_STRATEGY_BOSS",
+]
 const DEBUG_STRATEGY_SCRIPTS := [
 	DefaultAIStrategyScript,
 	AggressiveAIStrategyScript,
@@ -86,14 +91,14 @@ func _build_ui() -> void:
 	panel_margin.add_child(stack)
 
 	var eyebrow := Label.new()
-	eyebrow.text = "КАРТОЧНАЯ СТРАТЕГИЯ"
+	eyebrow.text = tr("UI_MAIN_MENU_EYEBROW")
 	eyebrow.add_theme_color_override("font_color", UIColors.GOLD)
 	eyebrow.add_theme_font_size_override("font_size", 13)
 	stack.add_child(eyebrow)
 
 	var logo := Label.new()
 	logo.name = "Logo"
-	logo.text = GAME_TITLE_PRIMARY
+	logo.text = tr("UI_MAIN_MENU_TITLE_PRIMARY")
 	logo.add_theme_font_override("font", TITLE_FONT)
 	logo.add_theme_color_override("font_color", TEXT_PRIMARY)
 	logo.add_theme_font_size_override("font_size", 42)
@@ -101,13 +106,13 @@ func _build_ui() -> void:
 
 	var title_suffix := Label.new()
 	title_suffix.name = "TitleSuffix"
-	title_suffix.text = GAME_TITLE_SECONDARY
+	title_suffix.text = tr("UI_MAIN_MENU_TITLE_SECONDARY")
 	title_suffix.add_theme_color_override("font_color", UIColors.GOLD)
 	title_suffix.add_theme_font_size_override("font_size", 20)
 	stack.add_child(title_suffix)
 
 	var tagline := Label.new()
-	tagline.text = "Возведи башню. Сломи стену.\nПереиграй соперника."
+	tagline.text = tr("UI_MAIN_MENU_TAGLINE")
 	tagline.add_theme_color_override("font_color", TEXT_MUTED)
 	tagline.add_theme_font_size_override("font_size", 17)
 	stack.add_child(tagline)
@@ -124,15 +129,15 @@ func _build_ui() -> void:
 
 	_campaign_button = Button.new()
 	_campaign_button.name = "CampaignButton"
-	_campaign_button.text = "Новый забег"
+	_campaign_button.text = tr("UI_MAIN_MENU_NEW_RUN")
 	_campaign_button.custom_minimum_size = Vector2(0.0, 54.0)
 	_campaign_button.pressed.connect(_on_campaign_pressed)
 	stack.add_child(_campaign_button)
 
 	_battle_button = Button.new()
 	_battle_button.name = "BattleButton"
-	_battle_button.text = "Быстрый бой"
-	_battle_button.tooltip_text = "Одиночная дуэль против случайного архетипа ИИ"
+	_battle_button.text = tr("UI_MAIN_MENU_QUICK_BATTLE")
+	_battle_button.tooltip_text = tr("UI_MAIN_MENU_QUICK_BATTLE_TOOLTIP")
 	_battle_button.custom_minimum_size = Vector2(0.0, 52.0)
 	_battle_button.pressed.connect(_on_battle_pressed)
 	_apply_button_style(_battle_button, false)
@@ -145,7 +150,7 @@ func _build_ui() -> void:
 
 	_profile_button = Button.new()
 	_profile_button.name = "ProfileButton"
-	_profile_button.text = "Профиль"
+	_profile_button.text = tr("UI_MAIN_MENU_PROFILE")
 	_profile_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_profile_button.custom_minimum_size = Vector2(0.0, 48.0)
 	_profile_button.pressed.connect(_on_profile_pressed)
@@ -154,7 +159,7 @@ func _build_ui() -> void:
 
 	_settings_button = Button.new()
 	_settings_button.name = "SettingsButton"
-	_settings_button.text = "Настройки"
+	_settings_button.text = tr("UI_MAIN_MENU_SETTINGS")
 	_settings_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_settings_button.custom_minimum_size = Vector2(0.0, 48.0)
 	_settings_button.pressed.connect(_on_settings_pressed)
@@ -162,7 +167,7 @@ func _build_ui() -> void:
 	secondary_row.add_child(_settings_button)
 
 	var footer := Label.new()
-	footer.text = "Одна карта может решить исход дуэли."
+	footer.text = tr("UI_MAIN_MENU_FOOTER")
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	footer.add_theme_color_override("font_color", Color(0.72, 0.70, 0.67, 0.72))
 	footer.add_theme_font_size_override("font_size", 12)
@@ -186,11 +191,11 @@ func _build_ui() -> void:
 func _run_cta_state(has_saved_run: bool, progress_text: String = "") -> Dictionary:
 	var safe_progress := progress_text.strip_edges()
 	if safe_progress.is_empty():
-		safe_progress = "Сохранённый забег"
+		safe_progress = tr("UI_MAIN_MENU_SAVED_RUN")
 	return {
 		"continue_visible": has_saved_run,
 		"continue_disabled": not has_saved_run,
-		"continue_text": "Продолжить забег\n%s" % safe_progress,
+		"continue_text": tr("UI_MAIN_MENU_CONTINUE_RUN") % safe_progress,
 		"new_run_is_primary": not has_saved_run,
 	}
 
@@ -202,7 +207,7 @@ func _configure_run_actions(has_saved_run: bool, progress_text: String = "") -> 
 	_continue_button.text = state.continue_text
 	_apply_button_style(_continue_button, has_saved_run)
 
-	_campaign_button.text = "Новый забег"
+	_campaign_button.text = tr("UI_MAIN_MENU_NEW_RUN")
 	_campaign_button.custom_minimum_size.y = 54.0 if has_saved_run else 66.0
 	_apply_button_style(_campaign_button, state.new_run_is_primary)
 
@@ -210,13 +215,13 @@ func _configure_run_actions(has_saved_run: bool, progress_text: String = "") -> 
 func _read_saved_run_progress() -> String:
 	var data = ResourceLoader.load(RunSaveManager.SAVE_PATH, "", ResourceLoader.CACHE_MODE_IGNORE)
 	if data == null or not (data is RunSaveData):
-		return "Сохранённый забег"
+		return tr("UI_MAIN_MENU_SAVED_RUN")
 	return _format_run_progress(data.world_map_data)
 
 
 func _format_run_progress(map_data: WorldMapData) -> String:
 	if map_data == null or map_data.floor_count <= 0:
-		return "Сохранённый забег"
+		return tr("UI_MAIN_MENU_SAVED_RUN")
 
 	var next_floor := 1
 	var current_index := map_data.current_node_index
@@ -227,7 +232,7 @@ func _format_run_progress(map_data: WorldMapData) -> String:
 			if current_node.is_completed:
 				next_floor += 1
 	next_floor = clampi(next_floor, 1, map_data.floor_count)
-	return "Этаж %d из %d" % [next_floor, map_data.floor_count]
+	return tr("UI_MAIN_MENU_FLOOR_PROGRESS") % [next_floor, map_data.floor_count]
 
 
 func _focus_primary_action() -> void:
@@ -408,8 +413,8 @@ func _generate_debug_ai_picker_bar() -> void:
 
 	var picker := MenuButton.new()
 	picker.name = "DebugAIPicker"
-	picker.text = "DBG · ИИ"
-	picker.tooltip_text = "Запустить быстрый бой против выбранного профиля ИИ"
+	picker.text = "DBG · AI"
+	picker.tooltip_text = tr("UI_MAIN_MENU_DEBUG_AI_TOOLTIP")
 	picker.custom_minimum_size = Vector2(112.0, 44.0)
 	picker.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 	picker.offset_left = -132.0
@@ -420,8 +425,8 @@ func _generate_debug_ai_picker_bar() -> void:
 	layer.add_child(picker)
 
 	var popup := picker.get_popup()
-	for index in range(DEBUG_STRATEGY_NAMES.size()):
-		popup.add_item(DEBUG_STRATEGY_NAMES[index], index)
+	for index in range(DEBUG_STRATEGY_NAME_KEYS.size()):
+		popup.add_item(tr(DEBUG_STRATEGY_NAME_KEYS[index]), index)
 	popup.id_pressed.connect(_on_debug_strategy_selected)
 
 

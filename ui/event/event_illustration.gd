@@ -1,39 +1,45 @@
 extends Control
 ## Иллюстрация случайного события.
 
+## Ключ — стабильный ключ локализации event_title (см. data/events/*.tres и
+## docs/localization_guide.md), а не переведённый текст: иллюстрация не должна
+## зависеть от текущей локали.
 const EVENT_ART_PATHS := {
-	"Заброшенный склад": "res://assets/events/abandoned_warehouse.png",
-	"Древний алтарь": "res://assets/events/ancient_altar.png",
-	"Звериный аукцион": "res://assets/events/beast_auction.png",
-	"Звериное логово": "res://assets/events/beast_den.png",
-	"Обрушившаяся шахта": "res://assets/events/collapsed_mine.png",
-	"Игра костей": "res://assets/events/dice_game.png",
-	"Караван гномов": "res://assets/events/dwarf_caravan.png",
-	"Загадка горгулий": "res://assets/events/gargoyle_riddle.png",
-	"Учения у мастера": "res://assets/events/hermit_training.png",
-	"Магическая буря": "res://assets/events/magic_storm.png",
-	"Лунный колодец": "res://assets/events/moon_well.png",
-	"Разорённая мастерская": "res://assets/events/ruined_workshop.png",
-	"Рунный каменщик": "res://assets/events/runic_mason.png",
-	"Карточный шулер": "res://assets/events/cardsharp.png",
-	"Раненый путник": "res://assets/events/wounded_traveler.png",
+	"EVENT_ABANDONED_WAREHOUSE_TITLE": "res://assets/events/abandoned_warehouse.png",
+	"EVENT_ANCIENT_ALTAR_TITLE": "res://assets/events/ancient_altar.png",
+	"EVENT_BEAST_AUCTION_TITLE": "res://assets/events/beast_auction.png",
+	"EVENT_BEAST_DEN_TITLE": "res://assets/events/beast_den.png",
+	"EVENT_COLLAPSED_MINE_TITLE": "res://assets/events/collapsed_mine.png",
+	"EVENT_DICE_GAME_TITLE": "res://assets/events/dice_game.png",
+	"EVENT_DWARVEN_CARAVAN_TITLE": "res://assets/events/dwarf_caravan.png",
+	"EVENT_GARGOYLE_RIDDLE_TITLE": "res://assets/events/gargoyle_riddle.png",
+	"EVENT_HERMIT_TRAINING_TITLE": "res://assets/events/hermit_training.png",
+	"EVENT_MAGIC_STORM_TITLE": "res://assets/events/magic_storm.png",
+	"EVENT_MOON_WELL_TITLE": "res://assets/events/moon_well.png",
+	"EVENT_RUINED_WORKSHOP_TITLE": "res://assets/events/ruined_workshop.png",
+	"EVENT_RUNIC_MASON_TITLE": "res://assets/events/runic_mason.png",
+	"EVENT_WANDERING_MERCHANT_TITLE": "res://assets/events/cardsharp.png",
+	"EVENT_WOUNDED_TRAVELER_TITLE": "res://assets/events/wounded_traveler.png",
 }
 
-var _event_title := "Событие"
+var _event_title_key := "EVENT_MOON_WELL_TITLE"
 var _art_texture: Texture2D
 
 
-func configure(event_title: String) -> void:
-	_event_title = event_title
+## event_title_key — сырой ключ локализации (EventData.event_title), НЕ
+## переведённый текст: используется и для подбора арта, и как seed
+## процедурного фона, чтобы оба были стабильны независимо от локали.
+func configure(event_title_key: String) -> void:
+	_event_title_key = event_title_key
 	_art_texture = null
-	var art_path := _art_path_for_title(event_title)
+	var art_path := _art_path_for_title(event_title_key)
 	if not art_path.is_empty() and ResourceLoader.exists(art_path):
 		_art_texture = load(art_path) as Texture2D
 	queue_redraw()
 
 
-func _art_path_for_title(event_title: String) -> String:
-	return String(EVENT_ART_PATHS.get(event_title, ""))
+func _art_path_for_title(event_title_key: String) -> String:
+	return String(EVENT_ART_PATHS.get(event_title_key, ""))
 
 
 func _ready() -> void:
@@ -49,7 +55,7 @@ func _draw() -> void:
 		draw_rect(bounds, Color(0.82, 0.62, 0.28, 0.74), false, 2.0)
 		return
 
-	var seed_value: int = absi(_event_title.hash())
+	var seed_value: int = absi(_event_title_key.hash())
 	var hue := float(seed_value % 1000) / 1000.0
 	var sky_top := Color.from_hsv(hue, 0.42, 0.22)
 	var sky_bottom := Color.from_hsv(fmod(hue + 0.08, 1.0), 0.48, 0.08)

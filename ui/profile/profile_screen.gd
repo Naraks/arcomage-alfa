@@ -2,7 +2,9 @@ extends Control
 ## Общая оболочка разделов профиля.
 
 const RewardScreenScript = preload("res://ui/reward/reward_screen.gd")
-const TAB_TITLES := ["Прокачка", "Статистика", "Колода"]
+const TAB_TITLE_KEYS := [
+	"UI_PROFILE_TAB_UPGRADES", "UI_PROFILE_TAB_STATS", "UI_PROFILE_TAB_DECK"
+]
 const MIN_TOUCH_TARGET := 44.0
 
 static var _last_tab_index := 0
@@ -63,13 +65,13 @@ func _build_shell() -> void:
 
 	var back_button := Button.new()
 	back_button.name = "BackButton"
-	back_button.text = "Назад"
+	back_button.text = tr("COMMON_BACK")
 	back_button.custom_minimum_size = Vector2(108, MIN_TOUCH_TARGET)
 	back_button.pressed.connect(_on_back_pressed)
 	primary_row.add_child(back_button)
 
 	var title := Label.new()
-	title.text = "ПРОФИЛЬ"
+	title.text = tr("COMMON_PROFILE_TITLE")
 	title.add_theme_font_size_override("font_size", 26)
 	title.add_theme_color_override("font_color", UIColors.GOLD)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -103,15 +105,15 @@ func _build_shell() -> void:
 	_bottom_nav.add_theme_constant_override("separation", 6)
 	add_child(_bottom_nav)
 
-	for index in range(TAB_TITLES.size()):
-		_side_buttons.append(_make_tab_button(TAB_TITLES[index], index, true))
-		_bottom_buttons.append(_make_tab_button(TAB_TITLES[index], index, false))
+	for index in range(TAB_TITLE_KEYS.size()):
+		_side_buttons.append(_make_tab_button(TAB_TITLE_KEYS[index], index, true))
+		_bottom_buttons.append(_make_tab_button(TAB_TITLE_KEYS[index], index, false))
 
 
-func _make_tab_button(title: String, index: int, side: bool) -> Button:
+func _make_tab_button(title_key: String, index: int, side: bool) -> Button:
 	var button := Button.new()
 	button.name = "%sTab%d" % ["Side" if side else "Bottom", index]
-	button.text = title
+	button.text = tr(title_key)
 	button.toggle_mode = true
 	button.custom_minimum_size = Vector2(0, MIN_TOUCH_TARGET)
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -186,15 +188,16 @@ func _active_buttons() -> Array[Button]:
 
 
 func _profile_identifier() -> String:
+	var default_name := tr("UI_PROFILE_LOCAL_PROFILE")
 	var value: String = (
 		str(
 			ProfileManager.profile.get(
-				"display_name", ProfileManager.profile.get("profile_id", "Локальный профиль")
+				"display_name", ProfileManager.profile.get("profile_id", default_name)
 			)
 		)
 		. strip_edges()
 	)
-	return value if not value.is_empty() else "Локальный профиль"
+	return value if not value.is_empty() else default_name
 
 
 func _collection_progress_text() -> String:
@@ -206,7 +209,7 @@ func _collection_progress_text() -> String:
 	var cards_open: int = ProfileManager.profile.get("unlocked_cards", []).size()
 	var artifacts_open: int = ProfileManager.profile.get("unlocked_artifacts", []).size()
 	return (
-		"Коллекция: карты %d/%d · артефакты %d/%d"
+		tr("UI_PROFILE_COLLECTION_PROGRESS")
 		% [
 			cards_open,
 			rare_total,
@@ -218,7 +221,7 @@ func _collection_progress_text() -> String:
 
 func _update_shared_state() -> void:
 	if _fame_label:
-		_fame_label.text = "Слава: %d" % ProfileManager.profile.get("fame", 0)
+		_fame_label.text = tr("UI_PROFILE_FAME") % ProfileManager.profile.get("fame", 0)
 	if _profile_label:
 		_profile_label.text = _profile_identifier()
 	if _collection_label:

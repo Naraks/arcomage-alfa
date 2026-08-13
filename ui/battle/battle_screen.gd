@@ -130,14 +130,14 @@ func _on_match_ended(winner: PlayerData) -> void:
 	var is_victory = winner == MatchManager.player_data
 
 	var label = Label.new()
-	label.text = "Victory!" if is_victory else "Defeat!"
+	label.text = tr("UI_BATTLE_VICTORY") if is_victory else tr("UI_BATTLE_DEFEAT")
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(label)
 
 	var button = Button.new()
 
 	if MatchSettings.came_from_map and is_victory:
-		button.text = "Забрать награду"
+		button.text = tr("UI_BATTLE_CLAIM_REWARD")
 		button.pressed.connect(
 			func(): get_tree().change_scene_to_file("res://ui/reward/reward_screen.tscn")
 		)
@@ -146,7 +146,7 @@ func _on_match_ended(winner: PlayerData) -> void:
 			MatchSettings.current_map_node != null
 			and MatchSettings.current_map_node.node_type == MapNodeData.NodeType.BOSS
 		)
-		button.text = "Итог забега" if is_boss_defeat else "Вернуться на карту"
+		button.text = tr("UI_BATTLE_RUN_SUMMARY") if is_boss_defeat else tr("UI_BATTLE_RETURN_TO_MAP")
 		button.pressed.connect(
 			func():
 				MatchSettings.came_from_map = false
@@ -158,7 +158,7 @@ func _on_match_ended(winner: PlayerData) -> void:
 					get_tree().change_scene_to_file("res://ui/map/world_map_screen.tscn")
 		)
 	else:
-		button.text = "Restart"
+		button.text = tr("UI_BATTLE_RESTART")
 		button.pressed.connect(
 			func():
 				layer.queue_free()
@@ -171,7 +171,7 @@ func _on_match_ended(winner: PlayerData) -> void:
 
 
 func _on_deck_pile_pressed() -> void:
-	_show_card_list_popup("Колода (%d)" % MatchManager.deck.size(), MatchManager.deck)
+	_show_card_list_popup(tr("UI_BATTLE_DECK_POPUP_TITLE") % MatchManager.deck.size(), MatchManager.deck)
 
 
 func _show_card_list_popup(title_text: String, cards: Array) -> void:
@@ -218,7 +218,7 @@ func _show_card_list_popup(title_text: String, cards: Array) -> void:
 	header.add_child(title_label)
 
 	var close_button = Button.new()
-	close_button.text = "Закрыть"
+	close_button.text = tr("COMMON_CLOSE")
 	close_button.pressed.connect(func(): layer.queue_free())
 	header.add_child(close_button)
 
@@ -236,7 +236,7 @@ func _show_card_list_popup(title_text: String, cards: Array) -> void:
 
 	if cards.is_empty():
 		var empty_label = Label.new()
-		empty_label.text = "Пусто"
+		empty_label.text = tr("UI_BATTLE_EMPTY_LIST")
 		grid.add_child(empty_label)
 	else:
 		var sorted_cards: Array = cards.duplicate()
@@ -273,11 +273,11 @@ func _on_turn_started(player: PlayerData) -> void:
 	if player == MatchManager.player_data:
 		refresh_hand()
 		if not MatchManager.player_hand.is_empty() and not _has_playable_card():
-			status_label.text = "Нет доступных карт — сбросьте одну (ПКМ по карте)"
+			status_label.text = tr("UI_BATTLE_NO_PLAYABLE_CARDS")
 		else:
-			status_label.text = "YOUR TURN"
+			status_label.text = tr("UI_BATTLE_YOUR_TURN")
 	else:
-		status_label.text = "ENEMY TURN"
+		status_label.text = tr("UI_BATTLE_ENEMY_TURN")
 
 
 func _has_playable_card() -> bool:
@@ -325,7 +325,8 @@ func update_all_ui() -> void:
 	e_gems_label.text = "%d (+%d)" % [e.gems, e.magic]
 	e_beasts_label.text = "%d (+%d)" % [e.beasts, e.dungeon]
 
-	deck_pile_button.text = "Колода\n%d" % MatchManager.deck.size()
+	deck_pile_button.text = tr("UI_BATTLE_DECK_BUTTON") % MatchManager.deck.size()
+	deck_pile_button.tooltip_text = tr("UI_BATTLE_DECK_TOOLTIP")
 
 
 func refresh_hand() -> void:

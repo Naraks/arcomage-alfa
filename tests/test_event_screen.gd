@@ -145,10 +145,11 @@ func test_event_illustration_uses_art_when_available_and_fallback_otherwise() ->
 	var illustration = EventIllustrationScript.new()
 
 	assert_eq(
-		illustration._art_path_for_title("Караван гномов"), "res://assets/events/dwarf_caravan.png"
+		illustration._art_path_for_title("EVENT_DWARVEN_CARAVAN_TITLE"),
+		"res://assets/events/dwarf_caravan.png"
 	)
 	assert_eq(
-		illustration._art_path_for_title("Загадка горгулий"),
+		illustration._art_path_for_title("EVENT_GARGOYLE_RIDDLE_TITLE"),
 		"res://assets/events/gargoyle_riddle.png"
 	)
 	assert_eq(illustration.EVENT_ART_PATHS.size(), 15)
@@ -156,7 +157,7 @@ func test_event_illustration_uses_art_when_available_and_fallback_otherwise() ->
 		assert_true(
 			ResourceLoader.exists(art_path), "Иллюстрация должна существовать: %s" % art_path
 		)
-	assert_eq(illustration._art_path_for_title("Неизвестное событие"), "")
+	assert_eq(illustration._art_path_for_title("EVENT_UNKNOWN_TITLE"), "")
 
 	illustration.free()
 

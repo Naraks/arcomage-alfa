@@ -119,14 +119,14 @@ func _build_story_panel() -> PanelContainer:
 	box.add_child(illustration)
 
 	var title := Label.new()
-	title.text = _event.event_title
+	title.text = _event.get_display_title()
 	title.add_theme_font_size_override("font_size", 30)
 	title.add_theme_color_override("font_color", UIColors.GOLD)
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(title)
 
 	var description := Label.new()
-	description.text = _event.event_description
+	description.text = _event.get_display_description()
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	description.add_theme_font_size_override("font_size", 18)
 	box.add_child(description)
@@ -145,7 +145,7 @@ func _build_decision_panel() -> PanelContainer:
 	var header := HBoxContainer.new()
 	box.add_child(header)
 	var prompt := Label.new()
-	prompt.text = "ВАШЕ РЕШЕНИЕ"
+	prompt.text = tr("UI_EVENT_DECISION_HEADER")
 	prompt.add_theme_font_size_override("font_size", 22)
 	prompt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(prompt)
@@ -164,14 +164,14 @@ func _build_decision_panel() -> PanelContainer:
 	_result_panel.visible = false
 	box.add_child(_result_panel)
 	var result_title := Label.new()
-	result_title.text = "ПОСЛЕДСТВИЕ"
+	result_title.text = tr("UI_EVENT_RESULT_HEADER")
 	result_title.add_theme_font_size_override("font_size", 20)
 	_result_panel.add_child(result_title)
 	_result_label = Label.new()
 	_result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_result_panel.add_child(_result_label)
 	var continue_button := Button.new()
-	continue_button.text = "Продолжить путь →"
+	continue_button.text = tr("UI_EVENT_CONTINUE_BUTTON")
 	continue_button.custom_minimum_size.y = 52
 	continue_button.pressed.connect(_return_to_map)
 	_result_panel.add_child(continue_button)
@@ -179,7 +179,7 @@ func _build_decision_panel() -> PanelContainer:
 
 
 func _update_gold_label() -> void:
-	_gold_label.text = "Золото: %d" % MatchSettings.run_gold
+	_gold_label.text = tr("UI_GOLD_LABEL") % MatchSettings.run_gold
 
 
 func _refresh_options() -> void:
@@ -197,7 +197,7 @@ func _build_option_panel(option: Dictionary) -> PanelContainer:
 	box.add_theme_constant_override("separation", 5)
 	panel.add_child(box)
 	var button := Button.new()
-	button.text = String(option.get("text", ""))
+	button.text = EventData.option_display_text(option)
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	button.custom_minimum_size.y = 50
 	button.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -255,19 +255,19 @@ func _option_state(option: Dictionary, available_gold: int) -> Dictionary:
 		"guaranteed_cost": _guaranteed_gold_cost(option),
 		"required_reserve": required_reserve,
 		"is_risky": outcomes.size() > 1,
-		"unavailable_reason": "Не хватает %d золота" % shortfall if shortfall > 0 else "",
+		"unavailable_reason": tr("UI_EVENT_SHORTFALL") % shortfall if shortfall > 0 else "",
 	}
 
 
 func _option_details_text(state: Dictionary) -> String:
 	var parts: Array[String] = []
 	if state.guaranteed_cost > 0:
-		parts.append("Цена: %d золота" % state.guaranteed_cost)
+		parts.append(tr("UI_EVENT_PRICE") % state.guaranteed_cost)
 	elif state.required_reserve > 0:
-		parts.append("Нужен запас: %d золота" % state.required_reserve)
+		parts.append(tr("UI_EVENT_REQUIRED_RESERVE") % state.required_reserve)
 	else:
-		parts.append("Без затрат")
-	parts.append("⚠ Риск: результат неизвестен" if state.is_risky else "✓ Результат гарантирован")
+		parts.append(tr("UI_EVENT_NO_COST"))
+	parts.append(tr("UI_EVENT_RISKY") if state.is_risky else tr("UI_EVENT_GUARANTEED"))
 	if not state.available:
 		parts.append(state.unavailable_reason)
 	return "  •  ".join(parts)
@@ -319,7 +319,7 @@ func _on_option_chosen(option: Dictionary) -> void:
 		return
 	_update_gold_label()
 	_options_list.visible = false
-	_result_label.text = outcome.get("result_text", "")
+	_result_label.text = EventData.outcome_display_result(outcome)
 	_result_panel.visible = true
 
 

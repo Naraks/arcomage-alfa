@@ -25,7 +25,7 @@ func _build_ui() -> void:
 
 	if not embedded_in_profile:
 		var title := Label.new()
-		title.text = "КОЛОДА"
+		title.text = tr("UI_DECK_TITLE")
 		title.add_theme_font_size_override("font_size", 28)
 		title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		header.add_child(title)
@@ -46,7 +46,7 @@ func _build_ui() -> void:
 
 	if not embedded_in_profile:
 		var back_button := Button.new()
-		back_button.text = "Назад в меню"
+		back_button.text = tr("COMMON_BACK_TO_MENU")
 		back_button.pressed.connect(_on_back_pressed)
 		root_vbox.add_child(back_button)
 
@@ -60,13 +60,13 @@ func _build_ui() -> void:
 ## сброшены на диск на момент открытия вкладки колоды в профиле).
 func _resolve_deck_to_show() -> Array[CardData]:
 	if MatchSettings.world_map_data != null:
-		_source_label.text = "Колода текущего забега"
+		_source_label.text = tr("UI_DECK_SOURCE_RUN")
 		return MatchSettings.run_deck
 	if RunSaveManager.has_saved_run():
 		RunSaveManager.load_run()
-		_source_label.text = "Колода текущего забега"
+		_source_label.text = tr("UI_DECK_SOURCE_RUN")
 		return MatchSettings.run_deck
-	_source_label.text = "Нет активного забега — превью стартовой колоды новой кампании"
+	_source_label.text = tr("UI_DECK_SOURCE_PREVIEW")
 	return MatchManager.build_starting_run_deck()
 
 
@@ -76,7 +76,7 @@ func _refresh(cards: Array[CardData]) -> void:
 
 	if cards.is_empty():
 		var empty_label := Label.new()
-		empty_label.text = "Колода пуста"
+		empty_label.text = tr("UI_DECK_EMPTY")
 		_deck_list.add_child(empty_label)
 		return
 
@@ -84,7 +84,7 @@ func _refresh(cards: Array[CardData]) -> void:
 		var card: CardData = entry["card"]
 		var count: int = entry["count"]
 		var row := Label.new()
-		row.text = "%s ×%d (cost %d)" % [card.card_name, count, card.cost]
+		row.text = tr("UI_DECK_ROW_FORMAT") % [card.get_display_name(), count, card.cost]
 		_deck_list.add_child(row)
 
 

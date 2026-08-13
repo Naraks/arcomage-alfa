@@ -6,11 +6,16 @@ signal profile_state_changed
 const CARD_SCENE := preload("res://entities/card/card.tscn")
 const UPGRADE_ORDER := ["tower", "wall", "quarry", "magic", "dungeon", "hand_size"]
 const UPGRADE_GROUPS := {
-	"Основание": ["tower", "wall"],
-	"Ресурсы": ["quarry", "magic", "dungeon"],
-	"Утилити": ["hand_size"],
+	"foundation": ["tower", "wall"],
+	"resources": ["quarry", "magic", "dungeon"],
+	"utility": ["hand_size"],
 }
-const GROUP_ORDER := ["Основание", "Ресурсы", "Утилити"]
+const GROUP_ORDER := ["foundation", "resources", "utility"]
+const GROUP_LABEL_KEYS := {
+	"foundation": "UI_META_SHOP_GROUP_FOUNDATION",
+	"resources": "UI_META_SHOP_GROUP_RESOURCES",
+	"utility": "UI_META_SHOP_GROUP_UTILITY",
+}
 const STATE_COLORS := {
 	"affordable": Color("74d680"),
 	"locked": Color("d8a76f"),
@@ -45,14 +50,14 @@ func _build_ui() -> void:
 		_build_standalone_header(root_vbox)
 
 	var intro := Label.new()
-	intro.text = "ДЕРЕВО МАСТЕРСТВА"
+	intro.text = tr("UI_META_SHOP_TITLE")
 	intro.add_theme_font_size_override("font_size", 22)
 	intro.add_theme_color_override("font_color", UIColors.GOLD)
 	root_vbox.add_child(intro)
 
 	_feedback_label = Label.new()
 	_feedback_label.name = "PurchaseFeedback"
-	_feedback_label.text = "Выберите следующую цель развития."
+	_feedback_label.text = tr("UI_META_SHOP_HINT")
 	_feedback_label.add_theme_color_override("font_color", Color("bcb6c2"))
 	root_vbox.add_child(_feedback_label)
 
@@ -75,7 +80,7 @@ func _build_ui() -> void:
 
 	if not embedded_in_profile:
 		var back_button := Button.new()
-		back_button.text = "Назад в меню"
+		back_button.text = tr("COMMON_BACK_TO_MENU")
 		back_button.pressed.connect(_on_back_pressed)
 		root_vbox.add_child(back_button)
 	_refresh_upgrade_list()
@@ -86,7 +91,7 @@ func _build_standalone_header(root: VBoxContainer) -> void:
 	var header := HBoxContainer.new()
 	root.add_child(header)
 	var title := Label.new()
-	title.text = "ПРОФИЛЬ"
+	title.text = tr("COMMON_PROFILE_TITLE")
 	title.add_theme_font_size_override("font_size", 28)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
@@ -98,7 +103,7 @@ func _build_standalone_header(root: VBoxContainer) -> void:
 
 func _update_fame_label() -> void:
 	if _fame_label:
-		_fame_label.text = "Слава: %d" % ProfileManager.profile.get("fame", 0)
+		_fame_label.text = tr("UI_FAME_LABEL") % ProfileManager.profile.get("fame", 0)
 
 
 func _upgrade_state(key: String) -> String:
@@ -110,11 +115,11 @@ func _upgrade_state(key: String) -> String:
 func _state_text(state: String) -> String:
 	match state:
 		"affordable":
-			return "✓ ДОСТУПНО"
+			return tr("UI_UPGRADE_STATE_AFFORDABLE")
 		"max":
-			return "★ МАКСИМУМ"
+			return tr("UI_UPGRADE_STATE_MAX")
 		_:
-			return "🔒 НУЖНО БОЛЬШЕ СЛАВЫ"
+			return tr("UI_UPGRADE_STATE_LOCKED")
 
 
 func _row_label_text(key: String) -> String:
@@ -124,12 +129,15 @@ func _row_label_text(key: String) -> String:
 	var level := ProfileManager.get_upgrade_level(key)
 	var max_level: int = def["max_level"]
 	var shown_value: int = def["per_level"] if level < max_level else def["per_level"] * level
-	return "%s — %s (ур. %d/%d)" % [def["name"], def["desc"] % shown_value, level, max_level]
+	return (
+		tr("UI_META_SHOP_ROW_FORMAT")
+		% [tr(def["name"]), tr(def["desc"]) % shown_value, level, max_level]
+	)
 
 
 func _buy_button_text(key: String) -> String:
 	var cost := ProfileManager.get_upgrade_next_cost(key)
-	return "МАКС." if cost < 0 else "Купить · %d славы" % cost
+	return tr("UI_META_SHOP_MAX_SHORT") if cost < 0 else tr("UI_BUY_FOR_FAME") % cost
 
 
 func _refresh_upgrade_list() -> void:
@@ -141,7 +149,7 @@ func _refresh_upgrade_list() -> void:
 		section.add_theme_constant_override("separation", 8)
 		_upgrade_list.add_child(section)
 		var title := Label.new()
-		title.text = group_name.to_upper()
+		title.text = tr(GROUP_LABEL_KEYS[group_name]).to_upper()
 		title.add_theme_font_size_override("font_size", 18)
 		section.add_child(title)
 		var grid := GridContainer.new()
@@ -171,20 +179,20 @@ func _make_upgrade_row(key: String) -> PanelContainer:
 	var def: Dictionary = ProfileManager.UPGRADE_CATALOG[key]
 	var level := ProfileManager.get_upgrade_level(key)
 	var title := Label.new()
-	title.text = def["name"]
+	title.text = tr(def["name"])
 	title.add_theme_font_size_override("font_size", 19)
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(title)
 	var progress := Label.new()
 	progress.name = "LevelLabel"
-	progress.text = "УРОВЕНЬ %d / %d" % [level, def["max_level"]]
+	progress.text = tr("UI_META_SHOP_LEVEL_LABEL") % [level, def["max_level"]]
 	box.add_child(progress)
 	var effect := Label.new()
 	effect.name = "NextEffectLabel"
 	effect.text = (
-		"Итоговый эффект: %s" % (def["desc"] % (def["per_level"] * level))
+		tr("UI_META_SHOP_FINAL_EFFECT") % (tr(def["desc"]) % (def["per_level"] * level))
 		if level >= def["max_level"]
-		else "Следующий эффект: %s" % (def["desc"] % def["per_level"])
+		else tr("UI_META_SHOP_NEXT_EFFECT") % (tr(def["desc"]) % def["per_level"])
 	)
 	effect.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(effect)
@@ -209,8 +217,8 @@ func _on_buy_pressed(key: String) -> void:
 		return
 	_update_fame_label()
 	_feedback_label.text = (
-		"Улучшение «%s» приобретено. Следующая цель обновлена."
-		% ProfileManager.UPGRADE_CATALOG[key]["name"]
+		tr("MSG_META_SHOP_UPGRADE_PURCHASED")
+		% tr(ProfileManager.UPGRADE_CATALOG[key]["name"])
 	)
 	_feedback_label.add_theme_color_override("font_color", Color("74d680"))
 	_refresh_upgrade_list()
@@ -230,21 +238,25 @@ func _unlock_row_text(path: String) -> String:
 	var card: CardData = load(path)
 	if not card:
 		return ""
-	var status := "разблокирована" if ProfileManager.is_card_unlocked(card) else "заблокирована"
-	return "%s (cost %d, %s)" % [card.card_name, card.cost, status]
+	var status := (
+		tr("UI_CARD_UNLOCKED_STATUS")
+		if ProfileManager.is_card_unlocked(card)
+		else tr("UI_CARD_LOCKED_STATUS")
+	)
+	return tr("UI_META_SHOP_UNLOCK_ROW_FORMAT") % [card.get_display_name(), card.cost, status]
 
 
 func _unlock_button_text(path: String) -> String:
 	var card: CardData = load(path)
 	var cost := ProfileManager.get_card_unlock_cost(card)
-	return "Открыто" if cost < 0 else "Открыть · %d славы" % cost
+	return tr("UI_UNLOCKED_SHORT") if cost < 0 else tr("UI_UNLOCK_FOR_FAME") % cost
 
 
 func _refresh_unlock_list() -> void:
 	for child in _unlock_list.get_children():
 		child.queue_free()
 	var title := Label.new()
-	title.text = "ОТКРЫТИЯ · РЕДКИЕ КАРТЫ"
+	title.text = tr("UI_META_SHOP_UNLOCKS_TITLE")
 	title.add_theme_font_size_override("font_size", 18)
 	_unlock_list.add_child(title)
 	_unlock_grid = GridContainer.new()
@@ -256,7 +268,7 @@ func _refresh_unlock_list() -> void:
 	var paths := _rare_card_paths()
 	if paths.is_empty():
 		var empty_label := Label.new()
-		empty_label.text = "Нет редких карт для разблокировки"
+		empty_label.text = tr("UI_META_SHOP_NO_RARE_CARDS")
 		_unlock_grid.add_child(empty_label)
 		return
 	for path in paths:
@@ -278,12 +290,14 @@ func _make_unlock_row(path: String) -> PanelContainer:
 	preview.name = "CardPreview"
 	preview.card_data = card
 	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	preview.tooltip_text = "Предпросмотр: карта не добавляется в колоду автоматически."
+	preview.tooltip_text = tr("UI_CARD_PREVIEW_TOOLTIP")
 	box.add_child(preview)
 	var status := Label.new()
 	status.name = "StateLabel"
 	status.text = (
-		"★ ОТКРЫТО" if unlocked else ("✓ ДОСТУПНО" if affordable else "🔒 НУЖНО БОЛЬШЕ СЛАВЫ")
+		tr("UI_CARD_STATE_UNLOCKED")
+		if unlocked
+		else (tr("UI_UPGRADE_STATE_AFFORDABLE") if affordable else tr("UI_UPGRADE_STATE_LOCKED"))
 	)
 	status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	status.add_theme_color_override("font_color", STATE_COLORS[panel.get_meta("state")])
@@ -303,7 +317,9 @@ func _on_unlock_pressed(path: String) -> void:
 	if not ProfileManager.unlock_card(card):
 		return
 	_update_fame_label()
-	_feedback_label.text = "Редкая карта «%s» открыта. Следующая цель обновлена." % card.card_name
+	_feedback_label.text = (
+		tr("MSG_META_SHOP_CARD_UNLOCKED") % card.get_display_name()
+	)
 	_feedback_label.add_theme_color_override("font_color", Color("74d680"))
 	_refresh_unlock_list()
 	profile_state_changed.emit()

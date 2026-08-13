@@ -9,9 +9,9 @@ const TOWER_ICON := preload("res://art/rest/tower_foundation.png")
 const GENERATOR_ICON := preload("res://art/rest/magic_source.png")
 
 const GENERATOR_LABELS := {
-	"quarry": "Карьер (Кирпичи)",
-	"magic": "Магическая академия (Гемы)",
-	"dungeon": "Подземелье (Звери)",
+	"quarry": "UI_REST_GENERATOR_QUARRY",
+	"magic": "UI_REST_GENERATOR_MAGIC",
+	"dungeon": "UI_REST_GENERATOR_DUNGEON",
 }
 
 var _offered_generator: String = "quarry"
@@ -33,7 +33,7 @@ func _pick_random_generator() -> String:
 
 
 func _generator_label(key: String) -> String:
-	return GENERATOR_LABELS.get(key, key)
+	return tr(GENERATOR_LABELS.get(key, key))
 
 
 func _layout_mode_for_size(viewport_size: Vector2) -> String:
@@ -70,7 +70,7 @@ func _option_state(option_key: String) -> Dictionary:
 		"after": after,
 		"maximum": maximum,
 		"available": available,
-		"unavailable_reason": "Достигнут максимум: +%d" % maximum if not available else "",
+		"unavailable_reason": tr("UI_REST_MAX_REACHED") % maximum if not available else "",
 	}
 
 
@@ -78,7 +78,7 @@ func _preview_text(option_key: String) -> String:
 	var state := _option_state(option_key)
 	if not state.available:
 		return state.unavailable_reason
-	return "Бонус: +%d → +%d" % [state.before, state.after]
+	return tr("UI_REST_BONUS_PREVIEW") % [state.before, state.after]
 
 
 func _build_ui() -> void:
@@ -113,20 +113,20 @@ func _build_ui() -> void:
 	scroll.add_child(root)
 
 	var title := Label.new()
-	title.text = "ПРИВАЛ"
+	title.text = tr("UI_REST_TITLE")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 30)
 	title.add_theme_color_override("font_color", UIColors.GOLD)
 	root.add_child(title)
 
 	var subtitle := Label.new()
-	subtitle.text = "Выберите одно усиление"
+	subtitle.text = tr("UI_REST_SUBTITLE")
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle.add_theme_font_size_override("font_size", 20)
 	root.add_child(subtitle)
 
 	var duration := Label.new()
-	duration.text = "Действует во всех следующих боях до конца текущего забега"
+	duration.text = tr("UI_REST_DURATION_NOTE")
 	duration.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	duration.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	duration.add_theme_color_override("font_color", Color(0.7, 0.76, 0.65))
@@ -143,21 +143,21 @@ func _build_ui() -> void:
 
 	_option_panels = []
 	var tower_panel := _make_option_panel(
-		"tower", TOWER_ICON, "Заложить фундамент", "Башня начинает каждый бой выше."
+		"tower", TOWER_ICON, tr("UI_REST_TOWER_OPTION_TITLE"), tr("UI_REST_TOWER_OPTION_DESC")
 	)
 	options.add_child(tower_panel)
 	_option_panels.append(tower_panel)
 	var generator_panel := _make_option_panel(
 		"generator",
 		GENERATOR_ICON,
-		"Улучшить источник",
-		"%s начинает каждый бой уровнем выше." % _generator_label(_offered_generator)
+		tr("UI_REST_GENERATOR_OPTION_TITLE"),
+		tr("UI_REST_GENERATOR_OPTION_DESC") % _generator_label(_offered_generator)
 	)
 	options.add_child(generator_panel)
 	_option_panels.append(generator_panel)
 
 	_selection_hint = Label.new()
-	_selection_hint.text = "Сначала выберите вариант. Бонус применяется после подтверждения."
+	_selection_hint.text = tr("UI_REST_SELECTION_HINT")
 	_selection_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_selection_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(_selection_hint)
@@ -166,7 +166,7 @@ func _build_ui() -> void:
 	confirm_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	root.add_child(confirm_row)
 	_confirm_button = Button.new()
-	_confirm_button.text = "Подтвердить усиление"
+	_confirm_button.text = tr("UI_REST_CONFIRM_BUTTON")
 	_confirm_button.disabled = true
 	_confirm_button.custom_minimum_size = Vector2(320, 54)
 	_confirm_button.pressed.connect(_on_confirm_pressed)
@@ -215,7 +215,7 @@ func _make_option_panel(
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	box.add_child(spacer)
 	var select := Button.new()
-	select.text = "Недоступно" if not state.available else "Выбрать"
+	select.text = tr("UI_REST_UNAVAILABLE_SHORT") if not state.available else tr("COMMON_SELECT")
 	select.disabled = not state.available
 	select.tooltip_text = state.unavailable_reason
 	select.pressed.connect(_on_option_selected.bind(option_key))
@@ -233,8 +233,10 @@ func _on_option_selected(option_key: String) -> void:
 			Color(1.18, 1.12, 0.82) if i == selected_index else Color.WHITE
 		)
 	_confirm_button.disabled = false
-	var selected_title := "Заложить фундамент" if option_key == "tower" else "Улучшить источник"
-	_selection_hint.text = "Выбрано: %s" % selected_title
+	var selected_title := (
+		tr("UI_REST_TOWER_OPTION_TITLE") if option_key == "tower" else tr("UI_REST_GENERATOR_OPTION_TITLE")
+	)
+	_selection_hint.text = tr("UI_REST_SELECTED_FORMAT") % selected_title
 
 
 func _apply_selected_once() -> bool:
