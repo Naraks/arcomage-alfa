@@ -16,4 +16,4 @@ enum Rarity { COMMON, UNCOMMON, RARE }
 @export var type: ResourceType = ResourceType.BRICKS
 @export var rarity: Rarity = Rarity.COMMON
 
-@export var effects: Array[Dictionary] = []
+@export var effects: Array[EffectData] = []

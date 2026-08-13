@@ -25,11 +25,18 @@ static func make_card(
 	var card := CardData.new()
 	card.cost = cost
 	card.type = type
-	card.effects = effects
+	card.effects = _to_effect_data(effects)
 	return card
 
 
 static func make_artifact(effects: Array[Dictionary] = []) -> ArtifactData:
 	var artifact := ArtifactData.new()
-	artifact.effects = effects
+	artifact.effects = _to_effect_data(effects)
 	return artifact
+
+
+static func _to_effect_data(dict_effects: Array[Dictionary]) -> Array[EffectData]:
+	var result: Array[EffectData] = []
+	for d in dict_effects:
+		result.append(EffectData.from_dict(d))
+	return result

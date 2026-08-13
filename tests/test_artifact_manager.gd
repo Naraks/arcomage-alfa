@@ -17,35 +17,35 @@ func before_each() -> void:
 
 func test_apply_artifact_effect_mod_quarry() -> void:
 	ArtifactManager.apply_artifact_effect(
-		TestFixtures.make_artifact(), {"type": "mod_quarry", "value": 2}, player
+		TestFixtures.make_artifact(), EffectData.from_dict({"type": "mod_quarry", "value": 2}), player
 	)
 	assert_eq(player.quarry, 3, "mod_quarry должен увеличить прирост кирпичей")
 
 
 func test_apply_artifact_effect_mod_magic() -> void:
 	ArtifactManager.apply_artifact_effect(
-		TestFixtures.make_artifact(), {"type": "mod_magic", "value": 2}, player
+		TestFixtures.make_artifact(), EffectData.from_dict({"type": "mod_magic", "value": 2}), player
 	)
 	assert_eq(player.magic, 3, "mod_magic должен увеличить прирост самоцветов")
 
 
 func test_apply_artifact_effect_mod_dungeon() -> void:
 	ArtifactManager.apply_artifact_effect(
-		TestFixtures.make_artifact(), {"type": "mod_dungeon", "value": 2}, player
+		TestFixtures.make_artifact(), EffectData.from_dict({"type": "mod_dungeon", "value": 2}), player
 	)
 	assert_eq(player.dungeon, 3, "mod_dungeon должен увеличить прирост зверей")
 
 
 func test_apply_artifact_effect_build_wall() -> void:
 	ArtifactManager.apply_artifact_effect(
-		TestFixtures.make_artifact(), {"type": "build_wall", "value": 4}, player
+		TestFixtures.make_artifact(), EffectData.from_dict({"type": "build_wall", "value": 4}), player
 	)
 	assert_eq(player.wall_hp, 9, "build_wall должен увеличить HP стены")
 
 
 func test_apply_artifact_effect_build_tower() -> void:
 	ArtifactManager.apply_artifact_effect(
-		TestFixtures.make_artifact(), {"type": "build_tower", "value": 4}, player
+		TestFixtures.make_artifact(), EffectData.from_dict({"type": "build_tower", "value": 4}), player
 	)
 	assert_eq(player.tower_hp, 24, "build_tower должен увеличить HP башни")
 
@@ -84,7 +84,7 @@ func test_check_artifacts_handles_multiple_artifacts() -> void:
 func test_gain_resource_without_card_type_filter_always_fires() -> void:
 	ArtifactManager.apply_artifact_effect(
 		TestFixtures.make_artifact(),
-		{"type": "gain_resource", "resource": "gems", "value": 1},
+		EffectData.from_dict({"type": "gain_resource", "resource": "gems", "value": 1}),
 		player
 	)
 	assert_eq(player.gems, 6, "Без requires_card_type эффект должен срабатывать безусловно")
@@ -96,12 +96,14 @@ func test_gain_resource_requires_card_type_fires_on_matching_card() -> void:
 		ArtifactManager
 		. apply_artifact_effect(
 			TestFixtures.make_artifact(),
-			{
-				"type": "gain_resource",
-				"resource": "gems",
-				"value": 1,
-				"requires_card_type": CardData.ResourceType.GEMS,
-			},
+			EffectData.from_dict(
+				{
+					"type": "gain_resource",
+					"resource": "gems",
+					"value": 1,
+					"requires_card_type": CardData.ResourceType.GEMS,
+				}
+			),
 			player,
 			{"card": gem_card}
 		)
@@ -115,12 +117,14 @@ func test_gain_resource_requires_card_type_ignores_non_matching_card() -> void:
 		ArtifactManager
 		. apply_artifact_effect(
 			TestFixtures.make_artifact(),
-			{
-				"type": "gain_resource",
-				"resource": "gems",
-				"value": 1,
-				"requires_card_type": CardData.ResourceType.GEMS,
-			},
+			EffectData.from_dict(
+				{
+					"type": "gain_resource",
+					"resource": "gems",
+					"value": 1,
+					"requires_card_type": CardData.ResourceType.GEMS,
+				}
+			),
 			player,
 			{"card": brick_card}
 		)
@@ -153,7 +157,9 @@ func test_on_card_played_passes_card_into_context_for_gain_resource_filter() -> 
 
 func test_set_generator_level_raises_low_generators_to_value() -> void:
 	ArtifactManager.apply_artifact_effect(
-		TestFixtures.make_artifact(), {"type": "set_generator_level", "value": 2}, player
+		TestFixtures.make_artifact(),
+		EffectData.from_dict({"type": "set_generator_level", "value": 2}),
+		player
 	)
 	assert_eq(player.quarry, 2)
 	assert_eq(player.magic, 2)
@@ -163,7 +169,9 @@ func test_set_generator_level_raises_low_generators_to_value() -> void:
 func test_set_generator_level_does_not_lower_already_higher_generator() -> void:
 	player.quarry = 5
 	ArtifactManager.apply_artifact_effect(
-		TestFixtures.make_artifact(), {"type": "set_generator_level", "value": 2}, player
+		TestFixtures.make_artifact(),
+		EffectData.from_dict({"type": "set_generator_level", "value": 2}),
+		player
 	)
 	assert_eq(
 		player.quarry,
@@ -187,7 +195,9 @@ func test_on_match_started_applies_to_both_sides() -> void:
 
 func test_set_max_hand_size_raises_limit() -> void:
 	ArtifactManager.apply_artifact_effect(
-		TestFixtures.make_artifact(), {"type": "set_max_hand_size", "value": 6}, player
+		TestFixtures.make_artifact(),
+		EffectData.from_dict({"type": "set_max_hand_size", "value": 6}),
+		player
 	)
 	assert_eq(player.max_hand_size, 6)
 
@@ -195,7 +205,9 @@ func test_set_max_hand_size_raises_limit() -> void:
 func test_set_max_hand_size_does_not_lower_already_higher_limit() -> void:
 	player.max_hand_size = 8
 	ArtifactManager.apply_artifact_effect(
-		TestFixtures.make_artifact(), {"type": "set_max_hand_size", "value": 6}, player
+		TestFixtures.make_artifact(),
+		EffectData.from_dict({"type": "set_max_hand_size", "value": 6}),
+		player
 	)
 	assert_eq(player.max_hand_size, 8)
 

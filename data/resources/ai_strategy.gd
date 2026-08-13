@@ -34,7 +34,7 @@ func calculate_card_priority(card: CardData, actor: Resource, enemy: Resource) -
 	return priority
 
 
-func _score_effect(_effect: Dictionary, _player_actor: PlayerData, _player_enemy: PlayerData) -> float:
+func _score_effect(_effect: EffectData, _player_actor: PlayerData, _player_enemy: PlayerData) -> float:
 	return 0.0
 
 
@@ -54,5 +54,5 @@ func _evaluate_condition(value, op: String, threshold) -> bool:
 	return EffectUtils.evaluate_condition(value, op, threshold)
 
 
-func resolve_conditional_branch(effect: Dictionary, actor: Resource, enemy: Resource) -> Dictionary:
+func resolve_conditional_branch(effect: EffectData, actor: Resource, enemy: Resource) -> EffectData:
 	return EffectUtils.resolve_conditional_branch(effect, actor as PlayerData, enemy as PlayerData)

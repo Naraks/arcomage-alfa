@@ -395,12 +395,11 @@ func apply_card_effects(card: CardData, actor: PlayerData) -> void:
 	GameEvents.resource_changed.emit(enemy, "all", 0)
 
 
-func _apply_effect(effect: Dictionary, actor: PlayerData, enemy: PlayerData) -> void:
-	var type = effect.get("type", "")
-	var value = effect.get("value", 0)
-	var target_str = effect.get("target", "enemy")
+func _apply_effect(effect: EffectData, actor: PlayerData, enemy: PlayerData) -> void:
+	var type := effect.type
+	var value := effect.value
 
-	var target_player = resolve_target(actor, enemy, target_str)
+	var target_player = resolve_target(actor, enemy, effect.target)
 
 	match type:
 		"damage":
@@ -425,17 +424,15 @@ func _apply_effect(effect: Dictionary, actor: PlayerData, enemy: PlayerData) -> 
 		"steal_resource":
 			_apply_steal_resource(effect, target_player, actor)
 		"conditional":
-			var branch: Dictionary = EffectUtils.resolve_conditional_branch(effect, actor, enemy)
-			if not branch.is_empty():
+			var branch: EffectData = EffectUtils.resolve_conditional_branch(effect, actor, enemy)
+			if branch:
 				_apply_effect(branch, actor, enemy)
 		"gain_resource":
-			_modify_resource(target_player, effect.get("resource", ""), value)
+			_modify_resource(target_player, effect.resource, value)
 		"drain_resource":
-			var drain_amount: int = min(
-				value, _get_resource(target_player, effect.get("resource", ""))
-			)
+			var drain_amount: int = min(value, _get_resource(target_player, effect.resource))
 			if drain_amount > 0:
-				_modify_resource(target_player, effect.get("resource", ""), -drain_amount)
+				_modify_resource(target_player, effect.resource, -drain_amount)
 		"reduce_wall":
 			target_player.wall_hp = max(0, target_player.wall_hp - value)
 		_:
@@ -443,13 +440,12 @@ func _apply_effect(effect: Dictionary, actor: PlayerData, enemy: PlayerData) -> 
 
 
 func _apply_steal_resource(
-	effect: Dictionary, from_player: PlayerData, to_player: PlayerData
+	effect: EffectData, from_player: PlayerData, to_player: PlayerData
 ) -> void:
-	var resource_name: String = effect.get("resource", "")
+	var resource_name: String = effect.resource
 	if resource_name == "random":
 		resource_name = EffectUtils.RESOURCE_NAMES[randi() % EffectUtils.RESOURCE_NAMES.size()]
-	var value: int = effect.get("value", 0)
-	var amount: int = min(value, _get_resource(from_player, resource_name))
+	var amount: int = min(effect.value, _get_resource(from_player, resource_name))
 	if amount <= 0:
 		return
 	_modify_resource(from_player, resource_name, -amount)

@@ -40,15 +40,15 @@ func _on_damage_taken(target: Resource, amount: int, hit_wall: bool, source: Res
 func _check_artifacts(player: PlayerData, trigger_type: String, context: Dictionary = {}) -> void:
 	for artifact in player.active_artifacts:
 		for effect in artifact.effects:
-			if effect.get("trigger") == trigger_type:
+			if effect.trigger == trigger_type:
 				apply_artifact_effect(artifact, effect, player, context)
 
 
 func apply_artifact_effect(
-	artifact: ArtifactData, effect: Dictionary, player: PlayerData, context: Dictionary = {}
+	artifact: ArtifactData, effect: EffectData, player: PlayerData, context: Dictionary = {}
 ) -> void:
-	var type = effect.get("type", "")
-	var value = effect.get("value", 0)
+	var type := effect.type
+	var value := effect.value
 
 	match type:
 		"mod_quarry":
@@ -64,11 +64,11 @@ func apply_artifact_effect(
 			player.tower_hp += value
 			GameEvents.value_built.emit(player, value, "tower")
 		"gain_resource":
-			if effect.has("requires_card_type"):
+			if effect.requires_card_type != -1:
 				var played_card = context.get("card")
-				if not played_card or played_card.type != effect["requires_card_type"]:
+				if not played_card or played_card.type != effect.requires_card_type:
 					return
-			_modify_resource(player, effect.get("resource", ""), value)
+			_modify_resource(player, effect.resource, value)
 		"set_generator_level":
 			player.quarry = max(player.quarry, value)
 			player.magic = max(player.magic, value)
@@ -99,9 +99,8 @@ func _modify_resource(player: PlayerData, resource_name: String, delta: int) -> 
 func should_skip_payment(player: PlayerData) -> bool:
 	for artifact in player.active_artifacts:
 		for effect in artifact.effects:
-			if effect.get("trigger") == "pre_play" and effect.get("type") == "skip_payment_chance":
-				var chance: float = effect.get("value", 0.0)
-				if randf() < chance:
+			if effect.trigger == "pre_play" and effect.type == "skip_payment_chance":
+				if randf() < effect.chance:
 					GameEvents.artifact_triggered.emit(artifact, player)
 					return true
 	return false

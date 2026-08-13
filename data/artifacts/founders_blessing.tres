@@ -1,9 +1,22 @@
 [gd_resource type="Resource" script_class="ArtifactData" format=3]
 
 [ext_resource type="Script" uid="uid://dqwb0jjr464c5" path="res://data/resources/artifact_data.gd" id="1_x1y2z"]
+[ext_resource type="Script" path="res://data/resources/effect_data.gd" id="effect_script"]
+
+[sub_resource type="Resource" id="EffectData_1"]
+script = ExtResource("effect_script")
+type = "build_wall"
+trigger = "match_started"
+value = 5
+
+[sub_resource type="Resource" id="EffectData_2"]
+script = ExtResource("effect_script")
+type = "build_tower"
+trigger = "match_started"
+value = 3
 
 [resource]
 script = ExtResource("1_x1y2z")
 artifact_name = "Благословение Основателя"
 description = "В начале боя Стена сразу получает +5 HP, а Башня — +3 HP."
-effects = Array[Dictionary]([{"trigger": "match_started", "type": "build_wall", "value": 5}, {"trigger": "match_started", "type": "build_tower", "value": 3}])
+effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1"), SubResource("EffectData_2")])

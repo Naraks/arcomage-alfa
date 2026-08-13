@@ -1,9 +1,16 @@
 [gd_resource type="Resource" script_class="ArtifactData" format=3]
 
 [ext_resource type="Script" uid="uid://dqwb0jjr464c5" path="res://data/resources/artifact_data.gd" id="1_x1y2z"]
+[ext_resource type="Script" path="res://data/resources/effect_data.gd" id="effect_script"]
+
+[sub_resource type="Resource" id="EffectData_1"]
+script = ExtResource("effect_script")
+type = "mod_dungeon"
+trigger = "turn_started"
+value = 1
 
 [resource]
 script = ExtResource("1_x1y2z")
 artifact_name = "Клык Хищника"
 description = "+1 к приходу Зверей каждый ход."
-effects = Array[Dictionary]([{"trigger": "turn_started", "type": "mod_dungeon", "value": 1}])
+effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1")])

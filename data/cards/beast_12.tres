@@ -1,6 +1,20 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 [ext_resource type="Script" uid="uid://cmnf4fc3mdeqd" path="res://data/resources/card_data.gd" id="1_x1y2z"]
 [ext_resource type="Texture2D" path="res://assets/icons/beast_icon.svg" id="2_icon"]
+[ext_resource type="Script" path="res://data/resources/effect_data.gd" id="effect_script"]
+
+[sub_resource type="Resource" id="EffectData_1"]
+script = ExtResource("effect_script")
+type = "damage"
+target = "enemy"
+value = 3
+
+[sub_resource type="Resource" id="EffectData_2"]
+script = ExtResource("effect_script")
+type = "mod_dungeon"
+target = "enemy"
+value = -1
+
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
@@ -8,4 +22,4 @@ card_name = "Дикие гончие"
 description = "Наносит 3 урона врагу, генератор Зверей врага -1."
 cost = 2
 type = 2
-effects = Array[Dictionary]([{"target": "enemy", "type": "damage", "value": 3}, {"target": "enemy", "type": "mod_dungeon", "value": -1}])
+effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1"), SubResource("EffectData_2")])

@@ -1,9 +1,10 @@
 # Справочник эффектов карт и артефактов
 
-Этот документ описывает формат словарей в `CardData.effects` и `ArtifactData.effects`. Он нужен при создании и проверке игрового контента.
+Этот документ описывает поля `EffectData` в `CardData.effects` и `ArtifactData.effects`. Он нужен при создании и проверке игрового контента.
 
 Источники истины в коде:
 
+- структура эффекта — `data/resources/effect_data.gd` (`EffectData`);
 - эффекты карт — `MatchManager.apply_card_effects()` в `core/match_manager.gd`;
 - общие правила целей, ресурсов и условий — `core/effect_utils.gd`;
 - эффекты и триггеры артефактов — `core/artifact_manager.gd`.
@@ -12,7 +13,9 @@
 
 ## Общие соглашения
 
-Эффект хранится как `Dictionary`. Ключ `type` определяет действие, остальные ключи зависят от типа эффекта. Неизвестный `type` не применяется и выводит предупреждение.
+Эффект хранится как типизированный ресурс `EffectData` (не `Dictionary`). Поле `type` определяет действие, остальные поля зависят от типа эффекта и не заданы (равны значению по умолчанию), если конкретному типу они не нужны. Неизвестный `type` не применяется и выводит предупреждение.
+
+В `.tres`-файлах карт и артефактов каждый эффект — это `[sub_resource type="Resource"]` со скриптом `effect_data.gd`, на который ссылается `effects = Array[ExtResource("effect_script")]([SubResource(...), ...])`. В тестах (`tests/*.gd`) эффекты по-прежнему удобно описывать словарём и получать `EffectData` через `EffectData.from_dict({...})` — `TestFixtures.make_card()`/`make_artifact()` делают это автоматически, поэтому ниже примеры даны в виде словаря там, где это тестовый контекст, и в виде `.tres`-фрагмента там, где это игровые данные.
 
 Допустимые имена ресурсов:
 
@@ -24,7 +27,17 @@
 
 ## Эффекты карт
 
-Базовая форма:
+Базовая форма в `.tres` карты:
+
+```
+[sub_resource type="Resource" id="EffectData_1"]
+script = ExtResource("effect_script")
+type = "damage"
+target = "enemy"
+value = 6
+```
+
+То же самое в тестах через словарь-шорткат:
 
 ```gdscript
 {"type": "damage", "target": "enemy", "value": 6}
@@ -59,7 +72,7 @@
 
 `value` по умолчанию равен `0`. Для `gain_resource`, `drain_resource` и обычного `steal_resource` ключ `resource` должен содержать одно из допустимых имён ресурсов. У `steal_resource` также разрешено значение `random`: тип ресурса выбирается случайно при розыгрыше. Украсть можно не больше фактического запаса цели.
 
-Пример нескольких последовательных эффектов одной карты:
+Пример нескольких последовательных эффектов одной карты (тестовый словарь-шорткат):
 
 ```gdscript
 effects = [
@@ -68,9 +81,37 @@ effects = [
 ]
 ```
 
-Эффекты выполняются в порядке следования в массиве.
+Эффекты выполняются в порядке следования в массиве `CardData.effects`.
 
 ### Условный эффект
+
+`then`/`else` в `EffectData` — это поля `then_effect`/`else_effect` (вложенный `EffectData`, не словарь; `else` — зарезервированное слово GDScript, поэтому имя поля отличается от словарного ключа). В `.tres` это ссылка на ещё один `SubResource`:
+
+```
+[sub_resource type="Resource" id="EffectData_1"]
+script = ExtResource("effect_script")
+type = "build_wall"
+target = "self"
+value = 3
+
+[sub_resource type="Resource" id="EffectData_2"]
+script = ExtResource("effect_script")
+type = "build_wall"
+target = "self"
+value = 1
+
+[sub_resource type="Resource" id="EffectData_3"]
+script = ExtResource("effect_script")
+type = "conditional"
+target = "self"
+field = "wall_hp"
+op = "<"
+threshold = 3
+then_effect = SubResource("EffectData_1")
+else_effect = SubResource("EffectData_2")
+```
+
+Тестовый словарь-шорткат (ключи `then`/`else` здесь допустимы — `EffectData.from_dict()` сам разворачивает их в `then_effect`/`else_effect`):
 
 ```gdscript
 {
@@ -86,26 +127,36 @@ effects = [
 
 Параметры условия:
 
-| Ключ | Допустимые значения | По умолчанию |
+| Поле | Допустимые значения | По умолчанию |
 |---|---|---|
-| `target` | `self` или `enemy` | `self` |
+| `target` | `self` или `enemy` | `enemy` (для `conditional` в игровых данных всегда задаётся явно) |
 | `field` | `wall_hp`, `tower_hp`, `bricks`, `gems`, `beasts`, `quarry`, `magic`, `dungeon` | пустая строка, значение `0` |
 | `op` | `<`, `<=`, `>`, `>=`, `==`, `!=` | `<` |
 | `threshold` | сравниваемое число | `0` |
-| `then` | словарь эффекта | пустой словарь |
-| `else` | словарь эффекта | пустой словарь |
+| `then_effect` | вложенный `EffectData` | не задан (`null`) |
+| `else_effect` | вложенный `EffectData` | не задан (`null`) |
 
-Цель внутри `then` или `else` задаётся независимо от цели, чьё поле проверяется. Если выбранная ветка отсутствует или пуста, эффект ничего не делает.
+Цель внутри `then_effect`/`else_effect` задаётся независимо от цели, чьё поле проверяется. Если выбранная ветка не задана (`null`), эффект ничего не делает.
 
 ## Эффекты артефактов
 
-Базовая форма:
+Базовая форма в `.tres` артефакта:
+
+```
+[sub_resource type="Resource" id="EffectData_1"]
+script = ExtResource("effect_script")
+type = "mod_quarry"
+trigger = "turn_started"
+value = 1
+```
+
+То же самое в тестах через словарь-шорткат:
 
 ```gdscript
 {"trigger": "turn_started", "type": "mod_quarry", "value": 1}
 ```
 
-Артефакт всегда действует на своего владельца, поэтому ключ `target` не используется. Набор типов отличается от эффектов карт.
+Артефакт всегда действует на своего владельца, поэтому поле `target` не используется. Набор типов отличается от эффектов карт.
 
 ### Триггеры
 
@@ -130,17 +181,19 @@ effects = [
 | `set_generator_level` | `value` | Поднимает каждый из трёх генераторов минимум до указанного уровня. |
 | `set_max_hand_size` | `value` | Поднимает максимальный размер руки минимум до указанного значения. |
 | `reflect_damage` | `value` | При попадании в стену наносит атакующему прямой урон по башне. |
-| `skip_payment_chance` | `value` | С вероятностью от `0.0` до `1.0` отменяет оплату карты. |
+| `skip_payment_chance` | `chance` | С вероятностью от `0.0` до `1.0` отменяет оплату карты. |
 
-`requires_card_type` используется только с `gain_resource` на триггере `card_played`. Значения соответствуют `CardData.ResourceType`: `0` — кирпичи, `1` — самоцветы, `2` — звери.
+`requires_card_type` в `EffectData` — целое поле со значением по умолчанию `-1` («условие не задано»); используется только с `gain_resource` на триггере `card_played`. Остальные значения соответствуют `CardData.ResourceType`: `0` — кирпичи, `1` — самоцветы, `2` — звери.
 
-Примеры:
+`skip_payment_chance` — единственный тип эффекта, у которого дробное число хранится в отдельном поле `chance` (`float`), а не в целочисленном `value` — иначе `0.1` обнулилось бы. В тестовом словаре-шоркате по-прежнему пишется ключ `"value"` — `EffectData.from_dict()` сам кладёт его и в `value`, и в `chance`.
+
+Примеры (`.tres`-поля / тестовый словарь):
 
 ```gdscript
 # +1 самоцвет после розыгрыша карты самоцветов.
 {"trigger": "card_played", "type": "gain_resource", "resource": "gems", "value": 1, "requires_card_type": 1}
 
-# 10 % вероятности разыграть карту бесплатно.
+# 10 % вероятности разыграть карту бесплатно (в .tres — chance = 0.1).
 {"trigger": "pre_play", "type": "skip_payment_chance", "value": 0.1}
 
 # 2 прямого урона атакующему, если удар пришёлся по стене.

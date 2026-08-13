@@ -1,9 +1,16 @@
 [gd_resource type="Resource" script_class="ArtifactData" format=3]
 
 [ext_resource type="Script" uid="uid://dqwb0jjr464c5" path="res://data/resources/artifact_data.gd" id="1_x1y2z"]
+[ext_resource type="Script" path="res://data/resources/effect_data.gd" id="effect_script"]
+
+[sub_resource type="Resource" id="EffectData_1"]
+script = ExtResource("effect_script")
+type = "set_max_hand_size"
+trigger = "match_started"
+value = 6
 
 [resource]
 script = ExtResource("1_x1y2z")
 artifact_name = "Книга Мудрости"
 description = "Лимит карт в руке увеличен до 6 (вместо 5)."
-effects = Array[Dictionary]([{"trigger": "match_started", "type": "set_max_hand_size", "value": 6}])
+effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1")])

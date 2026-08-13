@@ -79,11 +79,9 @@ static func evaluate_condition(value, op: String, threshold) -> bool:
 
 
 static func resolve_conditional_branch(
-	effect: Dictionary, actor: PlayerData, enemy: PlayerData
-) -> Dictionary:
-	var condition_target := resolve_target(actor, enemy, effect.get("target", "self"))
-	var field_value = get_field(condition_target, effect.get("field", ""))
-	var op: String = effect.get("op", "<")
-	var threshold = effect.get("threshold", 0)
-	var branch_key: String = "then" if evaluate_condition(field_value, op, threshold) else "else"
-	return effect.get(branch_key, {})
+	effect: EffectData, actor: PlayerData, enemy: PlayerData
+) -> EffectData:
+	var condition_target := resolve_target(actor, enemy, effect.target)
+	var field_value = get_field(condition_target, effect.field)
+	var condition_true := evaluate_condition(field_value, effect.op, effect.threshold)
+	return effect.then_effect if condition_true else effect.else_effect

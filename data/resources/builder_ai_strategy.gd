@@ -3,9 +3,9 @@ extends "res://data/resources/ai_strategy.gd"
 ## Строительная стратегия ИИ.
 
 
-func _score_effect(effect: Dictionary, player_actor: PlayerData, player_enemy: PlayerData) -> float:
-	var type = effect.get("type", "")
-	var value = effect.get("value", 0)
+func _score_effect(effect: EffectData, player_actor: PlayerData, player_enemy: PlayerData) -> float:
+	var type := effect.type
+	var value := effect.value
 	var priority = 0.0
 
 	if type == "build_tower":
@@ -35,8 +35,8 @@ func _score_effect(effect: Dictionary, player_actor: PlayerData, player_enemy: P
 		priority += value * 1.0
 
 	elif type == "conditional":
-		var branch: Dictionary = resolve_conditional_branch(effect, player_actor, player_enemy)
-		if not branch.is_empty():
+		var branch: EffectData = resolve_conditional_branch(effect, player_actor, player_enemy)
+		if branch:
 			priority += _score_effect(branch, player_actor, player_enemy)
 
 	return priority
