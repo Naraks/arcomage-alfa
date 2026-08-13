@@ -50,19 +50,19 @@ func test_upgrade_states_are_distinguishable_by_text_and_metadata() -> void:
 	ProfileManager.profile["fame"] = 0
 	var locked := screen._make_upgrade_row("tower")
 	assert_eq(locked.get_meta("state"), "locked")
-	assert_true(locked.get_node("MarginContainer/VBoxContainer/StateLabel").text.contains("🔒"))
+	assert_true(locked.find_child("StateLabel", true, false).text.contains("🔒"))
 
 	ProfileManager.profile["fame"] = ProfileManager.UPGRADE_CATALOG["tower"]["base_cost"]
 	var affordable := screen._make_upgrade_row("tower")
 	assert_eq(affordable.get_meta("state"), "affordable")
-	assert_true(affordable.get_node("MarginContainer/VBoxContainer/StateLabel").text.contains("✓"))
+	assert_true(affordable.find_child("StateLabel", true, false).text.contains("✓"))
 
 	ProfileManager.profile["upgrades"] = {
 		"tower": ProfileManager.UPGRADE_CATALOG["tower"]["max_level"]
 	}
 	var maximum := screen._make_upgrade_row("tower")
 	assert_eq(maximum.get_meta("state"), "max")
-	assert_true(maximum.get_node("MarginContainer/VBoxContainer/StateLabel").text.contains("★"))
+	assert_true(maximum.find_child("StateLabel", true, false).text.contains("★"))
 
 	locked.free()
 	affordable.free()
@@ -76,13 +76,13 @@ func test_upgrade_card_shows_level_next_effect_price_and_maximum() -> void:
 	ProfileManager.profile["upgrades"] = {"wall": 2}
 	var card := screen._make_upgrade_row("wall")
 
-	assert_eq(card.get_node("MarginContainer/VBoxContainer/LevelLabel").text, "УРОВЕНЬ 2 / 5")
+	assert_eq(card.find_child("LevelLabel", true, false).text, "УРОВЕНЬ 2 / 5")
 	assert_true(
-		card.get_node("MarginContainer/VBoxContainer/NextEffectLabel").text.contains(
+		card.find_child("NextEffectLabel", true, false).text.contains(
 			"Следующий эффект"
 		)
 	)
-	assert_true(card.get_node("MarginContainer/VBoxContainer/BuyButton").text.contains("славы"))
+	assert_true(card.find_child("BuyButton", true, false).text.contains("славы"))
 
 	card.free()
 	screen.free()
@@ -249,7 +249,8 @@ func test_unlock_button_text_shows_cost_when_locked() -> void:
 	var path: String = screen._rare_card_paths()[0]
 
 	assert_eq(
-		screen._unlock_button_text(path), "Открыть за %d" % ProfileManager.RARE_CARD_UNLOCK_COST
+		screen._unlock_button_text(path),
+		"Открыть · %d славы" % ProfileManager.RARE_CARD_UNLOCK_COST
 	)
 
 	screen.free()
