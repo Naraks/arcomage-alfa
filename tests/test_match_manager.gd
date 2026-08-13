@@ -368,7 +368,7 @@ func test_effect_mod_quarry_does_not_go_below_zero() -> void:
 	MatchManager.apply_card_effects(card, player)
 
 	assert_eq(
-		player.quarry, 0, "Генератор не должен уходить в минус (cards_list.md, порча генераторов)"
+		player.quarry, 0, "Генератор не должен уходить в минус при порче генераторов"
 	)
 
 
