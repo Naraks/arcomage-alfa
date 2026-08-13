@@ -51,13 +51,16 @@ func test_repeated_focus_notifications_are_idempotent() -> void:
 
 
 func test_ai_turn_timer_stops_while_tree_is_paused() -> void:
-	var timer := MatchManager._create_ai_turn_timer(0.12)
+	var timer := MatchManager._create_ai_turn_timer(0.3)
 	get_tree().paused = true
 	var time_before := timer.time_left
 
-	await get_tree().create_timer(0.08, true).timeout
+	for i in range(5):
+		await get_tree().process_frame
 
-	assert_almost_eq(timer.time_left, time_before, 0.02, "Таймер ИИ не должен идти в фоне")
+	assert_eq(
+		timer.time_left, time_before, "Таймер ИИ не должен идти в фоне"
+	)
 	get_tree().paused = false
 	await timer.timeout
 	assert_true(timer.time_left <= 0.0, "После возврата фокуса таймер должен завершиться")

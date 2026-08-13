@@ -261,6 +261,12 @@ func _write_win_reason_report(out_path: String) -> void:
 	file.close()
 
 
+func _csv_field(value: String) -> String:
+	if value.contains(",") or value.contains('"') or value.contains("\n"):
+		return '"%s"' % value.replace('"', '""')
+	return value
+
+
 func _write_card_report(out_path: String) -> void:
 	var file := FileAccess.open(out_path, FileAccess.WRITE)
 	if not file:
@@ -275,7 +281,7 @@ func _write_card_report(out_path: String) -> void:
 		var played: int = stats["played"]
 		var wins: int = stats["wins"]
 		var win_rate: String = "%.2f" % (float(wins) / played) if played > 0 else "n/a"
-		file.store_line('"%s",%d,%d,%s' % [name, played, wins, win_rate])
+		file.store_line("%s,%d,%d,%s" % [_csv_field(name), played, wins, win_rate])
 	file.close()
 
 
