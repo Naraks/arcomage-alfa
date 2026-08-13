@@ -121,6 +121,8 @@ func _available_artifacts() -> Array:
 
 
 func _build_ui() -> void:
+	if _confirm_button:
+		return
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 
 	var bg := ColorRect.new()

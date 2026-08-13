@@ -12,6 +12,8 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
+	if _source_label:
+		return
 	var root_margin := EmbeddedScreenLayout.build_shell(self, embedded_in_profile)
 
 	var root_vbox := VBoxContainer.new()

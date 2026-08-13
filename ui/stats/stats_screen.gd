@@ -5,6 +5,8 @@ const RewardScreenScript = preload("res://ui/reward/reward_screen.gd")
 
 @export var embedded_in_profile := false
 
+var _ui_built := false
+
 
 func _ready() -> void:
 	_build_ui()
@@ -32,6 +34,9 @@ func _unlocked_artifacts_text() -> String:
 
 
 func _build_ui() -> void:
+	if _ui_built:
+		return
+	_ui_built = true
 	var root_margin := EmbeddedScreenLayout.build_shell(self, embedded_in_profile)
 
 	var root_vbox := VBoxContainer.new()

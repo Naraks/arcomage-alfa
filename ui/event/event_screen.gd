@@ -64,6 +64,8 @@ func _content_minimum_size_for_viewport(viewport_size: Vector2) -> Vector2:
 
 
 func _build_ui() -> void:
+	if _gold_label:
+		return
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	var bg := ColorRect.new()
 	bg.color = Color(0.045, 0.038, 0.032)

@@ -24,6 +24,8 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
+	if _gold_label:
+		return
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 
 	var bg := ColorRect.new()

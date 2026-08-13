@@ -7,6 +7,8 @@ const FAME_PER_FLOOR := 10
 const FAME_PER_ELITE := 15
 const FAME_BOSS_VICTORY_BONUS := 100
 
+var _ui_built := false
+
 
 func _ready() -> void:
 	var floors_passed := _count_completed_nodes()
@@ -47,6 +49,9 @@ func _calculate_fame(floors_passed: int, elites_defeated: int, is_victory: bool)
 
 
 func _build_ui(floors_passed: int, elites_defeated: int, fame_earned: int) -> void:
+	if _ui_built:
+		return
+	_ui_built = true
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 
 	var bg := ColorRect.new()

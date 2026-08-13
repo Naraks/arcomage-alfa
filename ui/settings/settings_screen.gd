@@ -14,6 +14,8 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
+	if _volume_slider:
+		return
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	var bg := ColorRect.new()
 	bg.color = Color(0.045, 0.045, 0.06)
