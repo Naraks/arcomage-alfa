@@ -3,6 +3,7 @@ extends Node
 
 const DEFAULT_SETTINGS := {"volume": 1.0}
 const RARE_CARD_UNLOCK_COST := 150
+const SAVE_VERSION := 1
 
 const UPGRADE_CATALOG := {
 	"tower":
@@ -62,6 +63,7 @@ const UPGRADE_CATALOG := {
 }
 
 var profile: Dictionary = {
+	"save_version": SAVE_VERSION,
 	"total_wins": 0,
 	"unlocked_artifacts": [],
 	"fame": 0,
@@ -199,23 +201,48 @@ func _apply_volume_to_audio_server(value: float) -> void:
 
 
 func save_profile() -> void:
-	var file = FileAccess.open("user://savegame.json", FileAccess.WRITE)
-	if file:
-		var json_string = JSON.stringify(profile)
-		file.store_string(json_string)
+	var file: FileAccess = FileAccess.open("user://savegame.json", FileAccess.WRITE)
+	if not file:
+		push_error(
+			(
+				"ProfileManager: не удалось открыть user://savegame.json для записи, код ошибки %d"
+				% FileAccess.get_open_error()
+			)
+		)
+		return
+	var json_string: String = JSON.stringify(profile)
+	file.store_string(json_string)
 
 
 func load_profile() -> void:
 	if not FileAccess.file_exists("user://savegame.json"):
 		return
 
-	var file = FileAccess.open("user://savegame.json", FileAccess.READ)
-	if file:
-		var json_string = file.get_as_text()
-		var json = JSON.new()
-		var error = json.parse(json_string)
-		if error == OK:
-			profile = _restore_int_types(json.data)
+	var file: FileAccess = FileAccess.open("user://savegame.json", FileAccess.READ)
+	if not file:
+		push_error(
+			(
+				"ProfileManager: не удалось открыть user://savegame.json для чтения, код ошибки %d"
+				% FileAccess.get_open_error()
+			)
+		)
+		return
+
+	var json_string: String = file.get_as_text()
+	var json: JSON = JSON.new()
+	var error: int = json.parse(json_string)
+	if error != OK:
+		push_error(
+			(
+				"ProfileManager: сохранение повреждено, не удалось разобрать JSON (строка %d: %s) — профиль не загружен"
+				% [json.get_error_line(), json.get_error_message()]
+			)
+		)
+		return
+	if not (json.data is Dictionary):
+		push_error("ProfileManager: сохранение повреждено — ожидался Dictionary, профиль не загружен")
+		return
+	profile = _restore_int_types(json.data)
 
 
 func _restore_int_types(value):

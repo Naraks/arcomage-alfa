@@ -45,10 +45,18 @@ func load_run() -> bool:
 	if not has_saved_run():
 		return false
 
-	var data = ResourceLoader.load(SAVE_PATH, "", ResourceLoader.CACHE_MODE_IGNORE)
+	var data: Resource = ResourceLoader.load(SAVE_PATH, "", ResourceLoader.CACHE_MODE_IGNORE)
 	if data == null or not (data is RunSaveData):
 		push_error("RunSaveManager: сохранение забега отсутствует или повреждено")
 		return false
+
+	if data.save_version != RunSaveData.CURRENT_VERSION:
+		push_warning(
+			(
+				"RunSaveManager: версия сохранения забега (%d) не совпадает с текущей (%d) — миграция не выполнена"
+				% [data.save_version, RunSaveData.CURRENT_VERSION]
+			)
+		)
 
 	apply_save_data(data)
 	return true
