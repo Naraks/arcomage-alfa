@@ -24,6 +24,7 @@ const HOVER_RUSTLE_SOUND = preload("res://audio/sfx/card_hover_rustle.wav")
 @onready var description_label: Label = $DescriptionLabel
 @onready var background: TextureRect = $Background
 @onready var seal_badge: TextureRect = $SealBadge
+@onready var card_art_texture: TextureRect = $CardArtTexture
 @onready var icon_texture: TextureRect = $IconTexture
 
 
@@ -52,8 +53,10 @@ func update_ui() -> void:
 	name_label.text = card_data.card_name
 	cost_label.text = str(card_data.cost)
 	description_label.text = card_data.description
+	card_art_texture.texture = card_data.card_art
+	card_art_texture.visible = card_data.card_art != null
 	icon_texture.texture = card_data.icon
-	icon_texture.visible = card_data.icon != null
+	icon_texture.visible = card_data.card_art == null and card_data.icon != null
 
 	background.modulate = Color(1, 1, 1, 1)
 

@@ -59,8 +59,10 @@ engraved directly onto warm aged parchment. Expressive dark-brown linework, fine
 soft diluted sepia wash, visible paper grain, one strong central subject, clean readable silhouette,
 subtle hand-drawn ornamental flourishes fading into the parchment, no separate background scene,
 no horizon, no rectangular picture edge. Medieval fantasy with slightly exaggerated storybook
-proportions, detailed but readable at card size, family-friendly. Vertical 3:4 composition, generous
-breathing room around the subject, no text, no card border, no UI, monochrome sepia only.
+proportions, detailed but readable at card size, family-friendly. Compact near-horizontal 6:5
+composition, with the main subject filling 85–90% of the canvas and all essential details inside safe
+margins. No closed ornamental frame, no large empty parchment areas, no text, no card border, no UI,
+monochrome sepia only.
 ```
 
 Дополнительный негативный блок карт:
@@ -70,8 +72,11 @@ full-color painting, blue sky, landscape, room, scenic background, white cutout 
 hard rectangular edge, colored aura, modern comic book, photorealistic skin, card template
 ```
 
-Техническая цель: исходник 3:4 не меньше 1024×1365; игровой кроп — около 450×515 с сохранением лица,
-оружия или главного символа. Рамку, имя, стоимость, ресурс и редкость добавляет движок.
+Техническая цель: исходник 6:5 не меньше 1200×1000 для игровой области около 126×103. Арт должен
+вписываться целиком без дополнительного кропа: главный субъект занимает 85–90% кадра, пустые поля
+минимальны, лицо, руки, оружие и главный символ не подходят вплотную к краям. Для персонажей
+предпочтительны погрудные и поясные композиции, для механизмов — крупный план действия. Рамку, имя,
+стоимость, ресурс и редкость добавляет движок.
 
 ### 3.2 Как составлять предметный блок карты
 

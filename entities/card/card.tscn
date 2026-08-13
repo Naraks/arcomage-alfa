@@ -1,10 +1,16 @@
-[gd_scene format=3 uid="uid://b8xq7y3p2j4k1"]
+[gd_scene load_steps=7 format=3 uid="uid://b8xq7y3p2j4k1"]
 
 [ext_resource type="Script" uid="uid://c8cxkvigyypcx" path="res://entities/card/card.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://1qevcall0pfq" path="res://art/card_frame/parchment_bg.png" id="2_parchment"]
 [ext_resource type="Texture2D" uid="uid://b05lhmmruoebt" path="res://art/card_frame/seal_common.png" id="4_seal_common"]
 [ext_resource type="FontFile" uid="uid://bssykbxai7big" path="res://fonts/Kurale-Regular.ttf" id="5_kurale_font"]
 [ext_resource type="Script" uid="uid://c4jtwam2edt30" path="res://entities/card/curved_label.gd" id="6_curved_label"]
+
+[sub_resource type="Shader" id="Shader_card_art_fade"]
+code = "shader_type canvas_item;\n\nuniform float horizontal_fade : hint_range(0.0, 0.5) = 0.08;\nuniform float vertical_fade : hint_range(0.0, 0.5) = 0.12;\n\nvoid fragment() {\n\tvec4 color = texture(TEXTURE, UV);\n\tfloat horizontal = smoothstep(0.0, horizontal_fade, UV.x) * smoothstep(0.0, horizontal_fade, 1.0 - UV.x);\n\tfloat vertical = smoothstep(0.0, vertical_fade, UV.y) * smoothstep(0.0, vertical_fade, 1.0 - UV.y);\n\tcolor.a *= horizontal * vertical;\n\tCOLOR = color;\n}\n"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_card_art_fade"]
+shader = SubResource("Shader_card_art_fade")
 
 [node name="Card" type="Control" unique_id=966600199]
 custom_minimum_size = Vector2(150, 220)
@@ -52,6 +58,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
+
+[node name="CardArtTexture" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_card_art_fade")
+layout_mode = 0
+offset_left = 12.0
+offset_top = 8.0
+offset_right = 138.0
+offset_bottom = 111.0
+mouse_filter = 2
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
 
 [node name="IconTexture" type="TextureRect" parent="." unique_id=2102813129]
 layout_mode = 1

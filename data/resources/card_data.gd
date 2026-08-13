@@ -10,6 +10,7 @@ enum Rarity { COMMON, UNCOMMON, RARE }
 @export var card_name: String = "New Card"
 @export_multiline var description: String = ""
 @export var icon: Texture2D
+@export var card_art: Texture2D
 
 @export_group("Logic")
 @export var cost: int = 1
