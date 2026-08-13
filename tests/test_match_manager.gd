@@ -567,6 +567,7 @@ func test_execute_ai_turn_returns_turn_to_player_when_ai_strategy_missing() -> v
 		MatchManager.State.PLAYER_TURN,
 		"Ход должен вернуться к игроку, даже если у ИИ на момент хода не было стратегии"
 	)
+	assert_push_warning("MatchManager: AI Strategy не назначена, использую default_ai_strategy.gd")
 
 
 func test_execute_ai_turn_returns_turn_to_player_when_hand_empty() -> void:
@@ -604,6 +605,7 @@ func test_resolve_ai_turn_falls_back_to_default_strategy_for_any_actor() -> void
 	MatchManager._resolve_ai_turn(player)
 
 	assert_not_null(player.ai_strategy, "Отсутствие стратегии у actor'а не должно ронять ход")
+	assert_push_warning("MatchManager: AI Strategy не назначена, использую default_ai_strategy.gd")
 
 
 func test_resolve_ai_turn_ends_player_turn_and_hands_off_to_enemy_when_hand_empty() -> void:
