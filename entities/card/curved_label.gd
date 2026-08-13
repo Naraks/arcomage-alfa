@@ -36,6 +36,10 @@ extends Control
 
 var _float_time: float = 0.0
 
+var _curve_cache_key: Array = []
+var _curve_cache_placements: Array[Dictionary] = []
+var _curve_cache_jitter: Array[Dictionary] = []
+
 
 static func compute_radius(total_width: float, arc_angle_degrees: float) -> float:
 	var arc_rad := deg_to_rad(arc_angle_degrees)
@@ -182,13 +186,55 @@ func _draw_flat_line(value: String, draw_font_size: int, center_y: float) -> voi
 
 
 func _draw_curved_line(value: String, draw_font_size: int, center_y: float) -> void:
+	var cache_key := [
+		value,
+		font,
+		draw_font_size,
+		size.x,
+		center_y,
+		arc_angle_degrees,
+		jitter_position,
+		jitter_rotation_degrees,
+		jitter_seed,
+	]
+	if cache_key != _curve_cache_key:
+		_curve_cache_key = cache_key
+		_rebuild_curve_cache(value, draw_font_size, center_y)
+
+	if _curve_cache_placements.is_empty():
+		return
+
+	for i in value.length():
+		var placement: Dictionary = _curve_cache_placements[i]
+		var theta: float = placement["theta"] + _curve_cache_jitter[i]["drot"]
+		var float_dy := compute_float_offset(i, _float_time, float_amplitude, float_speed)
+		var pos: Vector2 = (
+			placement["pos"]
+			+ Vector2(_curve_cache_jitter[i]["dx"], _curve_cache_jitter[i]["dy"] + float_dy)
+		)
+		var w: float = placement["width"]
+
+		draw_set_transform(pos, theta, Vector2.ONE)
+		_draw_character(value.unicode_at(i), w, draw_font_size)
+
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
+## Пересчитывает placements/jitter для _draw_curved_line — зависят только от
+## текста/шрифта/геометрии/seed, а не от времени, поэтому кэшируются между
+## кадрами анимации "плавания" и пересчитываются только когда меняется
+## cache_key.
+func _rebuild_curve_cache(value: String, draw_font_size: int, center_y: float) -> void:
 	var widths: Array[float] = []
 	var total_width := 0.0
 	for i in value.length():
 		var w: float = font.get_char_size(value.unicode_at(i), draw_font_size).x
 		widths.append(w)
 		total_width += w
+
 	if total_width <= 0.0:
+		_curve_cache_placements = []
+		_curve_cache_jitter = []
 		return
 
 	var baseline_y := center_y + font.get_ascent(draw_font_size) * 0.35
@@ -207,21 +253,10 @@ func _draw_curved_line(value: String, draw_font_size: int, center_y: float) -> v
 			)
 			cursor += w
 
-	var jitter := compute_jitter(
+	_curve_cache_placements = placements
+	_curve_cache_jitter = compute_jitter(
 		value.length(), jitter_position, jitter_rotation_degrees, jitter_seed
 	)
-
-	for i in value.length():
-		var placement: Dictionary = placements[i]
-		var theta: float = placement["theta"] + jitter[i]["drot"]
-		var float_dy := compute_float_offset(i, _float_time, float_amplitude, float_speed)
-		var pos: Vector2 = placement["pos"] + Vector2(jitter[i]["dx"], jitter[i]["dy"] + float_dy)
-		var w: float = placement["width"]
-
-		draw_set_transform(pos, theta, Vector2.ONE)
-		_draw_character(value.unicode_at(i), w, draw_font_size)
-
-	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
 func _draw_character(character: int, width: float, draw_font_size: int) -> void:
