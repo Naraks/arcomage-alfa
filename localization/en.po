@@ -1164,7 +1164,7 @@ msgstr "Deck\n%d"
 
 #. context: ui
 msgid "UI_BATTLE_DECK_POPUP_TITLE"
-msgstr "Deck"
+msgstr "Deck (%d)"
 
 #. context: ui
 msgid "UI_BATTLE_DECK_TOOLTIP"
@@ -1236,7 +1236,7 @@ msgstr "The deck is empty."
 
 #. context: ui
 msgid "UI_DECK_ROW_FORMAT"
-msgstr "%s x%d"
+msgstr "%s x%d (%d gold)"
 
 #. context: ui
 msgid "UI_DECK_SOURCE_PREVIEW"
@@ -1420,7 +1420,7 @@ msgstr "Rare Cards"
 
 #. context: ui
 msgid "UI_META_SHOP_UNLOCK_ROW_FORMAT"
-msgstr "%s — %s"
+msgstr "%s (%d gold) — %s"
 
 #. context: ui
 msgid "UI_PROFILE_COLLECTION_PROGRESS"
@@ -1468,7 +1468,7 @@ msgstr "Crystal Magic"
 
 #. context: ui
 msgid "UI_REST_GENERATOR_OPTION_DESC"
-msgstr "Increases resource output per turn."
+msgstr "Increases the output of %s per turn."
 
 #. context: ui
 msgid "UI_REST_GENERATOR_OPTION_TITLE"
@@ -1672,15 +1672,15 @@ msgstr "Not enough gold"
 
 #. context: ui
 msgid "UI_SHOP_REMOVE_BUTTON"
-msgstr "Remove"
+msgstr "Remove · %d gold"
 
 #. context: ui
 msgid "UI_SHOP_REMOVE_DIALOG_OK"
-msgstr "Remove"
+msgstr "Remove for %d gold"
 
 #. context: ui
 msgid "UI_SHOP_REMOVE_DIALOG_TEXT"
-msgstr "Remove “%s” from your run deck?"
+msgstr "Remove “%s” from your run deck for %d gold?"
 
 #. context: ui
 msgid "UI_SHOP_REMOVE_DIALOG_TITLE"
@@ -1700,7 +1700,7 @@ msgstr "%s (x%d)"
 
 #. context: ui
 msgid "UI_SHOP_REMOVE_SECTION_HINT"
-msgstr "Remove an unwanted card from your run deck."
+msgstr "Remove an unwanted card from your run deck (cost: %d gold)."
 
 #. context: ui
 msgid "UI_SHOP_REMOVE_SECTION_TITLE"

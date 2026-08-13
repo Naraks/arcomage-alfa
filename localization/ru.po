@@ -1164,7 +1164,7 @@ msgstr "Колода\n%d"
 
 #. context: ui
 msgid "UI_BATTLE_DECK_POPUP_TITLE"
-msgstr "Колода"
+msgstr "Колода (%d)"
 
 #. context: ui
 msgid "UI_BATTLE_DECK_TOOLTIP"
@@ -1236,7 +1236,7 @@ msgstr "Колода пуста."
 
 #. context: ui
 msgid "UI_DECK_ROW_FORMAT"
-msgstr "%s x%d"
+msgstr "%s x%d (%d золота)"
 
 #. context: ui
 msgid "UI_DECK_SOURCE_PREVIEW"
@@ -1420,7 +1420,7 @@ msgstr "Редкие карты"
 
 #. context: ui
 msgid "UI_META_SHOP_UNLOCK_ROW_FORMAT"
-msgstr "%s — %s"
+msgstr "%s (%d золота) — %s"
 
 #. context: ui
 msgid "UI_PROFILE_COLLECTION_PROGRESS"
@@ -1468,7 +1468,7 @@ msgstr "Кристальная магия"
 
 #. context: ui
 msgid "UI_REST_GENERATOR_OPTION_DESC"
-msgstr "Увеличивает добычу ресурсов за ход."
+msgstr "Увеличивает добычу ресурса «%s» за ход."
 
 #. context: ui
 msgid "UI_REST_GENERATOR_OPTION_TITLE"
@@ -1672,15 +1672,15 @@ msgstr "Недостаточно золота"
 
 #. context: ui
 msgid "UI_SHOP_REMOVE_BUTTON"
-msgstr "Удалить"
+msgstr "Удалить · %d золота"
 
 #. context: ui
 msgid "UI_SHOP_REMOVE_DIALOG_OK"
-msgstr "Удалить"
+msgstr "Удалить за %d золота"
 
 #. context: ui
 msgid "UI_SHOP_REMOVE_DIALOG_TEXT"
-msgstr "Удалить «%s» из колоды забега?"
+msgstr "Удалить «%s» из колоды забега за %d золота?"
 
 #. context: ui
 msgid "UI_SHOP_REMOVE_DIALOG_TITLE"
@@ -1700,7 +1700,7 @@ msgstr "%s (x%d)"
 
 #. context: ui
 msgid "UI_SHOP_REMOVE_SECTION_HINT"
-msgstr "Уберите ненужную карту из колоды забега."
+msgstr "Уберите ненужную карту из колоды забега (стоимость: %d золота)."
 
 #. context: ui
 msgid "UI_SHOP_REMOVE_SECTION_TITLE"
