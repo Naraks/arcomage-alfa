@@ -5,13 +5,13 @@
 
 [sub_resource type="Resource" id="EffectData_1"]
 script = ExtResource("effect_script")
-type = "damage"
+type = 1
 target = "enemy"
 value = 3
 
 [sub_resource type="Resource" id="EffectData_2"]
 script = ExtResource("effect_script")
-type = "mod_dungeon"
+type = 7
 target = "enemy"
 value = -1
 

@@ -5,13 +5,13 @@
 
 [sub_resource type="Resource" id="EffectData_1"]
 script = ExtResource("effect_script")
-type = "mod_quarry"
+type = 5
 target = "self"
 value = 3
 
 [sub_resource type="Resource" id="EffectData_2"]
 script = ExtResource("effect_script")
-type = "build_tower"
+type = 4
 target = "self"
 value = 16
 

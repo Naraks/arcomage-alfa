@@ -5,7 +5,7 @@
 
 [sub_resource type="Resource" id="EffectData_1"]
 script = ExtResource("effect_script")
-type = "gain_resource"
+type = 11
 resource = "gems"
 trigger = "card_played"
 value = 1

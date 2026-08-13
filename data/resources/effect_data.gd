@@ -2,7 +2,9 @@ class_name EffectData
 extends Resource
 ## Типизированное описание одного эффекта карты/артефакта.
 
-@export var type: String = ""
+const Type = EffectType.Type
+
+@export var type: Type = Type.NONE
 @export var target: String = "enemy"
 @export var value: int = 0
 @export var resource: String = ""
@@ -20,7 +22,7 @@ extends Resource
 ## и fixtures.gd, чтобы не переписывать все литералы эффектов в tests/*.gd.
 static func from_dict(d: Dictionary) -> EffectData:
 	var effect := EffectData.new()
-	effect.type = d.get("type", "")
+	effect.type = EffectType.from_string(d.get("type", ""))
 	effect.target = d.get("target", "enemy")
 	effect.value = int(d.get("value", 0))
 	effect.chance = float(d.get("value", 0.0))

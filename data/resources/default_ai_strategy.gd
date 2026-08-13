@@ -21,7 +21,7 @@ func _score_effect(effect: EffectData, player_actor: PlayerData, player_enemy: P
 	if type == EffectType.BUILD_TOWER:
 		priority += value * (0.5 + (player_actor.tower_hp / 100.0))
 
-	if EffectType.MOD_PREFIX in type:
+	if type in EffectType.MOD_TYPES:
 		priority += value * 10.0
 
 	if type == EffectType.REDUCE_WALL:

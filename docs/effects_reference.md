@@ -13,9 +13,9 @@
 
 ## Общие соглашения
 
-Эффект хранится как типизированный ресурс `EffectData` (не `Dictionary`). Поле `type` определяет действие, остальные поля зависят от типа эффекта и не заданы (равны значению по умолчанию), если конкретному типу они не нужны. Неизвестный `type` не применяется и выводит предупреждение.
+Эффект хранится как типизированный ресурс `EffectData` (не `Dictionary`). Поле `type` — это typed enum `EffectType.Type` (`data/resources/effect_type.gd`), а не свободная строка: в редакторе Godot оно задаётся выпадающим списком в инспекторе, поэтому опечатка в имени типа отлавливается на этапе выбора значения, а не проваливается тихо в рантайме. Неизвестное/незаданное значение (`EffectType.Type.NONE`) не применяется и выводит предупреждение. Остальные поля зависят от типа эффекта и не заданы (равны значению по умолчанию), если конкретному типу они не нужны.
 
-В `.tres`-файлах карт и артефактов каждый эффект — это `[sub_resource type="Resource"]` со скриптом `effect_data.gd`, на который ссылается `effects = Array[ExtResource("effect_script")]([SubResource(...), ...])`. В тестах (`tests/*.gd`) эффекты по-прежнему удобно описывать словарём и получать `EffectData` через `EffectData.from_dict({...})` — `TestFixtures.make_card()`/`make_artifact()` делают это автоматически, поэтому ниже примеры даны в виде словаря там, где это тестовый контекст, и в виде `.tres`-фрагмента там, где это игровые данные.
+В `.tres`-файлах карт и артефактов каждый эффект — это `[sub_resource type="Resource"]` со скриптом `effect_data.gd`, на который ссылается `effects = Array[ExtResource("effect_script")]([SubResource(...), ...])`; поле `type` сериализуется как целое число — значение `EffectType.Type`. В тестах (`tests/*.gd`) эффекты по-прежнему удобно описывать словарём со строковым ключом `type` (например, `"damage"`) и получать `EffectData` через `EffectData.from_dict({...})` — `TestFixtures.make_card()`/`make_artifact()` делают это автоматически, а сам `from_dict()` переводит строку в `EffectType.Type` через `EffectType.from_string()` (с предупреждением при неизвестном ключе). Поэтому ниже примеры даны в виде словаря там, где это тестовый контекст, и в виде `.tres`-фрагмента там, где это игровые данные.
 
 Допустимые имена ресурсов:
 
@@ -32,10 +32,12 @@
 ```
 [sub_resource type="Resource" id="EffectData_1"]
 script = ExtResource("effect_script")
-type = "damage"
+type = 1
 target = "enemy"
 value = 6
 ```
+
+`type = 1` — это `EffectType.Type.DAMAGE`; полное сопоставление чисел и типов см. в таблице ниже и в `data/resources/effect_type.gd`. В инспекторе Godot это значение выбирается по имени из выпадающего списка, а не вводится числом.
 
 То же самое в тестах через словарь-шорткат:
 
@@ -54,21 +56,21 @@ value = 6
 
 ### Поддерживаемые типы
 
-| `type` | Дополнительные ключи | Результат |
-|---|---|---|
-| `damage` | `value` | Урон сначала поглощается стеной, остаток уменьшает башню. |
-| `direct_damage` | `value` | Уменьшает башню напрямую, игнорируя стену. |
-| `build_wall` | `value` | Добавляет `value` к стене. |
-| `build_tower` | `value` | Добавляет `value` к башне. |
-| `mod_quarry` | `value` | Изменяет карьер; итоговое значение не ниже нуля. |
-| `mod_magic` | `value` | Изменяет магию; итоговое значение не ниже нуля. |
-| `mod_dungeon` | `value` | Изменяет подземелье; итоговое значение не ниже нуля. |
-| `draw_card` | `value` | Пытается добрать указанное количество карт с учётом предела руки. |
-| `gain_resource` | `resource`, `value` | Добавляет ресурс выбранной цели. |
-| `drain_resource` | `resource`, `value` | Отнимает у цели ресурс, не опуская запас ниже нуля. |
-| `steal_resource` | `resource`, `value` | Переносит ресурс от выбранной цели к разыгравшему карту игроку. |
-| `reduce_wall` | `value` | Уменьшает стену без переноса остатка урона в башню. |
-| `conditional` | см. ниже | Проверяет условие и применяет одну вложенную ветку. |
+| `type` (тестовый словарь) | `EffectType.Type` / значение в `.tres` | Дополнительные ключи | Результат |
+|---|---|---|---|
+| `damage` | `DAMAGE` / `1` | `value` | Урон сначала поглощается стеной, остаток уменьшает башню. |
+| `direct_damage` | `DIRECT_DAMAGE` / `2` | `value` | Уменьшает башню напрямую, игнорируя стену. |
+| `build_wall` | `BUILD_WALL` / `3` | `value` | Добавляет `value` к стене. |
+| `build_tower` | `BUILD_TOWER` / `4` | `value` | Добавляет `value` к башне. |
+| `mod_quarry` | `MOD_QUARRY` / `5` | `value` | Изменяет карьер; итоговое значение не ниже нуля. |
+| `mod_magic` | `MOD_MAGIC` / `6` | `value` | Изменяет магию; итоговое значение не ниже нуля. |
+| `mod_dungeon` | `MOD_DUNGEON` / `7` | `value` | Изменяет подземелье; итоговое значение не ниже нуля. |
+| `draw_card` | `DRAW_CARD` / `8` | `value` | Пытается добрать указанное количество карт с учётом предела руки. |
+| `steal_resource` | `STEAL_RESOURCE` / `9` | `resource`, `value` | Переносит ресурс от выбранной цели к разыгравшему карту игроку. |
+| `conditional` | `CONDITIONAL` / `10` | см. ниже | Проверяет условие и применяет одну вложенную ветку. |
+| `gain_resource` | `GAIN_RESOURCE` / `11` | `resource`, `value` | Добавляет ресурс выбранной цели. |
+| `drain_resource` | `DRAIN_RESOURCE` / `12` | `resource`, `value` | Отнимает у цели ресурс, не опуская запас ниже нуля. |
+| `reduce_wall` | `REDUCE_WALL` / `13` | `value` | Уменьшает стену без переноса остатка урона в башню. |
 
 `value` по умолчанию равен `0`. Для `gain_resource`, `drain_resource` и обычного `steal_resource` ключ `resource` должен содержать одно из допустимых имён ресурсов. У `steal_resource` также разрешено значение `random`: тип ресурса выбирается случайно при розыгрыше. Украсть можно не больше фактического запаса цели.
 
@@ -90,19 +92,19 @@ effects = [
 ```
 [sub_resource type="Resource" id="EffectData_1"]
 script = ExtResource("effect_script")
-type = "build_wall"
+type = 3
 target = "self"
 value = 3
 
 [sub_resource type="Resource" id="EffectData_2"]
 script = ExtResource("effect_script")
-type = "build_wall"
+type = 3
 target = "self"
 value = 1
 
 [sub_resource type="Resource" id="EffectData_3"]
 script = ExtResource("effect_script")
-type = "conditional"
+type = 10
 target = "self"
 field = "wall_hp"
 op = "<"
@@ -110,6 +112,8 @@ threshold = 3
 then_effect = SubResource("EffectData_1")
 else_effect = SubResource("EffectData_2")
 ```
+
+(`type = 3` — `BUILD_WALL`, `type = 10` — `CONDITIONAL`.)
 
 Тестовый словарь-шорткат (ключи `then`/`else` здесь допустимы — `EffectData.from_dict()` сам разворачивает их в `then_effect`/`else_effect`):
 
@@ -145,10 +149,12 @@ else_effect = SubResource("EffectData_2")
 ```
 [sub_resource type="Resource" id="EffectData_1"]
 script = ExtResource("effect_script")
-type = "mod_quarry"
+type = 5
 trigger = "turn_started"
 value = 1
 ```
+
+(`type = 5` — `EffectType.Type.MOD_QUARRY`.)
 
 То же самое в тестах через словарь-шорткат:
 
@@ -170,18 +176,18 @@ value = 1
 
 ### Поддерживаемые типы
 
-| `type` | Дополнительные ключи | Результат |
-|---|---|---|
-| `mod_quarry` | `value` | Добавляет значение к карьеру. |
-| `mod_magic` | `value` | Добавляет значение к магии. |
-| `mod_dungeon` | `value` | Добавляет значение к подземелью. |
-| `build_wall` | `value` | Добавляет значение к стене. |
-| `build_tower` | `value` | Добавляет значение к башне. |
-| `gain_resource` | `resource`, `value`, опционально `requires_card_type` | Добавляет владельцу указанный ресурс. |
-| `set_generator_level` | `value` | Поднимает каждый из трёх генераторов минимум до указанного уровня. |
-| `set_max_hand_size` | `value` | Поднимает максимальный размер руки минимум до указанного значения. |
-| `reflect_damage` | `value` | При попадании в стену наносит атакующему прямой урон по башне. |
-| `skip_payment_chance` | `chance` | С вероятностью от `0.0` до `1.0` отменяет оплату карты. |
+| `type` (тестовый словарь) | `EffectType.Type` / значение в `.tres` | Дополнительные ключи | Результат |
+|---|---|---|---|
+| `mod_quarry` | `MOD_QUARRY` / `5` | `value` | Добавляет значение к карьеру. |
+| `mod_magic` | `MOD_MAGIC` / `6` | `value` | Добавляет значение к магии. |
+| `mod_dungeon` | `MOD_DUNGEON` / `7` | `value` | Добавляет значение к подземелью. |
+| `build_wall` | `BUILD_WALL` / `3` | `value` | Добавляет значение к стене. |
+| `build_tower` | `BUILD_TOWER` / `4` | `value` | Добавляет значение к башне. |
+| `gain_resource` | `GAIN_RESOURCE` / `11` | `resource`, `value`, опционально `requires_card_type` | Добавляет владельцу указанный ресурс. |
+| `set_generator_level` | `SET_GENERATOR_LEVEL` / `14` | `value` | Поднимает каждый из трёх генераторов минимум до указанного уровня. |
+| `set_max_hand_size` | `SET_MAX_HAND_SIZE` / `15` | `value` | Поднимает максимальный размер руки минимум до указанного значения. |
+| `reflect_damage` | `REFLECT_DAMAGE` / `16` | `value` | При попадании в стену наносит атакующему прямой урон по башне. |
+| `skip_payment_chance` | `SKIP_PAYMENT_CHANCE` / `17` | `chance` | С вероятностью от `0.0` до `1.0` отменяет оплату карты. |
 
 `requires_card_type` в `EffectData` — целое поле со значением по умолчанию `-1` («условие не задано»); используется только с `gain_resource` на триггере `card_played`. Остальные значения соответствуют `CardData.ResourceType`: `0` — кирпичи, `1` — самоцветы, `2` — звери.
 

@@ -4,7 +4,7 @@
 
 [sub_resource type="Resource" id="EffectData_1"]
 script = ExtResource("effect_script")
-type = "mod_quarry"
+type = 5
 trigger = "turn_started"
 value = 1
 

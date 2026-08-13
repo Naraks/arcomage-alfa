@@ -5,21 +5,21 @@
 
 [sub_resource type="Resource" id="EffectData_1"]
 script = ExtResource("effect_script")
-type = "drain_resource"
+type = 12
 target = "enemy"
 resource = "bricks"
 value = 3
 
 [sub_resource type="Resource" id="EffectData_2"]
 script = ExtResource("effect_script")
-type = "drain_resource"
+type = 12
 target = "enemy"
 resource = "gems"
 value = 3
 
 [sub_resource type="Resource" id="EffectData_3"]
 script = ExtResource("effect_script")
-type = "drain_resource"
+type = 12
 target = "enemy"
 resource = "beasts"
 value = 3

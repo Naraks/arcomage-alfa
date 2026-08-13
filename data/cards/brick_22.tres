@@ -5,7 +5,7 @@
 
 [sub_resource type="Resource" id="EffectData_1"]
 script = ExtResource("effect_script")
-type = "damage"
+type = 1
 target = "enemy"
 value = 11
 

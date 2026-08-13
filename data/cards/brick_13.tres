@@ -5,13 +5,13 @@
 
 [sub_resource type="Resource" id="EffectData_1"]
 script = ExtResource("effect_script")
-type = "build_tower"
+type = 4
 target = "self"
 value = 2
 
 [sub_resource type="Resource" id="EffectData_2"]
 script = ExtResource("effect_script")
-type = "build_wall"
+type = 3
 target = "self_wall"
 value = 1
 
