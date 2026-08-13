@@ -53,7 +53,7 @@ func _build_battle_slots() -> Array[Dictionary]:
 	paths.shuffle()
 
 	var slots: Array[Dictionary] = []
-	for i in range(REGULAR_SLOT_COUNT):
+	for i in range(mini(REGULAR_SLOT_COUNT, paths.size())):
 		slots.append(_card_slot(paths[i]))
 	return slots
 
@@ -62,15 +62,15 @@ func _build_elite_slots() -> Array[Dictionary]:
 	var common_paths := _unlocked_paths(MatchManager.ALL_CARD_PATHS)
 	common_paths.shuffle()
 
-	var slots: Array[Dictionary] = [
-		_card_slot(common_paths[0]),
-		_card_slot(common_paths[1]),
-		_card_slot(HIGH_RARITY_CARD_PATHS[randi() % HIGH_RARITY_CARD_PATHS.size()]),
-	]
+	var slots: Array[Dictionary] = []
+	for i in range(mini(2, common_paths.size())):
+		slots.append(_card_slot(common_paths[i]))
+	var high_rarity_index := slots.size()
+	slots.append(_card_slot(HIGH_RARITY_CARD_PATHS[randi() % HIGH_RARITY_CARD_PATHS.size()]))
 
 	var available := _available_artifacts()
-	if not available.is_empty() and randi() % 100 < ELITE_ARTIFACT_CHANCE:
-		var replace_index := randi() % 2
+	if not available.is_empty() and randi() % 100 < ELITE_ARTIFACT_CHANCE and high_rarity_index > 0:
+		var replace_index := randi() % high_rarity_index
 		slots[replace_index] = _artifact_slot(available[randi() % available.size()])
 
 	return slots
@@ -87,7 +87,8 @@ func _build_boss_slots() -> Array[Dictionary]:
 	else:
 		var common_paths := _unlocked_paths(MatchManager.ALL_CARD_PATHS)
 		common_paths.shuffle()
-		slots.append(_card_slot(common_paths[0]))
+		if not common_paths.is_empty():
+			slots.append(_card_slot(common_paths[0]))
 
 	return slots
 

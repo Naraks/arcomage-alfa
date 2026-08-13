@@ -14,6 +14,11 @@ var e_wall_visuals: VBoxContainer
 var p_tower_visuals: VBoxContainer
 var p_wall_visuals: VBoxContainer
 
+## true пока идёт анимация розыгрыша карты — блокирует клики по всей руке,
+## а не только по анимируемой карте, чтобы нельзя было запустить параллельный
+## play_card_by_index вторым кликом во время анимации первой карты.
+var _card_play_in_progress := false
+
 @onready var p_tower_bar: ProgressBar = %PlayerTowerBar
 @onready var p_wall_bar: ProgressBar = %PlayerWallBar
 @onready var e_tower_bar: ProgressBar = %EnemyTowerBar
@@ -341,6 +346,9 @@ func add_card_to_hand(card_data: CardData) -> void:
 
 
 func _on_card_clicked(card_node: Node) -> void:
+	if _card_play_in_progress:
+		return
+
 	var card_data = card_node.card_data
 	print("[DEBUG] Card clicked: ", card_data.card_name)
 	if MatchManager.current_state != MatchManager.State.PLAYER_TURN:
@@ -357,6 +365,7 @@ func _on_card_clicked(card_node: Node) -> void:
 		tween.tween_property(card_node, "position", original_pos, 0.05)
 		return
 
+	_card_play_in_progress = true
 	card_node.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var tween = create_tween()
 	tween.tween_property(card_node, "position", Vector2(400, 300), 0.3).set_trans(Tween.TRANS_QUART)
@@ -366,9 +375,13 @@ func _on_card_clicked(card_node: Node) -> void:
 
 	MatchManager.play_card_by_index(card_node.get_index(), MatchManager.player_data)
 	refresh_hand()
+	_card_play_in_progress = false
 
 
 func _on_card_right_clicked(card_node: Node) -> void:
+	if _card_play_in_progress:
+		return
+
 	print("[DEBUG] Card right clicked: ", card_node.card_data.card_name)
 	if MatchManager.current_state != MatchManager.State.PLAYER_TURN:
 		return

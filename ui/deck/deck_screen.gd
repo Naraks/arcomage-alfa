@@ -48,10 +48,18 @@ func _build_ui() -> void:
 		back_button.pressed.connect(_on_back_pressed)
 		root_vbox.add_child(back_button)
 
-	_refresh(_load_deck_to_show())
+	_refresh(_resolve_deck_to_show())
 
 
-func _load_deck_to_show() -> Array[CardData]:
+## Не просто геттер: при отсутствии активного забега в памяти подгружает его с
+## диска (RunSaveManager.load_run() перезаписывает MatchSettings.*) — но только
+## тогда, когда живого состояния ещё нет, чтобы не затереть несохранённый
+## прогресс уже идущего забега (например, покупки в магазине ещё не
+## сброшены на диск на момент открытия вкладки колоды в профиле).
+func _resolve_deck_to_show() -> Array[CardData]:
+	if MatchSettings.world_map_data != null:
+		_source_label.text = "Колода текущего забега"
+		return MatchSettings.run_deck
 	if RunSaveManager.has_saved_run():
 		RunSaveManager.load_run()
 		_source_label.text = "Колода текущего забега"

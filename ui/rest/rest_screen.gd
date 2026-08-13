@@ -103,10 +103,11 @@ func _build_ui() -> void:
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	margin.add_child(scroll)
 
+	var viewport_size := get_viewport_rect().size if is_inside_tree() else Vector2(1280, 720)
 	var root := VBoxContainer.new()
 	root.add_theme_constant_override("separation", 14)
 	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	root.custom_minimum_size.x = maxf(280.0, get_viewport_rect().size.x - 40.0)
+	root.custom_minimum_size.x = maxf(280.0, viewport_size.x - 40.0)
 	scroll.add_child(root)
 
 	var title := Label.new()
@@ -130,7 +131,7 @@ func _build_ui() -> void:
 	root.add_child(duration)
 
 	var options: BoxContainer
-	if _layout_mode_for_size(get_viewport_rect().size) == "wide":
+	if _layout_mode_for_size(viewport_size) == "wide":
 		options = HBoxContainer.new()
 	else:
 		options = VBoxContainer.new()

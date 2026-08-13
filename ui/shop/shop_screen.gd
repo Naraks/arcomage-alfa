@@ -10,7 +10,6 @@ const SHOP_OFFER_MAX := 5
 
 var _shop_offer: Array[CardData] = []
 var _bought_cards: Dictionary = {}
-var _transaction_in_progress := false
 var _pending_remove_index := -1
 var _gold_label: Label
 var _buy_list: HFlowContainer
@@ -223,16 +222,14 @@ func _compare_cards(a: CardData, b: CardData) -> bool:
 
 
 func _try_buy_card(card: CardData) -> bool:
-	if _transaction_in_progress or card == null or not card in _shop_offer:
+	if card == null or not card in _shop_offer:
 		return false
 	var state := _offer_state(card)
 	if not state.available:
 		return false
-	_transaction_in_progress = true
 	MatchSettings.run_gold -= state.price
 	MatchSettings.run_deck.append(card)
 	_bought_cards[card.get_instance_id()] = true
-	_transaction_in_progress = false
 	return true
 
 
@@ -252,7 +249,7 @@ func _removal_block_reason(deck_index: int) -> String:
 
 
 func _request_removal(deck_index: int) -> bool:
-	if _transaction_in_progress or not _removal_block_reason(deck_index).is_empty():
+	if not _removal_block_reason(deck_index).is_empty():
 		return false
 	_pending_remove_index = deck_index
 	if _remove_dialog:
@@ -266,16 +263,14 @@ func _request_removal(deck_index: int) -> bool:
 
 
 func _confirm_removal() -> bool:
-	if _transaction_in_progress or _pending_remove_index < 0:
+	if _pending_remove_index < 0:
 		return false
 	var deck_index := _pending_remove_index
 	_pending_remove_index = -1
 	if not _removal_block_reason(deck_index).is_empty():
 		return false
-	_transaction_in_progress = true
 	MatchSettings.run_gold -= REMOVE_CARD_PRICE
 	MatchSettings.run_deck.remove_at(deck_index)
-	_transaction_in_progress = false
 	_refresh_all()
 	return true
 

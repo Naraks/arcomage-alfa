@@ -88,20 +88,6 @@ func test_purchase_with_insufficient_gold_changes_nothing() -> void:
 	screen.free()
 
 
-func test_input_during_transaction_cannot_purchase() -> void:
-	var screen = ShopScreenScript.new()
-	var card := _make_card(CardData.ResourceType.GEMS, 2, "Защищённая")
-	screen._shop_offer.append(card)
-	MatchSettings.run_gold = 10
-	screen._transaction_in_progress = true
-
-	assert_false(screen._try_buy_card(card))
-	assert_eq(MatchSettings.run_gold, 10)
-	assert_true(MatchSettings.run_deck.is_empty())
-
-	screen.free()
-
-
 func test_confirmed_removal_deducts_gold_and_removes_selected_card() -> void:
 	var screen = ShopScreenScript.new()
 	var first := _make_card(CardData.ResourceType.BRICKS, 1, "Первая")

@@ -14,6 +14,10 @@ var _result_label: Label
 
 func _ready() -> void:
 	_event = load(_pick_random_event_path())
+	if not _event:
+		push_error("EventScreen: не удалось загрузить событие — возврат на карту")
+		_return_to_map()
+		return
 	_build_ui()
 
 
@@ -80,15 +84,16 @@ func _build_ui() -> void:
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	margin.add_child(scroll)
 
+	var viewport_size := get_viewport_rect().size if is_inside_tree() else Vector2(1280, 720)
 	var content: BoxContainer
-	if _layout_mode_for_size(get_viewport_rect().size) == "wide":
+	if _layout_mode_for_size(viewport_size) == "wide":
 		content = HBoxContainer.new()
 	else:
 		content = VBoxContainer.new()
 	content.add_theme_constant_override("separation", 20)
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	content.custom_minimum_size = _content_minimum_size_for_viewport(get_viewport_rect().size)
+	content.custom_minimum_size = _content_minimum_size_for_viewport(viewport_size)
 	scroll.add_child(content)
 
 	content.add_child(_build_story_panel())
