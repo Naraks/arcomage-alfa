@@ -1,15 +1,21 @@
 extends Node
 ## Мета-прогрессия, настройки и сохранение профиля.
 
+const DEFAULT_LOCALE := "ru"
+## "locale" сознательно не входит в DEFAULT_SETTINGS: reset_settings() должен
+## сбрасывать только громкость (см. UI_SETTINGS_RESET_SUMMARY), а не менять
+## выбранный игроком язык.
 const DEFAULT_SETTINGS := {"volume": 1.0}
 const RARE_CARD_UNLOCK_COST := 150
 const SAVE_VERSION := 1
 
+## "name"/"desc" здесь — ключи локализации (см. docs/localization_guide.md), не
+## текст для показа напрямую; в UI используются через tr().
 const UPGRADE_CATALOG := {
 	"tower":
 	{
-		"name": "Прочный Фундамент",
-		"desc": "Стартовая Башня +%d",
+		"name": "UPGRADE_TOWER_NAME",
+		"desc": "UPGRADE_TOWER_DESC",
 		"per_level": 3,
 		"max_level": 5,
 		"base_cost": 60,
@@ -17,8 +23,8 @@ const UPGRADE_CATALOG := {
 	},
 	"wall":
 	{
-		"name": "Крепостная Стена",
-		"desc": "Стартовая Стена +%d",
+		"name": "UPGRADE_WALL_NAME",
+		"desc": "UPGRADE_WALL_DESC",
 		"per_level": 3,
 		"max_level": 5,
 		"base_cost": 60,
@@ -26,8 +32,8 @@ const UPGRADE_CATALOG := {
 	},
 	"quarry":
 	{
-		"name": "Мастерство Кирпичей",
-		"desc": "Генератор Кирпичей +%d",
+		"name": "UPGRADE_QUARRY_NAME",
+		"desc": "UPGRADE_QUARRY_DESC",
 		"per_level": 1,
 		"max_level": 5,
 		"base_cost": 80,
@@ -35,8 +41,8 @@ const UPGRADE_CATALOG := {
 	},
 	"magic":
 	{
-		"name": "Мастерство Гемов",
-		"desc": "Генератор Гемов +%d",
+		"name": "UPGRADE_MAGIC_NAME",
+		"desc": "UPGRADE_MAGIC_DESC",
 		"per_level": 1,
 		"max_level": 5,
 		"base_cost": 80,
@@ -44,8 +50,8 @@ const UPGRADE_CATALOG := {
 	},
 	"dungeon":
 	{
-		"name": "Мастерство Зверей",
-		"desc": "Генератор Зверей +%d",
+		"name": "UPGRADE_DUNGEON_NAME",
+		"desc": "UPGRADE_DUNGEON_DESC",
 		"per_level": 1,
 		"max_level": 5,
 		"base_cost": 80,
@@ -53,8 +59,8 @@ const UPGRADE_CATALOG := {
 	},
 	"hand_size":
 	{
-		"name": "Вместительная Рука",
-		"desc": "Лимит карт в руке +%d",
+		"name": "UPGRADE_HAND_SIZE_NAME",
+		"desc": "UPGRADE_HAND_SIZE_DESC",
 		"per_level": 1,
 		"max_level": 3,
 		"base_cost": 100,
@@ -78,6 +84,7 @@ var profile: Dictionary = {
 func _ready() -> void:
 	load_profile()
 	_apply_volume_to_audio_server(get_volume())
+	TranslationServer.set_locale(get_locale())
 	GameEvents.match_ended.connect(_on_match_ended)
 
 
@@ -185,6 +192,21 @@ func set_volume(value: float) -> void:
 	settings["volume"] = clamped
 	profile["settings"] = settings
 	_apply_volume_to_audio_server(clamped)
+	save_profile()
+
+
+func get_locale() -> String:
+	return String(profile.get("settings", {}).get("locale", DEFAULT_LOCALE))
+
+
+## Применяется мгновенно (TranslationServer.set_locale) и сохраняется в
+## профиль — на следующем запуске игра стартует уже в выбранной локали.
+## См. docs/localization_guide.md про доступные коды локалей.
+func set_locale(code: String) -> void:
+	var settings: Dictionary = profile.get("settings", {})
+	settings["locale"] = code
+	profile["settings"] = settings
+	TranslationServer.set_locale(code)
 	save_profile()
 
 
