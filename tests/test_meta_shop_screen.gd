@@ -29,6 +29,79 @@ func test_upgrade_order_covers_the_whole_catalog() -> void:
 	screen.free()
 
 
+func test_upgrade_groups_cover_catalog_once_and_match_real_functions() -> void:
+	var screen = MetaShopScreenScript.new()
+	var grouped: Array = []
+	for group_name in screen.GROUP_ORDER:
+		grouped.append_array(screen.UPGRADE_GROUPS[group_name])
+
+	assert_eq(grouped.size(), screen.UPGRADE_ORDER.size())
+	for key in screen.UPGRADE_ORDER:
+		assert_eq(grouped.count(key), 1, "%s должен входить ровно в одну категорию" % key)
+	assert_eq(screen.UPGRADE_GROUPS["Основание"], ["tower", "wall"])
+	assert_eq(screen.UPGRADE_GROUPS["Ресурсы"], ["quarry", "magic", "dungeon"])
+	assert_eq(screen.UPGRADE_GROUPS["Утилити"], ["hand_size"])
+
+	screen.free()
+
+
+func test_upgrade_states_are_distinguishable_by_text_and_metadata() -> void:
+	var screen = MetaShopScreenScript.new()
+	ProfileManager.profile["fame"] = 0
+	var locked := screen._make_upgrade_row("tower")
+	assert_eq(locked.get_meta("state"), "locked")
+	assert_true(locked.get_node("MarginContainer/VBoxContainer/StateLabel").text.contains("🔒"))
+
+	ProfileManager.profile["fame"] = ProfileManager.UPGRADE_CATALOG["tower"]["base_cost"]
+	var affordable := screen._make_upgrade_row("tower")
+	assert_eq(affordable.get_meta("state"), "affordable")
+	assert_true(affordable.get_node("MarginContainer/VBoxContainer/StateLabel").text.contains("✓"))
+
+	ProfileManager.profile["upgrades"] = {
+		"tower": ProfileManager.UPGRADE_CATALOG["tower"]["max_level"]
+	}
+	var maximum := screen._make_upgrade_row("tower")
+	assert_eq(maximum.get_meta("state"), "max")
+	assert_true(maximum.get_node("MarginContainer/VBoxContainer/StateLabel").text.contains("★"))
+
+	locked.free()
+	affordable.free()
+	maximum.free()
+	screen.free()
+
+
+func test_upgrade_card_shows_level_next_effect_price_and_maximum() -> void:
+	var screen = MetaShopScreenScript.new()
+	ProfileManager.profile["fame"] = 999
+	ProfileManager.profile["upgrades"] = {"wall": 2}
+	var card := screen._make_upgrade_row("wall")
+
+	assert_eq(card.get_node("MarginContainer/VBoxContainer/LevelLabel").text, "УРОВЕНЬ 2 / 5")
+	assert_true(
+		card.get_node("MarginContainer/VBoxContainer/NextEffectLabel").text.contains(
+			"Следующий эффект"
+		)
+	)
+	assert_true(card.get_node("MarginContainer/VBoxContainer/BuyButton").text.contains("славы"))
+
+	card.free()
+	screen.free()
+
+
+func test_layout_switches_grids_to_one_column_on_portrait() -> void:
+	var screen = MetaShopScreenScript.new()
+	screen._build_ui()
+
+	screen._apply_layout(Vector2(1280, 720))
+	assert_eq(screen._upgrade_grids[0].columns, 2)
+	assert_eq(screen._unlock_grid.columns, 2)
+	screen._apply_layout(Vector2(720, 1280))
+	assert_eq(screen._upgrade_grids[0].columns, 1)
+	assert_eq(screen._unlock_grid.columns, 1)
+
+	screen.free()
+
+
 func test_row_label_text_shows_level_and_max() -> void:
 	var screen = MetaShopScreenScript.new()
 	ProfileManager.profile["upgrades"] = {"tower": 2}
@@ -69,7 +142,7 @@ func test_buy_button_text_shows_cost_when_affordable_or_not() -> void:
 
 	var text := screen._buy_button_text("wall")
 
-	assert_eq(text, "Купить за %d" % ProfileManager.UPGRADE_CATALOG["wall"]["base_cost"])
+	assert_eq(text, "Купить · %d славы" % ProfileManager.UPGRADE_CATALOG["wall"]["base_cost"])
 
 	screen.free()
 
@@ -91,7 +164,7 @@ func test_make_upgrade_row_disables_buy_button_without_enough_fame() -> void:
 	ProfileManager.profile["fame"] = 0
 
 	var row := screen._make_upgrade_row("tower")
-	var buy_button: Button = row.get_node("BuyButton")
+	var buy_button: Button = row.find_child("BuyButton", true, false)
 
 	assert_true(buy_button.disabled)
 
@@ -104,7 +177,7 @@ func test_make_upgrade_row_enables_buy_button_with_enough_fame() -> void:
 	ProfileManager.profile["fame"] = ProfileManager.UPGRADE_CATALOG["tower"]["base_cost"]
 
 	var row := screen._make_upgrade_row("tower")
-	var buy_button: Button = row.get_node("BuyButton")
+	var buy_button: Button = row.find_child("BuyButton", true, false)
 
 	assert_false(buy_button.disabled)
 
@@ -123,6 +196,10 @@ func test_on_buy_pressed_purchases_and_updates_fame_label_via_profile_manager() 
 
 	assert_eq(ProfileManager.get_upgrade_level("tower"), 1)
 	assert_eq(ProfileManager.profile["fame"], 0)
+	assert_true(screen._feedback_label.text.contains("приобретено"))
+	var refreshed_card := screen._make_upgrade_row("tower")
+	assert_eq(refreshed_card.get_meta("state"), "locked")
+	refreshed_card.free()
 
 	screen.free()
 
@@ -194,7 +271,7 @@ func test_make_unlock_row_disables_button_without_enough_fame() -> void:
 	var path: String = screen._rare_card_paths()[0]
 
 	var row := screen._make_unlock_row(path)
-	var unlock_button: Button = row.get_node("UnlockButton")
+	var unlock_button: Button = row.find_child("UnlockButton", true, false)
 
 	assert_true(unlock_button.disabled)
 
@@ -208,7 +285,7 @@ func test_make_unlock_row_enables_button_with_enough_fame() -> void:
 	var path: String = screen._rare_card_paths()[0]
 
 	var row := screen._make_unlock_row(path)
-	var unlock_button: Button = row.get_node("UnlockButton")
+	var unlock_button: Button = row.find_child("UnlockButton", true, false)
 
 	assert_false(unlock_button.disabled)
 
@@ -223,11 +300,28 @@ func test_make_unlock_row_disables_button_when_already_unlocked() -> void:
 	ProfileManager.profile["fame"] = 999999
 
 	var row := screen._make_unlock_row(path)
-	var unlock_button: Button = row.get_node("UnlockButton")
+	var unlock_button: Button = row.find_child("UnlockButton", true, false)
 
 	assert_true(unlock_button.disabled, "Уже открытую карту нельзя купить повторно")
 
 	row.free()
+	screen.free()
+
+
+func test_unlock_card_has_read_only_game_card_preview_and_explicit_state() -> void:
+	var screen = MetaShopScreenScript.new()
+	ProfileManager.profile["fame"] = 0
+	var path: String = screen._rare_card_paths()[0]
+	var panel := screen._make_unlock_row(path)
+	var preview: Control = panel.find_child("CardPreview", true, false)
+
+	assert_not_null(preview)
+	assert_eq(preview.card_data, load(path))
+	assert_eq(preview.mouse_filter, Control.MOUSE_FILTER_IGNORE)
+	assert_eq(panel.get_meta("state"), "locked")
+	assert_true(panel.find_child("StateLabel", true, false).text.contains("🔒"))
+
+	panel.free()
 	screen.free()
 
 
@@ -242,5 +336,6 @@ func test_on_unlock_pressed_unlocks_and_updates_fame() -> void:
 
 	assert_eq(ProfileManager.profile["fame"], 0)
 	assert_true(ProfileManager.is_card_unlocked(load(path)))
+	assert_true(screen._feedback_label.text.contains("открыта"))
 
 	screen.free()
