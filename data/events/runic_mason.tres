@@ -2,15 +2,15 @@
 [ext_resource type="Script" path="res://data/resources/event_data.gd" id="1_event"]
 [resource]
 script = ExtResource("1_event")
-event_title = "Рунный каменщик"
-event_description = "Мастер высекания рун предлагает укрепить основание Башни или продать готовую каменную плиту."
+event_title = "EVENT_RUNIC_MASON_TITLE"
+event_description = "EVENT_RUNIC_MASON_DESC"
 options = Array[Dictionary]([{
-"text": "Заказать укрепление за 8 золота",
-"outcomes": [{"chance": 100, "result_text": "Рунная кладка усиливает Башню на весь забег.", "effects": [{"type": "gold", "value": -8}, {"type": "run_tower_bonus", "value": 3}]}]
+"text": "EVENT_RUNIC_MASON_OPTION_1",
+"outcomes": [{"chance": 100, "result_text": "EVENT_RUNIC_MASON_RESULT_1", "effects": [{"type": "gold", "value": -8}, {"type": "run_tower_bonus", "value": 3}]}]
 }, {
-"text": "Купить плиту за 2 золота",
-"outcomes": [{"chance": 100, "result_text": "Каменщик передаёт вам карту «Основание».", "effects": [{"type": "gold", "value": -2}, {"type": "add_card", "card_path": "res://data/cards/bricks_foundation.tres"}]}]
+"text": "EVENT_RUNIC_MASON_OPTION_2",
+"outcomes": [{"chance": 100, "result_text": "EVENT_RUNIC_MASON_RESULT_2", "effects": [{"type": "gold", "value": -2}, {"type": "add_card", "card_path": "res://data/cards/bricks_foundation.tres"}]}]
 }, {
-"text": "Отказаться",
-"outcomes": [{"chance": 100, "result_text": "Вы оставляете мастера за работой.", "effects": []}]
+"text": "EVENT_RUNIC_MASON_OPTION_3",
+"outcomes": [{"chance": 100, "result_text": "EVENT_RUNIC_MASON_RESULT_3", "effects": []}]
 }])

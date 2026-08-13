@@ -18,8 +18,8 @@ value = 3
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Дракон"
-description = "Наносит 9 урона башне врага (игнорирует стену). Стена врага -3."
+card_name = "CARD_BEASTS_DRAGON_NAME"
+description = "CARD_BEASTS_DRAGON_DESC"
 cost = 9
 type = 2
 rarity = 2

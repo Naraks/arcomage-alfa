@@ -18,8 +18,8 @@ value = 8
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Архимагистериум"
-description = "Генератор Гемов +3, 8 урона башне врага."
+card_name = "CARD_GEMS_ARCHMAGISTERIUM_NAME"
+description = "CARD_GEMS_ARCHMAGISTERIUM_DESC"
 cost = 8
 type = 1
 rarity = 2

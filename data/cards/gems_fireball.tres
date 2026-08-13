@@ -12,8 +12,8 @@ value = 4
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Огненный шар"
-description = "Наносит 4 урона башне врага (игнорирует стену)."
+card_name = "CARD_GEMS_FIREBALL_NAME"
+description = "CARD_GEMS_FIREBALL_DESC"
 cost = 2
 type = 1
 effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1")])

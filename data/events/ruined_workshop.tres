@@ -2,15 +2,15 @@
 [ext_resource type="Script" path="res://data/resources/event_data.gd" id="1_event"]
 [resource]
 script = ExtResource("1_event")
-event_title = "Разорённая мастерская"
-event_description = "В мастерской осадных инженеров уцелели инструменты и несколько незаконченных механизмов."
+event_title = "EVENT_RUINED_WORKSHOP_TITLE"
+event_description = "EVENT_RUINED_WORKSHOP_DESC"
 options = Array[Dictionary]([{
-"text": "Восстановить катапульту за 8 золота",
-"outcomes": [{"chance": 100, "result_text": "Инженеры заканчивают сборку «Катапульты».", "effects": [{"type": "gold", "value": -8}, {"type": "add_card", "card_path": "res://data/cards/bricks_catapult.tres"}]}]
+"text": "EVENT_RUINED_WORKSHOP_OPTION_1",
+"outcomes": [{"chance": 100, "result_text": "EVENT_RUINED_WORKSHOP_RESULT_1", "effects": [{"type": "gold", "value": -8}, {"type": "add_card", "card_path": "res://data/cards/bricks_catapult.tres"}]}]
 }, {
-"text": "Порыться среди обломков",
-"outcomes": [{"chance": 65, "result_text": "Вы находите целый набор для ремонта.", "effects": [{"type": "add_card", "card_path": "res://data/cards/bricks_repair.tres"}]}, {"chance": 35, "result_text": "Неустойчивая крыша обрушивается на припасы.", "effects": [{"type": "gold", "value": -5}]}]
+"text": "EVENT_RUINED_WORKSHOP_OPTION_2",
+"outcomes": [{"chance": 65, "result_text": "EVENT_RUINED_WORKSHOP_RESULT_2", "effects": [{"type": "add_card", "card_path": "res://data/cards/bricks_repair.tres"}]}, {"chance": 35, "result_text": "EVENT_RUINED_WORKSHOP_RESULT_3", "effects": [{"type": "gold", "value": -5}]}]
 }, {
-"text": "Оставить руины",
-"outcomes": [{"chance": 100, "result_text": "Вы решаете не испытывать удачу.", "effects": []}]
+"text": "EVENT_RUINED_WORKSHOP_OPTION_3",
+"outcomes": [{"chance": 100, "result_text": "EVENT_RUINED_WORKSHOP_RESULT_4", "effects": []}]
 }])

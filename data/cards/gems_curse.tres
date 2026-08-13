@@ -27,8 +27,8 @@ value = 3
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Проклятие"
-description = "Ресурсы врага -3 всех типов."
+card_name = "CARD_GEMS_CURSE_NAME"
+description = "CARD_GEMS_CURSE_DESC"
 cost = 3
 type = 1
 rarity = 1

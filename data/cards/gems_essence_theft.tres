@@ -13,8 +13,8 @@ value = 4
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Кража эссенции"
-description = "Крадёт 4 Гема у врага."
+card_name = "CARD_GEMS_ESSENCE_THEFT_NAME"
+description = "CARD_GEMS_ESSENCE_THEFT_DESC"
 cost = 2
 type = 1
 rarity = 1

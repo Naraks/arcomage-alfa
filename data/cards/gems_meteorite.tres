@@ -12,8 +12,8 @@ value = 8
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Метеорит"
-description = "Наносит 8 урона башне врага (игнорирует стену)."
+card_name = "CARD_GEMS_METEORITE_NAME"
+description = "CARD_GEMS_METEORITE_DESC"
 cost = 6
 type = 1
 rarity = 1

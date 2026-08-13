@@ -12,8 +12,8 @@ value = 12
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Тролль"
-description = "Наносит 12 урона врагу."
+card_name = "CARD_BEASTS_TROLL_NAME"
+description = "CARD_BEASTS_TROLL_DESC"
 cost = 7
 type = 2
 rarity = 2

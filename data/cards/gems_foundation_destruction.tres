@@ -24,8 +24,8 @@ value = -2
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Разрушение Основ"
-description = "Все три генератора врага -2."
+card_name = "CARD_GEMS_FOUNDATION_DESTRUCTION_NAME"
+description = "CARD_GEMS_FOUNDATION_DESTRUCTION_DESC"
 cost = 6
 type = 1
 rarity = 2

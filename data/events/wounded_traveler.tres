@@ -4,12 +4,12 @@
 
 [resource]
 script = ExtResource("1_event")
-event_title = "Раненый путник"
-event_description = "У дороги лежит раненый рыцарь. Ему нужны припасы, чтобы снова встать на ноги."
+event_title = "EVENT_WOUNDED_TRAVELER_TITLE"
+event_description = "EVENT_WOUNDED_TRAVELER_DESC"
 options = Array[Dictionary]([{
-"text": "Купить припасы за 3 золота",
-"outcomes": [{"chance": 100, "result_text": "Рыцарь благодарит вас и присоединяется к походу.", "effects": [{"type": "gold", "value": -3}, {"type": "add_card", "card_path": "res://data/cards/beasts_knight.tres"}]}]
+"text": "EVENT_WOUNDED_TRAVELER_OPTION_1",
+"outcomes": [{"chance": 100, "result_text": "EVENT_WOUNDED_TRAVELER_RESULT_1", "effects": [{"type": "gold", "value": -3}, {"type": "add_card", "card_path": "res://data/cards/beasts_knight.tres"}]}]
 }, {
-"text": "Показать дорогу к ближайшему поселению",
-"outcomes": [{"chance": 100, "result_text": "Путник благодарит за совет, а вы продолжаете путь.", "effects": []}]
+"text": "EVENT_WOUNDED_TRAVELER_OPTION_2",
+"outcomes": [{"chance": 100, "result_text": "EVENT_WOUNDED_TRAVELER_RESULT_2", "effects": []}]
 }])

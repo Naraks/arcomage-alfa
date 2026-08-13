@@ -18,8 +18,8 @@ value = 3
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Вампир"
-description = "Наносит 6 урона врагу, ваша башня +3."
+card_name = "CARD_BEASTS_VAMPIRE_NAME"
+description = "CARD_BEASTS_VAMPIRE_DESC"
 cost = 4
 type = 2
 rarity = 1

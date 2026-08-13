@@ -12,8 +12,8 @@ value = 1
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Ясновидение"
-description = "Тянете 1 карту."
+card_name = "CARD_GEMS_CLAIRVOYANCE_NAME"
+description = "CARD_GEMS_CLAIRVOYANCE_DESC"
 cost = 1
 type = 1
 effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1")])

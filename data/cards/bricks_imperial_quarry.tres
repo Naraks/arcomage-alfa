@@ -18,8 +18,8 @@ value = 16
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Императорская каменоломня"
-description = "Генератор Кирпичей +3, Башня +16."
+card_name = "CARD_BRICKS_IMPERIAL_QUARRY_NAME"
+description = "CARD_BRICKS_IMPERIAL_QUARRY_DESC"
 cost = 8
 type = 0
 rarity = 2

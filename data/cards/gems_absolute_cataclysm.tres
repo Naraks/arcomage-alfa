@@ -12,8 +12,8 @@ value = 9
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Абсолютный катаклизм"
-description = "Наносит 9 урона башне врага (игнорирует стену)."
+card_name = "CARD_GEMS_ABSOLUTE_CATACLYSM_NAME"
+description = "CARD_GEMS_ABSOLUTE_CATACLYSM_DESC"
 cost = 12
 type = 1
 rarity = 2

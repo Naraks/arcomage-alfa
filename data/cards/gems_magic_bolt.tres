@@ -12,8 +12,8 @@ value = 2
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Магический заряд"
-description = "Наносит 2 урона башне врага (игнорирует стену)."
+card_name = "CARD_GEMS_MAGIC_BOLT_NAME"
+description = "CARD_GEMS_MAGIC_BOLT_DESC"
 cost = 1
 type = 1
 effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1")])

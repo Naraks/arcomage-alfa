@@ -18,8 +18,8 @@ value = 1
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Маг-ученик"
-description = "Генератор Гемов +1, 1 урон башне врага."
+card_name = "CARD_GEMS_APPRENTICE_MAGE_NAME"
+description = "CARD_GEMS_APPRENTICE_MAGE_DESC"
 cost = 1
 type = 1
 effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1"), SubResource("EffectData_2")])

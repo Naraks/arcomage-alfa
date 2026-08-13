@@ -2,15 +2,15 @@
 [ext_resource type="Script" path="res://data/resources/event_data.gd" id="1_event"]
 [resource]
 script = ExtResource("1_event")
-event_title = "Звериное логово"
-event_description = "В овраге прячется стая. Хорошая приманка позволит приручить её, но можно рискнуть и без подготовки."
+event_title = "EVENT_BEAST_DEN_TITLE"
+event_description = "EVENT_BEAST_DEN_DESC"
 options = Array[Dictionary]([{
-"text": "Купить приманку за 6 золота",
-"outcomes": [{"chance": 100, "result_text": "Стая принимает вас за вожака.", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/beasts_wolf_pack.tres"}]}]
+"text": "EVENT_BEAST_DEN_OPTION_1",
+"outcomes": [{"chance": 100, "result_text": "EVENT_BEAST_DEN_RESULT_1", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/beasts_wolf_pack.tres"}]}]
 }, {
-"text": "Подкрасться к логову",
-"outcomes": [{"chance": 60, "result_text": "Опытный зверолов выходит навстречу и присоединяется к вам.", "effects": [{"type": "add_card", "card_path": "res://data/cards/beasts_hunter.tres"}]}, {"chance": 40, "result_text": "Звери разоряют сумку с припасами.", "effects": [{"type": "gold", "value": -5}]}]
+"text": "EVENT_BEAST_DEN_OPTION_2",
+"outcomes": [{"chance": 60, "result_text": "EVENT_BEAST_DEN_RESULT_2", "effects": [{"type": "add_card", "card_path": "res://data/cards/beasts_hunter.tres"}]}, {"chance": 40, "result_text": "EVENT_BEAST_DEN_RESULT_3", "effects": [{"type": "gold", "value": -5}]}]
 }, {
-"text": "Обойти овраг",
-"outcomes": [{"chance": 100, "result_text": "Вы не тревожите стаю.", "effects": []}]
+"text": "EVENT_BEAST_DEN_OPTION_3",
+"outcomes": [{"chance": 100, "result_text": "EVENT_BEAST_DEN_RESULT_4", "effects": []}]
 }])

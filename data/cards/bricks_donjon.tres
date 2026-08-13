@@ -12,8 +12,8 @@ value = 16
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Донжон"
-description = "Строит башню на 16."
+card_name = "CARD_BRICKS_DONJON_NAME"
+description = "CARD_BRICKS_DONJON_DESC"
 cost = 8
 type = 0
 rarity = 2

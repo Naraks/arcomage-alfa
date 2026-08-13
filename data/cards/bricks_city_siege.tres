@@ -12,8 +12,8 @@ value = 11
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Осада города"
-description = "Наносит 11 урона врагу."
+card_name = "CARD_BRICKS_CITY_SIEGE_NAME"
+description = "CARD_BRICKS_CITY_SIEGE_DESC"
 cost = 8
 type = 0
 rarity = 2

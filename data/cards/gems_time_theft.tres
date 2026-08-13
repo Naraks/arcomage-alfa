@@ -13,8 +13,8 @@ value = 5
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Кража времени"
-description = "Крадёт 5 случайного ресурса врага (тот же ресурс приходит вам)."
+card_name = "CARD_GEMS_TIME_THEFT_NAME"
+description = "CARD_GEMS_TIME_THEFT_DESC"
 cost = 4
 type = 1
 rarity = 2

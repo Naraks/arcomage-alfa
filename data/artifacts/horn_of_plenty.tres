@@ -11,6 +11,6 @@ value = 2
 
 [resource]
 script = ExtResource("1_x1y2z")
-artifact_name = "Рог Изобилия"
-description = "В начале боя все ваши генераторы становятся минимум уровня 2."
+artifact_name = "ARTIFACT_HORN_OF_PLENTY_NAME"
+description = "ARTIFACT_HORN_OF_PLENTY_DESC"
 effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1")])

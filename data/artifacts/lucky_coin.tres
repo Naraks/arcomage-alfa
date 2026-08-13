@@ -11,6 +11,6 @@ chance = 0.1
 
 [resource]
 script = ExtResource("1_x1y2z")
-artifact_name = "Счастливая Монета"
-description = "10% шанс не потратить ресурсы при розыгрыше карты."
+artifact_name = "ARTIFACT_LUCKY_COIN_NAME"
+description = "ARTIFACT_LUCKY_COIN_DESC"
 effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1")])

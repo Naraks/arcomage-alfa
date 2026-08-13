@@ -11,6 +11,6 @@ value = 1
 
 [resource]
 script = ExtResource("1_x1y2z")
-artifact_name = "Клык Хищника"
-description = "+1 к приходу Зверей каждый ход."
+artifact_name = "ARTIFACT_PREDATOR_FANG_NAME"
+description = "ARTIFACT_PREDATOR_FANG_DESC"
 effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1")])

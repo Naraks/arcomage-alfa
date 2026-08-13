@@ -4,15 +4,15 @@
 
 [resource]
 script = ExtResource("1_event")
-event_title = "Учения у мастера"
-event_description = "Старый мастер предлагает безопасный полный курс или бесплатное, но суровое испытание."
+event_title = "EVENT_HERMIT_TRAINING_TITLE"
+event_description = "EVENT_HERMIT_TRAINING_DESC"
 options = Array[Dictionary]([{
-"text": "Оплатить полный курс за 6 золота",
-"outcomes": [{"chance": 100, "result_text": "Вы осваиваете новые способы разработки камня.", "effects": [{"type": "gold", "value": -6}, {"type": "run_quarry_bonus", "value": 1}]}]
+"text": "EVENT_HERMIT_TRAINING_OPTION_1",
+"outcomes": [{"chance": 100, "result_text": "EVENT_HERMIT_TRAINING_RESULT_1", "effects": [{"type": "gold", "value": -6}, {"type": "run_quarry_bonus", "value": 1}]}]
 }, {
-"text": "Пройти испытание",
-"outcomes": [{"chance": 60, "result_text": "Мастер признаёт ваш талант и раскрывает секрет Карьера.", "effects": [{"type": "run_quarry_bonus", "value": 1}]}, {"chance": 40, "result_text": "Испытание провалено; на восстановление снаряжения уходит золото.", "effects": [{"type": "gold", "value": -5}]}]
+"text": "EVENT_HERMIT_TRAINING_OPTION_2",
+"outcomes": [{"chance": 60, "result_text": "EVENT_HERMIT_TRAINING_RESULT_2", "effects": [{"type": "run_quarry_bonus", "value": 1}]}, {"chance": 40, "result_text": "EVENT_HERMIT_TRAINING_RESULT_3", "effects": [{"type": "gold", "value": -5}]}]
 }, {
-"text": "Отказаться",
-"outcomes": [{"chance": 100, "result_text": "Вы благодарите мастера и продолжаете путь.", "effects": []}]
+"text": "EVENT_HERMIT_TRAINING_OPTION_3",
+"outcomes": [{"chance": 100, "result_text": "EVENT_HERMIT_TRAINING_RESULT_4", "effects": []}]
 }])

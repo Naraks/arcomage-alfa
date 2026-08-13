@@ -12,8 +12,8 @@ value = 8
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Орк"
-description = "Наносит 8 урона врагу."
+card_name = "CARD_BEASTS_ORC_NAME"
+description = "CARD_BEASTS_ORC_DESC"
 cost = 3
 type = 2
 rarity = 1

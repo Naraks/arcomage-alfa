@@ -12,8 +12,8 @@ value = 3
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Искра ярости"
-description = "Наносит 3 урона башне врага (игнорирует стену)."
+card_name = "CARD_GEMS_SPARK_OF_FURY_NAME"
+description = "CARD_GEMS_SPARK_OF_FURY_DESC"
 cost = 2
 type = 1
 effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1")])

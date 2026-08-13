@@ -4,12 +4,12 @@
 
 [resource]
 script = ExtResource("1_event")
-event_title = "Карточный шулер"
-event_description = "У костра сидит шулер с тремя запечатанными картами. За шесть монет он разрешит вытянуть одну."
+event_title = "EVENT_WANDERING_MERCHANT_TITLE"
+event_description = "EVENT_WANDERING_MERCHANT_DESC"
 options = Array[Dictionary]([{
-"text": "Заплатить 6 золота и вытянуть карту",
-"outcomes": [{"chance": 40, "result_text": "Вам достаётся «Огненный шар».", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/gems_fireball.tres"}]}, {"chance": 30, "result_text": "Вам достаётся «Катапульта».", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/bricks_catapult.tres"}]}, {"chance": 30, "result_text": "Вам достаётся «Волчья стая».", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/beasts_wolf_pack.tres"}]}]
+"text": "EVENT_WANDERING_MERCHANT_OPTION_1",
+"outcomes": [{"chance": 40, "result_text": "EVENT_WANDERING_MERCHANT_RESULT_1", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/gems_fireball.tres"}]}, {"chance": 30, "result_text": "EVENT_WANDERING_MERCHANT_RESULT_2", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/bricks_catapult.tres"}]}, {"chance": 30, "result_text": "EVENT_WANDERING_MERCHANT_RESULT_3", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/beasts_wolf_pack.tres"}]}]
 }, {
-"text": "Не играть",
-"outcomes": [{"chance": 100, "result_text": "Вы не доверяете улыбке шулера и уходите.", "effects": []}]
+"text": "EVENT_WANDERING_MERCHANT_OPTION_2",
+"outcomes": [{"chance": 100, "result_text": "EVENT_WANDERING_MERCHANT_RESULT_4", "effects": []}]
 }])

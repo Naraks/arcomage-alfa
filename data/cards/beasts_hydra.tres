@@ -18,8 +18,8 @@ value = 4
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Гидра"
-description = "Наносит 15 урона врагу. Стена врага -4."
+card_name = "CARD_BEASTS_HYDRA_NAME"
+description = "CARD_BEASTS_HYDRA_DESC"
 cost = 9
 type = 2
 rarity = 2

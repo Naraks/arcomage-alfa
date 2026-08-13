@@ -12,8 +12,8 @@ value = 11
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Крепостная стена"
-description = "Строит стену на 11."
+card_name = "CARD_BRICKS_FORTRESS_WALL_NAME"
+description = "CARD_BRICKS_FORTRESS_WALL_DESC"
 cost = 4
 type = 0
 rarity = 1

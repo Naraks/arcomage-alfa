@@ -12,8 +12,8 @@ value = 5
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Осадное орудие"
-description = "Наносит 5 урона стене врага."
+card_name = "CARD_BRICKS_SIEGE_ENGINE_NAME"
+description = "CARD_BRICKS_SIEGE_ENGINE_DESC"
 cost = 3
 type = 0
 rarity = 1

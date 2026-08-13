@@ -18,8 +18,8 @@ value = 4
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Звериная ферма"
-description = "Генератор Зверей +2, наносит 4 урона."
+card_name = "CARD_BEASTS_BEAST_FARM_NAME"
+description = "CARD_BEASTS_BEAST_FARM_DESC"
 cost = 3
 type = 2
 rarity = 1

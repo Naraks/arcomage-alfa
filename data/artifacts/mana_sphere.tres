@@ -13,6 +13,6 @@ requires_card_type = 1
 
 [resource]
 script = ExtResource("1_x1y2z")
-artifact_name = "Сфера Маны"
-description = "При розыгрыше карты Гемов вы получаете +1 Гем сверх обычного дохода."
+artifact_name = "ARTIFACT_MANA_SPHERE_NAME"
+description = "ARTIFACT_MANA_SPHERE_DESC"
 effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1")])

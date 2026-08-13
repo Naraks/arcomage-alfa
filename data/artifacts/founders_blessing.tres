@@ -17,6 +17,6 @@ value = 3
 
 [resource]
 script = ExtResource("1_x1y2z")
-artifact_name = "Благословение Основателя"
-description = "В начале боя Стена сразу получает +5 HP, а Башня — +3 HP."
+artifact_name = "ARTIFACT_FOUNDERS_BLESSING_NAME"
+description = "ARTIFACT_FOUNDERS_BLESSING_DESC"
 effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1"), SubResource("EffectData_2")])

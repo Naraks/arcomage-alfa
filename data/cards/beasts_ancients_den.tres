@@ -18,8 +18,8 @@ value = 18
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Логово древних"
-description = "Генератор Зверей +4, Стена +18."
+card_name = "CARD_BEASTS_ANCIENTS_DEN_NAME"
+description = "CARD_BEASTS_ANCIENTS_DEN_DESC"
 cost = 8
 type = 2
 rarity = 2

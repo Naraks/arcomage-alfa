@@ -2,15 +2,15 @@
 [ext_resource type="Script" path="res://data/resources/event_data.gd" id="1_event"]
 [resource]
 script = ExtResource("1_event")
-event_title = "Караван гномов"
-event_description = "Гномий караван застрял на размытой дороге. Купцы предлагают чертежи или долю выручки за помощь."
+event_title = "EVENT_DWARVEN_CARAVAN_TITLE"
+event_description = "EVENT_DWARVEN_CARAVAN_DESC"
 options = Array[Dictionary]([{
-"text": "Купить чертёж за 6 золота",
-"outcomes": [{"chance": 100, "result_text": "Вы получаете чертёж «Глубокого карьера».", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/bricks_deep_quarry.tres"}]}]
+"text": "EVENT_DWARVEN_CARAVAN_OPTION_1",
+"outcomes": [{"chance": 100, "result_text": "EVENT_DWARVEN_CARAVAN_RESULT_1", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/bricks_deep_quarry.tres"}]}]
 }, {
-"text": "Помочь вытолкнуть повозки",
-"outcomes": [{"chance": 70, "result_text": "Караван спасён, и купцы щедро платят.", "effects": [{"type": "gold", "value": 10}]}, {"chance": 30, "result_text": "Колесо ломается, и ремонт приходится оплатить вам.", "effects": [{"type": "gold", "value": -3}]}]
+"text": "EVENT_DWARVEN_CARAVAN_OPTION_2",
+"outcomes": [{"chance": 70, "result_text": "EVENT_DWARVEN_CARAVAN_RESULT_2", "effects": [{"type": "gold", "value": 10}]}, {"chance": 30, "result_text": "EVENT_DWARVEN_CARAVAN_RESULT_3", "effects": [{"type": "gold", "value": -3}]}]
 }, {
-"text": "Продолжить путь",
-"outcomes": [{"chance": 100, "result_text": "Вы желаете купцам удачи и уходите.", "effects": []}]
+"text": "EVENT_DWARVEN_CARAVAN_OPTION_3",
+"outcomes": [{"chance": 100, "result_text": "EVENT_DWARVEN_CARAVAN_RESULT_4", "effects": []}]
 }])

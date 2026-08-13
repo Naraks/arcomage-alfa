@@ -2,15 +2,15 @@
 [ext_resource type="Script" path="res://data/resources/event_data.gd" id="1_event"]
 [resource]
 script = ExtResource("1_event")
-event_title = "Обрушившаяся шахта"
-event_description = "За завалом слышен звон кирок. Шахтёры обещают поделиться знаниями или найденным золотом."
+event_title = "EVENT_COLLAPSED_MINE_TITLE"
+event_description = "EVENT_COLLAPSED_MINE_DESC"
 options = Array[Dictionary]([{
-"text": "Нанять рабочих за 6 золота",
-"outcomes": [{"chance": 100, "result_text": "Проход расчищен, а шахтёры улучшают ваш Карьер.", "effects": [{"type": "gold", "value": -6}, {"type": "run_quarry_bonus", "value": 1}]}]
+"text": "EVENT_COLLAPSED_MINE_OPTION_1",
+"outcomes": [{"chance": 100, "result_text": "EVENT_COLLAPSED_MINE_RESULT_1", "effects": [{"type": "gold", "value": -6}, {"type": "run_quarry_bonus", "value": 1}]}]
 }, {
-"text": "Искать обход самостоятельно",
-"outcomes": [{"chance": 65, "result_text": "В боковом тоннеле обнаружен тайник.", "effects": [{"type": "gold", "value": 10}]}, {"chance": 35, "result_text": "Новый обвал повреждает часть снаряжения.", "effects": [{"type": "gold", "value": -5}]}]
+"text": "EVENT_COLLAPSED_MINE_OPTION_2",
+"outcomes": [{"chance": 65, "result_text": "EVENT_COLLAPSED_MINE_RESULT_2", "effects": [{"type": "gold", "value": 10}]}, {"chance": 35, "result_text": "EVENT_COLLAPSED_MINE_RESULT_3", "effects": [{"type": "gold", "value": -5}]}]
 }, {
-"text": "Не задерживаться",
-"outcomes": [{"chance": 100, "result_text": "Вы оставляете шахту позади.", "effects": []}]
+"text": "EVENT_COLLAPSED_MINE_OPTION_3",
+"outcomes": [{"chance": 100, "result_text": "EVENT_COLLAPSED_MINE_RESULT_4", "effects": []}]
 }])

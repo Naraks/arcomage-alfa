@@ -13,6 +13,6 @@ value = 3
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Стена"
-description = "Увеличивает высоту вашей стены на 3 единицы."
+card_name = "CARD_BRICKS_WALL_NAME"
+description = "CARD_BRICKS_WALL_DESC"
 effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1")])

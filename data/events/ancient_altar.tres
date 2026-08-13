@@ -4,15 +4,15 @@
 
 [resource]
 script = ExtResource("1_event")
-event_title = "Древний алтарь"
-event_description = "Посреди руин стоит алтарь с двумя чашами: каменной и хрустальной. Руны требуют подношения."
+event_title = "EVENT_ANCIENT_ALTAR_TITLE"
+event_description = "EVENT_ANCIENT_ALTAR_DESC"
 options = Array[Dictionary]([{
-"text": "Положить 10 золота в каменную чашу",
-"outcomes": [{"chance": 100, "result_text": "Руны укрепляют фундамент вашей Башни.", "effects": [{"type": "gold", "value": -10}, {"type": "run_tower_bonus", "value": 4}]}]
+"text": "EVENT_ANCIENT_ALTAR_OPTION_1",
+"outcomes": [{"chance": 100, "result_text": "EVENT_ANCIENT_ALTAR_RESULT_1", "effects": [{"type": "gold", "value": -10}, {"type": "run_tower_bonus", "value": 4}]}]
 }, {
-"text": "Положить 7 золота в хрустальную чашу",
-"outcomes": [{"chance": 100, "result_text": "Хрусталь наполняет магические каналы новой силой.", "effects": [{"type": "gold", "value": -7}, {"type": "run_magic_bonus", "value": 1}]}]
+"text": "EVENT_ANCIENT_ALTAR_OPTION_2",
+"outcomes": [{"chance": 100, "result_text": "EVENT_ANCIENT_ALTAR_RESULT_2", "effects": [{"type": "gold", "value": -7}, {"type": "run_magic_bonus", "value": 1}]}]
 }, {
-"text": "Не трогать алтарь",
-"outcomes": [{"chance": 100, "result_text": "Вы решаете не будить древнюю силу.", "effects": []}]
+"text": "EVENT_ANCIENT_ALTAR_OPTION_3",
+"outcomes": [{"chance": 100, "result_text": "EVENT_ANCIENT_ALTAR_RESULT_3", "effects": []}]
 }])

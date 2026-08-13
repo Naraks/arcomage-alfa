@@ -12,8 +12,8 @@ value = 2
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Ополчение"
-description = "Строит стену на 2."
+card_name = "CARD_BEASTS_MILITIA_NAME"
+description = "CARD_BEASTS_MILITIA_DESC"
 cost = 1
 type = 2
 effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1")])

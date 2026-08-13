@@ -10,6 +10,6 @@ value = 1
 
 [resource]
 script = ExtResource("1_x1y2z")
-artifact_name = "Кирка Гнома"
-description = "+1 к приходу Кирпичей каждый ход."
+artifact_name = "ARTIFACT_DWARF_PICKAXE_NAME"
+description = "ARTIFACT_DWARF_PICKAXE_DESC"
 effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1")])

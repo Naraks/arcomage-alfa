@@ -12,8 +12,8 @@ value = 10
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Стенобитная башня"
-description = "Наносит 10 урона врагу."
+card_name = "CARD_BRICKS_SIEGE_TOWER_NAME"
+description = "CARD_BRICKS_SIEGE_TOWER_DESC"
 cost = 5
 type = 0
 rarity = 2

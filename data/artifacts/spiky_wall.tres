@@ -11,6 +11,6 @@ value = 2
 
 [resource]
 script = ExtResource("1_x1y2z")
-artifact_name = "Шипастая Стена"
-description = "При ударе по вашей стене атакующий получает 2 урона в ответ."
+artifact_name = "ARTIFACT_SPIKY_WALL_NAME"
+description = "ARTIFACT_SPIKY_WALL_DESC"
 effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1")])

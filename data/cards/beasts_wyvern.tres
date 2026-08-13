@@ -12,8 +12,8 @@ value = 8
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Виверна"
-description = "Наносит 8 урона башне врага (игнорирует стену)."
+card_name = "CARD_BEASTS_WYVERN_NAME"
+description = "CARD_BEASTS_WYVERN_DESC"
 cost = 4
 type = 2
 rarity = 1

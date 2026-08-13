@@ -2,15 +2,15 @@
 [ext_resource type="Script" path="res://data/resources/event_data.gd" id="1_event"]
 [resource]
 script = ExtResource("1_event")
-event_title = "Игра костей"
-event_description = "В придорожной таверне идёт игра на золото. Хозяин предлагает обычную или высокую ставку."
+event_title = "EVENT_DICE_GAME_TITLE"
+event_description = "EVENT_DICE_GAME_DESC"
 options = Array[Dictionary]([{
-"text": "Поставить 5 золота",
-"outcomes": [{"chance": 50, "result_text": "Кости благосклонны: вы забираете выигрыш.", "effects": [{"type": "gold", "value": 14}]}, {"chance": 50, "result_text": "Бросок неудачен, ставка потеряна.", "effects": [{"type": "gold", "value": -5}]}]
+"text": "EVENT_DICE_GAME_OPTION_1",
+"outcomes": [{"chance": 50, "result_text": "EVENT_DICE_GAME_RESULT_1", "effects": [{"type": "gold", "value": 14}]}, {"chance": 50, "result_text": "EVENT_DICE_GAME_RESULT_2", "effects": [{"type": "gold", "value": -5}]}]
 }, {
-"text": "Поставить 10 золота",
-"outcomes": [{"chance": 35, "result_text": "Редкая комбинация приносит большой куш.", "effects": [{"type": "gold", "value": 25}]}, {"chance": 65, "result_text": "Соперник выигрывает вашу ставку.", "effects": [{"type": "gold", "value": -10}]}]
+"text": "EVENT_DICE_GAME_OPTION_2",
+"outcomes": [{"chance": 35, "result_text": "EVENT_DICE_GAME_RESULT_3", "effects": [{"type": "gold", "value": 25}]}, {"chance": 65, "result_text": "EVENT_DICE_GAME_RESULT_4", "effects": [{"type": "gold", "value": -10}]}]
 }, {
-"text": "Не играть",
-"outcomes": [{"chance": 100, "result_text": "Вы сохраняете золото и покидаете таверну.", "effects": []}]
+"text": "EVENT_DICE_GAME_OPTION_3",
+"outcomes": [{"chance": 100, "result_text": "EVENT_DICE_GAME_RESULT_5", "effects": []}]
 }])

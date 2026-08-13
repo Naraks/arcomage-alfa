@@ -11,6 +11,6 @@ value = 6
 
 [resource]
 script = ExtResource("1_x1y2z")
-artifact_name = "Книга Мудрости"
-description = "Лимит карт в руке увеличен до 6 (вместо 5)."
+artifact_name = "ARTIFACT_BOOK_OF_WISDOM_NAME"
+description = "ARTIFACT_BOOK_OF_WISDOM_DESC"
 effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1")])

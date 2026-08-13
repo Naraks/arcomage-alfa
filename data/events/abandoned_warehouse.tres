@@ -4,12 +4,12 @@
 
 [resource]
 script = ExtResource("1_event")
-event_title = "Заброшенный склад"
-event_description = "У дороги стоит полуразрушенный склад. Внутри поблёскивают сундуки, но прогнивший пол едва держится."
+event_title = "EVENT_ABANDONED_WAREHOUSE_TITLE"
+event_description = "EVENT_ABANDONED_WAREHOUSE_DESC"
 options = Array[Dictionary]([{
-"text": "Обыскать склад",
-"outcomes": [{"chance": 70, "result_text": "Под досками нашёлся кошель с монетами.", "effects": [{"type": "gold", "value": 12}]}, {"chance": 30, "result_text": "Пол рухнул, и часть припасов пришлось бросить.", "effects": [{"type": "gold", "value": -6}]}]
+"text": "EVENT_ABANDONED_WAREHOUSE_OPTION_1",
+"outcomes": [{"chance": 70, "result_text": "EVENT_ABANDONED_WAREHOUSE_RESULT_1", "effects": [{"type": "gold", "value": 12}]}, {"chance": 30, "result_text": "EVENT_ABANDONED_WAREHOUSE_RESULT_2", "effects": [{"type": "gold", "value": -6}]}]
 }, {
-"text": "Не рисковать",
-"outcomes": [{"chance": 100, "result_text": "Вы оставляете ненадёжное здание позади.", "effects": []}]
+"text": "EVENT_ABANDONED_WAREHOUSE_OPTION_2",
+"outcomes": [{"chance": 100, "result_text": "EVENT_ABANDONED_WAREHOUSE_RESULT_3", "effects": []}]
 }])

@@ -28,8 +28,8 @@ else_effect = SubResource("EffectData_2")
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
-card_name = "Резервы"
-description = "Если Стена меньше 5 - Стена +7, иначе Стена +3."
+card_name = "CARD_BRICKS_RESERVES_NAME"
+description = "CARD_BRICKS_RESERVES_DESC"
 cost = 3
 type = 0
 rarity = 1
