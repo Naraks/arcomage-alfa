@@ -27,6 +27,25 @@ enum Type {
 
 const MOD_TYPES := [Type.MOD_QUARRY, Type.MOD_MAGIC, Type.MOD_DUNGEON]
 
+## Типы, допустимые для эффектов карт (CardData.effects) — зеркалит ветки
+## match в MatchManager._apply_effect(). Артефактные типы (SET_GENERATOR_LEVEL,
+## SET_MAX_HAND_SIZE, REFLECT_DAMAGE, SKIP_PAYMENT_CHANCE) сюда не входят.
+const CARD_TYPES := [
+	Type.DAMAGE,
+	Type.DIRECT_DAMAGE,
+	Type.BUILD_WALL,
+	Type.BUILD_TOWER,
+	Type.MOD_QUARRY,
+	Type.MOD_MAGIC,
+	Type.MOD_DUNGEON,
+	Type.DRAW_CARD,
+	Type.STEAL_RESOURCE,
+	Type.CONDITIONAL,
+	Type.GAIN_RESOURCE,
+	Type.DRAIN_RESOURCE,
+	Type.REDUCE_WALL,
+]
+
 const _FROM_STRING := {
 	"damage": Type.DAMAGE,
 	"direct_damage": Type.DIRECT_DAMAGE,

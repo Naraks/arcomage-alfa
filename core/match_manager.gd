@@ -494,6 +494,12 @@ func resolve_target(actor: PlayerData, enemy: PlayerData, target_str: String) ->
 func apply_damage(
 	amount: int, target: PlayerData, ignore_wall: bool, source: PlayerData = null
 ) -> void:
+	if amount < 0:
+		push_warning(
+			"MatchManager: apply_damage вызван с отрицательным amount (%d), урон не применён" % amount
+		)
+		amount = 0
+
 	if ignore_wall:
 		target.tower_hp -= amount
 	else:

@@ -3,7 +3,9 @@ extends "res://data/resources/ai_strategy.gd"
 ## Экономическая стратегия ИИ.
 
 
-func _score_effect(effect: EffectData, player_actor: PlayerData, player_enemy: PlayerData) -> float:
+func _score_known_effect(
+	effect: EffectData, player_actor: PlayerData, player_enemy: PlayerData
+) -> float:
 	var type := effect.type
 	var value := effect.value
 	var priority: float = 0.0

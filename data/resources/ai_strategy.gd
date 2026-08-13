@@ -34,7 +34,17 @@ func calculate_card_priority(card: CardData, actor: Resource, enemy: Resource) -
 	return priority
 
 
-func _score_effect(_effect: EffectData, _player_actor: PlayerData, _player_enemy: PlayerData) -> float:
+func _score_effect(effect: EffectData, player_actor: PlayerData, player_enemy: PlayerData) -> float:
+	if not effect.type in EffectType.CARD_TYPES:
+		push_warning(
+			"AIStrategy: неизвестный тип эффекта карты '%s' в _score_effect" % effect.type
+		)
+	return _score_known_effect(effect, player_actor, player_enemy)
+
+
+func _score_known_effect(
+	_effect: EffectData, _player_actor: PlayerData, _player_enemy: PlayerData
+) -> float:
 	return 0.0
 
 
