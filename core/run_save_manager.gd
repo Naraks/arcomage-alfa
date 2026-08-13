@@ -38,7 +38,7 @@ func save_run() -> void:
 	var data := build_save_data()
 	var error := ResourceSaver.save(data, SAVE_PATH)
 	if error != OK:
-		print("[ERROR] RunSaveManager: failed to save run, code ", error)
+		push_error("RunSaveManager: не удалось сохранить забег, код ", error)
 
 
 func load_run() -> bool:
@@ -47,7 +47,7 @@ func load_run() -> bool:
 
 	var data = ResourceLoader.load(SAVE_PATH, "", ResourceLoader.CACHE_MODE_IGNORE)
 	if data == null or not (data is RunSaveData):
-		print("[ERROR] RunSaveManager: saved run is missing or corrupted")
+		push_error("RunSaveManager: сохранение забега отсутствует или повреждено")
 		return false
 
 	apply_save_data(data)

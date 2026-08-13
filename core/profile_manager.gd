@@ -203,7 +203,6 @@ func save_profile() -> void:
 	if file:
 		var json_string = JSON.stringify(profile)
 		file.store_string(json_string)
-		print("[DEBUG] Profile saved")
 
 
 func load_profile() -> void:
@@ -217,7 +216,6 @@ func load_profile() -> void:
 		var error = json.parse(json_string)
 		if error == OK:
 			profile = _restore_int_types(json.data)
-			print("[DEBUG] Profile loaded")
 
 
 func _restore_int_types(value):

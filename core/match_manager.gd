@@ -152,7 +152,6 @@ func setup_match(
 		player_data.magic += profile_manager.get_upgrade_bonus("magic")
 		player_data.dungeon += profile_manager.get_upgrade_bonus("dungeon")
 		player_data.max_hand_size += profile_manager.get_upgrade_bonus("hand_size")
-		print("[DEBUG] Meta-progression bonuses applied")
 
 	if p_apply_player_progression:
 		player_data.tower_hp += MatchSettings.run_tower_bonus
@@ -184,7 +183,7 @@ func setup_match(
 
 func _initialize_test_deck() -> void:
 	deck = _build_generic_card_pool()
-	print("[DEBUG] Deck initialized with ", deck.size(), " cards")
+	push_warning("MatchManager: колода забега исчерпана, докладываю запасной пул (%d карт)" % deck.size())
 
 
 static func _build_generic_card_pool() -> Array[CardData]:
@@ -194,7 +193,7 @@ static func _build_generic_card_pool() -> Array[CardData]:
 		if card:
 			pool.append(card)
 		else:
-			print("[ERROR] Failed to load card: ", path)
+			push_error("MatchManager: не удалось загрузить карту: ", path)
 
 	while pool.size() < 20:
 		pool.append(pool.pick_random())
@@ -210,7 +209,7 @@ static func _build_full_card_pool() -> Array[CardData]:
 		if card:
 			pool.append(card)
 		else:
-			print("[ERROR] Failed to load card: ", path)
+			push_error("MatchManager: не удалось загрузить карту: ", path)
 
 	pool.shuffle()
 	return pool
@@ -230,7 +229,7 @@ static func build_shop_offer(card_count: int) -> Array[CardData]:
 			break
 		var card = load(path)
 		if not card:
-			print("[ERROR] Failed to load card: ", path)
+			push_error("MatchManager: не удалось загрузить карту: ", path)
 			continue
 		if not ProfileManager.is_card_unlocked(card):
 			continue
@@ -247,7 +246,7 @@ func draw_card(player: PlayerData) -> void:
 	var is_player: bool = player == player_data
 	var card: CardData = _draw_from_deck(is_player)
 	if card == null:
-		print("[ERROR] Drew a null card!")
+		push_error("MatchManager: добрана пустая карта из колоды")
 		return
 
 	hand.append(card)
@@ -297,7 +296,7 @@ func _resolve_ai_turn(actor: PlayerData) -> void:
 	var hand = player_hand if actor == player_data else enemy_hand
 
 	if not actor.ai_strategy:
-		print("[ERROR] AI Strategy not set! Falling back to default_ai_strategy.gd")
+		push_error("MatchManager: AI Strategy не назначена, использую default_ai_strategy.gd")
 		actor.ai_strategy = load(DEFAULT_AI_STRATEGY_PATH).new()
 
 	var best_card = actor.ai_strategy.get_best_card(hand, actor, opponent)
@@ -312,7 +311,6 @@ func _resolve_ai_turn(actor: PlayerData) -> void:
 		print("AI discards: ", card_to_discard.card_name)
 		discard_card_by_index(index, actor)
 	else:
-		print("[DEBUG] AI has no cards to discard, passing turn")
 		if not check_win():
 			end_turn(actor)
 

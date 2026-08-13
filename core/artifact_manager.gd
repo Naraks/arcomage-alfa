@@ -89,7 +89,6 @@ func apply_artifact_effect(
 	GameEvents.resource_changed.emit(player, "all", 0)
 
 	GameEvents.artifact_triggered.emit(artifact, player)
-	print("[DEBUG] Artifact triggered: ", artifact.artifact_name, " effect: ", type)
 
 
 func _modify_resource(player: PlayerData, resource_name: String, delta: int) -> void:
