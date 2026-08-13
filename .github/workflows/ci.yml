@@ -103,6 +103,21 @@ jobs:
           path: coverage_report.txt
           retention-days: 30
 
+  # Локализация: проверяет, что все ключи tr("...")/поля .tres card_name,
+  # description, artifact_name, event_title, event_description и т.д. имеют
+  # запись в localization/ru.po и localization/en.po, и что в .po нет
+  # неиспользуемых ключей. См. tools/check_localization.py и
+  # docs/localization_guide.md. Только Python3, Godot не нужен.
+  localization-check:
+    name: Проверка ключей локализации
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Проверить ключи локализации
+        run: python3 tools/check_localization.py
+
   export-web:
     name: Build Web export
     runs-on: ubuntu-latest
