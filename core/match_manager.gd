@@ -3,8 +3,8 @@ extends Node
 
 enum State { START_MATCH, PLAYER_TURN, PROCESS_CARD, AI_TURN, CHECK_WIN, END_MATCH }
 
-const WIN_TOWER_HEIGHT = 55
-const WIN_RESOURCE_AMOUNT = 300
+const WIN_TOWER_HEIGHT: int = 55
+const WIN_RESOURCE_AMOUNT: int = 300
 
 const DEFAULT_AI_STRATEGY_PATH := "res://data/resources/default_ai_strategy.gd"
 
@@ -121,6 +121,11 @@ var enemy_hand: Array[CardData] = []
 var deck: Array[CardData] = []
 var enemy_deck: Array[CardData] = []
 
+## Увеличивается на каждый setup_match() — таймер хода ИИ, запущенный до
+## пересоздания матча, проверяет это значение после await и не резолвит ход,
+## если матч успел пересоздаться, пока таймер тикал.
+var _match_session: int = 0
+
 
 func pick_random_regular_ai_strategy() -> Resource:
 	return REGULAR_STRATEGY_SCRIPTS[randi() % REGULAR_STRATEGY_SCRIPTS.size()].new()
@@ -134,6 +139,8 @@ func setup_match(
 	p_starting_side: int = 0,
 	p_auto_execute_ai_turn: bool = true
 ) -> void:
+	_match_session += 1
+
 	player_data = p_player
 	enemy_data = p_enemy
 	auto_execute_ai_turn = p_auto_execute_ai_turn
@@ -144,7 +151,7 @@ func setup_match(
 	if not enemy_data.ai_strategy:
 		enemy_data.ai_strategy = load(DEFAULT_AI_STRATEGY_PATH).new()
 
-	var profile_manager = get_node_or_null("/root/ProfileManager")
+	var profile_manager: Node = get_node_or_null("/root/ProfileManager")
 	if profile_manager and p_apply_player_progression:
 		player_data.tower_hp += profile_manager.get_upgrade_bonus("tower")
 		player_data.wall_hp += profile_manager.get_upgrade_bonus("wall")
@@ -197,6 +204,10 @@ static func _build_generic_card_pool() -> Array[CardData]:
 		else:
 			push_error("MatchManager: не удалось загрузить карту: ", path)
 
+	if pool.is_empty():
+		push_error("MatchManager: не удалось построить запасной пул карт — ни одна карта не загрузилась")
+		return pool
+
 	while pool.size() < 20:
 		pool.append(pool.pick_random())
 
@@ -240,7 +251,7 @@ static func build_shop_offer(card_count: int) -> Array[CardData]:
 
 
 func draw_card(player: PlayerData) -> void:
-	var hand = player_hand if player == player_data else enemy_hand
+	var hand: Array[CardData] = player_hand if player == player_data else enemy_hand
 
 	if hand.size() >= player.max_hand_size:
 		return
@@ -284,7 +295,10 @@ func start_turn(player: PlayerData) -> void:
 
 
 func execute_ai_turn() -> void:
+	var session := _match_session
 	await _create_ai_turn_timer().timeout
+	if session != _match_session:
+		return
 	_resolve_ai_turn(enemy_data)
 
 
@@ -294,8 +308,8 @@ func _create_ai_turn_timer(delay_seconds: float = 1.0) -> SceneTreeTimer:
 
 
 func _resolve_ai_turn(actor: PlayerData) -> void:
-	var opponent = enemy_data if actor == player_data else player_data
-	var hand = player_hand if actor == player_data else enemy_hand
+	var opponent: PlayerData = enemy_data if actor == player_data else player_data
+	var hand: Array[CardData] = player_hand if actor == player_data else enemy_hand
 
 	if not actor.ai_strategy:
 		push_warning("MatchManager: AI Strategy не назначена, использую default_ai_strategy.gd")
@@ -305,11 +319,11 @@ func _resolve_ai_turn(actor: PlayerData) -> void:
 
 	if best_card:
 		print("AI plays: ", best_card.card_name)
-		var index = hand.find(best_card)
+		var index: int = hand.find(best_card)
 		play_card_by_index(index, actor)
 	elif not hand.is_empty():
-		var index = randi() % hand.size()
-		var card_to_discard = hand[index]
+		var index: int = randi() % hand.size()
+		var card_to_discard: CardData = hand[index]
 		print("AI discards: ", card_to_discard.card_name)
 		discard_card_by_index(index, actor)
 	else:
@@ -318,8 +332,8 @@ func _resolve_ai_turn(actor: PlayerData) -> void:
 
 
 func play_card(card: CardData, actor: PlayerData) -> void:
-	var hand = player_hand if actor == player_data else enemy_hand
-	var index = hand.find(card)
+	var hand: Array[CardData] = player_hand if actor == player_data else enemy_hand
+	var index: int = hand.find(card)
 	if index != -1:
 		play_card_by_index(index, actor)
 
@@ -333,11 +347,11 @@ func play_card_by_index(index: int, actor: PlayerData) -> void:
 	if current_state == State.AI_TURN and actor != enemy_data:
 		return
 
-	var hand = player_hand if actor == player_data else enemy_hand
+	var hand: Array[CardData] = player_hand if actor == player_data else enemy_hand
 	if index < 0 or index >= hand.size():
 		return
 
-	var card = hand[index]
+	var card: CardData = hand[index]
 
 	if not can_afford(card, actor):
 		print("Not enough resources!")
@@ -376,7 +390,7 @@ func discard_card_by_index(index: int, actor: PlayerData) -> void:
 	if current_state == State.AI_TURN and actor != enemy_data:
 		return
 
-	var hand = player_hand if actor == player_data else enemy_hand
+	var hand: Array[CardData] = player_hand if actor == player_data else enemy_hand
 	if index < 0 or index >= hand.size():
 		return
 
@@ -391,7 +405,7 @@ func can_afford(card: CardData, actor: PlayerData) -> bool:
 
 
 func apply_card_effects(card: CardData, actor: PlayerData) -> void:
-	var enemy = enemy_data if actor == player_data else player_data
+	var enemy: PlayerData = enemy_data if actor == player_data else player_data
 
 	for effect in card.effects:
 		_apply_effect(effect, actor, enemy)
@@ -404,7 +418,7 @@ func _apply_effect(effect: EffectData, actor: PlayerData, enemy: PlayerData) -> 
 	var type := effect.type
 	var value := effect.value
 
-	var target_player = resolve_target(actor, enemy, effect.target)
+	var target_player: PlayerData = resolve_target(actor, enemy, effect.target)
 
 	match type:
 		EffectType.Type.DAMAGE:
@@ -483,12 +497,12 @@ func apply_damage(
 	if ignore_wall:
 		target.tower_hp -= amount
 	else:
-		var overflow = amount - target.wall_hp
+		var overflow: int = amount - target.wall_hp
 		target.wall_hp = max(0, target.wall_hp - amount)
 		if overflow > 0:
 			target.tower_hp -= overflow
 
-	var hit_wall = not ignore_wall
+	var hit_wall: bool = not ignore_wall
 	GameEvents.damage_applied.emit(target, amount, hit_wall, source)
 
 
@@ -546,5 +560,5 @@ func check_win() -> bool:
 
 
 func end_turn(actor: PlayerData) -> void:
-	var next_player = enemy_data if actor == player_data else player_data
+	var next_player: PlayerData = enemy_data if actor == player_data else player_data
 	start_turn(next_player)
