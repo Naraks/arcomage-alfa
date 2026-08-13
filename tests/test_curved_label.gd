@@ -150,3 +150,15 @@ func test_compute_float_offset_different_indices_differ_at_same_time() -> void:
 	var a = CurvedLabelScript.compute_float_offset(0, 2.0, 3.0, 1.0)
 	var b = CurvedLabelScript.compute_float_offset(1, 2.0, 3.0, 1.0)
 	assert_ne(a, b)
+
+
+func test_fitted_font_size_keeps_preferred_size_when_text_fits() -> void:
+	assert_eq(CurvedLabelScript.compute_fitted_font_size(100.0, 120.0, 26, 16), 26)
+
+
+func test_fitted_font_size_scales_down_proportionally() -> void:
+	assert_eq(CurvedLabelScript.compute_fitted_font_size(150.0, 120.0, 26, 16), 20)
+
+
+func test_fitted_font_size_never_drops_below_minimum() -> void:
+	assert_eq(CurvedLabelScript.compute_fitted_font_size(400.0, 100.0, 26, 16), 16)
