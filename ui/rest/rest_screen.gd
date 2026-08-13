@@ -5,7 +5,6 @@ const TOWER_BONUS_AMOUNT := 5
 const GENERATOR_BONUS_AMOUNT := 1
 const MAX_TOWER_BONUS := 25
 const MAX_GENERATOR_BONUS := 5
-const WIDE_LAYOUT_MIN_ASPECT := 1.35
 const TOWER_ICON := preload("res://art/rest/tower_foundation.png")
 const GENERATOR_ICON := preload("res://art/rest/magic_source.png")
 
@@ -38,9 +37,7 @@ func _generator_label(key: String) -> String:
 
 
 func _layout_mode_for_size(viewport_size: Vector2) -> String:
-	if viewport_size.y <= 0:
-		return "stacked"
-	return "wide" if viewport_size.x / viewport_size.y >= WIDE_LAYOUT_MIN_ASPECT else "stacked"
+	return "wide" if ResponsiveLayout.is_wide_by_aspect(viewport_size) else "stacked"
 
 
 func _current_generator_bonus(key: String) -> int:
@@ -280,13 +277,5 @@ func _apply_generator_bonus(key: String) -> void:
 
 
 func _return_to_map() -> void:
-	if MatchSettings.current_map_node:
-		MatchSettings.current_map_node.is_completed = true
-		if MatchSettings.world_map_data:
-			var node_index: int = MatchSettings.world_map_data.map_nodes.find(
-				MatchSettings.current_map_node
-			)
-			if node_index != -1:
-				MatchSettings.world_map_data.current_node_index = node_index
-	MatchSettings.current_map_node = null
+	MatchSettings.complete_current_map_node()
 	get_tree().change_scene_to_file("res://ui/map/world_map_screen.tscn")

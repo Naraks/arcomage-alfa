@@ -4,7 +4,6 @@ extends Control
 const RewardScreenScript = preload("res://ui/reward/reward_screen.gd")
 const TAB_TITLES := ["Прокачка", "Статистика", "Колода"]
 const MIN_TOUCH_TARGET := 44.0
-const PORTRAIT_BREAKPOINT := 760.0
 
 static var _last_tab_index := 0
 
@@ -129,7 +128,7 @@ func _connect_content_state() -> void:
 
 
 func _layout_mode_for_size(viewport_size: Vector2) -> String:
-	return "mobile" if viewport_size.x < PORTRAIT_BREAKPOINT else "desktop"
+	return "mobile" if ResponsiveLayout.is_narrow_by_width(viewport_size) else "desktop"
 
 
 func _apply_layout(viewport_size: Vector2) -> void:

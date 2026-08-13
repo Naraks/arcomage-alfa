@@ -20,3 +20,16 @@ var run_dungeon_bonus: int = 0
 var run_artifacts: Array[ArtifactData] = []
 
 var run_victory: bool = false
+
+
+## Отмечает current_map_node пройденным, синхронизирует current_node_index
+## и очищает current_map_node. Общая часть логики "выйти из узла карты",
+## одинаковая в event/rest/shop/reward screens.
+func complete_current_map_node() -> void:
+	if current_map_node:
+		current_map_node.is_completed = true
+		if world_map_data:
+			var node_index: int = world_map_data.map_nodes.find(current_map_node)
+			if node_index != -1:
+				world_map_data.current_node_index = node_index
+	current_map_node = null

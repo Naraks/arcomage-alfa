@@ -243,11 +243,7 @@ func _show_card_list_popup(title_text: String, cards: Array) -> void:
 
 
 func _compare_cards_for_view(a: CardData, b: CardData) -> bool:
-	if a.type != b.type:
-		return a.type < b.type
-	if a.cost != b.cost:
-		return a.cost < b.cost
-	return a.card_name < b.card_name
+	return CardSortUtils.compare_by_type_cost_name(a, b)
 
 
 func _test_setup() -> void:

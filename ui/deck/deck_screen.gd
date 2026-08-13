@@ -12,22 +12,7 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	set_anchors_preset(Control.PRESET_FULL_RECT)
-
-	if not embedded_in_profile:
-		var bg := ColorRect.new()
-		bg.color = Color(0.1, 0.1, 0.12)
-		bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-		add_child(bg)
-
-	var root_margin := MarginContainer.new()
-	root_margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-	var margin := 12 if embedded_in_profile else 24
-	root_margin.add_theme_constant_override("margin_left", margin)
-	root_margin.add_theme_constant_override("margin_right", margin)
-	root_margin.add_theme_constant_override("margin_top", margin)
-	root_margin.add_theme_constant_override("margin_bottom", margin)
-	add_child(root_margin)
+	var root_margin := EmbeddedScreenLayout.build_shell(self, embedded_in_profile)
 
 	var root_vbox := VBoxContainer.new()
 	root_vbox.add_theme_constant_override("separation", 16)
@@ -111,11 +96,7 @@ func _group_cards(cards: Array[CardData]) -> Array:
 
 
 func _compare_cards(a: CardData, b: CardData) -> bool:
-	if a.type != b.type:
-		return a.type < b.type
-	if a.cost != b.cost:
-		return a.cost < b.cost
-	return a.card_name < b.card_name
+	return CardSortUtils.compare_by_type_cost_name(a, b)
 
 
 func _on_back_pressed() -> void:

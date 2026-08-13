@@ -11,7 +11,6 @@ const UPGRADE_GROUPS := {
 	"Утилити": ["hand_size"],
 }
 const GROUP_ORDER := ["Основание", "Ресурсы", "Утилити"]
-const PORTRAIT_BREAKPOINT := 760.0
 const STATE_COLORS := {
 	"affordable": Color("74d680"),
 	"locked": Color("d8a76f"),
@@ -35,19 +34,7 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	set_anchors_preset(Control.PRESET_FULL_RECT)
-	if not embedded_in_profile:
-		var bg := ColorRect.new()
-		bg.color = Color(0.1, 0.1, 0.12)
-		bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-		add_child(bg)
-
-	var root_margin := MarginContainer.new()
-	root_margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-	var margin := 12 if embedded_in_profile else 24
-	for side in ["left", "right", "top", "bottom"]:
-		root_margin.add_theme_constant_override("margin_" + side, margin)
-	add_child(root_margin)
+	var root_margin := EmbeddedScreenLayout.build_shell(self, embedded_in_profile)
 
 	var root_vbox := VBoxContainer.new()
 	root_vbox.add_theme_constant_override("separation", 12)
@@ -321,7 +308,7 @@ func _on_unlock_pressed(path: String) -> void:
 
 
 func _layout_mode_for_size(viewport_size: Vector2) -> String:
-	return "mobile" if viewport_size.x < PORTRAIT_BREAKPOINT else "desktop"
+	return "mobile" if ResponsiveLayout.is_narrow_by_width(viewport_size) else "desktop"
 
 
 func _apply_layout(viewport_size: Vector2) -> void:

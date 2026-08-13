@@ -7,7 +7,6 @@ const REMOVE_CARD_PRICE := 5
 const MIN_DECK_SIZE := 1
 const SHOP_OFFER_MIN := 3
 const SHOP_OFFER_MAX := 5
-const PORTRAIT_BREAKPOINT := 800.0
 
 var _shop_offer: Array[CardData] = []
 var _bought_cards: Dictionary = {}
@@ -114,7 +113,10 @@ func _add_section_title(parent: Control, heading: String, explanation: String) -
 
 
 func _layout_mode_for_size(viewport_size: Vector2) -> String:
-	return "portrait" if viewport_size.x < PORTRAIT_BREAKPOINT else "wide"
+	var narrow := ResponsiveLayout.is_narrow_by_width(
+		viewport_size, ResponsiveLayout.SHOP_NARROW_WIDTH_THRESHOLD
+	)
+	return "portrait" if narrow else "wide"
 
 
 func _update_gold_label() -> void:
@@ -217,11 +219,7 @@ func _refresh_remove_list() -> void:
 
 
 func _compare_cards(a: CardData, b: CardData) -> bool:
-	if a.type != b.type:
-		return a.type < b.type
-	if a.cost != b.cost:
-		return a.cost < b.cost
-	return a.card_name < b.card_name
+	return CardSortUtils.compare_by_type_cost_name(a, b)
 
 
 func _try_buy_card(card: CardData) -> bool:
@@ -287,13 +285,5 @@ func _cancel_removal() -> void:
 
 
 func _on_back_pressed() -> void:
-	if MatchSettings.current_map_node:
-		MatchSettings.current_map_node.is_completed = true
-		if MatchSettings.world_map_data:
-			var node_index: int = MatchSettings.world_map_data.map_nodes.find(
-				MatchSettings.current_map_node
-			)
-			if node_index != -1:
-				MatchSettings.world_map_data.current_node_index = node_index
-	MatchSettings.current_map_node = null
+	MatchSettings.complete_current_map_node()
 	get_tree().change_scene_to_file("res://ui/map/world_map_screen.tscn")

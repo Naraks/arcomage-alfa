@@ -57,10 +57,34 @@
 
 - 4 AI-стратегии (`aggressive/builder/default/economist`) почти дословно повторяют цикл выбора лучшей
   карты — стоит поднять в базовый класс как шаблонный метод, оставив подклассам только `_score_effect`.
-- В `ui/`: логика «завершить узел и вернуться на карту» дублируется 4 раза (event/rest/reward/shop
+- ~~В `ui/`: логика «завершить узел и вернуться на карту» дублируется 4 раза (event/rest/reward/shop
   screens); компаратор карт «тип→цена→имя» реализован трижды; шаблон `embedded_in_profile` (отступы, цвет
   фона) скопирован в deck/meta_shop/stats screens; расчёт portrait/wide layout продублирован с тремя
-  разными magic-number порогами (1.35 aspect, 760px, 800px) в разных файлах.
+  разными magic-number порогами (1.35 aspect, 760px, 800px) в разных файлах.~~ **Исправлено.** Все 4
+  пункта:
+  - `MatchSettings.complete_current_map_node()` — общая часть «завершить узел» (пометить пройденным,
+    синхронизировать `current_node_index`, очистить `current_map_node`) вынесена в `core/match_settings.gd`.
+    event/rest/shop screens теперь используют её напрямую; reward_screen (единственный с отличиями —
+    сброс `came_from_map`, ветка для босса на `run_summary_screen.tscn`) вызывает её и достраивает свою
+    логику поверх — имена методов (`_return_to_map` / `_on_back_pressed`) не трогал, чтобы не менять
+    `.connect(...)` на сигналах кнопок.
+  - `ui/card_sort_utils.gd` (`CardSortUtils.compare_by_type_cost_name`) — общий компаратор; `_compare_cards`
+    в shop/deck screens и `_compare_cards_for_view` в battle_screen оставлены как тонкие обёртки (те же
+    имена, чтобы не трогать тесты, которые вызывают их напрямую).
+  - `ui/theme/embedded_screen_layout.gd` (`EmbeddedScreenLayout.build_shell`) — общий фон+отступы для
+    `embedded_in_profile`; используется в deck/meta_shop/stats screens. Цвет фона вынесен в
+    `UIColors.SCREEN_BACKGROUND` (тот же файл, что и золотой акцент). Заголовок/кнопка «назад» оставлены
+    как есть — они не идентичны между экранами (у meta_shop свой `_build_standalone_header()`), в жалобе
+    как дублирование были названы только отступы и цвет фона.
+  - `ui/theme/responsive_layout.gd` (`ResponsiveLayout.is_wide_by_aspect`/`is_narrow_by_width`) — общие
+    формулы сравнения; пороги 1.35/760/800 сохранены как есть (не унифицированы — это было бы отдельным,
+    более рискованным решением менять реальные точки переключения раскладки без отдельного запроса, тем
+    более без Godot под рукой, чтобы проверить визуально). У shop свой порог 800
+    (`ResponsiveLayout.SHOP_NARROW_WIDTH_THRESHOLD`), у profile/meta_shop общий 760 (значение по
+    умолчанию). Строковый словарь состояний (`"wide"/"stacked"` vs `"portrait"/"wide"` vs
+    `"mobile"/"desktop"`) тоже оставлен как есть — за пределами жалобы. `main_menu.gd`/
+    `main_menu_backdrop.gd` используют другую формулу (`0.9`-множитель) — не трогал, не упоминались в
+    жалобе явно и решают другую задачу (выбор фоновой сцены, а не режима сетки).
 - ~~«Золотой» акцентный цвет задан 6 разными близкими hex-значениями в разных экранах вместо общей
   темы.~~ **Исправлено.** Цвет вынесен в `ui/theme/ui_colors.gd` (`UIColors.GOLD`/`GOLD_HOVER`/
   `GOLD_PRESSED`), 7 экранов (`main_menu`, `event`, `meta_shop`, `profile`, `rest`, `settings`, `shop`)

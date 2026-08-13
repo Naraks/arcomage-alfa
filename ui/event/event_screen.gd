@@ -3,7 +3,6 @@ extends Control
 
 const EventIllustrationScript = preload("res://ui/event/event_illustration.gd")
 const EVENTS_DIRECTORY := "res://data/events"
-const WIDE_LAYOUT_MIN_ASPECT := 1.35
 
 var _event: EventData
 var _choice_resolved := false
@@ -53,9 +52,7 @@ func _event_resource_name(file_name: String) -> String:
 
 
 func _layout_mode_for_size(viewport_size: Vector2) -> String:
-	if viewport_size.y <= 0:
-		return "stacked"
-	return "wide" if viewport_size.x / viewport_size.y >= WIDE_LAYOUT_MIN_ASPECT else "stacked"
+	return "wide" if ResponsiveLayout.is_wide_by_aspect(viewport_size) else "stacked"
 
 
 func _content_minimum_size_for_viewport(viewport_size: Vector2) -> Vector2:
@@ -320,13 +317,5 @@ func _on_option_chosen(option: Dictionary) -> void:
 
 
 func _return_to_map() -> void:
-	if MatchSettings.current_map_node:
-		MatchSettings.current_map_node.is_completed = true
-		if MatchSettings.world_map_data:
-			var node_index: int = MatchSettings.world_map_data.map_nodes.find(
-				MatchSettings.current_map_node
-			)
-			if node_index != -1:
-				MatchSettings.world_map_data.current_node_index = node_index
-	MatchSettings.current_map_node = null
+	MatchSettings.complete_current_map_node()
 	get_tree().change_scene_to_file("res://ui/map/world_map_screen.tscn")

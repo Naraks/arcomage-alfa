@@ -253,16 +253,8 @@ func _return_to_map() -> void:
 		and MatchSettings.current_map_node.node_type == MapNodeData.NodeType.BOSS
 	)
 
-	if MatchSettings.current_map_node:
-		MatchSettings.current_map_node.is_completed = true
-		if MatchSettings.world_map_data:
-			var node_index: int = MatchSettings.world_map_data.map_nodes.find(
-				MatchSettings.current_map_node
-			)
-			if node_index != -1:
-				MatchSettings.world_map_data.current_node_index = node_index
+	MatchSettings.complete_current_map_node()
 	MatchSettings.came_from_map = false
-	MatchSettings.current_map_node = null
 
 	if was_boss:
 		MatchSettings.run_victory = true
