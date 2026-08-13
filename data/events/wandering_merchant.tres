@@ -8,7 +8,7 @@ event_title = "Карточный шулер"
 event_description = "У костра сидит шулер с тремя запечатанными картами. За шесть монет он разрешит вытянуть одну."
 options = Array[Dictionary]([{
 "text": "Заплатить 6 золота и вытянуть карту",
-"outcomes": [{"chance": 40, "result_text": "Вам достаётся «Огненный шар».", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/gem_4.tres"}]}, {"chance": 30, "result_text": "Вам достаётся «Катапульта».", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/brick_17.tres"}]}, {"chance": 30, "result_text": "Вам достаётся «Волчья стая».", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/beast_8.tres"}]}]
+"outcomes": [{"chance": 40, "result_text": "Вам достаётся «Огненный шар».", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/gems_fireball.tres"}]}, {"chance": 30, "result_text": "Вам достаётся «Катапульта».", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/bricks_catapult.tres"}]}, {"chance": 30, "result_text": "Вам достаётся «Волчья стая».", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/beasts_wolf_pack.tres"}]}]
 }, {
 "text": "Не играть",
 "outcomes": [{"chance": 100, "result_text": "Вы не доверяете улыбке шулера и уходите.", "effects": []}]

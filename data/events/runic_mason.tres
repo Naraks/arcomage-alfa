@@ -9,7 +9,7 @@ options = Array[Dictionary]([{
 "outcomes": [{"chance": 100, "result_text": "Рунная кладка усиливает Башню на весь забег.", "effects": [{"type": "gold", "value": -8}, {"type": "run_tower_bonus", "value": 3}]}]
 }, {
 "text": "Купить плиту за 2 золота",
-"outcomes": [{"chance": 100, "result_text": "Каменщик передаёт вам карту «Основание».", "effects": [{"type": "gold", "value": -2}, {"type": "add_card", "card_path": "res://data/cards/brick_13.tres"}]}]
+"outcomes": [{"chance": 100, "result_text": "Каменщик передаёт вам карту «Основание».", "effects": [{"type": "gold", "value": -2}, {"type": "add_card", "card_path": "res://data/cards/bricks_foundation.tres"}]}]
 }, {
 "text": "Отказаться",
 "outcomes": [{"chance": 100, "result_text": "Вы оставляете мастера за работой.", "effects": []}]

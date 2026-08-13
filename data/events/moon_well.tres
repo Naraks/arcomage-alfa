@@ -9,7 +9,7 @@ options = Array[Dictionary]([{
 "outcomes": [{"chance": 100, "result_text": "Лунный свет усиливает Магию на весь забег.", "effects": [{"type": "gold", "value": -7}, {"type": "run_magic_bonus", "value": 1}]}]
 }, {
 "text": "Купить руну за 3 золота",
-"outcomes": [{"chance": 100, "result_text": "На ладони проявляется карта «Ясновидение».", "effects": [{"type": "gold", "value": -3}, {"type": "add_card", "card_path": "res://data/cards/gem_13.tres"}]}]
+"outcomes": [{"chance": 100, "result_text": "На ладони проявляется карта «Ясновидение».", "effects": [{"type": "gold", "value": -3}, {"type": "add_card", "card_path": "res://data/cards/gems_clairvoyance.tres"}]}]
 }, {
 "text": "Не смотреть в будущее",
 "outcomes": [{"chance": 100, "result_text": "Вы оставляете колодец и его тайны.", "effects": []}]

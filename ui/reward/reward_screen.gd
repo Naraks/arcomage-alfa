@@ -7,8 +7,8 @@ const REGULAR_SLOT_COUNT := 3
 const ELITE_ARTIFACT_CHANCE := 30
 
 const HIGH_RARITY_CARD_PATHS := [
-	"res://data/cards/brick_6.tres",
-	"res://data/cards/gem_10.tres",
+	"res://data/cards/bricks_siege_engine.tres",
+	"res://data/cards/gems_armageddon.tres",
 ]
 
 const ALL_ARTIFACT_PATHS := [

@@ -6,10 +6,10 @@ event_title = "Звериный аукцион"
 event_description = "Кочевники продают боевых зверей. Рядом лежит дешёвое яйцо, происхождение которого никто не гарантирует."
 options = Array[Dictionary]([{
 "text": "Нанять орка за 7 золота",
-"outcomes": [{"chance": 100, "result_text": "Орк принимает плату и вступает в ваш отряд.", "effects": [{"type": "gold", "value": -7}, {"type": "add_card", "card_path": "res://data/cards/beast_15.tres"}]}]
+"outcomes": [{"chance": 100, "result_text": "Орк принимает плату и вступает в ваш отряд.", "effects": [{"type": "gold", "value": -7}, {"type": "add_card", "card_path": "res://data/cards/beasts_orc.tres"}]}]
 }, {
 "text": "Купить загадочное яйцо за 4 золота",
-"outcomes": [{"chance": 50, "result_text": "Из яйца появляется молодой зверь вместе со Звероловом.", "effects": [{"type": "gold", "value": -4}, {"type": "add_card", "card_path": "res://data/cards/beast_1.tres"}]}, {"chance": 50, "result_text": "Из яйца вылупляется бойкий гоблин.", "effects": [{"type": "gold", "value": -4}, {"type": "add_card", "card_path": "res://data/cards/beast_3.tres"}]}]
+"outcomes": [{"chance": 50, "result_text": "Из яйца появляется молодой зверь вместе со Звероловом.", "effects": [{"type": "gold", "value": -4}, {"type": "add_card", "card_path": "res://data/cards/beasts_hunter.tres"}]}, {"chance": 50, "result_text": "Из яйца вылупляется бойкий гоблин.", "effects": [{"type": "gold", "value": -4}, {"type": "add_card", "card_path": "res://data/cards/beasts_goblin.tres"}]}]
 }, {
 "text": "Не участвовать",
 "outcomes": [{"chance": 100, "result_text": "Вы покидаете шумный аукцион.", "effects": []}]

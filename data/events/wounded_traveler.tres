@@ -8,7 +8,7 @@ event_title = "Раненый путник"
 event_description = "У дороги лежит раненый рыцарь. Ему нужны припасы, чтобы снова встать на ноги."
 options = Array[Dictionary]([{
 "text": "Купить припасы за 3 золота",
-"outcomes": [{"chance": 100, "result_text": "Рыцарь благодарит вас и присоединяется к походу.", "effects": [{"type": "gold", "value": -3}, {"type": "add_card", "card_path": "res://data/cards/knight_card.tres"}]}]
+"outcomes": [{"chance": 100, "result_text": "Рыцарь благодарит вас и присоединяется к походу.", "effects": [{"type": "gold", "value": -3}, {"type": "add_card", "card_path": "res://data/cards/beasts_knight.tres"}]}]
 }, {
 "text": "Показать дорогу к ближайшему поселению",
 "outcomes": [{"chance": 100, "result_text": "Путник благодарит за совет, а вы продолжаете путь.", "effects": []}]

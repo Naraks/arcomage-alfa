@@ -225,7 +225,9 @@ func test_apply_effects_gold_clamped_at_zero() -> void:
 func test_apply_effects_add_card_appends_to_run_deck() -> void:
 	var screen = EventScreenScript.new()
 
-	screen._apply_effects([{"type": "add_card", "card_path": "res://data/cards/knight_card.tres"}])
+	screen._apply_effects(
+		[{"type": "add_card", "card_path": "res://data/cards/beasts_knight.tres"}]
+	)
 
 	assert_eq(MatchSettings.run_deck.size(), 1)
 	assert_eq(MatchSettings.run_deck[0].card_name, "Рыцарь")

@@ -6,10 +6,10 @@ event_title = "Звериное логово"
 event_description = "В овраге прячется стая. Хорошая приманка позволит приручить её, но можно рискнуть и без подготовки."
 options = Array[Dictionary]([{
 "text": "Купить приманку за 6 золота",
-"outcomes": [{"chance": 100, "result_text": "Стая принимает вас за вожака.", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/beast_8.tres"}]}]
+"outcomes": [{"chance": 100, "result_text": "Стая принимает вас за вожака.", "effects": [{"type": "gold", "value": -6}, {"type": "add_card", "card_path": "res://data/cards/beasts_wolf_pack.tres"}]}]
 }, {
 "text": "Подкрасться к логову",
-"outcomes": [{"chance": 60, "result_text": "Опытный зверолов выходит навстречу и присоединяется к вам.", "effects": [{"type": "add_card", "card_path": "res://data/cards/beast_1.tres"}]}, {"chance": 40, "result_text": "Звери разоряют сумку с припасами.", "effects": [{"type": "gold", "value": -5}]}]
+"outcomes": [{"chance": 60, "result_text": "Опытный зверолов выходит навстречу и присоединяется к вам.", "effects": [{"type": "add_card", "card_path": "res://data/cards/beasts_hunter.tres"}]}, {"chance": 40, "result_text": "Звери разоряют сумку с припасами.", "effects": [{"type": "gold", "value": -5}]}]
 }, {
 "text": "Обойти овраг",
 "outcomes": [{"chance": 100, "result_text": "Вы не тревожите стаю.", "effects": []}]

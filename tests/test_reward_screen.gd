@@ -115,7 +115,7 @@ func test_available_artifacts_excludes_owned() -> void:
 
 func test_apply_slot_card_appends_to_run_deck() -> void:
 	var screen = RewardScreenScript.new()
-	var card := load("res://data/cards/brick_4.tres")
+	var card := load("res://data/cards/bricks_medium_wall.tres")
 
 	screen._apply_slot({"kind": "card", "card": card})
 
@@ -150,24 +150,24 @@ func test_unlocked_paths_excludes_locked_rare_cards() -> void:
 	var screen = RewardScreenScript.new()
 
 	var filtered := screen._unlocked_paths(
-		["res://data/cards/gem_10.tres", "res://data/cards/brick_1.tres"]
+		["res://data/cards/gems_armageddon.tres", "res://data/cards/bricks_quarry.tres"]
 	)
 
-	assert_eq(filtered, ["res://data/cards/brick_1.tres"])
+	assert_eq(filtered, ["res://data/cards/bricks_quarry.tres"])
 
 	screen.free()
 
 
 func test_unlocked_paths_includes_rare_card_once_unlocked() -> void:
 	var screen = RewardScreenScript.new()
-	ProfileManager.profile["unlocked_cards"] = ["res://data/cards/gem_10.tres"]
+	ProfileManager.profile["unlocked_cards"] = ["res://data/cards/gems_armageddon.tres"]
 
 	var filtered := screen._unlocked_paths(
-		["res://data/cards/gem_10.tres", "res://data/cards/brick_1.tres"]
+		["res://data/cards/gems_armageddon.tres", "res://data/cards/bricks_quarry.tres"]
 	)
 
 	assert_eq(filtered.size(), 2)
-	assert_true(filtered.has("res://data/cards/gem_10.tres"))
+	assert_true(filtered.has("res://data/cards/gems_armageddon.tres"))
 
 	screen.free()
 
