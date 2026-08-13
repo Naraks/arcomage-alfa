@@ -8,8 +8,12 @@
 
 ### core/
 
-- `entities/card/card.gd:38-45` — `_gui_input` обращается к `card_data.card_name` без null-проверки,
-  хотя в соседнем `_on_mouse_entered` (строка 74) такая проверка есть.
+- ~~`entities/card/card.gd:38-45` — `_gui_input` обращается к `card_data.card_name` без null-проверки,
+  хотя в соседнем `_on_mouse_entered` (строка 74) такая проверка есть.~~ **Исправлено.** `_gui_input`
+  теперь выходит сразу, если `card_data` не задан, — до обращения к `card_data.card_name` и до эмита
+  `card_clicked`/`card_right_clicked`. Карта без данных теперь просто не реагирует на клики, а не падает
+  и не рассылает сигналы с бессмысленным состоянием, которые всё равно упали бы у подписчиков
+  (`battle_screen.gd` сразу читает `card_node.card_data.card_name`).
 
 ### ui/
 

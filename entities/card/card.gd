@@ -37,6 +37,8 @@ func _ready() -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
+	if not card_data:
+		return
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			print("[DEBUG] Card node _gui_input left clicked: ", card_data.card_name)
