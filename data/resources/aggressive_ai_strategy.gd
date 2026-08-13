@@ -6,7 +6,7 @@ extends "res://data/resources/ai_strategy.gd"
 func _score_effect(effect: EffectData, player_actor: PlayerData, player_enemy: PlayerData) -> float:
 	var type := effect.type
 	var value := effect.value
-	var priority = 0.0
+	var priority: float = 0.0
 
 	if type == "damage" or type == "direct_damage":
 		priority += value * max(2.5, 200.0 / max(1.0, player_enemy.tower_hp))

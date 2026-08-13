@@ -6,7 +6,7 @@ extends "res://data/resources/ai_strategy.gd"
 func _score_effect(effect: EffectData, player_actor: PlayerData, player_enemy: PlayerData) -> float:
 	var type := effect.type
 	var value := effect.value
-	var priority = 0.0
+	var priority: float = 0.0
 
 	if type == "mod_magic":
 		priority += value * 8.0
