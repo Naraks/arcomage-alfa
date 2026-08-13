@@ -400,38 +400,38 @@ func _apply_effect(effect: EffectData, actor: PlayerData, enemy: PlayerData) -> 
 	var target_player = resolve_target(actor, enemy, effect.target)
 
 	match type:
-		EffectType.DAMAGE:
+		EffectType.Type.DAMAGE:
 			apply_damage(value, target_player, false, actor)
-		EffectType.DIRECT_DAMAGE:
+		EffectType.Type.DIRECT_DAMAGE:
 			apply_damage(value, target_player, true, actor)
-		EffectType.BUILD_WALL:
+		EffectType.Type.BUILD_WALL:
 			target_player.wall_hp += value
 			GameEvents.value_built.emit(target_player, value, "wall")
-		EffectType.BUILD_TOWER:
+		EffectType.Type.BUILD_TOWER:
 			target_player.tower_hp += value
 			GameEvents.value_built.emit(target_player, value, "tower")
-		EffectType.MOD_QUARRY:
+		EffectType.Type.MOD_QUARRY:
 			target_player.quarry = max(0, target_player.quarry + value)
-		EffectType.MOD_MAGIC:
+		EffectType.Type.MOD_MAGIC:
 			target_player.magic = max(0, target_player.magic + value)
-		EffectType.MOD_DUNGEON:
+		EffectType.Type.MOD_DUNGEON:
 			target_player.dungeon = max(0, target_player.dungeon + value)
-		EffectType.DRAW_CARD:
+		EffectType.Type.DRAW_CARD:
 			for i in range(value):
 				draw_card(target_player)
-		EffectType.STEAL_RESOURCE:
+		EffectType.Type.STEAL_RESOURCE:
 			_apply_steal_resource(effect, target_player, actor)
-		EffectType.CONDITIONAL:
+		EffectType.Type.CONDITIONAL:
 			var branch: EffectData = EffectUtils.resolve_conditional_branch(effect, actor, enemy)
 			if branch:
 				_apply_effect(branch, actor, enemy)
-		EffectType.GAIN_RESOURCE:
+		EffectType.Type.GAIN_RESOURCE:
 			_modify_resource(target_player, effect.resource, value)
-		EffectType.DRAIN_RESOURCE:
+		EffectType.Type.DRAIN_RESOURCE:
 			var drain_amount: int = min(value, _get_resource(target_player, effect.resource))
 			if drain_amount > 0:
 				_modify_resource(target_player, effect.resource, -drain_amount)
-		EffectType.REDUCE_WALL:
+		EffectType.Type.REDUCE_WALL:
 			target_player.wall_hp = max(0, target_player.wall_hp - value)
 		_:
 			push_warning("MatchManager: неизвестный тип эффекта карты '%s'" % type)

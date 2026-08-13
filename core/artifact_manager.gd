@@ -51,31 +51,31 @@ func apply_artifact_effect(
 	var value := effect.value
 
 	match type:
-		EffectType.MOD_QUARRY:
+		EffectType.Type.MOD_QUARRY:
 			player.quarry += value
-		EffectType.MOD_MAGIC:
+		EffectType.Type.MOD_MAGIC:
 			player.magic += value
-		EffectType.MOD_DUNGEON:
+		EffectType.Type.MOD_DUNGEON:
 			player.dungeon += value
-		EffectType.BUILD_WALL:
+		EffectType.Type.BUILD_WALL:
 			player.wall_hp += value
 			GameEvents.value_built.emit(player, value, "wall")
-		EffectType.BUILD_TOWER:
+		EffectType.Type.BUILD_TOWER:
 			player.tower_hp += value
 			GameEvents.value_built.emit(player, value, "tower")
-		EffectType.GAIN_RESOURCE:
+		EffectType.Type.GAIN_RESOURCE:
 			if effect.requires_card_type != -1:
 				var played_card = context.get("card")
 				if not played_card or played_card.type != effect.requires_card_type:
 					return
 			_modify_resource(player, effect.resource, value)
-		EffectType.SET_GENERATOR_LEVEL:
+		EffectType.Type.SET_GENERATOR_LEVEL:
 			player.quarry = max(player.quarry, value)
 			player.magic = max(player.magic, value)
 			player.dungeon = max(player.dungeon, value)
-		EffectType.SET_MAX_HAND_SIZE:
+		EffectType.Type.SET_MAX_HAND_SIZE:
 			player.max_hand_size = max(player.max_hand_size, value)
-		EffectType.REFLECT_DAMAGE:
+		EffectType.Type.REFLECT_DAMAGE:
 			if not context.get("hit_wall", false):
 				return
 			var attacker := context.get("attacker") as PlayerData
@@ -98,7 +98,7 @@ func _modify_resource(player: PlayerData, resource_name: String, delta: int) -> 
 func should_skip_payment(player: PlayerData) -> bool:
 	for artifact in player.active_artifacts:
 		for effect in artifact.effects:
-			if effect.trigger == "pre_play" and effect.type == EffectType.SKIP_PAYMENT_CHANCE:
+			if effect.trigger == "pre_play" and effect.type == EffectType.Type.SKIP_PAYMENT_CHANCE:
 				if randf() < effect.chance:
 					GameEvents.artifact_triggered.emit(artifact, player)
 					return true
