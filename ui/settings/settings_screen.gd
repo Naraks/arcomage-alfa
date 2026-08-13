@@ -4,8 +4,6 @@ extends Control
 const MIN_TOUCH_TARGET := 44.0
 const PANEL_MAX_WIDTH := 1040.0
 
-## Код локали -> ключ локализации её отображаемого названия в списке выбора.
-## См. docs/localization_guide.md про добавление нового языка.
 const LOCALE_LABELS := {
 	"ru": "UI_SETTINGS_LANGUAGE_RU",
 	"en": "UI_SETTINGS_LANGUAGE_EN",
@@ -76,7 +74,9 @@ func _build_ui() -> void:
 		_build_empty_section(tr("UI_SETTINGS_GAME_SECTION"), tr("UI_SETTINGS_GAME_EMPTY"))
 	)
 	content.add_child(
-		_build_empty_section(tr("UI_SETTINGS_ACCESSIBILITY_SECTION"), tr("UI_SETTINGS_ACCESSIBILITY_EMPTY"))
+		_build_empty_section(
+			tr("UI_SETTINGS_ACCESSIBILITY_SECTION"), tr("UI_SETTINGS_ACCESSIBILITY_EMPTY")
+		)
 	)
 	content.add_child(_build_reset_section())
 

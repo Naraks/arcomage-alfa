@@ -1,9 +1,6 @@
 extends Control
 ## Иллюстрация случайного события.
 
-## Ключ — стабильный ключ локализации event_title (см. data/events/*.tres и
-## docs/localization_guide.md), а не переведённый текст: иллюстрация не должна
-## зависеть от текущей локали.
 const EVENT_ART_PATHS := {
 	"EVENT_ABANDONED_WAREHOUSE_TITLE": "res://assets/events/abandoned_warehouse.png",
 	"EVENT_ANCIENT_ALTAR_TITLE": "res://assets/events/ancient_altar.png",
@@ -26,9 +23,6 @@ var _event_title_key := "EVENT_MOON_WELL_TITLE"
 var _art_texture: Texture2D
 
 
-## event_title_key — сырой ключ локализации (EventData.event_title), НЕ
-## переведённый текст: используется и для подбора арта, и как seed
-## процедурного фона, чтобы оба были стабильны независимо от локали.
 func configure(event_title_key: String) -> void:
 	_event_title_key = event_title_key
 	_art_texture = null

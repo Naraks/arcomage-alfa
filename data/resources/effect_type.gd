@@ -1,8 +1,5 @@
 class_name EffectType
 extends RefCounted
-## Тип эффекта EffectData.type — typed enum вместо строковых ключей, чтобы
-## опечатка ловилась компилятором/выпадающим списком в редакторе, а не тихо
-## проваливалась в ветку "неизвестный тип эффекта" в рантайме.
 
 enum Type {
 	NONE = 0,
@@ -27,9 +24,6 @@ enum Type {
 
 const MOD_TYPES := [Type.MOD_QUARRY, Type.MOD_MAGIC, Type.MOD_DUNGEON]
 
-## Типы, допустимые для эффектов карт (CardData.effects) — зеркалит ветки
-## match в MatchManager._apply_effect(). Артефактные типы (SET_GENERATOR_LEVEL,
-## SET_MAX_HAND_SIZE, REFLECT_DAMAGE, SKIP_PAYMENT_CHANCE) сюда не входят.
 const CARD_TYPES := [
 	Type.DAMAGE,
 	Type.DIRECT_DAMAGE,
@@ -67,8 +61,6 @@ const _FROM_STRING := {
 }
 
 
-## Преобразует старый строковый ключ (из тестового Dictionary-формата) в Type.
-## Используется только EffectData.from_dict() — .tres-файлы хранят уже typed enum.
 static func from_string(key: String) -> Type:
 	if not _FROM_STRING.has(key):
 		push_warning("EffectType.from_string: неизвестный строковый ключ типа эффекта '%s'" % key)

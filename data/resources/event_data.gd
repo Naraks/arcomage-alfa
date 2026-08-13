@@ -8,9 +8,6 @@ extends Resource
 @export var options: Array[Dictionary] = []
 
 
-## event_title/event_description и options[]["text"]/outcomes[]["result_text"]
-## хранят стабильные ключи локализации, не текст для показа напрямую — см.
-## docs/localization_guide.md.
 func get_display_title() -> String:
 	return tr(event_title)
 

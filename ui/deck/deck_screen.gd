@@ -53,11 +53,6 @@ func _build_ui() -> void:
 	_refresh(_resolve_deck_to_show())
 
 
-## Не просто геттер: при отсутствии активного забега в памяти подгружает его с
-## диска (RunSaveManager.load_run() перезаписывает MatchSettings.*) — но только
-## тогда, когда живого состояния ещё нет, чтобы не затереть несохранённый
-## прогресс уже идущего забега (например, покупки в магазине ещё не
-## сброшены на диск на момент открытия вкладки колоды в профиле).
 func _resolve_deck_to_show() -> Array[CardData]:
 	if MatchSettings.world_map_data != null:
 		_source_label.text = tr("UI_DECK_SOURCE_RUN")

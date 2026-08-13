@@ -14,7 +14,6 @@ const INK := Color("#101522")
 const TEXT_PRIMARY := Color("#f6f0e4")
 const TEXT_MUTED := Color("#b7b3ad")
 
-## Ключи локализации имён debug-стратегий ИИ (только debug-сборка, см. docs/localization_guide.md).
 const DEBUG_STRATEGY_NAME_KEYS := [
 	"UI_MAIN_MENU_DEBUG_STRATEGY_BALANCED",
 	"UI_MAIN_MENU_DEBUG_STRATEGY_AGGRESSIVE",

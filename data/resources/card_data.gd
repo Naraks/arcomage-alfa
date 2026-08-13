@@ -20,9 +20,6 @@ enum Rarity { COMMON, UNCOMMON, RARE }
 @export var effects: Array[EffectData] = []
 
 
-## card_name/description хранят стабильные ключи локализации (см.
-## docs/localization_guide.md), а не текст для показа игроку напрямую —
-## отображать нужно через эти геттеры.
 func get_display_name() -> String:
 	return tr(card_name)
 

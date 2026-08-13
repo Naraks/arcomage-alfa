@@ -6,8 +6,6 @@ enum NodeState { CURRENT, AVAILABLE, COMPLETED, LOCKED }
 const WorldMapData = preload("res://data/resources/world_map_data.gd")
 const MapNodeData = preload("res://data/resources/map_node_data.gd")
 
-## "title"/"preview" здесь — ключи локализации (см. docs/localization_guide.md),
-## переводятся через tr() в местах использования, не читаются напрямую.
 const NODE_PRESENTATION := {
 	MapNodeData.NodeType.BATTLE:
 	{

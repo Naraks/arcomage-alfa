@@ -2,15 +2,10 @@ extends Node
 ## Мета-прогрессия, настройки и сохранение профиля.
 
 const DEFAULT_LOCALE := "ru"
-## "locale" сознательно не входит в DEFAULT_SETTINGS: reset_settings() должен
-## сбрасывать только громкость (см. UI_SETTINGS_RESET_SUMMARY), а не менять
-## выбранный игроком язык.
 const DEFAULT_SETTINGS := {"volume": 1.0}
 const RARE_CARD_UNLOCK_COST := 150
 const SAVE_VERSION := 1
 
-## "name"/"desc" здесь — ключи локализации (см. docs/localization_guide.md), не
-## текст для показа напрямую; в UI используются через tr().
 const UPGRADE_CATALOG := {
 	"tower":
 	{
@@ -199,9 +194,6 @@ func get_locale() -> String:
 	return String(profile.get("settings", {}).get("locale", DEFAULT_LOCALE))
 
 
-## Применяется мгновенно (TranslationServer.set_locale) и сохраняется в
-## профиль — на следующем запуске игра стартует уже в выбранной локали.
-## См. docs/localization_guide.md про доступные коды локалей.
 func set_locale(code: String) -> void:
 	var settings: Dictionary = profile.get("settings", {})
 	settings["locale"] = code
@@ -256,13 +248,15 @@ func load_profile() -> void:
 	if error != OK:
 		push_error(
 			(
-				"ProfileManager: сохранение повреждено, не удалось разобрать JSON (строка %d: %s) — профиль не загружен"
-				% [json.get_error_line(), json.get_error_message()]
+				"ProfileManager: сохранение повреждено, не удалось разобрать JSON (строка %d: %s) — "
+				+ "профиль не загружен" % [json.get_error_line(), json.get_error_message()]
 			)
 		)
 		return
 	if not (json.data is Dictionary):
-		push_error("ProfileManager: сохранение повреждено — ожидался Dictionary, профиль не загружен")
+		push_error(
+			"ProfileManager: сохранение повреждено — ожидался Dictionary, профиль не загружен"
+		)
 		return
 	profile = _restore_int_types(json.data)
 

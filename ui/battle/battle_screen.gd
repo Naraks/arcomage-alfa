@@ -14,9 +14,6 @@ var e_wall_visuals: VBoxContainer
 var p_tower_visuals: VBoxContainer
 var p_wall_visuals: VBoxContainer
 
-## true пока идёт анимация розыгрыша карты — блокирует клики по всей руке,
-## а не только по анимируемой карте, чтобы нельзя было запустить параллельный
-## play_card_by_index вторым кликом во время анимации первой карты.
 var _card_play_in_progress := false
 
 @onready var p_tower_bar: ProgressBar = %PlayerTowerBar
@@ -146,7 +143,9 @@ func _on_match_ended(winner: PlayerData) -> void:
 			MatchSettings.current_map_node != null
 			and MatchSettings.current_map_node.node_type == MapNodeData.NodeType.BOSS
 		)
-		button.text = tr("UI_BATTLE_RUN_SUMMARY") if is_boss_defeat else tr("UI_BATTLE_RETURN_TO_MAP")
+		button.text = (
+			tr("UI_BATTLE_RUN_SUMMARY") if is_boss_defeat else tr("UI_BATTLE_RETURN_TO_MAP")
+		)
 		button.pressed.connect(
 			func():
 				MatchSettings.came_from_map = false
@@ -171,7 +170,9 @@ func _on_match_ended(winner: PlayerData) -> void:
 
 
 func _on_deck_pile_pressed() -> void:
-	_show_card_list_popup(tr("UI_BATTLE_DECK_POPUP_TITLE") % MatchManager.deck.size(), MatchManager.deck)
+	_show_card_list_popup(
+		tr("UI_BATTLE_DECK_POPUP_TITLE") % MatchManager.deck.size(), MatchManager.deck
+	)
 
 
 func _show_card_list_popup(title_text: String, cards: Array) -> void:

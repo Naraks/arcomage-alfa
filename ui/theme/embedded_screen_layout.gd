@@ -1,15 +1,10 @@
 class_name EmbeddedScreenLayout
 extends RefCounted
-## Общая "оболочка" экранов, которые могут открываться как отдельная сцена
-## или как встроенная вкладка профиля (embedded_in_profile): фон и отступы
-## раньше дублировались в deck/meta_shop/stats screens по отдельности.
 
 const EMBEDDED_MARGIN := 12
 const STANDALONE_MARGIN := 24
 
-## Настраивает anchors корневого Control, добавляет фон (кроме embedded-режима)
-## и возвращает MarginContainer с уже выставленными отступами, куда экран
-## должен добавить остальное содержимое.
+
 static func build_shell(control: Control, embedded_in_profile: bool) -> MarginContainer:
 	control.set_anchors_preset(Control.PRESET_FULL_RECT)
 
