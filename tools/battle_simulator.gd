@@ -75,7 +75,7 @@ func _build_full_card_pool() -> Array[CardData]:
 	return pool
 
 
-func _on_card_played(card: CardData, player: Resource) -> void:
+func _on_card_played(card: CardData, player: PlayerData) -> void:
 	var side := "a" if player == MatchManager.player_data else "b"
 	_game_card_plays.append({"name": card.card_name, "side": side})
 

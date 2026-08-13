@@ -70,8 +70,20 @@
 
 ## Стиль / типизация
 
-- Сигналы в `core/game_events.gd` типизированы как `Resource`, хотя фактически всегда передаётся
-  `PlayerData`.
+- ~~Сигналы в `core/game_events.gd` типизированы как `Resource`, хотя фактически всегда передаётся
+  `PlayerData`.~~ **Исправлено.** Все 9 сигналов (`card_played`, `turn_started`, `turn_ended`,
+  `damage_applied`, `value_built`, `resource_changed`, `match_started`, `match_ended`,
+  `artifact_triggered`) перетипизированы с `Resource` на `PlayerData`. Обновлены 5 обработчиков, которые
+  раньше принимали `Resource`: `tools/battle_simulator.gd::_on_card_played`,
+  `core/artifact_manager.gd::_on_damage_taken` (заодно убран ставший избыточным `as PlayerData` —
+  проверка типа теперь на уровне сигнала), `ui/battle/battle_screen.gd::_on_damage_applied`/
+  `_on_value_built`, `core/profile_manager.gd::_on_match_ended`. `damage_applied.source` остался
+  нулабельным (`PlayerData` без значения по умолчанию у сигналов не бывает, но `null` по-прежнему валиден
+  для типа `Object`/`Resource`-наследника) — `MatchManager.apply_damage()` вызывается без `source` при
+  отражённом уроне. `turn_ended` как был не подключен нигде (мёртвый сигнал), так и остался — не входило
+  в рамки этой правки. `AIStrategy`/`BossAIStrategy` (`data/resources/ai_strategy.gd`,
+  `boss_ai_strategy.gd`) и `ui/map/world_map_screen.gd` не трогал — их `Resource`-параметры не связаны с
+  `GameEvents`.
 - Поле `seed` в `world_map_data.gd` затеняет одноимённую встроенную функцию/поле движка — стоит
   переименовать (например, в `map_seed`).
 - В `ui/`: хардкод русскоязычных строк интерфейса без вынесения в константы (не критично для

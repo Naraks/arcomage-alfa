@@ -286,7 +286,7 @@ func _has_playable_card() -> bool:
 	return false
 
 
-func _on_damage_applied(_target: Resource, _amount: int, _hit_wall: bool) -> void:
+func _on_damage_applied(_target: PlayerData, _amount: int, _hit_wall: bool) -> void:
 	update_all_ui()
 	var original_position = position
 	var tween = create_tween()
@@ -295,7 +295,7 @@ func _on_damage_applied(_target: Resource, _amount: int, _hit_wall: bool) -> voi
 	tween.tween_property(self, "position", original_position, 0.05)
 
 
-func _on_value_built(_target: Resource, _amount: int, _part: String) -> void:
+func _on_value_built(_target: PlayerData, _amount: int, _part: String) -> void:
 	update_all_ui()
 
 

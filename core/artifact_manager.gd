@@ -24,14 +24,15 @@ func _on_match_started(player: PlayerData, enemy: PlayerData) -> void:
 	_check_artifacts(enemy, "match_started")
 
 
-func _on_damage_taken(target: Resource, amount: int, hit_wall: bool, source: Resource) -> void:
+func _on_damage_taken(
+	target: PlayerData, amount: int, hit_wall: bool, source: PlayerData
+) -> void:
 	if _reflecting:
 		return
-	var player_target := target as PlayerData
-	if not player_target:
+	if not target:
 		return
 	_check_artifacts(
-		player_target,
+		target,
 		"on_damage_taken",
 		{"amount": amount, "hit_wall": hit_wall, "attacker": source}
 	)

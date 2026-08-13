@@ -79,7 +79,7 @@ func _ready() -> void:
 	GameEvents.match_ended.connect(_on_match_ended)
 
 
-func _on_match_ended(_winner: Resource) -> void:
+func _on_match_ended(_winner: PlayerData) -> void:
 	if not MatchManager.player_data:
 		return
 	var height: int = MatchManager.player_data.tower_hp
