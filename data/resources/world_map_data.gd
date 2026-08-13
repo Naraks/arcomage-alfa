@@ -7,6 +7,6 @@ extends Resource
 
 @export var floor_count: int = 0
 
-@export var seed: int = 0
+@export var map_seed: int = 0
 
 @export var event_draw_pile: Array[String] = []

@@ -53,7 +53,7 @@ static func generate_map(seed_value: int) -> Resource:
 
 	var map := WorldMapData.new()
 	map.floor_count = floor_count
-	map.seed = seed_value
+	map.map_seed = seed_value
 	map.current_node_index = -1
 	for floor_nodes in floors:
 		for node in floor_nodes:
