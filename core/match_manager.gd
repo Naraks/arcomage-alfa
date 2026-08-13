@@ -326,6 +326,11 @@ func play_card_by_index(index: int, actor: PlayerData) -> void:
 	if current_state != State.PLAYER_TURN and current_state != State.AI_TURN:
 		return
 
+	if current_state == State.PLAYER_TURN and actor != player_data:
+		return
+	if current_state == State.AI_TURN and actor != enemy_data:
+		return
+
 	var hand = player_hand if actor == player_data else enemy_hand
 	if index < 0 or index >= hand.size():
 		return

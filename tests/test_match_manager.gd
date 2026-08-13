@@ -133,6 +133,13 @@ func test_play_card_by_index_blocked_outside_turn_states() -> void:
 	assert_eq(MatchManager.player_hand.size(), 1, "Вне PLAYER_TURN/AI_TURN карту разыграть нельзя")
 
 
+func test_play_card_by_index_blocked_for_wrong_actor_on_player_turn() -> void:
+	var card := TestFixtures.make_card(1, CardData.ResourceType.BRICKS)
+	MatchManager.enemy_hand = [card]
+	MatchManager.play_card_by_index(0, enemy)
+	assert_eq(MatchManager.enemy_hand.size(), 1, "На ходу игрока ИИ не может разыгрывать карты")
+
+
 func test_play_card_by_index_applies_direct_damage_effect() -> void:
 	var card := TestFixtures.make_card(
 		1, CardData.ResourceType.BRICKS, [{"type": "direct_damage", "value": 4, "target": "enemy"}]
