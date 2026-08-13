@@ -8,25 +8,25 @@ func _score_effect(effect: EffectData, player_actor: PlayerData, player_enemy: P
 	var value := effect.value
 	var priority: float = 0.0
 
-	if type == "damage" or type == "direct_damage":
+	if type == EffectType.DAMAGE or type == EffectType.DIRECT_DAMAGE:
 		priority += value * max(2.5, 200.0 / max(1.0, player_enemy.tower_hp))
 
-	if type == "build_wall":
+	if type == EffectType.BUILD_WALL:
 		priority += value * 0.5 * (1.0 - (player_actor.wall_hp / 100.0))
 
-	if "add_" in type or "mod_" in type:
+	if EffectType.ADD_PREFIX in type or EffectType.MOD_PREFIX in type:
 		priority += value * 0.5
 
-	if type == "reduce_wall":
+	if type == EffectType.REDUCE_WALL:
 		priority += value * 1.5
 
-	if type == "steal_resource" or type == "drain_resource":
+	if type == EffectType.STEAL_RESOURCE or type == EffectType.DRAIN_RESOURCE:
 		priority += value * 1.5
 
-	if type == "gain_resource" or type == "draw_card":
+	if type == EffectType.GAIN_RESOURCE or type == EffectType.DRAW_CARD:
 		priority += value * 1.0
 
-	if type == "conditional":
+	if type == EffectType.CONDITIONAL:
 		var branch: EffectData = resolve_conditional_branch(effect, player_actor, player_enemy)
 		if branch:
 			priority += _score_effect(branch, player_actor, player_enemy)

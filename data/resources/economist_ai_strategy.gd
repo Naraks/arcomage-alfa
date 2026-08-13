@@ -8,33 +8,33 @@ func _score_effect(effect: EffectData, player_actor: PlayerData, player_enemy: P
 	var value := effect.value
 	var priority: float = 0.0
 
-	if type == "mod_magic":
+	if type == EffectType.MOD_MAGIC:
 		priority += value * 8.0
 
-	elif type == "steal_resource" or type == "drain_resource":
+	elif type == EffectType.STEAL_RESOURCE or type == EffectType.DRAIN_RESOURCE:
 		priority += value * 6.0
 
-	elif type == "gain_resource":
+	elif type == EffectType.GAIN_RESOURCE:
 		priority += value * 5.0
 
-	elif type == "draw_card":
+	elif type == EffectType.DRAW_CARD:
 		priority += value * 4.0
 
-	elif type == "mod_quarry" or type == "mod_dungeon":
+	elif type == EffectType.MOD_QUARRY or type == EffectType.MOD_DUNGEON:
 		priority += value * 1.0
 
-	elif type == "build_wall":
+	elif type == EffectType.BUILD_WALL:
 		priority += value * (1.0 - (player_actor.wall_hp / 50.0))
 
-	elif type == "damage" or type == "direct_damage":
+	elif type == EffectType.DAMAGE or type == EffectType.DIRECT_DAMAGE:
 		priority += value * 0.3 * (100.0 / max(1.0, player_enemy.tower_hp))
-	elif type == "build_tower":
+	elif type == EffectType.BUILD_TOWER:
 		priority += value * 0.5
 
-	elif type == "reduce_wall":
+	elif type == EffectType.REDUCE_WALL:
 		priority += value * 0.3
 
-	elif type == "conditional":
+	elif type == EffectType.CONDITIONAL:
 		var branch: EffectData = resolve_conditional_branch(effect, player_actor, player_enemy)
 		if branch:
 			priority += _score_effect(branch, player_actor, player_enemy)

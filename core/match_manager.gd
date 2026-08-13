@@ -400,38 +400,38 @@ func _apply_effect(effect: EffectData, actor: PlayerData, enemy: PlayerData) -> 
 	var target_player = resolve_target(actor, enemy, effect.target)
 
 	match type:
-		"damage":
+		EffectType.DAMAGE:
 			apply_damage(value, target_player, false, actor)
-		"direct_damage":
+		EffectType.DIRECT_DAMAGE:
 			apply_damage(value, target_player, true, actor)
-		"build_wall":
+		EffectType.BUILD_WALL:
 			target_player.wall_hp += value
 			GameEvents.value_built.emit(target_player, value, "wall")
-		"build_tower":
+		EffectType.BUILD_TOWER:
 			target_player.tower_hp += value
 			GameEvents.value_built.emit(target_player, value, "tower")
-		"mod_quarry":
+		EffectType.MOD_QUARRY:
 			target_player.quarry = max(0, target_player.quarry + value)
-		"mod_magic":
+		EffectType.MOD_MAGIC:
 			target_player.magic = max(0, target_player.magic + value)
-		"mod_dungeon":
+		EffectType.MOD_DUNGEON:
 			target_player.dungeon = max(0, target_player.dungeon + value)
-		"draw_card":
+		EffectType.DRAW_CARD:
 			for i in range(value):
 				draw_card(target_player)
-		"steal_resource":
+		EffectType.STEAL_RESOURCE:
 			_apply_steal_resource(effect, target_player, actor)
-		"conditional":
+		EffectType.CONDITIONAL:
 			var branch: EffectData = EffectUtils.resolve_conditional_branch(effect, actor, enemy)
 			if branch:
 				_apply_effect(branch, actor, enemy)
-		"gain_resource":
+		EffectType.GAIN_RESOURCE:
 			_modify_resource(target_player, effect.resource, value)
-		"drain_resource":
+		EffectType.DRAIN_RESOURCE:
 			var drain_amount: int = min(value, _get_resource(target_player, effect.resource))
 			if drain_amount > 0:
 				_modify_resource(target_player, effect.resource, -drain_amount)
-		"reduce_wall":
+		EffectType.REDUCE_WALL:
 			target_player.wall_hp = max(0, target_player.wall_hp - value)
 		_:
 			push_warning("MatchManager: неизвестный тип эффекта карты '%s'" % type)
