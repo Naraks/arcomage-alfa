@@ -107,8 +107,6 @@ const ALL_CARD_PATHS := [
 	"res://data/cards/beast_23.tres",
 ]
 
-const RESOURCE_NAMES := ["bricks", "gems", "beasts"]
-
 var current_state: State = State.START_MATCH
 var player_data: PlayerData
 var enemy_data: PlayerData
@@ -384,14 +382,7 @@ func discard_card_by_index(index: int, actor: PlayerData) -> void:
 
 
 func can_afford(card: CardData, actor: PlayerData) -> bool:
-	match card.type:
-		CardData.ResourceType.BRICKS:
-			return actor.bricks >= card.cost
-		CardData.ResourceType.GEMS:
-			return actor.gems >= card.cost
-		CardData.ResourceType.BEASTS:
-			return actor.beasts >= card.cost
-	return false
+	return EffectUtils.can_afford(card, actor)
 
 
 func apply_card_effects(card: CardData, actor: PlayerData) -> void:
@@ -434,7 +425,9 @@ func _apply_effect(effect: Dictionary, actor: PlayerData, enemy: PlayerData) -> 
 		"steal_resource":
 			_apply_steal_resource(effect, target_player, actor)
 		"conditional":
-			_apply_conditional(effect, target_player, actor, enemy)
+			var branch: Dictionary = EffectUtils.resolve_conditional_branch(effect, actor, enemy)
+			if not branch.is_empty():
+				_apply_effect(branch, actor, enemy)
 		"gain_resource":
 			_modify_resource(target_player, effect.get("resource", ""), value)
 		"drain_resource":
@@ -445,6 +438,8 @@ func _apply_effect(effect: Dictionary, actor: PlayerData, enemy: PlayerData) -> 
 				_modify_resource(target_player, effect.get("resource", ""), -drain_amount)
 		"reduce_wall":
 			target_player.wall_hp = max(0, target_player.wall_hp - value)
+		_:
+			push_warning("MatchManager: неизвестный тип эффекта карты '%s'" % type)
 
 
 func _apply_steal_resource(
@@ -452,7 +447,7 @@ func _apply_steal_resource(
 ) -> void:
 	var resource_name: String = effect.get("resource", "")
 	if resource_name == "random":
-		resource_name = RESOURCE_NAMES[randi() % RESOURCE_NAMES.size()]
+		resource_name = EffectUtils.RESOURCE_NAMES[randi() % EffectUtils.RESOURCE_NAMES.size()]
 	var value: int = effect.get("value", 0)
 	var amount: int = min(value, _get_resource(from_player, resource_name))
 	if amount <= 0:
@@ -462,76 +457,23 @@ func _apply_steal_resource(
 
 
 func _get_resource(player: PlayerData, resource_name: String) -> int:
-	match resource_name:
-		"bricks":
-			return player.bricks
-		"gems":
-			return player.gems
-		"beasts":
-			return player.beasts
-	return 0
+	return EffectUtils.get_resource(player, resource_name)
 
 
 func _modify_resource(player: PlayerData, resource_name: String, delta: int) -> void:
-	match resource_name:
-		"bricks":
-			player.bricks += delta
-		"gems":
-			player.gems += delta
-		"beasts":
-			player.beasts += delta
-
-
-func _apply_conditional(
-	effect: Dictionary, condition_target: PlayerData, actor: PlayerData, enemy: PlayerData
-) -> void:
-	var field: String = effect.get("field", "")
-	var op: String = effect.get("op", "<")
-	var threshold = effect.get("threshold", 0)
-
-	var field_value = _get_field(condition_target, field)
-	var branch_key: String = "then" if _evaluate_condition(field_value, op, threshold) else "else"
-	var branch: Dictionary = effect.get(branch_key, {})
-	if not branch.is_empty():
-		_apply_effect(branch, actor, enemy)
+	EffectUtils.modify_resource(player, resource_name, delta)
 
 
 func _get_field(player: PlayerData, field_name: String):
-	var fields := {
-		"wall_hp": player.wall_hp,
-		"tower_hp": player.tower_hp,
-		"bricks": player.bricks,
-		"gems": player.gems,
-		"beasts": player.beasts,
-		"quarry": player.quarry,
-		"magic": player.magic,
-		"dungeon": player.dungeon,
-	}
-	return fields.get(field_name, 0)
+	return EffectUtils.get_field(player, field_name)
 
 
 func _evaluate_condition(value, op: String, threshold) -> bool:
-	var result := false
-	match op:
-		"<":
-			result = value < threshold
-		"<=":
-			result = value <= threshold
-		">":
-			result = value > threshold
-		">=":
-			result = value >= threshold
-		"==":
-			result = value == threshold
-		"!=":
-			result = value != threshold
-	return result
+	return EffectUtils.evaluate_condition(value, op, threshold)
 
 
 func resolve_target(actor: PlayerData, enemy: PlayerData, target_str: String) -> PlayerData:
-	if target_str.begins_with("self"):
-		return actor
-	return enemy
+	return EffectUtils.resolve_target(actor, enemy, target_str)
 
 
 func apply_damage(

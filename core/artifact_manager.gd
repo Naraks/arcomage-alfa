@@ -1,8 +1,6 @@
 extends Node
 ## Применение эффектов артефактов по игровым событиям.
 
-const RESOURCE_NAMES := ["bricks", "gems", "beasts"]
-
 var _reflecting := false
 
 
@@ -85,6 +83,8 @@ func apply_artifact_effect(
 				_reflecting = true
 				MatchManager.apply_damage(value, attacker, true)
 				_reflecting = false
+		_:
+			push_warning("ArtifactManager: неизвестный тип эффекта артефакта '%s'" % type)
 
 	GameEvents.resource_changed.emit(player, "all", 0)
 
@@ -93,13 +93,7 @@ func apply_artifact_effect(
 
 
 func _modify_resource(player: PlayerData, resource_name: String, delta: int) -> void:
-	match resource_name:
-		"bricks":
-			player.bricks += delta
-		"gems":
-			player.gems += delta
-		"beasts":
-			player.beasts += delta
+	EffectUtils.modify_resource(player, resource_name, delta)
 
 
 func should_skip_payment(player: PlayerData) -> bool:

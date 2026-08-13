@@ -3,63 +3,56 @@ extends Resource
 ## Базовый интерфейс и общие оценки стратегий ИИ.
 
 
-func get_best_card(_hand: Array[CardData], _actor: Resource, _enemy: Resource) -> CardData:
-	return null
+func get_best_card(hand: Array[CardData], actor: Resource, enemy: Resource) -> CardData:
+	var player_actor: PlayerData = actor as PlayerData
+	var player_enemy: PlayerData = enemy as PlayerData
+	var affordable_cards: Array = hand.filter(func(c): return can_afford(c, player_actor))
+
+	if affordable_cards.is_empty():
+		return null
+
+	var best_card: CardData = null
+	var highest_weight := -9999.0
+
+	for card in affordable_cards:
+		var weight: float = calculate_card_priority(card, player_actor, player_enemy)
+		if weight > highest_weight:
+			highest_weight = weight
+			best_card = card
+
+	return best_card
+
+
+func calculate_card_priority(card: CardData, actor: Resource, enemy: Resource) -> float:
+	var player_actor: PlayerData = actor as PlayerData
+	var player_enemy: PlayerData = enemy as PlayerData
+	var priority: float = 0.0
+
+	for effect in card.effects:
+		priority += _score_effect(effect, player_actor, player_enemy)
+
+	return priority
+
+
+func _score_effect(_effect: Dictionary, _player_actor: PlayerData, _player_enemy: PlayerData) -> float:
+	return 0.0
 
 
 func can_afford(card: CardData, actor: Resource) -> bool:
-	match card.type:
-		CardData.ResourceType.BRICKS:
-			return actor.bricks >= card.cost
-		CardData.ResourceType.GEMS:
-			return actor.gems >= card.cost
-		CardData.ResourceType.BEASTS:
-			return actor.beasts >= card.cost
-	return false
+	return EffectUtils.can_afford(card, actor as PlayerData)
 
 
 func resolve_target(actor: Resource, enemy: Resource, target_str: String) -> Resource:
-	if target_str.begins_with("self"):
-		return actor
-	return enemy
+	return EffectUtils.resolve_target(actor as PlayerData, enemy as PlayerData, target_str)
 
 
 func _get_field(player: Resource, field_name: String):
-	var fields := {
-		"wall_hp": player.wall_hp,
-		"tower_hp": player.tower_hp,
-		"bricks": player.bricks,
-		"gems": player.gems,
-		"beasts": player.beasts,
-		"quarry": player.quarry,
-		"magic": player.magic,
-		"dungeon": player.dungeon,
-	}
-	return fields.get(field_name, 0)
+	return EffectUtils.get_field(player as PlayerData, field_name)
 
 
 func _evaluate_condition(value, op: String, threshold) -> bool:
-	var result := false
-	match op:
-		"<":
-			result = value < threshold
-		"<=":
-			result = value <= threshold
-		">":
-			result = value > threshold
-		">=":
-			result = value >= threshold
-		"==":
-			result = value == threshold
-		"!=":
-			result = value != threshold
-	return result
+	return EffectUtils.evaluate_condition(value, op, threshold)
 
 
 func resolve_conditional_branch(effect: Dictionary, actor: Resource, enemy: Resource) -> Dictionary:
-	var condition_target: Resource = resolve_target(actor, enemy, effect.get("target", "self"))
-	var field_value = _get_field(condition_target, effect.get("field", ""))
-	var op: String = effect.get("op", "<")
-	var threshold = effect.get("threshold", 0)
-	var branch_key: String = "then" if _evaluate_condition(field_value, op, threshold) else "else"
-	return effect.get(branch_key, {})
+	return EffectUtils.resolve_conditional_branch(effect, actor as PlayerData, enemy as PlayerData)
