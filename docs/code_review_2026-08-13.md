@@ -8,16 +8,6 @@
 
 ### core/
 
-- ~~`core/match_manager.gd:329` — `play_card_by_index` не проверяет, что `actor` соответствует текущей
-  стороне хода, в отличие от `discard_card_by_index` (там есть явная проверка на строках 371-374).
-  Асимметрия между двумя похожими публичными методами — можно разыграть карту не в свой ход.~~
-  **Исправлено.** В `play_card_by_index` добавлена та же проверка, что и в `discard_card_by_index`
-  (`current_state == PLAYER_TURN and actor != player_data` / `current_state == AI_TURN and actor !=
-  enemy_data` → `return`). Проверено, что инвариант «`_resolve_ai_turn(actor)` вызывается только с
-  `actor`, соответствующим текущему `current_state`» уже соблюдался и в `execute_ai_turn()`, и в
-  `tools/battle_simulator.gd` — новая проверка ничего не ломает. Добавлен тест
-  `test_play_card_by_index_blocked_for_wrong_actor_on_player_turn` по образцу уже существующего
-  `test_discard_card_by_index_blocked_for_wrong_actor_on_player_turn`.
 - `core/match_manager.gd:201-202` — `_build_generic_card_pool()`: если ни одна карта из
   `STARTER_DECK_CARD_PATHS` не загрузится, `pool` останется пустым, и `pool.pick_random()` в цикле
   `while pool.size() < 20` рухнет на пустом массиве.
