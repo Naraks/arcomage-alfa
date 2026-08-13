@@ -116,7 +116,7 @@ func _build_ui() -> void:
 	title.text = "ПРИВАЛ"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 30)
-	title.add_theme_color_override("font_color", Color(0.92, 0.76, 0.43))
+	title.add_theme_color_override("font_color", UIColors.GOLD)
 	root.add_child(title)
 
 	var subtitle := Label.new()

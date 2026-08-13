@@ -47,7 +47,7 @@ func _build_ui() -> void:
 	header.add_child(title)
 	_gold_label = Label.new()
 	_gold_label.add_theme_font_size_override("font_size", 22)
-	_gold_label.add_theme_color_override("font_color", Color("f1c75b"))
+	_gold_label.add_theme_color_override("font_color", UIColors.GOLD)
 	header.add_child(_gold_label)
 	_update_gold_label()
 
@@ -104,7 +104,7 @@ func _add_section_title(parent: Control, heading: String, explanation: String) -
 	var label := Label.new()
 	label.text = heading
 	label.add_theme_font_size_override("font_size", 20)
-	label.add_theme_color_override("font_color", Color("e3c87d"))
+	label.add_theme_color_override("font_color", UIColors.GOLD)
 	box.add_child(label)
 	var help := Label.new()
 	help.text = explanation

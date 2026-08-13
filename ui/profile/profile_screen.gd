@@ -72,14 +72,14 @@ func _build_shell() -> void:
 	var title := Label.new()
 	title.text = "ПРОФИЛЬ"
 	title.add_theme_font_size_override("font_size", 26)
-	title.add_theme_color_override("font_color", Color("f1cf7a"))
+	title.add_theme_color_override("font_color", UIColors.GOLD)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	primary_row.add_child(title)
 
 	_fame_label = Label.new()
 	_fame_label.add_theme_font_size_override("font_size", 20)
-	_fame_label.add_theme_color_override("font_color", Color("f1cf7a"))
+	_fame_label.add_theme_color_override("font_color", UIColors.GOLD)
 	_fame_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	primary_row.add_child(_fame_label)
 

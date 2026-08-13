@@ -57,7 +57,7 @@ func _build_ui() -> void:
 	title.text = "НАСТРОЙКИ"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 28)
-	title.add_theme_color_override("font_color", Color(0.96, 0.78, 0.35))
+	title.add_theme_color_override("font_color", UIColors.GOLD)
 	content.add_child(title)
 	content.add_child(_build_sound_section())
 	content.add_child(_build_empty_section("ИГРА", "Игровых параметров пока нет."))

@@ -58,7 +58,7 @@ func _build_ui() -> void:
 	var intro := Label.new()
 	intro.text = "ДЕРЕВО МАСТЕРСТВА"
 	intro.add_theme_font_size_override("font_size", 22)
-	intro.add_theme_color_override("font_color", Color("f1cf7a"))
+	intro.add_theme_color_override("font_color", UIColors.GOLD)
 	root_vbox.add_child(intro)
 
 	_feedback_label = Label.new()

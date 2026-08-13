@@ -12,8 +12,6 @@ const TITLE_FONT: FontFile = preload("res://fonts/YesevaOne-Regular.ttf")
 const GAME_TITLE := "Башни магов: Дуэль"
 const GAME_TITLE_PRIMARY := "БАШНИ МАГОВ"
 const GAME_TITLE_SECONDARY := "ДУЭЛЬ"
-const GOLD := Color("#f0bd55")
-const GOLD_HOVER := Color("#ffd77a")
 const INK := Color("#101522")
 const TEXT_PRIMARY := Color("#f6f0e4")
 const TEXT_MUTED := Color("#b7b3ad")
@@ -89,7 +87,7 @@ func _build_ui() -> void:
 
 	var eyebrow := Label.new()
 	eyebrow.text = "КАРТОЧНАЯ СТРАТЕГИЯ"
-	eyebrow.add_theme_color_override("font_color", GOLD)
+	eyebrow.add_theme_color_override("font_color", UIColors.GOLD)
 	eyebrow.add_theme_font_size_override("font_size", 13)
 	stack.add_child(eyebrow)
 
@@ -104,7 +102,7 @@ func _build_ui() -> void:
 	var title_suffix := Label.new()
 	title_suffix.name = "TitleSuffix"
 	title_suffix.text = GAME_TITLE_SECONDARY
-	title_suffix.add_theme_color_override("font_color", GOLD)
+	title_suffix.add_theme_color_override("font_color", UIColors.GOLD)
 	title_suffix.add_theme_font_size_override("font_size", 20)
 	stack.add_child(title_suffix)
 
@@ -306,10 +304,14 @@ func _button_style(background: Color, border: Color, border_width: int = 1) -> S
 
 func _apply_button_style(button: Button, primary: bool, quiet: bool = false) -> void:
 	if primary:
-		button.add_theme_stylebox_override("normal", _button_style(GOLD, GOLD, 1))
-		button.add_theme_stylebox_override("hover", _button_style(GOLD_HOVER, GOLD_HOVER, 1))
-		button.add_theme_stylebox_override("pressed", _button_style(Color("#d99b38"), GOLD, 1))
-		button.add_theme_stylebox_override("focus", _button_style(GOLD, Color.WHITE, 2))
+		button.add_theme_stylebox_override("normal", _button_style(UIColors.GOLD, UIColors.GOLD, 1))
+		button.add_theme_stylebox_override(
+			"hover", _button_style(UIColors.GOLD_HOVER, UIColors.GOLD_HOVER, 1)
+		)
+		button.add_theme_stylebox_override(
+			"pressed", _button_style(UIColors.GOLD_PRESSED, UIColors.GOLD, 1)
+		)
+		button.add_theme_stylebox_override("focus", _button_style(UIColors.GOLD, Color.WHITE, 2))
 		button.add_theme_color_override("font_color", INK)
 		button.add_theme_color_override("font_hover_color", INK)
 		button.add_theme_color_override("font_pressed_color", INK)
@@ -322,13 +324,13 @@ func _apply_button_style(button: Button, primary: bool, quiet: bool = false) -> 
 			_button_style(Color(0.10, 0.13, 0.20, alpha), Color(0.67, 0.62, 0.55, 0.42), 1)
 		)
 		button.add_theme_stylebox_override(
-			"hover", _button_style(Color(0.18, 0.21, 0.29, 0.96), GOLD, 1)
+			"hover", _button_style(Color(0.18, 0.21, 0.29, 0.96), UIColors.GOLD, 1)
 		)
 		button.add_theme_stylebox_override(
-			"pressed", _button_style(Color(0.07, 0.09, 0.15, 0.96), GOLD, 1)
+			"pressed", _button_style(Color(0.07, 0.09, 0.15, 0.96), UIColors.GOLD, 1)
 		)
 		button.add_theme_stylebox_override(
-			"focus", _button_style(Color(0.13, 0.16, 0.24, 0.96), GOLD, 2)
+			"focus", _button_style(Color(0.13, 0.16, 0.24, 0.96), UIColors.GOLD, 2)
 		)
 		button.add_theme_color_override("font_color", TEXT_PRIMARY)
 		button.add_theme_color_override("font_hover_color", Color.WHITE)

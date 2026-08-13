@@ -117,7 +117,7 @@ func _build_story_panel() -> PanelContainer:
 	var title := Label.new()
 	title.text = _event.event_title
 	title.add_theme_font_size_override("font_size", 30)
-	title.add_theme_color_override("font_color", Color(0.96, 0.79, 0.43))
+	title.add_theme_color_override("font_color", UIColors.GOLD)
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(title)
 
