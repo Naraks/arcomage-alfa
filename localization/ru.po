@@ -1,0 +1,1896 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: arcomage-alfa\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. context: card
+msgid "CARD_BEASTS_ALPHA_DEN_DESC"
+msgstr "Генератор Зверей +2, Стена +10."
+
+#. context: card
+msgid "CARD_BEASTS_ALPHA_DEN_NAME"
+msgstr "Логово альфы"
+
+#. context: card
+msgid "CARD_BEASTS_ANCIENTS_DEN_DESC"
+msgstr "Генератор Зверей +4, Стена +18."
+
+#. context: card
+msgid "CARD_BEASTS_ANCIENTS_DEN_NAME"
+msgstr "Логово древних"
+
+#. context: card
+msgid "CARD_BEASTS_ANCIENT_LEVIATHAN_DESC"
+msgstr "Наносит 10 урона башне врага (игнорирует стену)."
+
+#. context: card
+msgid "CARD_BEASTS_ANCIENT_LEVIATHAN_NAME"
+msgstr "Древний левиафан"
+
+#. context: card
+msgid "CARD_BEASTS_BEAST_FARM_DESC"
+msgstr "Генератор Зверей +2, наносит 4 урона."
+
+#. context: card
+msgid "CARD_BEASTS_BEAST_FARM_NAME"
+msgstr "Звериная ферма"
+
+#. context: card
+msgid "CARD_BEASTS_BEAST_KENNEL_DESC"
+msgstr "Генератор Зверей +3, Стена +6."
+
+#. context: card
+msgid "CARD_BEASTS_BEAST_KENNEL_NAME"
+msgstr "Звериный питомник"
+
+#. context: card
+msgid "CARD_BEASTS_DEFENSIVE_PACK_DESC"
+msgstr "Строит стену на 7."
+
+#. context: card
+msgid "CARD_BEASTS_DEFENSIVE_PACK_NAME"
+msgstr "Оборонительная стая"
+
+#. context: card
+msgid "CARD_BEASTS_DRAGON_DESC"
+msgstr "Наносит 9 урона башне врага (игнорирует стену). Стена врага -3."
+
+#. context: card
+msgid "CARD_BEASTS_DRAGON_NAME"
+msgstr "Дракон"
+
+#. context: card
+msgid "CARD_BEASTS_GOBLIN_DESC"
+msgstr "Наносит 2 урона врагу."
+
+#. context: card
+msgid "CARD_BEASTS_GOBLIN_NAME"
+msgstr "Гоблин"
+
+#. context: card
+msgid "CARD_BEASTS_GOLIATH_DESC"
+msgstr "Стена +18."
+
+#. context: card
+msgid "CARD_BEASTS_GOLIATH_NAME"
+msgstr "Голиаф"
+
+#. context: card
+msgid "CARD_BEASTS_GRIFFIN_DESC"
+msgstr "Наносит 9 урона врагу."
+
+#. context: card
+msgid "CARD_BEASTS_GRIFFIN_NAME"
+msgstr "Грифон"
+
+#. context: card
+msgid "CARD_BEASTS_GUARD_DESC"
+msgstr "Строит стену на 4."
+
+#. context: card
+msgid "CARD_BEASTS_GUARD_NAME"
+msgstr "Страж"
+
+#. context: card
+msgid "CARD_BEASTS_HUNTER_DESC"
+msgstr "Генератор Зверей +1, наносит 1 урон."
+
+#. context: card
+msgid "CARD_BEASTS_HUNTER_NAME"
+msgstr "Зверолов"
+
+#. context: card
+msgid "CARD_BEASTS_HUNTING_LODGE_DESC"
+msgstr "Генератор Зверей +1, Стена +3."
+
+#. context: card
+msgid "CARD_BEASTS_HUNTING_LODGE_NAME"
+msgstr "Охотничий отсек"
+
+#. context: card
+msgid "CARD_BEASTS_HYDRA_DESC"
+msgstr "Наносит 15 урона врагу. Стена врага -4."
+
+#. context: card
+msgid "CARD_BEASTS_HYDRA_NAME"
+msgstr "Гидра"
+
+#. context: card
+msgid "CARD_BEASTS_KNIGHT_DESC"
+msgstr "Наносит 5 урона противнику."
+
+#. context: card
+msgid "CARD_BEASTS_KNIGHT_NAME"
+msgstr "Рыцарь"
+
+#. context: card
+msgid "CARD_BEASTS_MILITIA_DESC"
+msgstr "Строит стену на 2."
+
+#. context: card
+msgid "CARD_BEASTS_MILITIA_NAME"
+msgstr "Ополчение"
+
+#. context: card
+msgid "CARD_BEASTS_ORC_DESC"
+msgstr "Наносит 8 урона врагу."
+
+#. context: card
+msgid "CARD_BEASTS_ORC_NAME"
+msgstr "Орк"
+
+#. context: card
+msgid "CARD_BEASTS_TAMING_DESC"
+msgstr "Тянете 1 карту."
+
+#. context: card
+msgid "CARD_BEASTS_TAMING_NAME"
+msgstr "Приручение"
+
+#. context: card
+msgid "CARD_BEASTS_TROLL_DESC"
+msgstr "Наносит 12 урона врагу."
+
+#. context: card
+msgid "CARD_BEASTS_TROLL_NAME"
+msgstr "Тролль"
+
+#. context: card
+msgid "CARD_BEASTS_VAMPIRE_DESC"
+msgstr "Наносит 6 урона врагу, ваша башня +3."
+
+#. context: card
+msgid "CARD_BEASTS_VAMPIRE_NAME"
+msgstr "Вампир"
+
+#. context: card
+msgid "CARD_BEASTS_WILD_HOUNDS_DESC"
+msgstr "Наносит 3 урона врагу, генератор Зверей врага -1."
+
+#. context: card
+msgid "CARD_BEASTS_WILD_HOUNDS_NAME"
+msgstr "Дикие гончие"
+
+#. context: card
+msgid "CARD_BEASTS_WOLF_PACK_DESC"
+msgstr "Наносит 6 урона стене врага."
+
+#. context: card
+msgid "CARD_BEASTS_WOLF_PACK_NAME"
+msgstr "Волчья стая"
+
+#. context: card
+msgid "CARD_BEASTS_WYVERN_DESC"
+msgstr "Наносит 8 урона башне врага (игнорирует стену)."
+
+#. context: card
+msgid "CARD_BEASTS_WYVERN_NAME"
+msgstr "Виверна"
+
+#. context: card
+msgid "CARD_BRICKS_BATTERING_RAM_DESC"
+msgstr "Наносит 2 урона врагу."
+
+#. context: card
+msgid "CARD_BRICKS_BATTERING_RAM_NAME"
+msgstr "Таран"
+
+#. context: card
+msgid "CARD_BRICKS_BRICK_FACTORY_DESC"
+msgstr "Генератор Кирпичей +1, Стена +3."
+
+#. context: card
+msgid "CARD_BRICKS_BRICK_FACTORY_NAME"
+msgstr "Кирпичный завод"
+
+#. context: card
+msgid "CARD_BRICKS_CATAPULT_DESC"
+msgstr "Наносит 7 урона врагу."
+
+#. context: card
+msgid "CARD_BRICKS_CATAPULT_NAME"
+msgstr "Катапульта"
+
+#. context: card
+msgid "CARD_BRICKS_CITY_SIEGE_DESC"
+msgstr "Наносит 11 урона врагу."
+
+#. context: card
+msgid "CARD_BRICKS_CITY_SIEGE_NAME"
+msgstr "Осада города"
+
+#. context: card
+msgid "CARD_BRICKS_DEEP_QUARRY_DESC"
+msgstr "Генератор Кирпичей +2, Стена +5."
+
+#. context: card
+msgid "CARD_BRICKS_DEEP_QUARRY_NAME"
+msgstr "Глубокий карьер"
+
+#. context: card
+msgid "CARD_BRICKS_DONJON_DESC"
+msgstr "Строит башню на 16."
+
+#. context: card
+msgid "CARD_BRICKS_DONJON_NAME"
+msgstr "Донжон"
+
+#. context: card
+msgid "CARD_BRICKS_DRILL_DESC"
+msgstr "Наносит 3 урона стене врага."
+
+#. context: card
+msgid "CARD_BRICKS_DRILL_NAME"
+msgstr "Бур"
+
+#. context: card
+msgid "CARD_BRICKS_DWARVEN_MINE_DESC"
+msgstr "Генератор Кирпичей +2, Башня +8."
+
+#. context: card
+msgid "CARD_BRICKS_DWARVEN_MINE_NAME"
+msgstr "Гномья шахта"
+
+#. context: card
+msgid "CARD_BRICKS_FORTIFICATION_DESC"
+msgstr "Строит стену на 8."
+
+#. context: card
+msgid "CARD_BRICKS_FORTIFICATION_NAME"
+msgstr "Укрепление"
+
+#. context: card
+msgid "CARD_BRICKS_FORTRESS_WALL_DESC"
+msgstr "Строит стену на 11."
+
+#. context: card
+msgid "CARD_BRICKS_FORTRESS_WALL_NAME"
+msgstr "Крепостная стена"
+
+#. context: card
+msgid "CARD_BRICKS_FOUNDATION_DESC"
+msgstr "Башня +2, Стена +1."
+
+#. context: card
+msgid "CARD_BRICKS_FOUNDATION_NAME"
+msgstr "Основание"
+
+#. context: card
+msgid "CARD_BRICKS_GREAT_BASTION_DESC"
+msgstr "Строит башню на 20."
+
+#. context: card
+msgid "CARD_BRICKS_GREAT_BASTION_NAME"
+msgstr "Великий бастион"
+
+#. context: card
+msgid "CARD_BRICKS_GREAT_WALL_DESC"
+msgstr "Строит стену на 16."
+
+#. context: card
+msgid "CARD_BRICKS_GREAT_WALL_NAME"
+msgstr "Великая стена"
+
+#. context: card
+msgid "CARD_BRICKS_IMPERIAL_QUARRY_DESC"
+msgstr "Генератор Кирпичей +3, Башня +16."
+
+#. context: card
+msgid "CARD_BRICKS_IMPERIAL_QUARRY_NAME"
+msgstr "Императорская каменоломня"
+
+#. context: card
+msgid "CARD_BRICKS_LARGE_BRICK_FACTORY_DESC"
+msgstr "Генератор Кирпичей +2, Башня +2."
+
+#. context: card
+msgid "CARD_BRICKS_LARGE_BRICK_FACTORY_NAME"
+msgstr "Большой кирпичный завод"
+
+#. context: card
+msgid "CARD_BRICKS_MEDIUM_WALL_DESC"
+msgstr "Строит стену на 7."
+
+#. context: card
+msgid "CARD_BRICKS_MEDIUM_WALL_NAME"
+msgstr "Средняя стена"
+
+#. context: card
+msgid "CARD_BRICKS_QUARRY_DESC"
+msgstr "Генератор Кирпичей +1, Стена +2."
+
+#. context: card
+msgid "CARD_BRICKS_QUARRY_NAME"
+msgstr "Каменоломня"
+
+#. context: card
+msgid "CARD_BRICKS_REPAIR_DESC"
+msgstr "Если Стена меньше 3 - Стена +3, иначе Стена +1."
+
+#. context: card
+msgid "CARD_BRICKS_REPAIR_NAME"
+msgstr "Ремонт"
+
+#. context: card
+msgid "CARD_BRICKS_RESERVES_DESC"
+msgstr "Если Стена меньше 5 - Стена +7, иначе Стена +3."
+
+#. context: card
+msgid "CARD_BRICKS_RESERVES_NAME"
+msgstr "Резервы"
+
+#. context: card
+msgid "CARD_BRICKS_SIEGE_ENGINE_DESC"
+msgstr "Наносит 5 урона стене врага."
+
+#. context: card
+msgid "CARD_BRICKS_SIEGE_ENGINE_NAME"
+msgstr "Осадное орудие"
+
+#. context: card
+msgid "CARD_BRICKS_SIEGE_TOWER_DESC"
+msgstr "Наносит 10 урона врагу."
+
+#. context: card
+msgid "CARD_BRICKS_SIEGE_TOWER_NAME"
+msgstr "Стенобитная башня"
+
+#. context: card
+msgid "CARD_BRICKS_WALL_DESC"
+msgstr "Увеличивает высоту вашей стены на 3 единицы."
+
+#. context: card
+msgid "CARD_BRICKS_WALL_NAME"
+msgstr "Стена"
+
+#. context: card
+msgid "CARD_GEMS_ABSOLUTE_CATACLYSM_DESC"
+msgstr "Наносит 9 урона башне врага (игнорирует стену)."
+
+#. context: card
+msgid "CARD_GEMS_ABSOLUTE_CATACLYSM_NAME"
+msgstr "Абсолютный катаклизм"
+
+#. context: card
+msgid "CARD_GEMS_APPRENTICE_MAGE_DESC"
+msgstr "Генератор Гемов +1, 1 урон башне врага."
+
+#. context: card
+msgid "CARD_GEMS_APPRENTICE_MAGE_NAME"
+msgstr "Маг-ученик"
+
+#. context: card
+msgid "CARD_GEMS_ARCHMAGE_DESC"
+msgstr "Генератор Гемов +2, 6 урона башне врага."
+
+#. context: card
+msgid "CARD_GEMS_ARCHMAGE_NAME"
+msgstr "Архимаг"
+
+#. context: card
+msgid "CARD_GEMS_ARCHMAGISTERIUM_DESC"
+msgstr "Генератор Гемов +3, 8 урона башне врага."
+
+#. context: card
+msgid "CARD_GEMS_ARCHMAGISTERIUM_NAME"
+msgstr "Архимагистериум"
+
+#. context: card
+msgid "CARD_GEMS_ARMAGEDDON_DESC"
+msgstr "Наносит 9 урона башне врага (игнорирует стену)."
+
+#. context: card
+msgid "CARD_GEMS_ARMAGEDDON_NAME"
+msgstr "Армагеддон"
+
+#. context: card
+msgid "CARD_GEMS_CLAIRVOYANCE_DESC"
+msgstr "Тянете 1 карту."
+
+#. context: card
+msgid "CARD_GEMS_CLAIRVOYANCE_NAME"
+msgstr "Ясновидение"
+
+#. context: card
+msgid "CARD_GEMS_CURSE_DESC"
+msgstr "Ресурсы врага -3 всех типов."
+
+#. context: card
+msgid "CARD_GEMS_CURSE_NAME"
+msgstr "Проклятие"
+
+#. context: card
+msgid "CARD_GEMS_DUNGEON_CORRUPTION_DESC"
+msgstr "Генератор Зверей врага -2."
+
+#. context: card
+msgid "CARD_GEMS_DUNGEON_CORRUPTION_NAME"
+msgstr "Порча Подземелья"
+
+#. context: card
+msgid "CARD_GEMS_ENERGY_SHIELD_DESC"
+msgstr "Строит стену на 5."
+
+#. context: card
+msgid "CARD_GEMS_ENERGY_SHIELD_NAME"
+msgstr "Энергетический щит"
+
+#. context: card
+msgid "CARD_GEMS_ESSENCE_THEFT_DESC"
+msgstr "Крадёт 4 Гема у врага."
+
+#. context: card
+msgid "CARD_GEMS_ESSENCE_THEFT_NAME"
+msgstr "Кража эссенции"
+
+#. context: card
+msgid "CARD_GEMS_FIREBALL_DESC"
+msgstr "Наносит 4 урона башне врага (игнорирует стену)."
+
+#. context: card
+msgid "CARD_GEMS_FIREBALL_NAME"
+msgstr "Огненный шар"
+
+#. context: card
+msgid "CARD_GEMS_FOUNDATION_DESTRUCTION_DESC"
+msgstr "Все три генератора врага -2."
+
+#. context: card
+msgid "CARD_GEMS_FOUNDATION_DESTRUCTION_NAME"
+msgstr "Разрушение Основ"
+
+#. context: card
+msgid "CARD_GEMS_GREAT_CURSE_DESC"
+msgstr "Ресурсы врага -6 всех типов."
+
+#. context: card
+msgid "CARD_GEMS_GREAT_CURSE_NAME"
+msgstr "Великое проклятие"
+
+#. context: card
+msgid "CARD_GEMS_ICE_ARROW_DESC"
+msgstr "Наносит 2 урона башне врага (игнорирует стены)."
+
+#. context: card
+msgid "CARD_GEMS_ICE_ARROW_NAME"
+msgstr "Ледяная стрела"
+
+#. context: card
+msgid "CARD_GEMS_MAGIC_BOLT_DESC"
+msgstr "Наносит 2 урона башне врага (игнорирует стену)."
+
+#. context: card
+msgid "CARD_GEMS_MAGIC_BOLT_NAME"
+msgstr "Магический заряд"
+
+#. context: card
+msgid "CARD_GEMS_MAGIC_TOWER_DESC"
+msgstr "Генератор Гемов +2, 4 урона башне врага."
+
+#. context: card
+msgid "CARD_GEMS_MAGIC_TOWER_NAME"
+msgstr "Магическая башня"
+
+#. context: card
+msgid "CARD_GEMS_METEORITE_DESC"
+msgstr "Наносит 8 урона башне врага (игнорирует стену)."
+
+#. context: card
+msgid "CARD_GEMS_METEORITE_NAME"
+msgstr "Метеорит"
+
+#. context: card
+msgid "CARD_GEMS_NOVICE_MAGE_DESC"
+msgstr "Генератор Гемов +1, 1 урон башне врага."
+
+#. context: card
+msgid "CARD_GEMS_NOVICE_MAGE_NAME"
+msgstr "Маг-новичок"
+
+#. context: card
+msgid "CARD_GEMS_PROTECTION_SPELL_DESC"
+msgstr "Строит стену на 1."
+
+#. context: card
+msgid "CARD_GEMS_PROTECTION_SPELL_NAME"
+msgstr "Заклинание защиты"
+
+#. context: card
+msgid "CARD_GEMS_PROTECTIVE_BARRIER_DESC"
+msgstr "Строит стену на 5."
+
+#. context: card
+msgid "CARD_GEMS_PROTECTIVE_BARRIER_NAME"
+msgstr "Защитный барьер"
+
+#. context: card
+msgid "CARD_GEMS_QUARRY_CORRUPTION_DESC"
+msgstr "Генератор Кирпичей врага -2."
+
+#. context: card
+msgid "CARD_GEMS_QUARRY_CORRUPTION_NAME"
+msgstr "Порча Карьера"
+
+#. context: card
+msgid "CARD_GEMS_SPARK_OF_FURY_DESC"
+msgstr "Наносит 3 урона башне врага (игнорирует стену)."
+
+#. context: card
+msgid "CARD_GEMS_SPARK_OF_FURY_NAME"
+msgstr "Искра ярости"
+
+#. context: card
+msgid "CARD_GEMS_TIME_THEFT_DESC"
+msgstr "Крадёт 5 случайного ресурса врага (тот же ресурс приходит вам)."
+
+#. context: card
+msgid "CARD_GEMS_TIME_THEFT_NAME"
+msgstr "Кража времени"
+
+#. context: artifact
+msgid "ARTIFACT_BOOK_OF_WISDOM_DESC"
+msgstr "Лимит карт в руке увеличен до 6 (вместо 5)."
+
+#. context: artifact
+msgid "ARTIFACT_BOOK_OF_WISDOM_NAME"
+msgstr "Книга Мудрости"
+
+#. context: artifact
+msgid "ARTIFACT_DWARF_PICKAXE_DESC"
+msgstr "+1 к приходу Кирпичей каждый ход."
+
+#. context: artifact
+msgid "ARTIFACT_DWARF_PICKAXE_NAME"
+msgstr "Кирка Гнома"
+
+#. context: artifact
+msgid "ARTIFACT_FOUNDERS_BLESSING_DESC"
+msgstr "В начале боя Стена сразу получает +5 HP, а Башня — +3 HP."
+
+#. context: artifact
+msgid "ARTIFACT_FOUNDERS_BLESSING_NAME"
+msgstr "Благословение Основателя"
+
+#. context: artifact
+msgid "ARTIFACT_HORN_OF_PLENTY_DESC"
+msgstr "В начале боя все ваши генераторы становятся минимум уровня 2."
+
+#. context: artifact
+msgid "ARTIFACT_HORN_OF_PLENTY_NAME"
+msgstr "Рог Изобилия"
+
+#. context: artifact
+msgid "ARTIFACT_LUCKY_COIN_DESC"
+msgstr "10% шанс не потратить ресурсы при розыгрыше карты."
+
+#. context: artifact
+msgid "ARTIFACT_LUCKY_COIN_NAME"
+msgstr "Счастливая Монета"
+
+#. context: artifact
+msgid "ARTIFACT_MANA_SPHERE_DESC"
+msgstr "При розыгрыше карты Гемов вы получаете +1 Гем сверх обычного дохода."
+
+#. context: artifact
+msgid "ARTIFACT_MANA_SPHERE_NAME"
+msgstr "Сфера Маны"
+
+#. context: artifact
+msgid "ARTIFACT_PREDATOR_FANG_DESC"
+msgstr "+1 к приходу Зверей каждый ход."
+
+#. context: artifact
+msgid "ARTIFACT_PREDATOR_FANG_NAME"
+msgstr "Клык Хищника"
+
+#. context: artifact
+msgid "ARTIFACT_SPIKY_WALL_DESC"
+msgstr "При ударе по вашей стене атакующий получает 2 урона в ответ."
+
+#. context: artifact
+msgid "ARTIFACT_SPIKY_WALL_NAME"
+msgstr "Шипастая Стена"
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_DESC"
+msgstr "У дороги стоит полуразрушенный склад. Внутри поблёскивают сундуки, но прогнивший пол едва держится."
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_OPTION_1"
+msgstr "Обыскать склад"
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_OPTION_2"
+msgstr "Не рисковать"
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_RESULT_1"
+msgstr "Под досками нашёлся кошель с монетами."
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_RESULT_2"
+msgstr "Пол рухнул, и часть припасов пришлось бросить."
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_RESULT_3"
+msgstr "Вы оставляете ненадёжное здание позади."
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_TITLE"
+msgstr "Заброшенный склад"
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_DESC"
+msgstr "Посреди руин стоит алтарь с двумя чашами: каменной и хрустальной. Руны требуют подношения."
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_OPTION_1"
+msgstr "Положить 10 золота в каменную чашу"
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_OPTION_2"
+msgstr "Положить 7 золота в хрустальную чашу"
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_OPTION_3"
+msgstr "Не трогать алтарь"
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_RESULT_1"
+msgstr "Руны укрепляют фундамент вашей Башни."
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_RESULT_2"
+msgstr "Хрусталь наполняет магические каналы новой силой."
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_RESULT_3"
+msgstr "Вы решаете не будить древнюю силу."
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_TITLE"
+msgstr "Древний алтарь"
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_DESC"
+msgstr "Кочевники продают боевых зверей. Рядом лежит дешёвое яйцо, происхождение которого никто не гарантирует."
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_OPTION_1"
+msgstr "Нанять орка за 7 золота"
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_OPTION_2"
+msgstr "Купить загадочное яйцо за 4 золота"
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_OPTION_3"
+msgstr "Не участвовать"
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_RESULT_1"
+msgstr "Орк принимает плату и вступает в ваш отряд."
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_RESULT_2"
+msgstr "Из яйца появляется молодой зверь вместе со Звероловом."
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_RESULT_3"
+msgstr "Из яйца вылупляется бойкий гоблин."
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_RESULT_4"
+msgstr "Вы покидаете шумный аукцион."
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_TITLE"
+msgstr "Звериный аукцион"
+
+#. context: event
+msgid "EVENT_BEAST_DEN_DESC"
+msgstr "В овраге прячется стая. Хорошая приманка позволит приручить её, но можно рискнуть и без подготовки."
+
+#. context: event
+msgid "EVENT_BEAST_DEN_OPTION_1"
+msgstr "Купить приманку за 6 золота"
+
+#. context: event
+msgid "EVENT_BEAST_DEN_OPTION_2"
+msgstr "Подкрасться к логову"
+
+#. context: event
+msgid "EVENT_BEAST_DEN_OPTION_3"
+msgstr "Обойти овраг"
+
+#. context: event
+msgid "EVENT_BEAST_DEN_RESULT_1"
+msgstr "Стая принимает вас за вожака."
+
+#. context: event
+msgid "EVENT_BEAST_DEN_RESULT_2"
+msgstr "Опытный зверолов выходит навстречу и присоединяется к вам."
+
+#. context: event
+msgid "EVENT_BEAST_DEN_RESULT_3"
+msgstr "Звери разоряют сумку с припасами."
+
+#. context: event
+msgid "EVENT_BEAST_DEN_RESULT_4"
+msgstr "Вы не тревожите стаю."
+
+#. context: event
+msgid "EVENT_BEAST_DEN_TITLE"
+msgstr "Звериное логово"
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_DESC"
+msgstr "За завалом слышен звон кирок. Шахтёры обещают поделиться знаниями или найденным золотом."
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_OPTION_1"
+msgstr "Нанять рабочих за 6 золота"
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_OPTION_2"
+msgstr "Искать обход самостоятельно"
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_OPTION_3"
+msgstr "Не задерживаться"
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_RESULT_1"
+msgstr "Проход расчищен, а шахтёры улучшают ваш Карьер."
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_RESULT_2"
+msgstr "В боковом тоннеле обнаружен тайник."
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_RESULT_3"
+msgstr "Новый обвал повреждает часть снаряжения."
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_RESULT_4"
+msgstr "Вы оставляете шахту позади."
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_TITLE"
+msgstr "Обрушившаяся шахта"
+
+#. context: event
+msgid "EVENT_DICE_GAME_DESC"
+msgstr "В придорожной таверне идёт игра на золото. Хозяин предлагает обычную или высокую ставку."
+
+#. context: event
+msgid "EVENT_DICE_GAME_OPTION_1"
+msgstr "Поставить 5 золота"
+
+#. context: event
+msgid "EVENT_DICE_GAME_OPTION_2"
+msgstr "Поставить 10 золота"
+
+#. context: event
+msgid "EVENT_DICE_GAME_OPTION_3"
+msgstr "Не играть"
+
+#. context: event
+msgid "EVENT_DICE_GAME_RESULT_1"
+msgstr "Кости благосклонны: вы забираете выигрыш."
+
+#. context: event
+msgid "EVENT_DICE_GAME_RESULT_2"
+msgstr "Бросок неудачен, ставка потеряна."
+
+#. context: event
+msgid "EVENT_DICE_GAME_RESULT_3"
+msgstr "Редкая комбинация приносит большой куш."
+
+#. context: event
+msgid "EVENT_DICE_GAME_RESULT_4"
+msgstr "Соперник выигрывает вашу ставку."
+
+#. context: event
+msgid "EVENT_DICE_GAME_RESULT_5"
+msgstr "Вы сохраняете золото и покидаете таверну."
+
+#. context: event
+msgid "EVENT_DICE_GAME_TITLE"
+msgstr "Игра костей"
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_DESC"
+msgstr "Гномий караван застрял на размытой дороге. Купцы предлагают чертежи или долю выручки за помощь."
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_OPTION_1"
+msgstr "Купить чертёж за 6 золота"
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_OPTION_2"
+msgstr "Помочь вытолкнуть повозки"
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_OPTION_3"
+msgstr "Продолжить путь"
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_RESULT_1"
+msgstr "Вы получаете чертёж «Глубокого карьера»."
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_RESULT_2"
+msgstr "Караван спасён, и купцы щедро платят."
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_RESULT_3"
+msgstr "Колесо ломается, и ремонт приходится оплатить вам."
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_RESULT_4"
+msgstr "Вы желаете купцам удачи и уходите."
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_TITLE"
+msgstr "Караван гномов"
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_DESC"
+msgstr "Каменные горгульи охраняют мост и требуют ответить на загадку или принести плату."
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_OPTION_1"
+msgstr "Ответить на загадку"
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_OPTION_2"
+msgstr "Заплатить каменщикам 6 золота"
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_OPTION_3"
+msgstr "Найти другой путь"
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_RESULT_1"
+msgstr "Горгульи смеются и открывают сундук с золотом."
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_RESULT_2"
+msgstr "Ответ неверен, и горгульи забирают штраф."
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_RESULT_3"
+msgstr "Каменщики укрепляют вашу Башню и отвлекают стражей."
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_RESULT_4"
+msgstr "Обход занимает время, но сохраняет припасы."
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_TITLE"
+msgstr "Загадка горгулий"
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_DESC"
+msgstr "Старый мастер предлагает безопасный полный курс или бесплатное, но суровое испытание."
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_OPTION_1"
+msgstr "Оплатить полный курс за 6 золота"
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_OPTION_2"
+msgstr "Пройти испытание"
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_OPTION_3"
+msgstr "Отказаться"
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_RESULT_1"
+msgstr "Вы осваиваете новые способы разработки камня."
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_RESULT_2"
+msgstr "Мастер признаёт ваш талант и раскрывает секрет Карьера."
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_RESULT_3"
+msgstr "Испытание провалено; на восстановление снаряжения уходит золото."
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_RESULT_4"
+msgstr "Вы благодарите мастера и продолжаете путь."
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_TITLE"
+msgstr "Учения у мастера"
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_DESC"
+msgstr "Над дорогой бушует поток сырой магии. Его можно заземлить или попытаться направить в свои каналы."
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_OPTION_1"
+msgstr "Установить громоотводы за 7 золота"
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_OPTION_2"
+msgstr "Войти в поток без защиты"
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_OPTION_3"
+msgstr "Переждать бурю"
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_RESULT_1"
+msgstr "Пойманная энергия навсегда усиливает Магию забега."
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_RESULT_2"
+msgstr "Вы подчиняете бурю и усиливаете Магию."
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_RESULT_3"
+msgstr "Разряд уничтожает часть припасов."
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_RESULT_4"
+msgstr "Буря стихает, не причинив вреда."
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_TITLE"
+msgstr "Магическая буря"
+
+#. context: event
+msgid "EVENT_MOON_WELL_DESC"
+msgstr "Вода в старом колодце отражает не небо, а возможное будущее. На бортике вырезаны руны подношения."
+
+#. context: event
+msgid "EVENT_MOON_WELL_OPTION_1"
+msgstr "Бросить 7 золота в воду"
+
+#. context: event
+msgid "EVENT_MOON_WELL_OPTION_2"
+msgstr "Купить руну за 3 золота"
+
+#. context: event
+msgid "EVENT_MOON_WELL_OPTION_3"
+msgstr "Не смотреть в будущее"
+
+#. context: event
+msgid "EVENT_MOON_WELL_RESULT_1"
+msgstr "Лунный свет усиливает Магию на весь забег."
+
+#. context: event
+msgid "EVENT_MOON_WELL_RESULT_2"
+msgstr "На ладони проявляется карта «Ясновидение»."
+
+#. context: event
+msgid "EVENT_MOON_WELL_RESULT_3"
+msgstr "Вы оставляете колодец и его тайны."
+
+#. context: event
+msgid "EVENT_MOON_WELL_TITLE"
+msgstr "Лунный колодец"
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_DESC"
+msgstr "В мастерской осадных инженеров уцелели инструменты и несколько незаконченных механизмов."
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_OPTION_1"
+msgstr "Восстановить катапульту за 8 золота"
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_OPTION_2"
+msgstr "Порыться среди обломков"
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_OPTION_3"
+msgstr "Оставить руины"
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_RESULT_1"
+msgstr "Инженеры заканчивают сборку «Катапульты»."
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_RESULT_2"
+msgstr "Вы находите целый набор для ремонта."
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_RESULT_3"
+msgstr "Неустойчивая крыша обрушивается на припасы."
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_RESULT_4"
+msgstr "Вы решаете не испытывать удачу."
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_TITLE"
+msgstr "Разорённая мастерская"
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_DESC"
+msgstr "Мастер высекания рун предлагает укрепить основание Башни или продать готовую каменную плиту."
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_OPTION_1"
+msgstr "Заказать укрепление за 8 золота"
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_OPTION_2"
+msgstr "Купить плиту за 2 золота"
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_OPTION_3"
+msgstr "Отказаться"
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_RESULT_1"
+msgstr "Рунная кладка усиливает Башню на весь забег."
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_RESULT_2"
+msgstr "Каменщик передаёт вам карту «Основание»."
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_RESULT_3"
+msgstr "Вы оставляете мастера за работой."
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_TITLE"
+msgstr "Рунный каменщик"
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_DESC"
+msgstr "У костра сидит шулер с тремя запечатанными картами. За шесть монет он разрешит вытянуть одну."
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_OPTION_1"
+msgstr "Заплатить 6 золота и вытянуть карту"
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_OPTION_2"
+msgstr "Не играть"
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_RESULT_1"
+msgstr "Вам достаётся «Огненный шар»."
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_RESULT_2"
+msgstr "Вам достаётся «Катапульта»."
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_RESULT_3"
+msgstr "Вам достаётся «Волчья стая»."
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_RESULT_4"
+msgstr "Вы не доверяете улыбке шулера и уходите."
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_TITLE"
+msgstr "Карточный шулер"
+
+#. context: event
+msgid "EVENT_WOUNDED_TRAVELER_DESC"
+msgstr "У дороги лежит раненый рыцарь. Ему нужны припасы, чтобы снова встать на ноги."
+
+#. context: event
+msgid "EVENT_WOUNDED_TRAVELER_OPTION_1"
+msgstr "Купить припасы за 3 золота"
+
+#. context: event
+msgid "EVENT_WOUNDED_TRAVELER_OPTION_2"
+msgstr "Показать дорогу к ближайшему поселению"
+
+#. context: event
+msgid "EVENT_WOUNDED_TRAVELER_RESULT_1"
+msgstr "Рыцарь благодарит вас и присоединяется к походу."
+
+#. context: event
+msgid "EVENT_WOUNDED_TRAVELER_RESULT_2"
+msgstr "Путник благодарит за совет, а вы продолжаете путь."
+
+#. context: event
+msgid "EVENT_WOUNDED_TRAVELER_TITLE"
+msgstr "Раненый путник"
+
+#. context: ui
+msgid "COMMON_BACK"
+msgstr "Назад"
+
+#. context: ui
+msgid "COMMON_BACK_TO_MENU"
+msgstr "Назад в меню"
+
+#. context: ui
+msgid "COMMON_CANCEL"
+msgstr "Отмена"
+
+#. context: ui
+msgid "COMMON_CLOSE"
+msgstr "Закрыть"
+
+#. context: ui
+msgid "COMMON_PROFILE_TITLE"
+msgstr "ПРОФИЛЬ"
+
+#. context: ui
+msgid "COMMON_SELECT"
+msgstr "Выбрать"
+
+#. context: ui
+msgid "MSG_META_SHOP_CARD_UNLOCKED"
+msgstr "Карта открыта: %s!"
+
+#. context: ui
+msgid "MSG_META_SHOP_UPGRADE_PURCHASED"
+msgstr "Улучшение приобретено: %s!"
+
+#. context: ui
+msgid "UI_BATTLE_CLAIM_REWARD"
+msgstr "Забрать награду"
+
+#. context: ui
+msgid "UI_BATTLE_DECK_BUTTON"
+msgstr "Колода\n%d"
+
+#. context: ui
+msgid "UI_BATTLE_DECK_POPUP_TITLE"
+msgstr "Колода"
+
+#. context: ui
+msgid "UI_BATTLE_DECK_TOOLTIP"
+msgstr "Показать колоду"
+
+#. context: ui
+msgid "UI_BATTLE_DEFEAT"
+msgstr "Поражение"
+
+#. context: ui
+msgid "UI_BATTLE_EMPTY_LIST"
+msgstr "Пусто"
+
+#. context: ui
+msgid "UI_BATTLE_ENEMY_TURN"
+msgstr "ХОД ПРОТИВНИКА"
+
+#. context: ui
+msgid "UI_BATTLE_NO_PLAYABLE_CARDS"
+msgstr "Нет доступных карт"
+
+#. context: ui
+msgid "UI_BATTLE_RESTART"
+msgstr "Начать заново"
+
+#. context: ui
+msgid "UI_BATTLE_RETURN_TO_MAP"
+msgstr "Вернуться на карту"
+
+#. context: ui
+msgid "UI_BATTLE_RUN_SUMMARY"
+msgstr "Итоги забега"
+
+#. context: ui
+msgid "UI_BATTLE_VICTORY"
+msgstr "Победа!"
+
+#. context: ui
+msgid "UI_BATTLE_YOUR_TURN"
+msgstr "ВАШ ХОД"
+
+#. context: ui
+msgid "UI_BUY_FOR_FAME"
+msgstr "Купить · %d славы"
+
+#. context: ui
+msgid "UI_BUY_FOR_GOLD"
+msgstr "Купить за %d золота"
+
+#. context: ui
+msgid "UI_CARD_LOCKED_STATUS"
+msgstr "заблокирована"
+
+#. context: ui
+msgid "UI_CARD_PREVIEW_TOOLTIP"
+msgstr "Предпросмотр: %s"
+
+#. context: ui
+msgid "UI_CARD_STATE_UNLOCKED"
+msgstr "Уже открыта"
+
+#. context: ui
+msgid "UI_CARD_UNLOCKED_STATUS"
+msgstr "разблокирована"
+
+#. context: ui
+msgid "UI_DECK_EMPTY"
+msgstr "Колода пуста."
+
+#. context: ui
+msgid "UI_DECK_ROW_FORMAT"
+msgstr "%s x%d"
+
+#. context: ui
+msgid "UI_DECK_SOURCE_PREVIEW"
+msgstr "Стартовая колода"
+
+#. context: ui
+msgid "UI_DECK_SOURCE_RUN"
+msgstr "Колода забега"
+
+#. context: ui
+msgid "UI_DECK_TITLE"
+msgstr "Колода"
+
+#. context: ui
+msgid "UI_EVENT_CONTINUE_BUTTON"
+msgstr "Продолжить"
+
+#. context: ui
+msgid "UI_EVENT_DECISION_HEADER"
+msgstr "Выбор"
+
+#. context: ui
+msgid "UI_EVENT_GUARANTEED"
+msgstr "Гарантированно"
+
+#. context: ui
+msgid "UI_EVENT_NO_COST"
+msgstr "Бесплатно"
+
+#. context: ui
+msgid "UI_EVENT_PRICE"
+msgstr "Цена: %d золота"
+
+#. context: ui
+msgid "UI_EVENT_REQUIRED_RESERVE"
+msgstr "Требуется резерв: %d золота"
+
+#. context: ui
+msgid "UI_EVENT_RESULT_HEADER"
+msgstr "Результат"
+
+#. context: ui
+msgid "UI_EVENT_RISKY"
+msgstr "Рискованно"
+
+#. context: ui
+msgid "UI_EVENT_SHORTFALL"
+msgstr "Не хватает %d золота"
+
+#. context: ui
+msgid "UI_FAME_LABEL"
+msgstr "Слава: %d"
+
+#. context: ui
+msgid "UI_GOLD_LABEL"
+msgstr "Золото: %d"
+
+#. context: ui
+msgid "UI_MAIN_MENU_CONTINUE_RUN"
+msgstr "Продолжить забег\n%s"
+
+#. context: ui
+msgid "UI_MAIN_MENU_DEBUG_AI_TOOLTIP"
+msgstr "Запустить быстрый бой против выбранного профиля ИИ"
+
+#. context: ui
+msgid "UI_MAIN_MENU_DEBUG_STRATEGY_AGGRESSIVE"
+msgstr "Агрессор"
+
+#. context: ui
+msgid "UI_MAIN_MENU_DEBUG_STRATEGY_BALANCED"
+msgstr "Сбалансированный"
+
+#. context: ui
+msgid "UI_MAIN_MENU_DEBUG_STRATEGY_BOSS"
+msgstr "Босс"
+
+#. context: ui
+msgid "UI_MAIN_MENU_DEBUG_STRATEGY_BUILDER"
+msgstr "Строитель"
+
+#. context: ui
+msgid "UI_MAIN_MENU_DEBUG_STRATEGY_ECONOMIST"
+msgstr "Экономист"
+
+#. context: ui
+msgid "UI_MAIN_MENU_EYEBROW"
+msgstr "КАРТОЧНАЯ СТРАТЕГИЯ"
+
+#. context: ui
+msgid "UI_MAIN_MENU_FLOOR_PROGRESS"
+msgstr "Этаж %d из %d"
+
+#. context: ui
+msgid "UI_MAIN_MENU_FOOTER"
+msgstr "Одна карта может решить исход дуэли."
+
+#. context: ui
+msgid "UI_MAIN_MENU_NEW_RUN"
+msgstr "Новый забег"
+
+#. context: ui
+msgid "UI_MAIN_MENU_PROFILE"
+msgstr "Профиль"
+
+#. context: ui
+msgid "UI_MAIN_MENU_QUICK_BATTLE"
+msgstr "Быстрый бой"
+
+#. context: ui
+msgid "UI_MAIN_MENU_QUICK_BATTLE_TOOLTIP"
+msgstr "Одиночная дуэль против случайного архетипа ИИ"
+
+#. context: ui
+msgid "UI_MAIN_MENU_SAVED_RUN"
+msgstr "Сохранённый забег"
+
+#. context: ui
+msgid "UI_MAIN_MENU_SETTINGS"
+msgstr "Настройки"
+
+#. context: ui
+msgid "UI_MAIN_MENU_TAGLINE"
+msgstr "Возведи башню. Сломи стену.\nПереиграй соперника."
+
+#. context: ui
+msgid "UI_MAIN_MENU_TITLE_PRIMARY"
+msgstr "БАШНИ МАГОВ"
+
+#. context: ui
+msgid "UI_MAIN_MENU_TITLE_SECONDARY"
+msgstr "ДУЭЛЬ"
+
+#. context: ui
+msgid "UI_META_SHOP_FINAL_EFFECT"
+msgstr "Финальный эффект: %s"
+
+#. context: ui
+msgid "UI_META_SHOP_GROUP_FOUNDATION"
+msgstr "основа"
+
+#. context: ui
+msgid "UI_META_SHOP_GROUP_RESOURCES"
+msgstr "ресурсы"
+
+#. context: ui
+msgid "UI_META_SHOP_GROUP_UTILITY"
+msgstr "прочее"
+
+#. context: ui
+msgid "UI_META_SHOP_HINT"
+msgstr "Тратьте Славу на постоянные улучшения и разблокировку редких карт."
+
+#. context: ui
+msgid "UI_META_SHOP_LEVEL_LABEL"
+msgstr "УРОВЕНЬ %d / %d"
+
+#. context: ui
+msgid "UI_META_SHOP_MAX_SHORT"
+msgstr "МАКС."
+
+#. context: ui
+msgid "UI_META_SHOP_NEXT_EFFECT"
+msgstr "Следующий эффект: %s"
+
+#. context: ui
+msgid "UI_META_SHOP_NO_RARE_CARDS"
+msgstr "Редких карт пока нет."
+
+#. context: ui
+msgid "UI_META_SHOP_ROW_FORMAT"
+msgstr "%s: %s (%d/%d)"
+
+#. context: ui
+msgid "UI_META_SHOP_TITLE"
+msgstr "Прокачка"
+
+#. context: ui
+msgid "UI_META_SHOP_UNLOCKS_TITLE"
+msgstr "Редкие карты"
+
+#. context: ui
+msgid "UI_META_SHOP_UNLOCK_ROW_FORMAT"
+msgstr "%s — %s"
+
+#. context: ui
+msgid "UI_PROFILE_COLLECTION_PROGRESS"
+msgstr "Коллекция: карты %d/%d · артефакты %d/%d"
+
+#. context: ui
+msgid "UI_PROFILE_FAME"
+msgstr "Слава: %d"
+
+#. context: ui
+msgid "UI_PROFILE_LOCAL_PROFILE"
+msgstr "Локальный профиль"
+
+#. context: ui
+msgid "UI_PROFILE_TAB_DECK"
+msgstr "Колода"
+
+#. context: ui
+msgid "UI_PROFILE_TAB_STATS"
+msgstr "Статистика"
+
+#. context: ui
+msgid "UI_PROFILE_TAB_UPGRADES"
+msgstr "Прокачка"
+
+#. context: ui
+msgid "UI_REST_BONUS_PREVIEW"
+msgstr "Бонус: +%d → +%d"
+
+#. context: ui
+msgid "UI_REST_CONFIRM_BUTTON"
+msgstr "Подтвердить"
+
+#. context: ui
+msgid "UI_REST_DURATION_NOTE"
+msgstr "Действует до конца забега."
+
+#. context: ui
+msgid "UI_REST_GENERATOR_DUNGEON"
+msgstr "Логово тварей"
+
+#. context: ui
+msgid "UI_REST_GENERATOR_MAGIC"
+msgstr "Кристальная магия"
+
+#. context: ui
+msgid "UI_REST_GENERATOR_OPTION_DESC"
+msgstr "Увеличивает добычу ресурсов за ход."
+
+#. context: ui
+msgid "UI_REST_GENERATOR_OPTION_TITLE"
+msgstr "Улучшить генераторы"
+
+#. context: ui
+msgid "UI_REST_GENERATOR_QUARRY"
+msgstr "Каменоломня"
+
+#. context: ui
+msgid "UI_REST_MAX_REACHED"
+msgstr "Достигнут максимум (+%d)"
+
+#. context: ui
+msgid "UI_REST_SELECTED_FORMAT"
+msgstr "Выбрано: %s"
+
+#. context: ui
+msgid "UI_REST_SELECTION_HINT"
+msgstr "Выбор нельзя изменить после подтверждения."
+
+#. context: ui
+msgid "UI_REST_SUBTITLE"
+msgstr "Выберите постоянное усиление для этого забега."
+
+#. context: ui
+msgid "UI_REST_TITLE"
+msgstr "Отдых"
+
+#. context: ui
+msgid "UI_REST_TOWER_OPTION_DESC"
+msgstr "Увеличивает максимальное здоровье башни."
+
+#. context: ui
+msgid "UI_REST_TOWER_OPTION_TITLE"
+msgstr "Укрепить башню"
+
+#. context: ui
+msgid "UI_REST_UNAVAILABLE_SHORT"
+msgstr "Недоступно"
+
+#. context: ui
+msgid "UI_REWARD_ARTIFACT_TAG"
+msgstr "Артефакт"
+
+#. context: ui
+msgid "UI_REWARD_CONFIRM"
+msgstr "Забрать"
+
+#. context: ui
+msgid "UI_REWARD_COST_TAG"
+msgstr "Стоимость: %d"
+
+#. context: ui
+msgid "UI_REWARD_SKIP"
+msgstr "Пропустить"
+
+#. context: ui
+msgid "UI_REWARD_SUBTITLE"
+msgstr "Выберите одну карту или артефакт."
+
+#. context: ui
+msgid "UI_REWARD_TITLE"
+msgstr "Награда"
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_ARTIFACTS_COLLECTED"
+msgstr "Собрано артефактов: %d"
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_ARTIFACT_ROW"
+msgstr "  · %s"
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_BOSS_VICTORY"
+msgstr "ПОБЕДА НАД БОССОМ!"
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_ELITES_DEFEATED"
+msgstr "Побеждено элит: %d"
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_FAME_EARNED"
+msgstr "Слава за забег: +%d (всего: %d)"
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_FLOORS_PASSED"
+msgstr "Пройдено этажей: %d"
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_GOLD_NOT_SAVED"
+msgstr "Золото забега (не сохранится): %d"
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_MENU_BUTTON"
+msgstr "В главное меню"
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_RUN_OVER"
+msgstr "ЗАБЕГ ОКОНЧЕН"
+
+#. context: ui
+msgid "UI_SETTINGS_ACCESSIBILITY_EMPTY"
+msgstr "Пока нет настроек."
+
+#. context: ui
+msgid "UI_SETTINGS_ACCESSIBILITY_SECTION"
+msgstr "Доступность"
+
+#. context: ui
+msgid "UI_SETTINGS_CONFIRM_RESET"
+msgstr "Подтвердить сброс"
+
+#. context: ui
+msgid "UI_SETTINGS_GAME_EMPTY"
+msgstr "Пока нет настроек."
+
+#. context: ui
+msgid "UI_SETTINGS_GAME_SECTION"
+msgstr "Игра"
+
+#. context: ui
+msgid "UI_SETTINGS_LANGUAGE_EN"
+msgstr "English"
+
+#. context: ui
+msgid "UI_SETTINGS_LANGUAGE_HINT"
+msgstr "Изменения применяются сразу."
+
+#. context: ui
+msgid "UI_SETTINGS_LANGUAGE_RU"
+msgstr "Русский"
+
+#. context: ui
+msgid "UI_SETTINGS_LANGUAGE_SECTION"
+msgstr "Язык"
+
+#. context: ui
+msgid "UI_SETTINGS_RESET_BUTTON"
+msgstr "Сбросить настройки"
+
+#. context: ui
+msgid "UI_SETTINGS_RESET_EXPLANATION"
+msgstr "Сбросить настройки звука к значениям по умолчанию."
+
+#. context: ui
+msgid "UI_SETTINGS_RESET_SECTION"
+msgstr "Сброс настроек"
+
+#. context: ui
+msgid "UI_SETTINGS_RESET_SUMMARY"
+msgstr "Это сбросит громкость к значению 100%."
+
+#. context: ui
+msgid "UI_SETTINGS_SOUND_SECTION"
+msgstr "Звук"
+
+#. context: ui
+msgid "UI_SETTINGS_TITLE"
+msgstr "Настройки"
+
+#. context: ui
+msgid "UI_SETTINGS_VOLUME_LABEL"
+msgstr "Громкость"
+
+#. context: ui
+msgid "UI_SETTINGS_VOLUME_TOOLTIP"
+msgstr "Общая громкость звука в игре"
+
+#. context: ui
+msgid "UI_SHOP_BUY_SECTION_HINT"
+msgstr "Выберите карту, чтобы добавить её в колоду забега."
+
+#. context: ui
+msgid "UI_SHOP_BUY_SECTION_TITLE"
+msgstr "Покупка карт"
+
+#. context: ui
+msgid "UI_SHOP_LEAVE_BUTTON"
+msgstr "Покинуть магазин"
+
+#. context: ui
+msgid "UI_SHOP_REASON_AVAILABLE"
+msgstr "Доступно"
+
+#. context: ui
+msgid "UI_SHOP_REASON_BOUGHT"
+msgstr "Уже куплено"
+
+#. context: ui
+msgid "UI_SHOP_REASON_CARD_GONE"
+msgstr "Карта уже удалена"
+
+#. context: ui
+msgid "UI_SHOP_REASON_LAST_CARD"
+msgstr "Нельзя удалить последнюю карту"
+
+#. context: ui
+msgid "UI_SHOP_REASON_NOT_ENOUGH_GOLD"
+msgstr "Недостаточно золота"
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_BUTTON"
+msgstr "Удалить"
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_DIALOG_OK"
+msgstr "Удалить"
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_DIALOG_TEXT"
+msgstr "Удалить «%s» из колоды забега?"
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_DIALOG_TITLE"
+msgstr "Удалить карту?"
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_EMPTY_DECK"
+msgstr "В колоде нет карт для удаления."
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_LAST_CARD_WARNING"
+msgstr "Нельзя удалить последнюю карту колоды."
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_ROW_FORMAT"
+msgstr "%s (x%d)"
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_SECTION_HINT"
+msgstr "Уберите ненужную карту из колоды забега."
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_SECTION_TITLE"
+msgstr "Удаление карт"
+
+#. context: ui
+msgid "UI_SHOP_TITLE"
+msgstr "Магазин"
+
+#. context: ui
+msgid "UI_STATS_MAX_TOWER_HEIGHT"
+msgstr "Максимальная высота башни: %d"
+
+#. context: ui
+msgid "UI_STATS_RUNS_COMPLETED"
+msgstr "Завершено забегов: %d"
+
+#. context: ui
+msgid "UI_STATS_TITLE"
+msgstr "Статистика"
+
+#. context: ui
+msgid "UI_STATS_UNLOCKED_ARTIFACTS"
+msgstr "Собрано артефактов: %d/%d"
+
+#. context: ui
+msgid "UI_STATS_UNLOCKED_CARDS"
+msgstr "Открыто редких карт: %d/%d"
+
+#. context: ui
+msgid "UI_STATS_WINS"
+msgstr "Побед: %d"
+
+#. context: ui
+msgid "UI_UNLOCKED_SHORT"
+msgstr "Открыто"
+
+#. context: ui
+msgid "UI_UNLOCK_FOR_FAME"
+msgstr "Открыть · %d славы"
+
+#. context: ui
+msgid "UI_UPGRADE_STATE_AFFORDABLE"
+msgstr "✓ Доступно"
+
+#. context: ui
+msgid "UI_UPGRADE_STATE_LOCKED"
+msgstr "🔒 Недостаточно Славы"
+
+#. context: ui
+msgid "UI_UPGRADE_STATE_MAX"
+msgstr "★ Максимум"
+
+#. context: ui
+msgid "UI_WORLD_MAP_HUD"
+msgstr "Этаж %d/%d  •  Золото %d\nБашня +%d  •  Колода %d  •  Артефакты %d"
+
+#. context: ui
+msgid "UI_WORLD_MAP_INITIAL_HINT"
+msgstr "Выберите доступный узел, чтобы продолжить путешествие"
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_BATTLE_PREVIEW"
+msgstr "Обычный бой. Награда — после победы."
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_BATTLE_TITLE"
+msgstr "Бой"
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_BOSS_PREVIEW"
+msgstr "Финальное испытание этого маршрута."
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_BOSS_TITLE"
+msgstr "Босс"
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_ELITE_PREVIEW"
+msgstr "Опасный усиленный противник и ценная награда."
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_ELITE_TITLE"
+msgstr "Элита"
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_EVENT_PREVIEW"
+msgstr "Неизвестная встреча. Результат скрыт до входа."
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_EVENT_TITLE"
+msgstr "Событие"
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_FLOOR_PREVIEW"
+msgstr "Этаж %d. %s"
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_REST_PREVIEW"
+msgstr "Безопасная остановка и постоянное усиление забега."
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_REST_TITLE"
+msgstr "Отдых"
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_SHOP_PREVIEW"
+msgstr "Покупка и удаление карт за золото."
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_SHOP_TITLE"
+msgstr "Магазин"
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_UNKNOWN_PREVIEW"
+msgstr "Неизвестный узел."
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_UNKNOWN_TITLE"
+msgstr "Узел"
+
+#. context: ui
+msgid "UI_WORLD_MAP_PATH_LOCKED"
+msgstr "Путь закрыт: сначала завершите связанный доступный узел."
+
+#. context: ui
+msgid "UI_WORLD_MAP_PATH_LOCKED_HINT"
+msgstr "Этот путь пока закрыт. Выберите узел с пометкой «ДОСТУПНО»."
+
+#. context: ui
+msgid "UI_WORLD_MAP_STATE_AVAILABLE"
+msgstr "ДОСТУПНО"
+
+#. context: ui
+msgid "UI_WORLD_MAP_STATE_COMPLETED"
+msgstr "ПРОЙДЕНО"
+
+#. context: ui
+msgid "UI_WORLD_MAP_STATE_CURRENT"
+msgstr "ВЫ ЗДЕСЬ"
+
+#. context: ui
+msgid "UI_WORLD_MAP_STATE_LOCKED"
+msgstr "ЗАКРЫТО"
+
+#. context: ui
+msgid "UPGRADE_DUNGEON_DESC"
+msgstr "+%d к добыче Зверей за ход."
+
+#. context: ui
+msgid "UPGRADE_DUNGEON_NAME"
+msgstr "Логово тварей"
+
+#. context: ui
+msgid "UPGRADE_HAND_SIZE_DESC"
+msgstr "+%d к размеру руки."
+
+#. context: ui
+msgid "UPGRADE_HAND_SIZE_NAME"
+msgstr "Размер руки"
+
+#. context: ui
+msgid "UPGRADE_MAGIC_DESC"
+msgstr "+%d к добыче Кристаллов за ход."
+
+#. context: ui
+msgid "UPGRADE_MAGIC_NAME"
+msgstr "Кристальная магия"
+
+#. context: ui
+msgid "UPGRADE_QUARRY_DESC"
+msgstr "+%d к добыче Кирпичей за ход."
+
+#. context: ui
+msgid "UPGRADE_QUARRY_NAME"
+msgstr "Каменоломня"
+
+#. context: ui
+msgid "UPGRADE_TOWER_DESC"
+msgstr "+%d к прочности башни."
+
+#. context: ui
+msgid "UPGRADE_TOWER_NAME"
+msgstr "Мощь башни"
+
+#. context: ui
+msgid "UPGRADE_WALL_DESC"
+msgstr "+%d к прочности стены."
+
+#. context: ui
+msgid "UPGRADE_WALL_NAME"
+msgstr "Крепость стен"
+

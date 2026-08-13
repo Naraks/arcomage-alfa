@@ -1,0 +1,1895 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: arcomage-alfa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. context: card
+msgid "CARD_BEASTS_ALPHA_DEN_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_ALPHA_DEN_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_ANCIENTS_DEN_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_ANCIENTS_DEN_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_ANCIENT_LEVIATHAN_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_ANCIENT_LEVIATHAN_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_BEAST_FARM_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_BEAST_FARM_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_BEAST_KENNEL_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_BEAST_KENNEL_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_DEFENSIVE_PACK_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_DEFENSIVE_PACK_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_DRAGON_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_DRAGON_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_GOBLIN_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_GOBLIN_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_GOLIATH_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_GOLIATH_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_GRIFFIN_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_GRIFFIN_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_GUARD_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_GUARD_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_HUNTER_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_HUNTER_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_HUNTING_LODGE_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_HUNTING_LODGE_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_HYDRA_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_HYDRA_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_KNIGHT_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_KNIGHT_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_MILITIA_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_MILITIA_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_ORC_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_ORC_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_TAMING_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_TAMING_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_TROLL_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_TROLL_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_VAMPIRE_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_VAMPIRE_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_WILD_HOUNDS_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_WILD_HOUNDS_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_WOLF_PACK_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_WOLF_PACK_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_WYVERN_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BEASTS_WYVERN_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_BATTERING_RAM_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_BATTERING_RAM_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_BRICK_FACTORY_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_BRICK_FACTORY_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_CATAPULT_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_CATAPULT_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_CITY_SIEGE_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_CITY_SIEGE_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_DEEP_QUARRY_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_DEEP_QUARRY_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_DONJON_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_DONJON_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_DRILL_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_DRILL_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_DWARVEN_MINE_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_DWARVEN_MINE_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_FORTIFICATION_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_FORTIFICATION_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_FORTRESS_WALL_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_FORTRESS_WALL_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_FOUNDATION_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_FOUNDATION_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_GREAT_BASTION_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_GREAT_BASTION_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_GREAT_WALL_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_GREAT_WALL_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_IMPERIAL_QUARRY_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_IMPERIAL_QUARRY_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_LARGE_BRICK_FACTORY_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_LARGE_BRICK_FACTORY_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_MEDIUM_WALL_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_MEDIUM_WALL_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_QUARRY_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_QUARRY_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_REPAIR_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_REPAIR_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_RESERVES_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_RESERVES_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_SIEGE_ENGINE_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_SIEGE_ENGINE_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_SIEGE_TOWER_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_SIEGE_TOWER_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_WALL_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_BRICKS_WALL_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_ABSOLUTE_CATACLYSM_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_ABSOLUTE_CATACLYSM_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_APPRENTICE_MAGE_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_APPRENTICE_MAGE_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_ARCHMAGE_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_ARCHMAGE_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_ARCHMAGISTERIUM_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_ARCHMAGISTERIUM_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_ARMAGEDDON_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_ARMAGEDDON_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_CLAIRVOYANCE_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_CLAIRVOYANCE_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_CURSE_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_CURSE_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_DUNGEON_CORRUPTION_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_DUNGEON_CORRUPTION_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_ENERGY_SHIELD_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_ENERGY_SHIELD_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_ESSENCE_THEFT_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_ESSENCE_THEFT_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_FIREBALL_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_FIREBALL_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_FOUNDATION_DESTRUCTION_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_FOUNDATION_DESTRUCTION_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_GREAT_CURSE_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_GREAT_CURSE_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_ICE_ARROW_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_ICE_ARROW_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_MAGIC_BOLT_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_MAGIC_BOLT_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_MAGIC_TOWER_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_MAGIC_TOWER_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_METEORITE_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_METEORITE_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_NOVICE_MAGE_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_NOVICE_MAGE_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_PROTECTION_SPELL_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_PROTECTION_SPELL_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_PROTECTIVE_BARRIER_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_PROTECTIVE_BARRIER_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_QUARRY_CORRUPTION_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_QUARRY_CORRUPTION_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_SPARK_OF_FURY_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_SPARK_OF_FURY_NAME"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_TIME_THEFT_DESC"
+msgstr ""
+
+#. context: card
+msgid "CARD_GEMS_TIME_THEFT_NAME"
+msgstr ""
+
+#. context: artifact
+msgid "ARTIFACT_BOOK_OF_WISDOM_DESC"
+msgstr ""
+
+#. context: artifact
+msgid "ARTIFACT_BOOK_OF_WISDOM_NAME"
+msgstr ""
+
+#. context: artifact
+msgid "ARTIFACT_DWARF_PICKAXE_DESC"
+msgstr ""
+
+#. context: artifact
+msgid "ARTIFACT_DWARF_PICKAXE_NAME"
+msgstr ""
+
+#. context: artifact
+msgid "ARTIFACT_FOUNDERS_BLESSING_DESC"
+msgstr ""
+
+#. context: artifact
+msgid "ARTIFACT_FOUNDERS_BLESSING_NAME"
+msgstr ""
+
+#. context: artifact
+msgid "ARTIFACT_HORN_OF_PLENTY_DESC"
+msgstr ""
+
+#. context: artifact
+msgid "ARTIFACT_HORN_OF_PLENTY_NAME"
+msgstr ""
+
+#. context: artifact
+msgid "ARTIFACT_LUCKY_COIN_DESC"
+msgstr ""
+
+#. context: artifact
+msgid "ARTIFACT_LUCKY_COIN_NAME"
+msgstr ""
+
+#. context: artifact
+msgid "ARTIFACT_MANA_SPHERE_DESC"
+msgstr ""
+
+#. context: artifact
+msgid "ARTIFACT_MANA_SPHERE_NAME"
+msgstr ""
+
+#. context: artifact
+msgid "ARTIFACT_PREDATOR_FANG_DESC"
+msgstr ""
+
+#. context: artifact
+msgid "ARTIFACT_PREDATOR_FANG_NAME"
+msgstr ""
+
+#. context: artifact
+msgid "ARTIFACT_SPIKY_WALL_DESC"
+msgstr ""
+
+#. context: artifact
+msgid "ARTIFACT_SPIKY_WALL_NAME"
+msgstr ""
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_DESC"
+msgstr ""
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_OPTION_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_OPTION_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_RESULT_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_RESULT_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_RESULT_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_TITLE"
+msgstr ""
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_DESC"
+msgstr ""
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_OPTION_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_OPTION_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_OPTION_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_RESULT_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_RESULT_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_RESULT_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_TITLE"
+msgstr ""
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_DESC"
+msgstr ""
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_OPTION_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_OPTION_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_OPTION_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_RESULT_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_RESULT_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_RESULT_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_RESULT_4"
+msgstr ""
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_TITLE"
+msgstr ""
+
+#. context: event
+msgid "EVENT_BEAST_DEN_DESC"
+msgstr ""
+
+#. context: event
+msgid "EVENT_BEAST_DEN_OPTION_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_BEAST_DEN_OPTION_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_BEAST_DEN_OPTION_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_BEAST_DEN_RESULT_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_BEAST_DEN_RESULT_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_BEAST_DEN_RESULT_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_BEAST_DEN_RESULT_4"
+msgstr ""
+
+#. context: event
+msgid "EVENT_BEAST_DEN_TITLE"
+msgstr ""
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_DESC"
+msgstr ""
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_OPTION_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_OPTION_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_OPTION_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_RESULT_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_RESULT_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_RESULT_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_RESULT_4"
+msgstr ""
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_TITLE"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DICE_GAME_DESC"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DICE_GAME_OPTION_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DICE_GAME_OPTION_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DICE_GAME_OPTION_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DICE_GAME_RESULT_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DICE_GAME_RESULT_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DICE_GAME_RESULT_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DICE_GAME_RESULT_4"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DICE_GAME_RESULT_5"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DICE_GAME_TITLE"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_DESC"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_OPTION_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_OPTION_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_OPTION_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_RESULT_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_RESULT_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_RESULT_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_RESULT_4"
+msgstr ""
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_TITLE"
+msgstr ""
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_DESC"
+msgstr ""
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_OPTION_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_OPTION_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_OPTION_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_RESULT_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_RESULT_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_RESULT_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_RESULT_4"
+msgstr ""
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_TITLE"
+msgstr ""
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_DESC"
+msgstr ""
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_OPTION_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_OPTION_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_OPTION_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_RESULT_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_RESULT_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_RESULT_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_RESULT_4"
+msgstr ""
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_TITLE"
+msgstr ""
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_DESC"
+msgstr ""
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_OPTION_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_OPTION_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_OPTION_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_RESULT_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_RESULT_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_RESULT_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_RESULT_4"
+msgstr ""
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_TITLE"
+msgstr ""
+
+#. context: event
+msgid "EVENT_MOON_WELL_DESC"
+msgstr ""
+
+#. context: event
+msgid "EVENT_MOON_WELL_OPTION_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_MOON_WELL_OPTION_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_MOON_WELL_OPTION_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_MOON_WELL_RESULT_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_MOON_WELL_RESULT_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_MOON_WELL_RESULT_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_MOON_WELL_TITLE"
+msgstr ""
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_DESC"
+msgstr ""
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_OPTION_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_OPTION_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_OPTION_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_RESULT_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_RESULT_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_RESULT_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_RESULT_4"
+msgstr ""
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_TITLE"
+msgstr ""
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_DESC"
+msgstr ""
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_OPTION_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_OPTION_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_OPTION_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_RESULT_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_RESULT_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_RESULT_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_TITLE"
+msgstr ""
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_DESC"
+msgstr ""
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_OPTION_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_OPTION_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_RESULT_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_RESULT_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_RESULT_3"
+msgstr ""
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_RESULT_4"
+msgstr ""
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_TITLE"
+msgstr ""
+
+#. context: event
+msgid "EVENT_WOUNDED_TRAVELER_DESC"
+msgstr ""
+
+#. context: event
+msgid "EVENT_WOUNDED_TRAVELER_OPTION_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_WOUNDED_TRAVELER_OPTION_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_WOUNDED_TRAVELER_RESULT_1"
+msgstr ""
+
+#. context: event
+msgid "EVENT_WOUNDED_TRAVELER_RESULT_2"
+msgstr ""
+
+#. context: event
+msgid "EVENT_WOUNDED_TRAVELER_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "COMMON_BACK"
+msgstr ""
+
+#. context: ui
+msgid "COMMON_BACK_TO_MENU"
+msgstr ""
+
+#. context: ui
+msgid "COMMON_CANCEL"
+msgstr ""
+
+#. context: ui
+msgid "COMMON_CLOSE"
+msgstr ""
+
+#. context: ui
+msgid "COMMON_PROFILE_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "COMMON_SELECT"
+msgstr ""
+
+#. context: ui
+msgid "MSG_META_SHOP_CARD_UNLOCKED"
+msgstr ""
+
+#. context: ui
+msgid "MSG_META_SHOP_UPGRADE_PURCHASED"
+msgstr ""
+
+#. context: ui
+msgid "UI_BATTLE_CLAIM_REWARD"
+msgstr ""
+
+#. context: ui
+msgid "UI_BATTLE_DECK_BUTTON"
+msgstr ""
+
+#. context: ui
+msgid "UI_BATTLE_DECK_POPUP_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_BATTLE_DECK_TOOLTIP"
+msgstr ""
+
+#. context: ui
+msgid "UI_BATTLE_DEFEAT"
+msgstr ""
+
+#. context: ui
+msgid "UI_BATTLE_EMPTY_LIST"
+msgstr ""
+
+#. context: ui
+msgid "UI_BATTLE_ENEMY_TURN"
+msgstr ""
+
+#. context: ui
+msgid "UI_BATTLE_NO_PLAYABLE_CARDS"
+msgstr ""
+
+#. context: ui
+msgid "UI_BATTLE_RESTART"
+msgstr ""
+
+#. context: ui
+msgid "UI_BATTLE_RETURN_TO_MAP"
+msgstr ""
+
+#. context: ui
+msgid "UI_BATTLE_RUN_SUMMARY"
+msgstr ""
+
+#. context: ui
+msgid "UI_BATTLE_VICTORY"
+msgstr ""
+
+#. context: ui
+msgid "UI_BATTLE_YOUR_TURN"
+msgstr ""
+
+#. context: ui
+msgid "UI_BUY_FOR_FAME"
+msgstr ""
+
+#. context: ui
+msgid "UI_BUY_FOR_GOLD"
+msgstr ""
+
+#. context: ui
+msgid "UI_CARD_LOCKED_STATUS"
+msgstr ""
+
+#. context: ui
+msgid "UI_CARD_PREVIEW_TOOLTIP"
+msgstr ""
+
+#. context: ui
+msgid "UI_CARD_STATE_UNLOCKED"
+msgstr ""
+
+#. context: ui
+msgid "UI_CARD_UNLOCKED_STATUS"
+msgstr ""
+
+#. context: ui
+msgid "UI_DECK_EMPTY"
+msgstr ""
+
+#. context: ui
+msgid "UI_DECK_ROW_FORMAT"
+msgstr ""
+
+#. context: ui
+msgid "UI_DECK_SOURCE_PREVIEW"
+msgstr ""
+
+#. context: ui
+msgid "UI_DECK_SOURCE_RUN"
+msgstr ""
+
+#. context: ui
+msgid "UI_DECK_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_EVENT_CONTINUE_BUTTON"
+msgstr ""
+
+#. context: ui
+msgid "UI_EVENT_DECISION_HEADER"
+msgstr ""
+
+#. context: ui
+msgid "UI_EVENT_GUARANTEED"
+msgstr ""
+
+#. context: ui
+msgid "UI_EVENT_NO_COST"
+msgstr ""
+
+#. context: ui
+msgid "UI_EVENT_PRICE"
+msgstr ""
+
+#. context: ui
+msgid "UI_EVENT_REQUIRED_RESERVE"
+msgstr ""
+
+#. context: ui
+msgid "UI_EVENT_RESULT_HEADER"
+msgstr ""
+
+#. context: ui
+msgid "UI_EVENT_RISKY"
+msgstr ""
+
+#. context: ui
+msgid "UI_EVENT_SHORTFALL"
+msgstr ""
+
+#. context: ui
+msgid "UI_FAME_LABEL"
+msgstr ""
+
+#. context: ui
+msgid "UI_GOLD_LABEL"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_CONTINUE_RUN"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_DEBUG_AI_TOOLTIP"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_DEBUG_STRATEGY_AGGRESSIVE"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_DEBUG_STRATEGY_BALANCED"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_DEBUG_STRATEGY_BOSS"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_DEBUG_STRATEGY_BUILDER"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_DEBUG_STRATEGY_ECONOMIST"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_EYEBROW"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_FLOOR_PROGRESS"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_FOOTER"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_NEW_RUN"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_PROFILE"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_QUICK_BATTLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_QUICK_BATTLE_TOOLTIP"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_SAVED_RUN"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_SETTINGS"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_TAGLINE"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_TITLE_PRIMARY"
+msgstr ""
+
+#. context: ui
+msgid "UI_MAIN_MENU_TITLE_SECONDARY"
+msgstr ""
+
+#. context: ui
+msgid "UI_META_SHOP_FINAL_EFFECT"
+msgstr ""
+
+#. context: ui
+msgid "UI_META_SHOP_GROUP_FOUNDATION"
+msgstr ""
+
+#. context: ui
+msgid "UI_META_SHOP_GROUP_RESOURCES"
+msgstr ""
+
+#. context: ui
+msgid "UI_META_SHOP_GROUP_UTILITY"
+msgstr ""
+
+#. context: ui
+msgid "UI_META_SHOP_HINT"
+msgstr ""
+
+#. context: ui
+msgid "UI_META_SHOP_LEVEL_LABEL"
+msgstr ""
+
+#. context: ui
+msgid "UI_META_SHOP_MAX_SHORT"
+msgstr ""
+
+#. context: ui
+msgid "UI_META_SHOP_NEXT_EFFECT"
+msgstr ""
+
+#. context: ui
+msgid "UI_META_SHOP_NO_RARE_CARDS"
+msgstr ""
+
+#. context: ui
+msgid "UI_META_SHOP_ROW_FORMAT"
+msgstr ""
+
+#. context: ui
+msgid "UI_META_SHOP_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_META_SHOP_UNLOCKS_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_META_SHOP_UNLOCK_ROW_FORMAT"
+msgstr ""
+
+#. context: ui
+msgid "UI_PROFILE_COLLECTION_PROGRESS"
+msgstr ""
+
+#. context: ui
+msgid "UI_PROFILE_FAME"
+msgstr ""
+
+#. context: ui
+msgid "UI_PROFILE_LOCAL_PROFILE"
+msgstr ""
+
+#. context: ui
+msgid "UI_PROFILE_TAB_DECK"
+msgstr ""
+
+#. context: ui
+msgid "UI_PROFILE_TAB_STATS"
+msgstr ""
+
+#. context: ui
+msgid "UI_PROFILE_TAB_UPGRADES"
+msgstr ""
+
+#. context: ui
+msgid "UI_REST_BONUS_PREVIEW"
+msgstr ""
+
+#. context: ui
+msgid "UI_REST_CONFIRM_BUTTON"
+msgstr ""
+
+#. context: ui
+msgid "UI_REST_DURATION_NOTE"
+msgstr ""
+
+#. context: ui
+msgid "UI_REST_GENERATOR_DUNGEON"
+msgstr ""
+
+#. context: ui
+msgid "UI_REST_GENERATOR_MAGIC"
+msgstr ""
+
+#. context: ui
+msgid "UI_REST_GENERATOR_OPTION_DESC"
+msgstr ""
+
+#. context: ui
+msgid "UI_REST_GENERATOR_OPTION_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_REST_GENERATOR_QUARRY"
+msgstr ""
+
+#. context: ui
+msgid "UI_REST_MAX_REACHED"
+msgstr ""
+
+#. context: ui
+msgid "UI_REST_SELECTED_FORMAT"
+msgstr ""
+
+#. context: ui
+msgid "UI_REST_SELECTION_HINT"
+msgstr ""
+
+#. context: ui
+msgid "UI_REST_SUBTITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_REST_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_REST_TOWER_OPTION_DESC"
+msgstr ""
+
+#. context: ui
+msgid "UI_REST_TOWER_OPTION_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_REST_UNAVAILABLE_SHORT"
+msgstr ""
+
+#. context: ui
+msgid "UI_REWARD_ARTIFACT_TAG"
+msgstr ""
+
+#. context: ui
+msgid "UI_REWARD_CONFIRM"
+msgstr ""
+
+#. context: ui
+msgid "UI_REWARD_COST_TAG"
+msgstr ""
+
+#. context: ui
+msgid "UI_REWARD_SKIP"
+msgstr ""
+
+#. context: ui
+msgid "UI_REWARD_SUBTITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_REWARD_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_ARTIFACTS_COLLECTED"
+msgstr ""
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_ARTIFACT_ROW"
+msgstr ""
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_BOSS_VICTORY"
+msgstr ""
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_ELITES_DEFEATED"
+msgstr ""
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_FAME_EARNED"
+msgstr ""
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_FLOORS_PASSED"
+msgstr ""
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_GOLD_NOT_SAVED"
+msgstr ""
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_MENU_BUTTON"
+msgstr ""
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_RUN_OVER"
+msgstr ""
+
+#. context: ui
+msgid "UI_SETTINGS_ACCESSIBILITY_EMPTY"
+msgstr ""
+
+#. context: ui
+msgid "UI_SETTINGS_ACCESSIBILITY_SECTION"
+msgstr ""
+
+#. context: ui
+msgid "UI_SETTINGS_CONFIRM_RESET"
+msgstr ""
+
+#. context: ui
+msgid "UI_SETTINGS_GAME_EMPTY"
+msgstr ""
+
+#. context: ui
+msgid "UI_SETTINGS_GAME_SECTION"
+msgstr ""
+
+#. context: ui
+msgid "UI_SETTINGS_LANGUAGE_EN"
+msgstr ""
+
+#. context: ui
+msgid "UI_SETTINGS_LANGUAGE_HINT"
+msgstr ""
+
+#. context: ui
+msgid "UI_SETTINGS_LANGUAGE_RU"
+msgstr ""
+
+#. context: ui
+msgid "UI_SETTINGS_LANGUAGE_SECTION"
+msgstr ""
+
+#. context: ui
+msgid "UI_SETTINGS_RESET_BUTTON"
+msgstr ""
+
+#. context: ui
+msgid "UI_SETTINGS_RESET_EXPLANATION"
+msgstr ""
+
+#. context: ui
+msgid "UI_SETTINGS_RESET_SECTION"
+msgstr ""
+
+#. context: ui
+msgid "UI_SETTINGS_RESET_SUMMARY"
+msgstr ""
+
+#. context: ui
+msgid "UI_SETTINGS_SOUND_SECTION"
+msgstr ""
+
+#. context: ui
+msgid "UI_SETTINGS_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_SETTINGS_VOLUME_LABEL"
+msgstr ""
+
+#. context: ui
+msgid "UI_SETTINGS_VOLUME_TOOLTIP"
+msgstr ""
+
+#. context: ui
+msgid "UI_SHOP_BUY_SECTION_HINT"
+msgstr ""
+
+#. context: ui
+msgid "UI_SHOP_BUY_SECTION_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_SHOP_LEAVE_BUTTON"
+msgstr ""
+
+#. context: ui
+msgid "UI_SHOP_REASON_AVAILABLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_SHOP_REASON_BOUGHT"
+msgstr ""
+
+#. context: ui
+msgid "UI_SHOP_REASON_CARD_GONE"
+msgstr ""
+
+#. context: ui
+msgid "UI_SHOP_REASON_LAST_CARD"
+msgstr ""
+
+#. context: ui
+msgid "UI_SHOP_REASON_NOT_ENOUGH_GOLD"
+msgstr ""
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_BUTTON"
+msgstr ""
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_DIALOG_OK"
+msgstr ""
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_DIALOG_TEXT"
+msgstr ""
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_DIALOG_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_EMPTY_DECK"
+msgstr ""
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_LAST_CARD_WARNING"
+msgstr ""
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_ROW_FORMAT"
+msgstr ""
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_SECTION_HINT"
+msgstr ""
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_SECTION_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_SHOP_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_STATS_MAX_TOWER_HEIGHT"
+msgstr ""
+
+#. context: ui
+msgid "UI_STATS_RUNS_COMPLETED"
+msgstr ""
+
+#. context: ui
+msgid "UI_STATS_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_STATS_UNLOCKED_ARTIFACTS"
+msgstr ""
+
+#. context: ui
+msgid "UI_STATS_UNLOCKED_CARDS"
+msgstr ""
+
+#. context: ui
+msgid "UI_STATS_WINS"
+msgstr ""
+
+#. context: ui
+msgid "UI_UNLOCKED_SHORT"
+msgstr ""
+
+#. context: ui
+msgid "UI_UNLOCK_FOR_FAME"
+msgstr ""
+
+#. context: ui
+msgid "UI_UPGRADE_STATE_AFFORDABLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_UPGRADE_STATE_LOCKED"
+msgstr ""
+
+#. context: ui
+msgid "UI_UPGRADE_STATE_MAX"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_HUD"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_INITIAL_HINT"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_BATTLE_PREVIEW"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_BATTLE_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_BOSS_PREVIEW"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_BOSS_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_ELITE_PREVIEW"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_ELITE_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_EVENT_PREVIEW"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_EVENT_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_FLOOR_PREVIEW"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_REST_PREVIEW"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_REST_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_SHOP_PREVIEW"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_SHOP_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_UNKNOWN_PREVIEW"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_UNKNOWN_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_PATH_LOCKED"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_PATH_LOCKED_HINT"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_STATE_AVAILABLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_STATE_COMPLETED"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_STATE_CURRENT"
+msgstr ""
+
+#. context: ui
+msgid "UI_WORLD_MAP_STATE_LOCKED"
+msgstr ""
+
+#. context: ui
+msgid "UPGRADE_DUNGEON_DESC"
+msgstr ""
+
+#. context: ui
+msgid "UPGRADE_DUNGEON_NAME"
+msgstr ""
+
+#. context: ui
+msgid "UPGRADE_HAND_SIZE_DESC"
+msgstr ""
+
+#. context: ui
+msgid "UPGRADE_HAND_SIZE_NAME"
+msgstr ""
+
+#. context: ui
+msgid "UPGRADE_MAGIC_DESC"
+msgstr ""
+
+#. context: ui
+msgid "UPGRADE_MAGIC_NAME"
+msgstr ""
+
+#. context: ui
+msgid "UPGRADE_QUARRY_DESC"
+msgstr ""
+
+#. context: ui
+msgid "UPGRADE_QUARRY_NAME"
+msgstr ""
+
+#. context: ui
+msgid "UPGRADE_TOWER_DESC"
+msgstr ""
+
+#. context: ui
+msgid "UPGRADE_TOWER_NAME"
+msgstr ""
+
+#. context: ui
+msgid "UPGRADE_WALL_DESC"
+msgstr ""
+
+#. context: ui
+msgid "UPGRADE_WALL_NAME"
+msgstr ""
+

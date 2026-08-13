@@ -1,0 +1,1896 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: arcomage-alfa\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. context: card
+msgid "CARD_BEASTS_ALPHA_DEN_DESC"
+msgstr "Beast Generator +2, Wall +10."
+
+#. context: card
+msgid "CARD_BEASTS_ALPHA_DEN_NAME"
+msgstr "Alpha's Den"
+
+#. context: card
+msgid "CARD_BEASTS_ANCIENTS_DEN_DESC"
+msgstr "Beast Generator +4, Wall +18."
+
+#. context: card
+msgid "CARD_BEASTS_ANCIENTS_DEN_NAME"
+msgstr "Den of the Ancients"
+
+#. context: card
+msgid "CARD_BEASTS_ANCIENT_LEVIATHAN_DESC"
+msgstr "Deals 10 damage to the enemy tower (ignores the wall)."
+
+#. context: card
+msgid "CARD_BEASTS_ANCIENT_LEVIATHAN_NAME"
+msgstr "Ancient Leviathan"
+
+#. context: card
+msgid "CARD_BEASTS_BEAST_FARM_DESC"
+msgstr "Beast Generator +2, deals 4 damage."
+
+#. context: card
+msgid "CARD_BEASTS_BEAST_FARM_NAME"
+msgstr "Beast Farm"
+
+#. context: card
+msgid "CARD_BEASTS_BEAST_KENNEL_DESC"
+msgstr "Beast Generator +3, Wall +6."
+
+#. context: card
+msgid "CARD_BEASTS_BEAST_KENNEL_NAME"
+msgstr "Beast Kennel"
+
+#. context: card
+msgid "CARD_BEASTS_DEFENSIVE_PACK_DESC"
+msgstr "Builds the wall by 7."
+
+#. context: card
+msgid "CARD_BEASTS_DEFENSIVE_PACK_NAME"
+msgstr "Defensive Pack"
+
+#. context: card
+msgid "CARD_BEASTS_DRAGON_DESC"
+msgstr "Deals 9 damage to the enemy tower (ignores the wall). Enemy wall -3."
+
+#. context: card
+msgid "CARD_BEASTS_DRAGON_NAME"
+msgstr "Dragon"
+
+#. context: card
+msgid "CARD_BEASTS_GOBLIN_DESC"
+msgstr "Deals 2 damage to the enemy."
+
+#. context: card
+msgid "CARD_BEASTS_GOBLIN_NAME"
+msgstr "Goblin"
+
+#. context: card
+msgid "CARD_BEASTS_GOLIATH_DESC"
+msgstr "Wall +18."
+
+#. context: card
+msgid "CARD_BEASTS_GOLIATH_NAME"
+msgstr "Goliath"
+
+#. context: card
+msgid "CARD_BEASTS_GRIFFIN_DESC"
+msgstr "Deals 9 damage to the enemy."
+
+#. context: card
+msgid "CARD_BEASTS_GRIFFIN_NAME"
+msgstr "Griffin"
+
+#. context: card
+msgid "CARD_BEASTS_GUARD_DESC"
+msgstr "Builds the wall by 4."
+
+#. context: card
+msgid "CARD_BEASTS_GUARD_NAME"
+msgstr "Guardian"
+
+#. context: card
+msgid "CARD_BEASTS_HUNTER_DESC"
+msgstr "Beast Generator +1, deals 1 damage."
+
+#. context: card
+msgid "CARD_BEASTS_HUNTER_NAME"
+msgstr "Beast Hunter"
+
+#. context: card
+msgid "CARD_BEASTS_HUNTING_LODGE_DESC"
+msgstr "Beast Generator +1, Wall +3."
+
+#. context: card
+msgid "CARD_BEASTS_HUNTING_LODGE_NAME"
+msgstr "Hunting Lodge"
+
+#. context: card
+msgid "CARD_BEASTS_HYDRA_DESC"
+msgstr "Deals 15 damage to the enemy. Enemy wall -4."
+
+#. context: card
+msgid "CARD_BEASTS_HYDRA_NAME"
+msgstr "Hydra"
+
+#. context: card
+msgid "CARD_BEASTS_KNIGHT_DESC"
+msgstr "Deals 5 damage to the opponent."
+
+#. context: card
+msgid "CARD_BEASTS_KNIGHT_NAME"
+msgstr "Knight"
+
+#. context: card
+msgid "CARD_BEASTS_MILITIA_DESC"
+msgstr "Builds the wall by 2."
+
+#. context: card
+msgid "CARD_BEASTS_MILITIA_NAME"
+msgstr "Militia"
+
+#. context: card
+msgid "CARD_BEASTS_ORC_DESC"
+msgstr "Deals 8 damage to the enemy."
+
+#. context: card
+msgid "CARD_BEASTS_ORC_NAME"
+msgstr "Orc"
+
+#. context: card
+msgid "CARD_BEASTS_TAMING_DESC"
+msgstr "Draw 1 card."
+
+#. context: card
+msgid "CARD_BEASTS_TAMING_NAME"
+msgstr "Taming"
+
+#. context: card
+msgid "CARD_BEASTS_TROLL_DESC"
+msgstr "Deals 12 damage to the enemy."
+
+#. context: card
+msgid "CARD_BEASTS_TROLL_NAME"
+msgstr "Troll"
+
+#. context: card
+msgid "CARD_BEASTS_VAMPIRE_DESC"
+msgstr "Deals 6 damage to the enemy, your tower +3."
+
+#. context: card
+msgid "CARD_BEASTS_VAMPIRE_NAME"
+msgstr "Vampire"
+
+#. context: card
+msgid "CARD_BEASTS_WILD_HOUNDS_DESC"
+msgstr "Deals 3 damage to the enemy, enemy Beast Generator -1."
+
+#. context: card
+msgid "CARD_BEASTS_WILD_HOUNDS_NAME"
+msgstr "Wild Hounds"
+
+#. context: card
+msgid "CARD_BEASTS_WOLF_PACK_DESC"
+msgstr "Deals 6 damage to the enemy wall."
+
+#. context: card
+msgid "CARD_BEASTS_WOLF_PACK_NAME"
+msgstr "Wolf Pack"
+
+#. context: card
+msgid "CARD_BEASTS_WYVERN_DESC"
+msgstr "Deals 8 damage to the enemy tower (ignores the wall)."
+
+#. context: card
+msgid "CARD_BEASTS_WYVERN_NAME"
+msgstr "Wyvern"
+
+#. context: card
+msgid "CARD_BRICKS_BATTERING_RAM_DESC"
+msgstr "Deals 2 damage to the enemy."
+
+#. context: card
+msgid "CARD_BRICKS_BATTERING_RAM_NAME"
+msgstr "Battering Ram"
+
+#. context: card
+msgid "CARD_BRICKS_BRICK_FACTORY_DESC"
+msgstr "Brick Generator +1, Wall +3."
+
+#. context: card
+msgid "CARD_BRICKS_BRICK_FACTORY_NAME"
+msgstr "Brick Factory"
+
+#. context: card
+msgid "CARD_BRICKS_CATAPULT_DESC"
+msgstr "Deals 7 damage to the enemy."
+
+#. context: card
+msgid "CARD_BRICKS_CATAPULT_NAME"
+msgstr "Catapult"
+
+#. context: card
+msgid "CARD_BRICKS_CITY_SIEGE_DESC"
+msgstr "Deals 11 damage to the enemy."
+
+#. context: card
+msgid "CARD_BRICKS_CITY_SIEGE_NAME"
+msgstr "Siege of the City"
+
+#. context: card
+msgid "CARD_BRICKS_DEEP_QUARRY_DESC"
+msgstr "Brick Generator +2, Wall +5."
+
+#. context: card
+msgid "CARD_BRICKS_DEEP_QUARRY_NAME"
+msgstr "Deep Quarry"
+
+#. context: card
+msgid "CARD_BRICKS_DONJON_DESC"
+msgstr "Builds the tower by 16."
+
+#. context: card
+msgid "CARD_BRICKS_DONJON_NAME"
+msgstr "Donjon"
+
+#. context: card
+msgid "CARD_BRICKS_DRILL_DESC"
+msgstr "Deals 3 damage to the enemy wall."
+
+#. context: card
+msgid "CARD_BRICKS_DRILL_NAME"
+msgstr "Drill"
+
+#. context: card
+msgid "CARD_BRICKS_DWARVEN_MINE_DESC"
+msgstr "Brick Generator +2, Tower +8."
+
+#. context: card
+msgid "CARD_BRICKS_DWARVEN_MINE_NAME"
+msgstr "Dwarven Mine"
+
+#. context: card
+msgid "CARD_BRICKS_FORTIFICATION_DESC"
+msgstr "Builds the wall by 8."
+
+#. context: card
+msgid "CARD_BRICKS_FORTIFICATION_NAME"
+msgstr "Fortification"
+
+#. context: card
+msgid "CARD_BRICKS_FORTRESS_WALL_DESC"
+msgstr "Builds the wall by 11."
+
+#. context: card
+msgid "CARD_BRICKS_FORTRESS_WALL_NAME"
+msgstr "Fortress Wall"
+
+#. context: card
+msgid "CARD_BRICKS_FOUNDATION_DESC"
+msgstr "Tower +2, Wall +1."
+
+#. context: card
+msgid "CARD_BRICKS_FOUNDATION_NAME"
+msgstr "Foundation"
+
+#. context: card
+msgid "CARD_BRICKS_GREAT_BASTION_DESC"
+msgstr "Builds the tower by 20."
+
+#. context: card
+msgid "CARD_BRICKS_GREAT_BASTION_NAME"
+msgstr "Great Bastion"
+
+#. context: card
+msgid "CARD_BRICKS_GREAT_WALL_DESC"
+msgstr "Builds the wall by 16."
+
+#. context: card
+msgid "CARD_BRICKS_GREAT_WALL_NAME"
+msgstr "Great Wall"
+
+#. context: card
+msgid "CARD_BRICKS_IMPERIAL_QUARRY_DESC"
+msgstr "Brick Generator +3, Tower +16."
+
+#. context: card
+msgid "CARD_BRICKS_IMPERIAL_QUARRY_NAME"
+msgstr "Imperial Quarry"
+
+#. context: card
+msgid "CARD_BRICKS_LARGE_BRICK_FACTORY_DESC"
+msgstr "Brick Generator +2, Tower +2."
+
+#. context: card
+msgid "CARD_BRICKS_LARGE_BRICK_FACTORY_NAME"
+msgstr "Large Brick Factory"
+
+#. context: card
+msgid "CARD_BRICKS_MEDIUM_WALL_DESC"
+msgstr "Builds the wall by 7."
+
+#. context: card
+msgid "CARD_BRICKS_MEDIUM_WALL_NAME"
+msgstr "Medium Wall"
+
+#. context: card
+msgid "CARD_BRICKS_QUARRY_DESC"
+msgstr "Brick Generator +1, Wall +2."
+
+#. context: card
+msgid "CARD_BRICKS_QUARRY_NAME"
+msgstr "Quarry"
+
+#. context: card
+msgid "CARD_BRICKS_REPAIR_DESC"
+msgstr "If the Wall is below 3, Wall +3, otherwise Wall +1."
+
+#. context: card
+msgid "CARD_BRICKS_REPAIR_NAME"
+msgstr "Repair"
+
+#. context: card
+msgid "CARD_BRICKS_RESERVES_DESC"
+msgstr "If the Wall is below 5, Wall +7, otherwise Wall +3."
+
+#. context: card
+msgid "CARD_BRICKS_RESERVES_NAME"
+msgstr "Reserves"
+
+#. context: card
+msgid "CARD_BRICKS_SIEGE_ENGINE_DESC"
+msgstr "Deals 5 damage to the enemy wall."
+
+#. context: card
+msgid "CARD_BRICKS_SIEGE_ENGINE_NAME"
+msgstr "Siege Engine"
+
+#. context: card
+msgid "CARD_BRICKS_SIEGE_TOWER_DESC"
+msgstr "Deals 10 damage to the enemy."
+
+#. context: card
+msgid "CARD_BRICKS_SIEGE_TOWER_NAME"
+msgstr "Siege Tower"
+
+#. context: card
+msgid "CARD_BRICKS_WALL_DESC"
+msgstr "Increases your wall's height by 3."
+
+#. context: card
+msgid "CARD_BRICKS_WALL_NAME"
+msgstr "Wall"
+
+#. context: card
+msgid "CARD_GEMS_ABSOLUTE_CATACLYSM_DESC"
+msgstr "Deals 9 damage to the enemy tower (ignores the wall)."
+
+#. context: card
+msgid "CARD_GEMS_ABSOLUTE_CATACLYSM_NAME"
+msgstr "Absolute Cataclysm"
+
+#. context: card
+msgid "CARD_GEMS_APPRENTICE_MAGE_DESC"
+msgstr "Gem Generator +1, 1 damage to the enemy tower."
+
+#. context: card
+msgid "CARD_GEMS_APPRENTICE_MAGE_NAME"
+msgstr "Apprentice Mage"
+
+#. context: card
+msgid "CARD_GEMS_ARCHMAGE_DESC"
+msgstr "Gem Generator +2, 6 damage to the enemy tower."
+
+#. context: card
+msgid "CARD_GEMS_ARCHMAGE_NAME"
+msgstr "Archmage"
+
+#. context: card
+msgid "CARD_GEMS_ARCHMAGISTERIUM_DESC"
+msgstr "Gem Generator +3, 8 damage to the enemy tower."
+
+#. context: card
+msgid "CARD_GEMS_ARCHMAGISTERIUM_NAME"
+msgstr "Archmagisterium"
+
+#. context: card
+msgid "CARD_GEMS_ARMAGEDDON_DESC"
+msgstr "Deals 9 damage to the enemy tower (ignores the wall)."
+
+#. context: card
+msgid "CARD_GEMS_ARMAGEDDON_NAME"
+msgstr "Armageddon"
+
+#. context: card
+msgid "CARD_GEMS_CLAIRVOYANCE_DESC"
+msgstr "Draw 1 card."
+
+#. context: card
+msgid "CARD_GEMS_CLAIRVOYANCE_NAME"
+msgstr "Clairvoyance"
+
+#. context: card
+msgid "CARD_GEMS_CURSE_DESC"
+msgstr "Enemy resources -3 of all types."
+
+#. context: card
+msgid "CARD_GEMS_CURSE_NAME"
+msgstr "Curse"
+
+#. context: card
+msgid "CARD_GEMS_DUNGEON_CORRUPTION_DESC"
+msgstr "Enemy Beast Generator -2."
+
+#. context: card
+msgid "CARD_GEMS_DUNGEON_CORRUPTION_NAME"
+msgstr "Dungeon Corruption"
+
+#. context: card
+msgid "CARD_GEMS_ENERGY_SHIELD_DESC"
+msgstr "Builds the wall by 5."
+
+#. context: card
+msgid "CARD_GEMS_ENERGY_SHIELD_NAME"
+msgstr "Energy Shield"
+
+#. context: card
+msgid "CARD_GEMS_ESSENCE_THEFT_DESC"
+msgstr "Steals 4 Gems from the enemy."
+
+#. context: card
+msgid "CARD_GEMS_ESSENCE_THEFT_NAME"
+msgstr "Essence Theft"
+
+#. context: card
+msgid "CARD_GEMS_FIREBALL_DESC"
+msgstr "Deals 4 damage to the enemy tower (ignores the wall)."
+
+#. context: card
+msgid "CARD_GEMS_FIREBALL_NAME"
+msgstr "Fireball"
+
+#. context: card
+msgid "CARD_GEMS_FOUNDATION_DESTRUCTION_DESC"
+msgstr "All three enemy generators -2."
+
+#. context: card
+msgid "CARD_GEMS_FOUNDATION_DESTRUCTION_NAME"
+msgstr "Destruction of Foundations"
+
+#. context: card
+msgid "CARD_GEMS_GREAT_CURSE_DESC"
+msgstr "Enemy resources -6 of all types."
+
+#. context: card
+msgid "CARD_GEMS_GREAT_CURSE_NAME"
+msgstr "Great Curse"
+
+#. context: card
+msgid "CARD_GEMS_ICE_ARROW_DESC"
+msgstr "Deals 2 damage to the enemy tower (ignores the wall)."
+
+#. context: card
+msgid "CARD_GEMS_ICE_ARROW_NAME"
+msgstr "Ice Arrow"
+
+#. context: card
+msgid "CARD_GEMS_MAGIC_BOLT_DESC"
+msgstr "Deals 2 damage to the enemy tower (ignores the wall)."
+
+#. context: card
+msgid "CARD_GEMS_MAGIC_BOLT_NAME"
+msgstr "Magic Bolt"
+
+#. context: card
+msgid "CARD_GEMS_MAGIC_TOWER_DESC"
+msgstr "Gem Generator +2, 4 damage to the enemy tower."
+
+#. context: card
+msgid "CARD_GEMS_MAGIC_TOWER_NAME"
+msgstr "Magic Tower"
+
+#. context: card
+msgid "CARD_GEMS_METEORITE_DESC"
+msgstr "Deals 8 damage to the enemy tower (ignores the wall)."
+
+#. context: card
+msgid "CARD_GEMS_METEORITE_NAME"
+msgstr "Meteorite"
+
+#. context: card
+msgid "CARD_GEMS_NOVICE_MAGE_DESC"
+msgstr "Gem Generator +1, 1 damage to the enemy tower."
+
+#. context: card
+msgid "CARD_GEMS_NOVICE_MAGE_NAME"
+msgstr "Novice Mage"
+
+#. context: card
+msgid "CARD_GEMS_PROTECTION_SPELL_DESC"
+msgstr "Builds the wall by 1."
+
+#. context: card
+msgid "CARD_GEMS_PROTECTION_SPELL_NAME"
+msgstr "Protection Spell"
+
+#. context: card
+msgid "CARD_GEMS_PROTECTIVE_BARRIER_DESC"
+msgstr "Builds the wall by 5."
+
+#. context: card
+msgid "CARD_GEMS_PROTECTIVE_BARRIER_NAME"
+msgstr "Protective Barrier"
+
+#. context: card
+msgid "CARD_GEMS_QUARRY_CORRUPTION_DESC"
+msgstr "Enemy Brick Generator -2."
+
+#. context: card
+msgid "CARD_GEMS_QUARRY_CORRUPTION_NAME"
+msgstr "Quarry Corruption"
+
+#. context: card
+msgid "CARD_GEMS_SPARK_OF_FURY_DESC"
+msgstr "Deals 3 damage to the enemy tower (ignores the wall)."
+
+#. context: card
+msgid "CARD_GEMS_SPARK_OF_FURY_NAME"
+msgstr "Spark of Fury"
+
+#. context: card
+msgid "CARD_GEMS_TIME_THEFT_DESC"
+msgstr "Steals 5 of a random enemy resource (you gain the same resource)."
+
+#. context: card
+msgid "CARD_GEMS_TIME_THEFT_NAME"
+msgstr "Time Theft"
+
+#. context: artifact
+msgid "ARTIFACT_BOOK_OF_WISDOM_DESC"
+msgstr "Hand size limit increased to 6 (instead of 5)."
+
+#. context: artifact
+msgid "ARTIFACT_BOOK_OF_WISDOM_NAME"
+msgstr "Book of Wisdom"
+
+#. context: artifact
+msgid "ARTIFACT_DWARF_PICKAXE_DESC"
+msgstr "+1 to Brick income every turn."
+
+#. context: artifact
+msgid "ARTIFACT_DWARF_PICKAXE_NAME"
+msgstr "Dwarf's Pickaxe"
+
+#. context: artifact
+msgid "ARTIFACT_FOUNDERS_BLESSING_DESC"
+msgstr "At the start of battle, the Wall immediately gains +5 HP, and the Tower +3 HP."
+
+#. context: artifact
+msgid "ARTIFACT_FOUNDERS_BLESSING_NAME"
+msgstr "Founder's Blessing"
+
+#. context: artifact
+msgid "ARTIFACT_HORN_OF_PLENTY_DESC"
+msgstr "At the start of battle, all your generators become at least level 2."
+
+#. context: artifact
+msgid "ARTIFACT_HORN_OF_PLENTY_NAME"
+msgstr "Horn of Plenty"
+
+#. context: artifact
+msgid "ARTIFACT_LUCKY_COIN_DESC"
+msgstr "10% chance to not spend resources when playing a card."
+
+#. context: artifact
+msgid "ARTIFACT_LUCKY_COIN_NAME"
+msgstr "Lucky Coin"
+
+#. context: artifact
+msgid "ARTIFACT_MANA_SPHERE_DESC"
+msgstr "When you play a Gem card, you gain +1 Gem on top of the usual income."
+
+#. context: artifact
+msgid "ARTIFACT_MANA_SPHERE_NAME"
+msgstr "Sphere of Mana"
+
+#. context: artifact
+msgid "ARTIFACT_PREDATOR_FANG_DESC"
+msgstr "+1 to Beast income every turn."
+
+#. context: artifact
+msgid "ARTIFACT_PREDATOR_FANG_NAME"
+msgstr "Predator's Fang"
+
+#. context: artifact
+msgid "ARTIFACT_SPIKY_WALL_DESC"
+msgstr "When your wall is struck, the attacker takes 2 damage in return."
+
+#. context: artifact
+msgid "ARTIFACT_SPIKY_WALL_NAME"
+msgstr "Spiky Wall"
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_DESC"
+msgstr "A half-ruined warehouse stands by the road. Chests glimmer inside, but the rotten floor barely holds."
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_OPTION_1"
+msgstr "Search the warehouse"
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_OPTION_2"
+msgstr "Don't risk it"
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_RESULT_1"
+msgstr "A pouch of coins was found under the floorboards."
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_RESULT_2"
+msgstr "The floor collapsed, and some supplies had to be abandoned."
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_RESULT_3"
+msgstr "You leave the unreliable building behind."
+
+#. context: event
+msgid "EVENT_ABANDONED_WAREHOUSE_TITLE"
+msgstr "Abandoned Warehouse"
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_DESC"
+msgstr "An altar with two bowls — stone and crystal — stands amid the ruins. The runes demand an offering."
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_OPTION_1"
+msgstr "Put 10 gold in the stone bowl"
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_OPTION_2"
+msgstr "Put 7 gold in the crystal bowl"
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_OPTION_3"
+msgstr "Leave the altar alone"
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_RESULT_1"
+msgstr "The runes strengthen your Tower's foundation."
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_RESULT_2"
+msgstr "The crystal fills your magical channels with new power."
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_RESULT_3"
+msgstr "You decide not to awaken the ancient power."
+
+#. context: event
+msgid "EVENT_ANCIENT_ALTAR_TITLE"
+msgstr "Ancient Altar"
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_DESC"
+msgstr "Nomads are selling war beasts. Nearby lies a cheap egg of unguaranteed origin."
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_OPTION_1"
+msgstr "Hire an orc for 7 gold"
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_OPTION_2"
+msgstr "Buy the mysterious egg for 4 gold"
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_OPTION_3"
+msgstr "Don't participate"
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_RESULT_1"
+msgstr "The orc accepts payment and joins your ranks."
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_RESULT_2"
+msgstr "A young beast hatches from the egg, along with a Beast Hunter."
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_RESULT_3"
+msgstr "A feisty goblin hatches from the egg."
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_RESULT_4"
+msgstr "You leave the noisy auction."
+
+#. context: event
+msgid "EVENT_BEAST_AUCTION_TITLE"
+msgstr "Beast Auction"
+
+#. context: event
+msgid "EVENT_BEAST_DEN_DESC"
+msgstr "A pack hides in the ravine. Good bait would let you tame it, but you could risk it unprepared."
+
+#. context: event
+msgid "EVENT_BEAST_DEN_OPTION_1"
+msgstr "Buy bait for 6 gold"
+
+#. context: event
+msgid "EVENT_BEAST_DEN_OPTION_2"
+msgstr "Sneak up to the den"
+
+#. context: event
+msgid "EVENT_BEAST_DEN_OPTION_3"
+msgstr "Go around the ravine"
+
+#. context: event
+msgid "EVENT_BEAST_DEN_RESULT_1"
+msgstr "The pack accepts you as its leader."
+
+#. context: event
+msgid "EVENT_BEAST_DEN_RESULT_2"
+msgstr "An experienced beast hunter comes out to meet you and joins you."
+
+#. context: event
+msgid "EVENT_BEAST_DEN_RESULT_3"
+msgstr "The beasts ransack your supply bag."
+
+#. context: event
+msgid "EVENT_BEAST_DEN_RESULT_4"
+msgstr "You don't disturb the pack."
+
+#. context: event
+msgid "EVENT_BEAST_DEN_TITLE"
+msgstr "Beast Den"
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_DESC"
+msgstr "The clink of pickaxes can be heard beyond the rubble. The miners promise to share their knowledge or the gold they found."
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_OPTION_1"
+msgstr "Hire workers for 6 gold"
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_OPTION_2"
+msgstr "Look for a way around yourself"
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_OPTION_3"
+msgstr "Don't linger"
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_RESULT_1"
+msgstr "The passage is cleared, and the miners improve your Quarry."
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_RESULT_2"
+msgstr "A stash is found in a side tunnel."
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_RESULT_3"
+msgstr "A new collapse damages some of your equipment."
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_RESULT_4"
+msgstr "You leave the mine behind."
+
+#. context: event
+msgid "EVENT_COLLAPSED_MINE_TITLE"
+msgstr "Collapsed Mine"
+
+#. context: event
+msgid "EVENT_DICE_GAME_DESC"
+msgstr "A game for gold is underway at the roadside tavern. The host offers a normal or a high stake."
+
+#. context: event
+msgid "EVENT_DICE_GAME_OPTION_1"
+msgstr "Bet 5 gold"
+
+#. context: event
+msgid "EVENT_DICE_GAME_OPTION_2"
+msgstr "Bet 10 gold"
+
+#. context: event
+msgid "EVENT_DICE_GAME_OPTION_3"
+msgstr "Don't play"
+
+#. context: event
+msgid "EVENT_DICE_GAME_RESULT_1"
+msgstr "The dice favor you: you take the winnings."
+
+#. context: event
+msgid "EVENT_DICE_GAME_RESULT_2"
+msgstr "The roll fails, the bet is lost."
+
+#. context: event
+msgid "EVENT_DICE_GAME_RESULT_3"
+msgstr "A rare combination brings a big payout."
+
+#. context: event
+msgid "EVENT_DICE_GAME_RESULT_4"
+msgstr "The opponent wins your bet."
+
+#. context: event
+msgid "EVENT_DICE_GAME_RESULT_5"
+msgstr "You keep your gold and leave the tavern."
+
+#. context: event
+msgid "EVENT_DICE_GAME_TITLE"
+msgstr "Dice Game"
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_DESC"
+msgstr "A dwarven caravan is stuck on a washed-out road. The merchants offer blueprints or a share of the proceeds for help."
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_OPTION_1"
+msgstr "Buy a blueprint for 6 gold"
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_OPTION_2"
+msgstr "Help push the carts"
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_OPTION_3"
+msgstr "Continue on your way"
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_RESULT_1"
+msgstr "You receive the blueprint for «Deep Quarry»."
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_RESULT_2"
+msgstr "The caravan is saved, and the merchants pay generously."
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_RESULT_3"
+msgstr "A wheel breaks, and you have to pay for the repair."
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_RESULT_4"
+msgstr "You wish the merchants luck and leave."
+
+#. context: event
+msgid "EVENT_DWARVEN_CARAVAN_TITLE"
+msgstr "Dwarven Caravan"
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_DESC"
+msgstr "Stone gargoyles guard the bridge and demand you answer a riddle or pay a toll."
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_OPTION_1"
+msgstr "Answer the riddle"
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_OPTION_2"
+msgstr "Pay the masons 6 gold"
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_OPTION_3"
+msgstr "Find another way"
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_RESULT_1"
+msgstr "The gargoyles laugh and open a chest of gold."
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_RESULT_2"
+msgstr "The answer is wrong, and the gargoyles take a penalty."
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_RESULT_3"
+msgstr "The masons reinforce your Tower and distract the guardians."
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_RESULT_4"
+msgstr "The detour takes time but preserves your supplies."
+
+#. context: event
+msgid "EVENT_GARGOYLE_RIDDLE_TITLE"
+msgstr "Riddle of the Gargoyles"
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_DESC"
+msgstr "An old master offers a safe full course or a free but harsh trial."
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_OPTION_1"
+msgstr "Pay for the full course for 6 gold"
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_OPTION_2"
+msgstr "Take the trial"
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_OPTION_3"
+msgstr "Decline"
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_RESULT_1"
+msgstr "You master new ways of quarrying stone."
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_RESULT_2"
+msgstr "The master recognizes your talent and reveals the Quarry's secret."
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_RESULT_3"
+msgstr "The trial fails; gold is spent restoring your equipment."
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_RESULT_4"
+msgstr "You thank the master and continue on your way."
+
+#. context: event
+msgid "EVENT_HERMIT_TRAINING_TITLE"
+msgstr "Training with the Master"
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_DESC"
+msgstr "A torrent of raw magic rages over the road. You can ground it or try to channel it into your own conduits."
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_OPTION_1"
+msgstr "Set up lightning rods for 7 gold"
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_OPTION_2"
+msgstr "Enter the torrent unprotected"
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_OPTION_3"
+msgstr "Wait out the storm"
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_RESULT_1"
+msgstr "The captured energy permanently boosts the run's Magic."
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_RESULT_2"
+msgstr "You tame the storm and boost your Magic."
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_RESULT_3"
+msgstr "A discharge destroys some of your supplies."
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_RESULT_4"
+msgstr "The storm subsides without causing harm."
+
+#. context: event
+msgid "EVENT_MAGIC_STORM_TITLE"
+msgstr "Magic Storm"
+
+#. context: event
+msgid "EVENT_MOON_WELL_DESC"
+msgstr "The water in the old well reflects not the sky, but a possible future. Runes of offering are carved on its rim."
+
+#. context: event
+msgid "EVENT_MOON_WELL_OPTION_1"
+msgstr "Throw 7 gold into the water"
+
+#. context: event
+msgid "EVENT_MOON_WELL_OPTION_2"
+msgstr "Buy a rune for 3 gold"
+
+#. context: event
+msgid "EVENT_MOON_WELL_OPTION_3"
+msgstr "Don't look into the future"
+
+#. context: event
+msgid "EVENT_MOON_WELL_RESULT_1"
+msgstr "Moonlight boosts Magic for the rest of the run."
+
+#. context: event
+msgid "EVENT_MOON_WELL_RESULT_2"
+msgstr "The card «Clairvoyance» appears in your hand."
+
+#. context: event
+msgid "EVENT_MOON_WELL_RESULT_3"
+msgstr "You leave the well and its secrets behind."
+
+#. context: event
+msgid "EVENT_MOON_WELL_TITLE"
+msgstr "Moon Well"
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_DESC"
+msgstr "Tools and a few unfinished mechanisms survived in the siege engineers' workshop."
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_OPTION_1"
+msgstr "Restore the catapult for 8 gold"
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_OPTION_2"
+msgstr "Rummage through the wreckage"
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_OPTION_3"
+msgstr "Leave the ruins"
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_RESULT_1"
+msgstr "The engineers finish assembling the «Catapult»."
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_RESULT_2"
+msgstr "You find a complete repair kit."
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_RESULT_3"
+msgstr "An unstable roof collapses onto your supplies."
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_RESULT_4"
+msgstr "You decide not to push your luck."
+
+#. context: event
+msgid "EVENT_RUINED_WORKSHOP_TITLE"
+msgstr "Ruined Workshop"
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_DESC"
+msgstr "A master rune-carver offers to reinforce the Tower's foundation or sell a finished stone slab."
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_OPTION_1"
+msgstr "Order reinforcement for 8 gold"
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_OPTION_2"
+msgstr "Buy the slab for 2 gold"
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_OPTION_3"
+msgstr "Decline"
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_RESULT_1"
+msgstr "The runic masonry strengthens the Tower for the rest of the run."
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_RESULT_2"
+msgstr "The mason gives you the «Foundation» card."
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_RESULT_3"
+msgstr "You leave the mason to his work."
+
+#. context: event
+msgid "EVENT_RUNIC_MASON_TITLE"
+msgstr "Runic Mason"
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_DESC"
+msgstr "A card sharp sits by the campfire with three sealed cards. For six coins he'll let you draw one."
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_OPTION_1"
+msgstr "Pay 6 gold and draw a card"
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_OPTION_2"
+msgstr "Don't play"
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_RESULT_1"
+msgstr "You get «Fireball»."
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_RESULT_2"
+msgstr "You get «Catapult»."
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_RESULT_3"
+msgstr "You get «Wolf Pack»."
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_RESULT_4"
+msgstr "You don't trust the sharp's smile and leave."
+
+#. context: event
+msgid "EVENT_WANDERING_MERCHANT_TITLE"
+msgstr "Card Sharp"
+
+#. context: event
+msgid "EVENT_WOUNDED_TRAVELER_DESC"
+msgstr "A wounded knight lies by the road. He needs supplies to get back on his feet."
+
+#. context: event
+msgid "EVENT_WOUNDED_TRAVELER_OPTION_1"
+msgstr "Buy supplies for 3 gold"
+
+#. context: event
+msgid "EVENT_WOUNDED_TRAVELER_OPTION_2"
+msgstr "Show him the way to the nearest settlement"
+
+#. context: event
+msgid "EVENT_WOUNDED_TRAVELER_RESULT_1"
+msgstr "The knight thanks you and joins your journey."
+
+#. context: event
+msgid "EVENT_WOUNDED_TRAVELER_RESULT_2"
+msgstr "The traveler thanks you for the advice, and you continue on your way."
+
+#. context: event
+msgid "EVENT_WOUNDED_TRAVELER_TITLE"
+msgstr "Wounded Traveler"
+
+#. context: ui
+msgid "COMMON_BACK"
+msgstr "Back"
+
+#. context: ui
+msgid "COMMON_BACK_TO_MENU"
+msgstr "Back to Menu"
+
+#. context: ui
+msgid "COMMON_CANCEL"
+msgstr "Cancel"
+
+#. context: ui
+msgid "COMMON_CLOSE"
+msgstr "Close"
+
+#. context: ui
+msgid "COMMON_PROFILE_TITLE"
+msgstr "PROFILE"
+
+#. context: ui
+msgid "COMMON_SELECT"
+msgstr "Select"
+
+#. context: ui
+msgid "MSG_META_SHOP_CARD_UNLOCKED"
+msgstr "Card unlocked: %s!"
+
+#. context: ui
+msgid "MSG_META_SHOP_UPGRADE_PURCHASED"
+msgstr "Upgrade acquired: %s!"
+
+#. context: ui
+msgid "UI_BATTLE_CLAIM_REWARD"
+msgstr "Claim Reward"
+
+#. context: ui
+msgid "UI_BATTLE_DECK_BUTTON"
+msgstr "Deck\n%d"
+
+#. context: ui
+msgid "UI_BATTLE_DECK_POPUP_TITLE"
+msgstr "Deck"
+
+#. context: ui
+msgid "UI_BATTLE_DECK_TOOLTIP"
+msgstr "Show deck"
+
+#. context: ui
+msgid "UI_BATTLE_DEFEAT"
+msgstr "Defeat"
+
+#. context: ui
+msgid "UI_BATTLE_EMPTY_LIST"
+msgstr "Empty"
+
+#. context: ui
+msgid "UI_BATTLE_ENEMY_TURN"
+msgstr "ENEMY TURN"
+
+#. context: ui
+msgid "UI_BATTLE_NO_PLAYABLE_CARDS"
+msgstr "No playable cards"
+
+#. context: ui
+msgid "UI_BATTLE_RESTART"
+msgstr "Restart"
+
+#. context: ui
+msgid "UI_BATTLE_RETURN_TO_MAP"
+msgstr "Return to Map"
+
+#. context: ui
+msgid "UI_BATTLE_RUN_SUMMARY"
+msgstr "Run Summary"
+
+#. context: ui
+msgid "UI_BATTLE_VICTORY"
+msgstr "Victory!"
+
+#. context: ui
+msgid "UI_BATTLE_YOUR_TURN"
+msgstr "YOUR TURN"
+
+#. context: ui
+msgid "UI_BUY_FOR_FAME"
+msgstr "Buy · %d Fame"
+
+#. context: ui
+msgid "UI_BUY_FOR_GOLD"
+msgstr "Buy for %d gold"
+
+#. context: ui
+msgid "UI_CARD_LOCKED_STATUS"
+msgstr "locked"
+
+#. context: ui
+msgid "UI_CARD_PREVIEW_TOOLTIP"
+msgstr "Preview: %s"
+
+#. context: ui
+msgid "UI_CARD_STATE_UNLOCKED"
+msgstr "Already unlocked"
+
+#. context: ui
+msgid "UI_CARD_UNLOCKED_STATUS"
+msgstr "unlocked"
+
+#. context: ui
+msgid "UI_DECK_EMPTY"
+msgstr "The deck is empty."
+
+#. context: ui
+msgid "UI_DECK_ROW_FORMAT"
+msgstr "%s x%d"
+
+#. context: ui
+msgid "UI_DECK_SOURCE_PREVIEW"
+msgstr "Starting Deck"
+
+#. context: ui
+msgid "UI_DECK_SOURCE_RUN"
+msgstr "Run Deck"
+
+#. context: ui
+msgid "UI_DECK_TITLE"
+msgstr "Deck"
+
+#. context: ui
+msgid "UI_EVENT_CONTINUE_BUTTON"
+msgstr "Continue"
+
+#. context: ui
+msgid "UI_EVENT_DECISION_HEADER"
+msgstr "Choice"
+
+#. context: ui
+msgid "UI_EVENT_GUARANTEED"
+msgstr "Guaranteed"
+
+#. context: ui
+msgid "UI_EVENT_NO_COST"
+msgstr "Free"
+
+#. context: ui
+msgid "UI_EVENT_PRICE"
+msgstr "Cost: %d gold"
+
+#. context: ui
+msgid "UI_EVENT_REQUIRED_RESERVE"
+msgstr "Required reserve: %d gold"
+
+#. context: ui
+msgid "UI_EVENT_RESULT_HEADER"
+msgstr "Result"
+
+#. context: ui
+msgid "UI_EVENT_RISKY"
+msgstr "Risky"
+
+#. context: ui
+msgid "UI_EVENT_SHORTFALL"
+msgstr "Short by %d gold"
+
+#. context: ui
+msgid "UI_FAME_LABEL"
+msgstr "Fame: %d"
+
+#. context: ui
+msgid "UI_GOLD_LABEL"
+msgstr "Gold: %d"
+
+#. context: ui
+msgid "UI_MAIN_MENU_CONTINUE_RUN"
+msgstr "Continue Run\n%s"
+
+#. context: ui
+msgid "UI_MAIN_MENU_DEBUG_AI_TOOLTIP"
+msgstr "Start a quick battle against the selected AI profile"
+
+#. context: ui
+msgid "UI_MAIN_MENU_DEBUG_STRATEGY_AGGRESSIVE"
+msgstr "Aggressor"
+
+#. context: ui
+msgid "UI_MAIN_MENU_DEBUG_STRATEGY_BALANCED"
+msgstr "Balanced"
+
+#. context: ui
+msgid "UI_MAIN_MENU_DEBUG_STRATEGY_BOSS"
+msgstr "Boss"
+
+#. context: ui
+msgid "UI_MAIN_MENU_DEBUG_STRATEGY_BUILDER"
+msgstr "Builder"
+
+#. context: ui
+msgid "UI_MAIN_MENU_DEBUG_STRATEGY_ECONOMIST"
+msgstr "Economist"
+
+#. context: ui
+msgid "UI_MAIN_MENU_EYEBROW"
+msgstr "CARD STRATEGY"
+
+#. context: ui
+msgid "UI_MAIN_MENU_FLOOR_PROGRESS"
+msgstr "Floor %d of %d"
+
+#. context: ui
+msgid "UI_MAIN_MENU_FOOTER"
+msgstr "A single card can decide the duel."
+
+#. context: ui
+msgid "UI_MAIN_MENU_NEW_RUN"
+msgstr "New Run"
+
+#. context: ui
+msgid "UI_MAIN_MENU_PROFILE"
+msgstr "Profile"
+
+#. context: ui
+msgid "UI_MAIN_MENU_QUICK_BATTLE"
+msgstr "Quick Battle"
+
+#. context: ui
+msgid "UI_MAIN_MENU_QUICK_BATTLE_TOOLTIP"
+msgstr "A single duel against a random AI archetype"
+
+#. context: ui
+msgid "UI_MAIN_MENU_SAVED_RUN"
+msgstr "Saved Run"
+
+#. context: ui
+msgid "UI_MAIN_MENU_SETTINGS"
+msgstr "Settings"
+
+#. context: ui
+msgid "UI_MAIN_MENU_TAGLINE"
+msgstr "Raise your tower. Break the wall.\nOutplay your opponent."
+
+#. context: ui
+msgid "UI_MAIN_MENU_TITLE_PRIMARY"
+msgstr "TOWERS OF MAGES"
+
+#. context: ui
+msgid "UI_MAIN_MENU_TITLE_SECONDARY"
+msgstr "DUEL"
+
+#. context: ui
+msgid "UI_META_SHOP_FINAL_EFFECT"
+msgstr "Final effect: %s"
+
+#. context: ui
+msgid "UI_META_SHOP_GROUP_FOUNDATION"
+msgstr "foundation"
+
+#. context: ui
+msgid "UI_META_SHOP_GROUP_RESOURCES"
+msgstr "resources"
+
+#. context: ui
+msgid "UI_META_SHOP_GROUP_UTILITY"
+msgstr "utility"
+
+#. context: ui
+msgid "UI_META_SHOP_HINT"
+msgstr "Spend Fame on permanent upgrades and unlocking rare cards."
+
+#. context: ui
+msgid "UI_META_SHOP_LEVEL_LABEL"
+msgstr "LEVEL %d / %d"
+
+#. context: ui
+msgid "UI_META_SHOP_MAX_SHORT"
+msgstr "MAX."
+
+#. context: ui
+msgid "UI_META_SHOP_NEXT_EFFECT"
+msgstr "Next effect: %s"
+
+#. context: ui
+msgid "UI_META_SHOP_NO_RARE_CARDS"
+msgstr "No rare cards yet."
+
+#. context: ui
+msgid "UI_META_SHOP_ROW_FORMAT"
+msgstr "%s: %s (%d/%d)"
+
+#. context: ui
+msgid "UI_META_SHOP_TITLE"
+msgstr "Upgrades"
+
+#. context: ui
+msgid "UI_META_SHOP_UNLOCKS_TITLE"
+msgstr "Rare Cards"
+
+#. context: ui
+msgid "UI_META_SHOP_UNLOCK_ROW_FORMAT"
+msgstr "%s — %s"
+
+#. context: ui
+msgid "UI_PROFILE_COLLECTION_PROGRESS"
+msgstr "Collection: cards %d/%d · artifacts %d/%d"
+
+#. context: ui
+msgid "UI_PROFILE_FAME"
+msgstr "Fame: %d"
+
+#. context: ui
+msgid "UI_PROFILE_LOCAL_PROFILE"
+msgstr "Local Profile"
+
+#. context: ui
+msgid "UI_PROFILE_TAB_DECK"
+msgstr "Deck"
+
+#. context: ui
+msgid "UI_PROFILE_TAB_STATS"
+msgstr "Stats"
+
+#. context: ui
+msgid "UI_PROFILE_TAB_UPGRADES"
+msgstr "Upgrades"
+
+#. context: ui
+msgid "UI_REST_BONUS_PREVIEW"
+msgstr "Bonus: +%d → +%d"
+
+#. context: ui
+msgid "UI_REST_CONFIRM_BUTTON"
+msgstr "Confirm"
+
+#. context: ui
+msgid "UI_REST_DURATION_NOTE"
+msgstr "Lasts until the end of the run."
+
+#. context: ui
+msgid "UI_REST_GENERATOR_DUNGEON"
+msgstr "Beast Den"
+
+#. context: ui
+msgid "UI_REST_GENERATOR_MAGIC"
+msgstr "Crystal Magic"
+
+#. context: ui
+msgid "UI_REST_GENERATOR_OPTION_DESC"
+msgstr "Increases resource output per turn."
+
+#. context: ui
+msgid "UI_REST_GENERATOR_OPTION_TITLE"
+msgstr "Upgrade Generators"
+
+#. context: ui
+msgid "UI_REST_GENERATOR_QUARRY"
+msgstr "Quarry"
+
+#. context: ui
+msgid "UI_REST_MAX_REACHED"
+msgstr "Maximum reached (+%d)"
+
+#. context: ui
+msgid "UI_REST_SELECTED_FORMAT"
+msgstr "Selected: %s"
+
+#. context: ui
+msgid "UI_REST_SELECTION_HINT"
+msgstr "The choice cannot be changed after confirming."
+
+#. context: ui
+msgid "UI_REST_SUBTITLE"
+msgstr "Choose a permanent boost for this run."
+
+#. context: ui
+msgid "UI_REST_TITLE"
+msgstr "Rest"
+
+#. context: ui
+msgid "UI_REST_TOWER_OPTION_DESC"
+msgstr "Increases the tower's maximum health."
+
+#. context: ui
+msgid "UI_REST_TOWER_OPTION_TITLE"
+msgstr "Reinforce the Tower"
+
+#. context: ui
+msgid "UI_REST_UNAVAILABLE_SHORT"
+msgstr "Unavailable"
+
+#. context: ui
+msgid "UI_REWARD_ARTIFACT_TAG"
+msgstr "Artifact"
+
+#. context: ui
+msgid "UI_REWARD_CONFIRM"
+msgstr "Claim"
+
+#. context: ui
+msgid "UI_REWARD_COST_TAG"
+msgstr "Cost: %d"
+
+#. context: ui
+msgid "UI_REWARD_SKIP"
+msgstr "Skip"
+
+#. context: ui
+msgid "UI_REWARD_SUBTITLE"
+msgstr "Choose one card or artifact."
+
+#. context: ui
+msgid "UI_REWARD_TITLE"
+msgstr "Reward"
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_ARTIFACTS_COLLECTED"
+msgstr "Artifacts collected: %d"
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_ARTIFACT_ROW"
+msgstr "  · %s"
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_BOSS_VICTORY"
+msgstr "BOSS DEFEATED!"
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_ELITES_DEFEATED"
+msgstr "Elites defeated: %d"
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_FAME_EARNED"
+msgstr "Fame earned this run: +%d (total: %d)"
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_FLOORS_PASSED"
+msgstr "Floors passed: %d"
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_GOLD_NOT_SAVED"
+msgstr "Run gold (will not be saved): %d"
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_MENU_BUTTON"
+msgstr "Back to Main Menu"
+
+#. context: ui
+msgid "UI_RUN_SUMMARY_RUN_OVER"
+msgstr "RUN OVER"
+
+#. context: ui
+msgid "UI_SETTINGS_ACCESSIBILITY_EMPTY"
+msgstr "No settings yet."
+
+#. context: ui
+msgid "UI_SETTINGS_ACCESSIBILITY_SECTION"
+msgstr "Accessibility"
+
+#. context: ui
+msgid "UI_SETTINGS_CONFIRM_RESET"
+msgstr "Confirm Reset"
+
+#. context: ui
+msgid "UI_SETTINGS_GAME_EMPTY"
+msgstr "No settings yet."
+
+#. context: ui
+msgid "UI_SETTINGS_GAME_SECTION"
+msgstr "Game"
+
+#. context: ui
+msgid "UI_SETTINGS_LANGUAGE_EN"
+msgstr "English"
+
+#. context: ui
+msgid "UI_SETTINGS_LANGUAGE_HINT"
+msgstr "Changes apply immediately."
+
+#. context: ui
+msgid "UI_SETTINGS_LANGUAGE_RU"
+msgstr "Russian"
+
+#. context: ui
+msgid "UI_SETTINGS_LANGUAGE_SECTION"
+msgstr "Language"
+
+#. context: ui
+msgid "UI_SETTINGS_RESET_BUTTON"
+msgstr "Reset Settings"
+
+#. context: ui
+msgid "UI_SETTINGS_RESET_EXPLANATION"
+msgstr "Reset sound settings to defaults."
+
+#. context: ui
+msgid "UI_SETTINGS_RESET_SECTION"
+msgstr "Reset Settings"
+
+#. context: ui
+msgid "UI_SETTINGS_RESET_SUMMARY"
+msgstr "This will reset the volume to 100%."
+
+#. context: ui
+msgid "UI_SETTINGS_SOUND_SECTION"
+msgstr "Sound"
+
+#. context: ui
+msgid "UI_SETTINGS_TITLE"
+msgstr "Settings"
+
+#. context: ui
+msgid "UI_SETTINGS_VOLUME_LABEL"
+msgstr "Volume"
+
+#. context: ui
+msgid "UI_SETTINGS_VOLUME_TOOLTIP"
+msgstr "Overall in-game sound volume"
+
+#. context: ui
+msgid "UI_SHOP_BUY_SECTION_HINT"
+msgstr "Pick a card to add it to your run deck."
+
+#. context: ui
+msgid "UI_SHOP_BUY_SECTION_TITLE"
+msgstr "Buy Cards"
+
+#. context: ui
+msgid "UI_SHOP_LEAVE_BUTTON"
+msgstr "Leave Shop"
+
+#. context: ui
+msgid "UI_SHOP_REASON_AVAILABLE"
+msgstr "Available"
+
+#. context: ui
+msgid "UI_SHOP_REASON_BOUGHT"
+msgstr "Already bought"
+
+#. context: ui
+msgid "UI_SHOP_REASON_CARD_GONE"
+msgstr "Card already removed"
+
+#. context: ui
+msgid "UI_SHOP_REASON_LAST_CARD"
+msgstr "Cannot remove the last card"
+
+#. context: ui
+msgid "UI_SHOP_REASON_NOT_ENOUGH_GOLD"
+msgstr "Not enough gold"
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_BUTTON"
+msgstr "Remove"
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_DIALOG_OK"
+msgstr "Remove"
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_DIALOG_TEXT"
+msgstr "Remove “%s” from your run deck?"
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_DIALOG_TITLE"
+msgstr "Remove card?"
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_EMPTY_DECK"
+msgstr "There are no cards left in the deck to remove."
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_LAST_CARD_WARNING"
+msgstr "You cannot remove the last card in the deck."
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_ROW_FORMAT"
+msgstr "%s (x%d)"
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_SECTION_HINT"
+msgstr "Remove an unwanted card from your run deck."
+
+#. context: ui
+msgid "UI_SHOP_REMOVE_SECTION_TITLE"
+msgstr "Remove Cards"
+
+#. context: ui
+msgid "UI_SHOP_TITLE"
+msgstr "Shop"
+
+#. context: ui
+msgid "UI_STATS_MAX_TOWER_HEIGHT"
+msgstr "Max tower height: %d"
+
+#. context: ui
+msgid "UI_STATS_RUNS_COMPLETED"
+msgstr "Runs completed: %d"
+
+#. context: ui
+msgid "UI_STATS_TITLE"
+msgstr "Stats"
+
+#. context: ui
+msgid "UI_STATS_UNLOCKED_ARTIFACTS"
+msgstr "Artifacts collected: %d/%d"
+
+#. context: ui
+msgid "UI_STATS_UNLOCKED_CARDS"
+msgstr "Rare cards unlocked: %d/%d"
+
+#. context: ui
+msgid "UI_STATS_WINS"
+msgstr "Wins: %d"
+
+#. context: ui
+msgid "UI_UNLOCKED_SHORT"
+msgstr "Unlocked"
+
+#. context: ui
+msgid "UI_UNLOCK_FOR_FAME"
+msgstr "Unlock · %d Fame"
+
+#. context: ui
+msgid "UI_UPGRADE_STATE_AFFORDABLE"
+msgstr "✓ Available"
+
+#. context: ui
+msgid "UI_UPGRADE_STATE_LOCKED"
+msgstr "🔒 Not enough Fame"
+
+#. context: ui
+msgid "UI_UPGRADE_STATE_MAX"
+msgstr "★ Max"
+
+#. context: ui
+msgid "UI_WORLD_MAP_HUD"
+msgstr "Floor %d/%d  •  Gold %d\nTower +%d  •  Deck %d  •  Artifacts %d"
+
+#. context: ui
+msgid "UI_WORLD_MAP_INITIAL_HINT"
+msgstr "Choose an available node to continue the journey"
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_BATTLE_PREVIEW"
+msgstr "A regular battle. Reward after victory."
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_BATTLE_TITLE"
+msgstr "Battle"
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_BOSS_PREVIEW"
+msgstr "The final trial of this route."
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_BOSS_TITLE"
+msgstr "Boss"
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_ELITE_PREVIEW"
+msgstr "A dangerous, empowered enemy and a valuable reward."
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_ELITE_TITLE"
+msgstr "Elite"
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_EVENT_PREVIEW"
+msgstr "An unknown encounter. The outcome is hidden until you enter."
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_EVENT_TITLE"
+msgstr "Event"
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_FLOOR_PREVIEW"
+msgstr "Floor %d. %s"
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_REST_PREVIEW"
+msgstr "A safe stop and a permanent run upgrade."
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_REST_TITLE"
+msgstr "Rest"
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_SHOP_PREVIEW"
+msgstr "Buy and remove cards for gold."
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_SHOP_TITLE"
+msgstr "Shop"
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_UNKNOWN_PREVIEW"
+msgstr "Unknown node."
+
+#. context: ui
+msgid "UI_WORLD_MAP_NODE_UNKNOWN_TITLE"
+msgstr "Node"
+
+#. context: ui
+msgid "UI_WORLD_MAP_PATH_LOCKED"
+msgstr "Path locked: complete a connected available node first."
+
+#. context: ui
+msgid "UI_WORLD_MAP_PATH_LOCKED_HINT"
+msgstr "This path is still locked. Choose a node marked “AVAILABLE”."
+
+#. context: ui
+msgid "UI_WORLD_MAP_STATE_AVAILABLE"
+msgstr "AVAILABLE"
+
+#. context: ui
+msgid "UI_WORLD_MAP_STATE_COMPLETED"
+msgstr "COMPLETED"
+
+#. context: ui
+msgid "UI_WORLD_MAP_STATE_CURRENT"
+msgstr "YOU ARE HERE"
+
+#. context: ui
+msgid "UI_WORLD_MAP_STATE_LOCKED"
+msgstr "LOCKED"
+
+#. context: ui
+msgid "UPGRADE_DUNGEON_DESC"
+msgstr "+%d to Beast output per turn."
+
+#. context: ui
+msgid "UPGRADE_DUNGEON_NAME"
+msgstr "Beast Den"
+
+#. context: ui
+msgid "UPGRADE_HAND_SIZE_DESC"
+msgstr "+%d to hand size."
+
+#. context: ui
+msgid "UPGRADE_HAND_SIZE_NAME"
+msgstr "Hand Size"
+
+#. context: ui
+msgid "UPGRADE_MAGIC_DESC"
+msgstr "+%d to Gem output per turn."
+
+#. context: ui
+msgid "UPGRADE_MAGIC_NAME"
+msgstr "Crystal Magic"
+
+#. context: ui
+msgid "UPGRADE_QUARRY_DESC"
+msgstr "+%d to Brick output per turn."
+
+#. context: ui
+msgid "UPGRADE_QUARRY_NAME"
+msgstr "Quarry"
+
+#. context: ui
+msgid "UPGRADE_TOWER_DESC"
+msgstr "+%d to tower health."
+
+#. context: ui
+msgid "UPGRADE_TOWER_NAME"
+msgstr "Tower Might"
+
+#. context: ui
+msgid "UPGRADE_WALL_DESC"
+msgstr "+%d to wall health."
+
+#. context: ui
+msgid "UPGRADE_WALL_NAME"
+msgstr "Wall Fortitude"
+
