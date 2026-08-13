@@ -231,7 +231,7 @@ func test_apply_effects_add_card_appends_to_run_deck() -> void:
 	)
 
 	assert_eq(MatchSettings.run_deck.size(), 1)
-	assert_eq(MatchSettings.run_deck[0].card_name, "Рыцарь")
+	assert_eq(MatchSettings.run_deck[0].get_display_name(), "Рыцарь")
 
 	screen.free()
 
