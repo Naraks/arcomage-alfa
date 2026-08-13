@@ -296,7 +296,7 @@ func _resolve_ai_turn(actor: PlayerData) -> void:
 	var hand = player_hand if actor == player_data else enemy_hand
 
 	if not actor.ai_strategy:
-		push_error("MatchManager: AI Strategy не назначена, использую default_ai_strategy.gd")
+		push_warning("MatchManager: AI Strategy не назначена, использую default_ai_strategy.gd")
 		actor.ai_strategy = load(DEFAULT_AI_STRATEGY_PATH).new()
 
 	var best_card = actor.ai_strategy.get_best_card(hand, actor, opponent)
