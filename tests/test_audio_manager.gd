@@ -97,3 +97,13 @@ func test_play_music_playlist_different_context_switches_track() -> void:
 	manager.play_music_playlist("battle", [track_b])
 	var player: AudioStreamPlayer = manager.get_child(0)
 	assert_eq(player.stream, track_b, "Смена контекста должна переключить трек")
+
+
+func test_play_battle_music_uses_battle_context() -> void:
+	manager.play_menu_music()
+	manager.play_battle_music()
+	assert_eq(manager._music_context, "battle")
+	manager.play_menu_music()
+	assert_eq(
+		manager._music_context, "menu", "Возврат в меню/на карту должен переключить музыку обратно"
+	)

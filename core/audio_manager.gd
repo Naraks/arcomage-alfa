@@ -9,6 +9,14 @@ const MENU_MUSIC_PATHS := [
 	"res://audio/music/overworld_theme_2.mp3",
 ]
 
+## Треки чередуются по кругу во время боя (battle_screen). Отдельный контекст
+## "battle" — вход в бой переключает музыку, возврат на карту/в меню
+## переключает её обратно через play_menu_music().
+const BATTLE_MUSIC_PATHS := [
+	"res://audio/music/battle_theme_1.mp3",
+	"res://audio/music/battle_theme_2.mp3",
+]
+
 var _pool: Array[AudioStreamPlayer] = []
 
 var _music_player: AudioStreamPlayer
@@ -31,6 +39,11 @@ func play_sfx(stream: AudioStream, volume_db: float = 0.0) -> void:
 func play_menu_music() -> void:
 	## Фоновая музыка меню и карты мира.
 	play_music_playlist("menu", _load_streams(MENU_MUSIC_PATHS))
+
+
+func play_battle_music() -> void:
+	## Фоновая музыка боя.
+	play_music_playlist("battle", _load_streams(BATTLE_MUSIC_PATHS))
 
 
 func play_music_playlist(context: String, playlist: Array[AudioStream]) -> void:

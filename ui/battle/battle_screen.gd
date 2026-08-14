@@ -35,6 +35,7 @@ var _card_play_in_progress := false
 
 
 func _ready() -> void:
+	AudioManager.play_battle_music()
 	GameEvents.match_started.connect(_on_match_started)
 	GameEvents.resource_changed.connect(_on_resource_changed)
 	GameEvents.turn_started.connect(_on_turn_started)
