@@ -95,8 +95,36 @@ func test_play_music_playlist_different_context_switches_track() -> void:
 	var track_b := AudioStreamMP3.new()
 	manager.play_music_playlist("menu", [track_a])
 	manager.play_music_playlist("battle", [track_b])
-	var player: AudioStreamPlayer = manager.get_child(0)
-	assert_eq(player.stream, track_b, "Смена контекста должна переключить трек")
+	assert_eq(manager._music_player.stream, track_b, "Смена контекста должна переключить трек")
+
+
+func test_context_switch_crossfades_instead_of_cutting_old_track() -> void:
+	var track_a := AudioStreamMP3.new()
+	var track_b := AudioStreamMP3.new()
+	manager.play_music_playlist("menu", [track_a])
+	var menu_player: AudioStreamPlayer = manager.get_child(0)
+	manager.play_music_playlist("battle", [track_b])
+	assert_eq(
+		manager.get_child_count(),
+		2,
+		"На время кроссфейда старый и новый плеер должны звучать одновременно"
+	)
+	assert_eq(manager._fading_out_player, menu_player, "Старый плеер становится затухающим")
+	assert_eq(manager._music_player.stream, track_b)
+	assert_almost_eq(
+		manager._music_player.volume_db,
+		AudioManagerScript.MUSIC_SILENT_DB,
+		0.01,
+		"Новый трек стартует беззвучно и нарастает по tween'у"
+	)
+
+
+func test_crossfade_finished_stops_and_frees_old_player() -> void:
+	manager.play_music_playlist("menu", [AudioStreamMP3.new()])
+	manager.play_music_playlist("battle", [AudioStreamMP3.new()])
+	assert_not_null(manager._fading_out_player)
+	manager._on_crossfade_finished()
+	assert_null(manager._fading_out_player, "После завершения кроссфейда старый плеер освобождается")
 
 
 func test_play_battle_music_uses_battle_context() -> void:

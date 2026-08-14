@@ -17,9 +17,14 @@ const BATTLE_MUSIC_PATHS := [
 	"res://audio/music/battle_theme_2.mp3",
 ]
 
+const MUSIC_CROSSFADE_SECONDS := 1.5
+const MUSIC_SILENT_DB := -40.0
+
 var _pool: Array[AudioStreamPlayer] = []
 
 var _music_player: AudioStreamPlayer
+var _fading_out_player: AudioStreamPlayer
+var _music_tween: Tween
 var _music_playlist: Array[AudioStream] = []
 var _music_index: int = 0
 var _music_context: String = ""
@@ -49,21 +54,34 @@ func play_battle_music() -> void:
 func play_music_playlist(context: String, playlist: Array[AudioStream]) -> void:
 	## Запускает плейлист музыки под меткой context. Повторный вызов с тем же
 	## context, пока музыка уже активна, — no-op (не рестартует и не дёргает трек).
+	## Смена контекста (например, меню -> бой) делает плавный кроссфейд вместо
+	## резкого обрыва: старый трек затихает, новый одновременно нарастает.
 	if playlist.is_empty():
 		return
 	if _music_context == context and _music_active:
 		return
+	var had_previous_track := _music_active and _music_player != null
 	_music_context = context
 	_music_playlist = playlist
 	_music_index = 0
 	_music_active = true
-	_ensure_music_player()
-	_play_current_track()
+	if had_previous_track:
+		_crossfade_to_new_player()
+	else:
+		_ensure_music_player()
+		_music_player.volume_db = 0.0
+		_play_current_track()
 
 
 func stop_music() -> void:
+	if _music_tween:
+		_music_tween.kill()
 	if _music_player:
 		_music_player.stop()
+	if _fading_out_player:
+		_fading_out_player.stop()
+		_fading_out_player.queue_free()
+		_fading_out_player = null
 	_music_active = false
 	_music_context = ""
 
@@ -75,6 +93,38 @@ func _ensure_music_player() -> void:
 	_music_player.bus = "Master"
 	_music_player.finished.connect(_on_music_finished)
 	add_child(_music_player)
+
+
+func _crossfade_to_new_player() -> void:
+	if _fading_out_player:
+		_fading_out_player.stop()
+		_fading_out_player.queue_free()
+	_fading_out_player = _music_player
+	_fading_out_player.finished.disconnect(_on_music_finished)
+
+	_music_player = AudioStreamPlayer.new()
+	_music_player.bus = "Master"
+	_music_player.volume_db = MUSIC_SILENT_DB
+	_music_player.finished.connect(_on_music_finished)
+	add_child(_music_player)
+	_play_current_track()
+
+	if _music_tween:
+		_music_tween.kill()
+	_music_tween = create_tween()
+	_music_tween.set_parallel(true)
+	_music_tween.tween_property(
+		_fading_out_player, "volume_db", MUSIC_SILENT_DB, MUSIC_CROSSFADE_SECONDS
+	)
+	_music_tween.tween_property(_music_player, "volume_db", 0.0, MUSIC_CROSSFADE_SECONDS)
+	_music_tween.chain().tween_callback(_on_crossfade_finished)
+
+
+func _on_crossfade_finished() -> void:
+	if _fading_out_player:
+		_fading_out_player.stop()
+		_fading_out_player.queue_free()
+		_fading_out_player = null
 
 
 func _play_current_track() -> void:
