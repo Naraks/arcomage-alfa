@@ -55,8 +55,8 @@ func test_play_music_playlist_with_empty_array_does_nothing() -> void:
 
 
 func test_play_music_playlist_starts_first_track_on_master_bus() -> void:
-	var track_a := AudioStreamMP3.new()
-	var track_b := AudioStreamMP3.new()
+	var track_a := AudioStreamGenerator.new()
+	var track_b := AudioStreamGenerator.new()
 	manager.play_music_playlist("menu", _playlist([track_a, track_b]))
 	assert_eq(manager.get_child_count(), 1)
 	var player: AudioStreamPlayer = manager.get_child(0)
@@ -65,8 +65,8 @@ func test_play_music_playlist_starts_first_track_on_master_bus() -> void:
 
 
 func test_play_music_playlist_repeat_call_same_context_is_noop() -> void:
-	var track_a := AudioStreamMP3.new()
-	var track_b := AudioStreamMP3.new()
+	var track_a := AudioStreamGenerator.new()
+	var track_b := AudioStreamGenerator.new()
 	manager.play_music_playlist("menu", _playlist([track_a, track_b]))
 	manager.play_music_playlist("menu", _playlist([track_a, track_b]))
 	assert_eq(
@@ -77,8 +77,8 @@ func test_play_music_playlist_repeat_call_same_context_is_noop() -> void:
 
 
 func test_music_finished_advances_to_next_track_and_loops() -> void:
-	var track_a := AudioStreamMP3.new()
-	var track_b := AudioStreamMP3.new()
+	var track_a := AudioStreamGenerator.new()
+	var track_b := AudioStreamGenerator.new()
 	manager.play_music_playlist("menu", _playlist([track_a, track_b]))
 	var player: AudioStreamPlayer = manager.get_child(0)
 	assert_eq(player.stream, track_a)
@@ -89,7 +89,7 @@ func test_music_finished_advances_to_next_track_and_loops() -> void:
 
 
 func test_stop_music_resets_active_state() -> void:
-	var track_a := AudioStreamMP3.new()
+	var track_a := AudioStreamGenerator.new()
 	manager.play_music_playlist("menu", _playlist([track_a]))
 	assert_true(manager._music_active)
 	manager.stop_music()
@@ -97,16 +97,16 @@ func test_stop_music_resets_active_state() -> void:
 
 
 func test_play_music_playlist_different_context_switches_track() -> void:
-	var track_a := AudioStreamMP3.new()
-	var track_b := AudioStreamMP3.new()
+	var track_a := AudioStreamGenerator.new()
+	var track_b := AudioStreamGenerator.new()
 	manager.play_music_playlist("menu", _playlist([track_a]))
 	manager.play_music_playlist("battle", _playlist([track_b]))
 	assert_eq(manager._music_player.stream, track_b, "Смена контекста должна переключить трек")
 
 
 func test_context_switch_crossfades_instead_of_cutting_old_track() -> void:
-	var track_a := AudioStreamMP3.new()
-	var track_b := AudioStreamMP3.new()
+	var track_a := AudioStreamGenerator.new()
+	var track_b := AudioStreamGenerator.new()
 	manager.play_music_playlist("menu", _playlist([track_a]))
 	var menu_player: AudioStreamPlayer = manager.get_child(0)
 	manager.play_music_playlist("battle", _playlist([track_b]))
@@ -126,8 +126,8 @@ func test_context_switch_crossfades_instead_of_cutting_old_track() -> void:
 
 
 func test_crossfade_finished_stops_and_frees_old_player() -> void:
-	manager.play_music_playlist("menu", _playlist([AudioStreamMP3.new()]))
-	manager.play_music_playlist("battle", _playlist([AudioStreamMP3.new()]))
+	manager.play_music_playlist("menu", _playlist([AudioStreamGenerator.new()]))
+	manager.play_music_playlist("battle", _playlist([AudioStreamGenerator.new()]))
 	assert_not_null(manager._fading_out_player)
 	manager._on_crossfade_finished()
 	assert_null(
