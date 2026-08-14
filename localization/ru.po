@@ -204,7 +204,7 @@ msgstr "Генератор Кирпичей +1, Стена +3."
 
 #. context: card
 msgid "CARD_BRICKS_BRICK_FACTORY_NAME"
-msgstr "Кирпичный завод"
+msgstr "Кирпичная печь"
 
 #. context: card
 msgid "CARD_BRICKS_CATAPULT_DESC"
@@ -276,7 +276,7 @@ msgstr "Башня +2, Стена +1."
 
 #. context: card
 msgid "CARD_BRICKS_FOUNDATION_NAME"
-msgstr "Основание"
+msgstr "Фундамент"
 
 #. context: card
 msgid "CARD_BRICKS_GREAT_BASTION_DESC"
@@ -308,7 +308,7 @@ msgstr "Генератор Кирпичей +2, Башня +2."
 
 #. context: card
 msgid "CARD_BRICKS_LARGE_BRICK_FACTORY_NAME"
-msgstr "Большой кирпичный завод"
+msgstr "Кирпичный завод"
 
 #. context: card
 msgid "CARD_BRICKS_MEDIUM_WALL_DESC"
@@ -316,7 +316,7 @@ msgstr "Строит стену на 7."
 
 #. context: card
 msgid "CARD_BRICKS_MEDIUM_WALL_NAME"
-msgstr "Средняя стена"
+msgstr "Крепкая кладка"
 
 #. context: card
 msgid "CARD_BRICKS_QUARRY_DESC"
@@ -1048,7 +1048,7 @@ msgstr "Рунная кладка усиливает Башню на весь з
 
 #. context: event
 msgid "EVENT_RUNIC_MASON_RESULT_2"
-msgstr "Каменщик передаёт вам карту «Основание»."
+msgstr "Каменщик передаёт вам карту «Фундамент»."
 
 #. context: event
 msgid "EVENT_RUNIC_MASON_RESULT_3"

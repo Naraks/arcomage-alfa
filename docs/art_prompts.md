@@ -50,8 +50,12 @@ low contrast focal subject, cropped subject, gore, blood, horror, extra limbs, m
 
 ### 3.1 Мастер-промт
 
-Карты используют отдельный монохромный режим. Цветная сюжетная сцена внутри карты запрещена: она
-выглядит вклеенной фотографией и конфликтует с `art/card_frame/parchment_bg.png`.
+Карты используют сепию как основной режим. Полноцветная сюжетная сцена внутри карты запрещена: она
+выглядит вклеенной фотографией и конфликтует с `art/card_frame/parchment_bg.png`. Допускается один
+локальный приглушённый цветовой акцент, обозначающий ресурс карты: кирпично-красный для Кирпичей,
+сапфирово-синий для Гемов и травянисто-зелёный для Зверей. Акцент занимает примерно 5–12% изображения
+и наносится только на смысловые детали субъекта — ткань, руны, минерал, магическую энергию, ремни или
+небольшие элементы снаряжения. Фон, пергамент, тени и большая часть субъекта остаются сепийными.
 
 ```text
 Monochrome sepia ink illustration from an old illuminated manuscript bestiary, drawn and
@@ -61,15 +65,17 @@ subtle hand-drawn ornamental flourishes fading into the parchment, no separate b
 no horizon, no rectangular picture edge. Medieval fantasy with slightly exaggerated storybook
 proportions, detailed but readable at card size, family-friendly. Compact near-horizontal 6:5
 composition, with the main subject filling 85–90% of the canvas and all essential details inside safe
-margins. No closed ornamental frame, no large empty parchment areas, no text, no card border, no UI,
-monochrome sepia only.
+margins. No closed ornamental frame, no large empty parchment areas, no text, no card border, no UI.
+Predominantly monochrome sepia with one restrained resource-color accent covering about 5–12% of the
+image; no other colors.
 ```
 
 Дополнительный негативный блок карт:
 
 ```text
-full-color painting, blue sky, landscape, room, scenic background, white cutout background,
-hard rectangular edge, colored aura, modern comic book, photorealistic skin, card template
+full-color painting, colored background, colored sky, landscape, room, scenic background, white cutout
+background, hard rectangular edge, large colored aura, multiple accent colors, neon saturation,
+modern comic book, photorealistic skin, card template
 ```
 
 Техническая цель: исходник 6:5 не меньше 1200×1000 для игровой области около 126×103. Арт должен
@@ -85,9 +91,12 @@ Subject: [кто или что], [характерный силуэт и поз�
 [визуальное действие, соответствующее эффекту карты]. [Ограничение силы по редкости].
 ```
 
-- Кирпичи: каменщики, стены, башни, осадные машины, молоты, руны кладки. Формы тяжёлые и устойчивые.
-- Гемы: маги, кристаллы, молнии, порталы, заклинания. Формы тонкие, дугообразные, направленные.
-- Звери: существа, охотники, стаи, когти, клыки. Формы живые, диагональные, динамичные.
+- Кирпичи: каменщики, стены, башни, осадные машины, молоты, руны кладки. Формы тяжёлые и устойчивые;
+  локальный акцент — приглушённый кирпично-красный или терракотовый.
+- Гемы: маги, кристаллы, молнии, порталы, заклинания. Формы тонкие, дугообразные, направленные;
+  локальный акцент — сапфирово-синий или холодный сине-фиолетовый.
+- Звери: существа, охотники, стаи, когти, клыки. Формы живые, диагональные, динамичные;
+  локальный акцент — приглушённый травянисто-зелёный или изумрудный.
 - Common: простое снаряжение и ясное действие, без величия.
 - Uncommon: более уверенная поза и одна необычная деталь.
 - Rare: монументальный силуэт, драматичный жест и один уникальный магический мотив, но всё ещё сепия.
