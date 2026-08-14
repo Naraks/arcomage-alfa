@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 [ext_resource type="Script" uid="uid://cmnf4fc3mdeqd" path="res://data/resources/card_data.gd" id="1_x1y2z"]
 [ext_resource type="Texture2D" path="res://assets/icons/gem_icon.svg" id="2_icon"]
+[ext_resource type="Texture2D" path="res://art/cards/fireball_card.png" id="4_art"]
 [ext_resource type="Script" path="res://data/resources/effect_data.gd" id="effect_script"]
 
 [sub_resource type="Resource" id="EffectData_1"]
@@ -12,6 +13,7 @@ value = 4
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
+card_art = ExtResource("4_art")
 card_name = "CARD_GEMS_FIREBALL_NAME"
 description = "CARD_GEMS_FIREBALL_DESC"
 cost = 2
