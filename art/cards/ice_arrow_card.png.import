@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dvabfpn6xcnn1"
-path="res://.godot/imported/quarry_corruption_card_v2.png-d21071d633da7e1c283f25926b99ec9a.ctex"
+uid="uid://b6wiq3ipmt2rw"
+path="res://.godot/imported/ice_arrow_card.png-660c3e14c9ae1111f78817bb0000d094.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/cards/quarry_corruption_card_v2.png"
-dest_files=["res://.godot/imported/quarry_corruption_card_v2.png-d21071d633da7e1c283f25926b99ec9a.ctex"]
+source_file="res://art/cards/ice_arrow_card.png"
+dest_files=["res://.godot/imported/ice_arrow_card.png-660c3e14c9ae1111f78817bb0000d094.ctex"]
 
 [params]
 

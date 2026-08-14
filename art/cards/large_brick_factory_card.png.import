@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dvabfpn6xcnn1"
-path="res://.godot/imported/quarry_corruption_card_v2.png-d21071d633da7e1c283f25926b99ec9a.ctex"
+uid="uid://jjwddso5wiyt"
+path="res://.godot/imported/large_brick_factory_card.png-e09c395ef900746f82e34664db96b631.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/cards/quarry_corruption_card_v2.png"
-dest_files=["res://.godot/imported/quarry_corruption_card_v2.png-d21071d633da7e1c283f25926b99ec9a.ctex"]
+source_file="res://art/cards/large_brick_factory_card.png"
+dest_files=["res://.godot/imported/large_brick_factory_card.png-e09c395ef900746f82e34664db96b631.ctex"]
 
 [params]
 

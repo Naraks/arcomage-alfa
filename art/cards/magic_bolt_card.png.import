@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dvabfpn6xcnn1"
-path="res://.godot/imported/quarry_corruption_card_v2.png-d21071d633da7e1c283f25926b99ec9a.ctex"
+uid="uid://c64jhg3n1pg0x"
+path="res://.godot/imported/magic_bolt_card.png-399f5132df91f299b1d7e486c517488b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/cards/quarry_corruption_card_v2.png"
-dest_files=["res://.godot/imported/quarry_corruption_card_v2.png-d21071d633da7e1c283f25926b99ec9a.ctex"]
+source_file="res://art/cards/magic_bolt_card.png"
+dest_files=["res://.godot/imported/magic_bolt_card.png-399f5132df91f299b1d7e486c517488b.ctex"]
 
 [params]
 

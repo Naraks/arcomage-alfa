@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dvabfpn6xcnn1"
-path="res://.godot/imported/quarry_corruption_card_v2.png-d21071d633da7e1c283f25926b99ec9a.ctex"
+uid="uid://depdrrwre86dj"
+path="res://.godot/imported/magic_tower_card.png-85b9882f06209c0aee12a386edaae651.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/cards/quarry_corruption_card_v2.png"
-dest_files=["res://.godot/imported/quarry_corruption_card_v2.png-d21071d633da7e1c283f25926b99ec9a.ctex"]
+source_file="res://art/cards/magic_tower_card.png"
+dest_files=["res://.godot/imported/magic_tower_card.png-85b9882f06209c0aee12a386edaae651.ctex"]
 
 [params]
 

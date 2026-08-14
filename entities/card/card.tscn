@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://c4jtwam2edt30" path="res://entities/card/curved_label.gd" id="6_curved_label"]
 
 [sub_resource type="Shader" id="Shader_card_art_fade"]
-code = "shader_type canvas_item;\n\nuniform float horizontal_fade : hint_range(0.0, 0.5) = 0.08;\nuniform float vertical_fade : hint_range(0.0, 0.5) = 0.12;\n\nvoid fragment() {\n\tvec4 color = texture(TEXTURE, UV);\n\tfloat horizontal = smoothstep(0.0, horizontal_fade, UV.x) * smoothstep(0.0, horizontal_fade, 1.0 - UV.x);\n\tfloat vertical = smoothstep(0.0, vertical_fade, UV.y) * smoothstep(0.0, vertical_fade, 1.0 - UV.y);\n\tcolor.a *= horizontal * vertical;\n\tCOLOR = color;\n}\n"
+code = "shader_type canvas_item;\n\nuniform float horizontal_fade : hint_range(0.0, 0.5) = 0.08;\nuniform float vertical_fade : hint_range(0.0, 0.5) = 0.12;\nuniform float background_opacity : hint_range(0.0, 1.0) = 0.22;\n\nvoid fragment() {\n\tvec4 color = texture(TEXTURE, UV);\n\tfloat luminance = dot(color.rgb, vec3(0.299, 0.587, 0.114));\n\tfloat dark_ink = 1.0 - smoothstep(0.36, 0.76, luminance);\n\n\tfloat blue_accent = smoothstep(0.0, 0.10, color.b - min(color.r, color.g));\n\tfloat green_accent = smoothstep(0.0, 0.10, color.g - max(color.r * 0.92, color.b));\n\tfloat red_accent = smoothstep(0.14, 0.32, color.r - color.g);\n\tfloat accent_mask = max(blue_accent, max(green_accent, red_accent));\n\tfloat drawing_opacity = max(dark_ink, accent_mask);\n\n\tfloat horizontal = smoothstep(0.0, horizontal_fade, UV.x) * smoothstep(0.0, horizontal_fade, 1.0 - UV.x);\n\tfloat vertical = smoothstep(0.0, vertical_fade, UV.y) * smoothstep(0.0, vertical_fade, 1.0 - UV.y);\n\tcolor.a *= mix(background_opacity, 1.0, drawing_opacity) * horizontal * vertical;\n\tCOLOR = color;\n}\n"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_card_art_fade"]
 shader = SubResource("Shader_card_art_fade")
@@ -67,7 +67,7 @@ offset_top = 8.0
 offset_right = 138.0
 offset_bottom = 111.0
 mouse_filter = 2
-texture_filter = 1
+texture_filter = 4
 expand_mode = 1
 stretch_mode = 5
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dvabfpn6xcnn1"
-path="res://.godot/imported/quarry_corruption_card_v2.png-d21071d633da7e1c283f25926b99ec9a.ctex"
+uid="uid://bi2gw65w836s8"
+path="res://.godot/imported/griffin_card.png-f81f861b01916fccbd6f955e8cbee3b5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/cards/quarry_corruption_card_v2.png"
-dest_files=["res://.godot/imported/quarry_corruption_card_v2.png-d21071d633da7e1c283f25926b99ec9a.ctex"]
+source_file="res://art/cards/griffin_card.png"
+dest_files=["res://.godot/imported/griffin_card.png-f81f861b01916fccbd6f955e8cbee3b5.ctex"]
 
 [params]
 
