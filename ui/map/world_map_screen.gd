@@ -76,6 +76,7 @@ var _map_offset_x := 0.0
 
 func _ready() -> void:
 	print("WorldMapScreen _ready")
+	AudioManager.play_menu_music()
 	_preview_label.text = tr("UI_WORLD_MAP_INITIAL_HINT")
 	if not map_data:
 		map_data = MatchSettings.world_map_data

@@ -41,3 +41,59 @@ func test_play_sfx_supports_multiple_overlapping_calls() -> void:
 	assert_eq(
 		manager.get_child_count(), 2, "Оба звука должны звучать одновременно, не обрывая друг друга"
 	)
+
+
+func test_play_music_playlist_with_empty_array_does_nothing() -> void:
+	manager.play_music_playlist("menu", [])
+	assert_eq(manager.get_child_count(), 0)
+
+
+func test_play_music_playlist_starts_first_track_on_master_bus() -> void:
+	var track_a := AudioStreamMP3.new()
+	var track_b := AudioStreamMP3.new()
+	manager.play_music_playlist("menu", [track_a, track_b])
+	assert_eq(manager.get_child_count(), 1)
+	var player: AudioStreamPlayer = manager.get_child(0)
+	assert_eq(player.stream, track_a)
+	assert_eq(player.bus, "Master")
+
+
+func test_play_music_playlist_repeat_call_same_context_is_noop() -> void:
+	var track_a := AudioStreamMP3.new()
+	var track_b := AudioStreamMP3.new()
+	manager.play_music_playlist("menu", [track_a, track_b])
+	manager.play_music_playlist("menu", [track_a, track_b])
+	assert_eq(
+		manager.get_child_count(),
+		1,
+		"Повторный вызов с тем же контекстом (переход между экранами) не должен пересоздавать плеер"
+	)
+
+
+func test_music_finished_advances_to_next_track_and_loops() -> void:
+	var track_a := AudioStreamMP3.new()
+	var track_b := AudioStreamMP3.new()
+	manager.play_music_playlist("menu", [track_a, track_b])
+	var player: AudioStreamPlayer = manager.get_child(0)
+	assert_eq(player.stream, track_a)
+	manager._on_music_finished()
+	assert_eq(player.stream, track_b, "После окончания первого трека должен включиться второй")
+	manager._on_music_finished()
+	assert_eq(player.stream, track_a, "Плейлист должен зациклиться на первый трек")
+
+
+func test_stop_music_resets_active_state() -> void:
+	var track_a := AudioStreamMP3.new()
+	manager.play_music_playlist("menu", [track_a])
+	assert_true(manager._music_active)
+	manager.stop_music()
+	assert_false(manager._music_active)
+
+
+func test_play_music_playlist_different_context_switches_track() -> void:
+	var track_a := AudioStreamMP3.new()
+	var track_b := AudioStreamMP3.new()
+	manager.play_music_playlist("menu", [track_a])
+	manager.play_music_playlist("battle", [track_b])
+	var player: AudioStreamPlayer = manager.get_child(0)
+	assert_eq(player.stream, track_b, "Смена контекста должна переключить трек")

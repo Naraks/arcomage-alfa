@@ -40,6 +40,7 @@ var _version_label: Label
 
 func _ready() -> void:
 	_build_ui()
+	AudioManager.play_menu_music()
 	_version_label.text = BuildVersion.get_display_string()
 
 	var has_saved_run := RunSaveManager.has_saved_run()
