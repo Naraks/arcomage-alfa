@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cmnf4fc3mdeqd" path="res://data/resources/card_data.gd" id="1_x1y2z"]
 [ext_resource type="Texture2D" path="res://assets/icons/brick_icon.svg" id="2_icon"]
 [ext_resource type="Script" path="res://data/resources/effect_data.gd" id="effect_script"]
+[ext_resource type="Texture2D" path="res://art/cards/wall_card.png" id="4_art"]
 
 [sub_resource type="Resource" id="EffectData_1"]
 script = ExtResource("effect_script")
@@ -13,6 +14,7 @@ value = 3
 [resource]
 script = ExtResource("1_x1y2z")
 icon = ExtResource("2_icon")
+card_art = ExtResource("4_art")
 card_name = "CARD_BRICKS_WALL_NAME"
 description = "CARD_BRICKS_WALL_DESC"
 effects = Array[ExtResource("effect_script")]([SubResource("EffectData_1")])

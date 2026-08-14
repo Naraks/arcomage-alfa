@@ -374,14 +374,6 @@ msgid "CARD_GEMS_ABSOLUTE_CATACLYSM_NAME"
 msgstr ""
 
 #. context: card
-msgid "CARD_GEMS_APPRENTICE_MAGE_DESC"
-msgstr ""
-
-#. context: card
-msgid "CARD_GEMS_APPRENTICE_MAGE_NAME"
-msgstr ""
-
-#. context: card
 msgid "CARD_GEMS_ARCHMAGE_DESC"
 msgstr ""
 
@@ -1892,4 +1884,3 @@ msgstr ""
 #. context: ui
 msgid "UPGRADE_WALL_NAME"
 msgstr ""
-

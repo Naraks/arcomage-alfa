@@ -375,14 +375,6 @@ msgid "CARD_GEMS_ABSOLUTE_CATACLYSM_NAME"
 msgstr "Absolute Cataclysm"
 
 #. context: card
-msgid "CARD_GEMS_APPRENTICE_MAGE_DESC"
-msgstr "Gem Generator +1, 1 damage to the enemy tower."
-
-#. context: card
-msgid "CARD_GEMS_APPRENTICE_MAGE_NAME"
-msgstr "Apprentice Mage"
-
-#. context: card
 msgid "CARD_GEMS_ARCHMAGE_DESC"
 msgstr "Gem Generator +2, 6 damage to the enemy tower."
 
@@ -1893,4 +1885,3 @@ msgstr "+%d to wall health."
 #. context: ui
 msgid "UPGRADE_WALL_NAME"
 msgstr "Wall Fortitude"
-

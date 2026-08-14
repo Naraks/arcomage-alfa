@@ -375,14 +375,6 @@ msgid "CARD_GEMS_ABSOLUTE_CATACLYSM_NAME"
 msgstr "Абсолютный катаклизм"
 
 #. context: card
-msgid "CARD_GEMS_APPRENTICE_MAGE_DESC"
-msgstr "Генератор Гемов +1, 1 урон башне врага."
-
-#. context: card
-msgid "CARD_GEMS_APPRENTICE_MAGE_NAME"
-msgstr "Маг-ученик"
-
-#. context: card
 msgid "CARD_GEMS_ARCHMAGE_DESC"
 msgstr "Генератор Гемов +2, 6 урона башне врага."
 
@@ -508,7 +500,7 @@ msgstr "Генератор Гемов +1, 1 урон башне врага."
 
 #. context: card
 msgid "CARD_GEMS_NOVICE_MAGE_NAME"
-msgstr "Маг-новичок"
+msgstr "Ученик мага"
 
 #. context: card
 msgid "CARD_GEMS_PROTECTION_SPELL_DESC"
@@ -1893,4 +1885,3 @@ msgstr "+%d к прочности стены."
 #. context: ui
 msgid "UPGRADE_WALL_NAME"
 msgstr "Крепость стен"
-

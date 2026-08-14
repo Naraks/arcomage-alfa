@@ -28,7 +28,6 @@ const STARTER_DECK_CARD_PATHS := [
 	"res://data/cards/bricks_brick_factory.tres",
 	"res://data/cards/gems_novice_mage.tres",
 	"res://data/cards/gems_protection_spell.tres",
-	"res://data/cards/gems_apprentice_mage.tres",
 	"res://data/cards/beasts_hunter.tres",
 	"res://data/cards/beasts_hunting_lodge.tres",
 	"res://data/cards/beasts_goblin.tres",
@@ -62,7 +61,6 @@ const ALL_CARD_PATHS := [
 	"res://data/cards/bricks_great_bastion.tres",
 	"res://data/cards/gems_novice_mage.tres",
 	"res://data/cards/gems_protection_spell.tres",
-	"res://data/cards/gems_apprentice_mage.tres",
 	"res://data/cards/gems_fireball.tres",
 	"res://data/cards/gems_protective_barrier.tres",
 	"res://data/cards/gems_magic_tower.tres",
@@ -205,7 +203,9 @@ static func _build_generic_card_pool() -> Array[CardData]:
 			push_error("MatchManager: не удалось загрузить карту: ", path)
 
 	if pool.is_empty():
-		push_error("MatchManager: не удалось построить запасной пул карт — ни одна карта не загрузилась")
+		push_error(
+			"MatchManager: не удалось построить запасной пул карт — ни одна карта не загрузилась"
+		)
 		return pool
 
 	while pool.size() < 20:
@@ -496,7 +496,10 @@ func apply_damage(
 ) -> void:
 	if amount < 0:
 		push_warning(
-			"MatchManager: apply_damage вызван с отрицательным amount (%d), урон не применён" % amount
+			(
+				"MatchManager: apply_damage вызван с отрицательным amount (%d), урон не применён"
+				% amount
+			)
 		)
 		amount = 0
 
