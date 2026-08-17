@@ -1507,6 +1507,10 @@ msgid "UI_REWARD_ARTIFACT_TAG"
 msgstr "Артефакт"
 
 #. context: ui
+msgid "UI_REWARD_CARD_HINT"
+msgstr "Наведите для просмотра, нажмите для выбора"
+
+#. context: ui
 msgid "UI_REWARD_CONFIRM"
 msgstr "Забрать"
 
@@ -1519,12 +1523,48 @@ msgid "UI_REWARD_SKIP"
 msgstr "Пропустить"
 
 #. context: ui
+msgid "UI_REWARD_SKIP_DIALOG_CONFIRM"
+msgstr "Пропустить награду"
+
+#. context: ui
+msgid "UI_REWARD_SKIP_DIALOG_TEXT"
+msgstr "Награда будет потеряна. Продолжить без неё?"
+
+#. context: ui
+msgid "UI_REWARD_SKIP_DIALOG_TITLE"
+msgstr "Отказаться от награды?"
+
+#. context: ui
 msgid "UI_REWARD_SUBTITLE"
 msgstr "Выберите одну карту или артефакт."
 
 #. context: ui
 msgid "UI_REWARD_TITLE"
 msgstr "Награда"
+
+#. context: ui
+msgid "UI_CARD_RARITY_COMMON"
+msgstr "Обычная"
+
+#. context: ui
+msgid "UI_CARD_RARITY_RARE"
+msgstr "Редкая"
+
+#. context: ui
+msgid "UI_CARD_RARITY_UNCOMMON"
+msgstr "Необычная"
+
+#. context: ui
+msgid "UI_RESOURCE_BEASTS"
+msgstr "Звери"
+
+#. context: ui
+msgid "UI_RESOURCE_BRICKS"
+msgstr "Кирпичи"
+
+#. context: ui
+msgid "UI_RESOURCE_GEMS"
+msgstr "Самоцветы"
 
 #. context: ui
 msgid "UI_RUN_SUMMARY_ARTIFACTS_COLLECTED"

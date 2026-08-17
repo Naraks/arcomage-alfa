@@ -2,6 +2,7 @@ extends Control
 ## Выбор награды после победы.
 
 const MapNodeData = preload("res://data/resources/map_node_data.gd")
+const CARD_SCENE := preload("res://entities/card/card.tscn")
 
 const REGULAR_SLOT_COUNT := 3
 const ELITE_ARTIFACT_CHANCE := 30
@@ -24,8 +25,11 @@ const ALL_ARTIFACT_PATHS := [
 
 var _slots: Array[Dictionary] = []
 var _selected_index: int = -1
-var _slot_panels: Array[Panel] = []
+var _slot_panels: Array[Button] = []
 var _confirm_button: Button
+var _skip_dialog: ConfirmationDialog
+var _draft_list: BoxContainer
+var _is_resolved := false
 
 
 func _ready() -> void:
@@ -153,16 +157,21 @@ func _build_ui() -> void:
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	root_vbox.add_child(subtitle)
 
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 24)
-	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	root_vbox.add_child(row)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	root_vbox.add_child(scroll)
+
+	_draft_list = BoxContainer.new()
+	_draft_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_draft_list.add_theme_constant_override("separation", 24)
+	_draft_list.alignment = BoxContainer.ALIGNMENT_CENTER
+	scroll.add_child(_draft_list)
 
 	_slot_panels = []
 	for i in range(_slots.size()):
 		var panel := _make_slot_panel(_slots[i], i)
-		row.add_child(panel)
+		_draft_list.add_child(panel)
 		_slot_panels.append(panel)
 
 	var actions := HBoxContainer.new()
@@ -172,70 +181,116 @@ func _build_ui() -> void:
 
 	var skip_button := Button.new()
 	skip_button.text = tr("UI_REWARD_SKIP")
+	skip_button.flat = true
+	skip_button.add_theme_color_override("font_color", Color("aaa9a2"))
 	skip_button.pressed.connect(_on_skip_pressed)
 	actions.add_child(skip_button)
 
 	_confirm_button = Button.new()
 	_confirm_button.text = tr("UI_REWARD_CONFIRM")
 	_confirm_button.disabled = true
+	_confirm_button.add_theme_color_override("font_color", Color("21180c"))
+	var confirm_style := StyleBoxFlat.new()
+	confirm_style.bg_color = UIColors.GOLD
+	confirm_style.set_corner_radius_all(8)
+	confirm_style.content_margin_left = 20
+	confirm_style.content_margin_right = 20
+	_confirm_button.add_theme_stylebox_override("normal", confirm_style)
 	_confirm_button.pressed.connect(_on_confirm_pressed)
 	actions.add_child(_confirm_button)
 
+	_skip_dialog = ConfirmationDialog.new()
+	_skip_dialog.title = tr("UI_REWARD_SKIP_DIALOG_TITLE")
+	_skip_dialog.dialog_text = tr("UI_REWARD_SKIP_DIALOG_TEXT")
+	_skip_dialog.ok_button_text = tr("UI_REWARD_SKIP_DIALOG_CONFIRM")
+	_skip_dialog.cancel_button_text = tr("COMMON_CANCEL")
+	_skip_dialog.confirmed.connect(_on_skip_confirmed)
+	add_child(_skip_dialog)
 
-func _make_slot_panel(slot: Dictionary, index: int) -> Panel:
-	var panel := Panel.new()
-	panel.custom_minimum_size = Vector2(180, 220)
+	resized.connect(_update_layout)
+	_update_layout()
+
+
+func _make_slot_panel(slot: Dictionary, index: int) -> Button:
+	var panel := Button.new()
+	panel.custom_minimum_size = Vector2(190, 290)
+	panel.focus_mode = Control.FOCUS_ALL
+	panel.tooltip_text = tr("UI_REWARD_CARD_HINT")
+	panel.pressed.connect(_on_slot_pressed.bind(index))
+	_apply_slot_style(panel, false)
 
 	var vbox := VBoxContainer.new()
 	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.add_child(vbox)
-
-	var name_label := Label.new()
-	var desc_label := Label.new()
-	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD
-	desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-
-	var tag_label := Label.new()
-	tag_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 	if slot.get("kind") == "artifact":
 		var artifact: ArtifactData = slot["artifact"]
+		var name_label := Label.new()
 		name_label.text = artifact.get_display_name()
-		desc_label.text = artifact.get_display_description()
+		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		name_label.add_theme_font_size_override("font_size", 22)
+		vbox.add_child(name_label)
+		var icon := TextureRect.new()
+		icon.custom_minimum_size = Vector2(128, 128)
+		icon.texture = artifact.icon
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		vbox.add_child(icon)
+		var tag_label := Label.new()
 		tag_label.text = tr("UI_REWARD_ARTIFACT_TAG")
+		tag_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		tag_label.add_theme_color_override("font_color", UIColors.GOLD)
+		vbox.add_child(tag_label)
+		var desc_label := Label.new()
+		desc_label.text = artifact.get_display_description()
+		desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vbox.add_child(desc_label)
 		panel.modulate = Color(1.0, 0.9, 0.5)
 	else:
 		var card: CardData = slot["card"]
-		name_label.text = card.get_display_name()
-		desc_label.text = card.get_display_description()
-		tag_label.text = tr("UI_REWARD_COST_TAG") % card.cost
-
-	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vbox.add_child(name_label)
-	vbox.add_child(tag_label)
-	vbox.add_child(desc_label)
-
-	var select_button := Button.new()
-	select_button.text = tr("COMMON_SELECT")
-	select_button.pressed.connect(_on_slot_pressed.bind(index))
-	vbox.add_child(select_button)
+		var card_view := CARD_SCENE.instantiate()
+		card_view.card_data = card
+		_set_mouse_filter_recursive(card_view, Control.MOUSE_FILTER_IGNORE)
+		vbox.add_child(card_view)
+		var metadata := Label.new()
+		metadata.text = "%s · %s" % [_resource_name(card.type), _rarity_name(card.rarity)]
+		metadata.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		metadata.add_theme_color_override("font_color", _resource_color(card.type))
+		vbox.add_child(metadata)
+		panel.mouse_entered.connect(_set_card_preview.bind(card_view, true))
+		panel.mouse_exited.connect(_set_card_preview.bind(card_view, false))
+		panel.focus_entered.connect(_set_card_preview.bind(card_view, true))
+		panel.focus_exited.connect(_set_card_preview.bind(card_view, false))
 
 	return panel
 
 
 func _on_slot_pressed(index: int) -> void:
+	if _is_resolved:
+		return
 	_selected_index = index
 	for i in range(_slot_panels.size()):
-		_slot_panels[i].self_modulate = Color(1.4, 1.4, 1.0) if i == index else Color.WHITE
-	_confirm_button.disabled = false
+		_apply_slot_style(_slot_panels[i], i == index)
+	if _confirm_button:
+		_confirm_button.disabled = false
 
 
 func _on_confirm_pressed() -> void:
-	if _selected_index < 0 or _selected_index >= _slots.size():
+	if not _confirm_selection():
 		return
-	_apply_slot(_slots[_selected_index])
 	_return_to_map()
+
+
+func _confirm_selection() -> bool:
+	if _is_resolved or _selected_index < 0 or _selected_index >= _slots.size():
+		return false
+	_is_resolved = true
+	_apply_slot(_slots[_selected_index])
+	_disable_actions()
+	return true
 
 
 func _apply_slot(slot: Dictionary) -> void:
@@ -247,7 +302,93 @@ func _apply_slot(slot: Dictionary) -> void:
 
 
 func _on_skip_pressed() -> void:
-	_return_to_map()
+	if not _is_resolved:
+		_skip_dialog.popup_centered()
+
+
+func _on_skip_confirmed() -> void:
+	if _confirm_skip():
+		_return_to_map()
+
+
+func _confirm_skip() -> bool:
+	if _is_resolved:
+		return false
+	_is_resolved = true
+	_disable_actions()
+	return true
+
+
+func _disable_actions() -> void:
+	if _confirm_button:
+		_confirm_button.disabled = true
+	for panel in _slot_panels:
+		panel.disabled = true
+
+
+func _layout_mode_for_size(viewport_size: Vector2) -> String:
+	return "portrait" if not ResponsiveLayout.is_wide_by_aspect(viewport_size) else "wide"
+
+
+func _update_layout() -> void:
+	if _draft_list:
+		_draft_list.vertical = _layout_mode_for_size(size) == "portrait"
+
+
+func _apply_slot_style(panel: Button, selected: bool) -> void:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color("332d24") if selected else Color("171816")
+	style.border_color = UIColors.GOLD if selected else Color("55534a")
+	style.set_border_width_all(4 if selected else 1)
+	style.set_corner_radius_all(10)
+	style.content_margin_left = 12
+	style.content_margin_right = 12
+	style.content_margin_top = 10
+	style.content_margin_bottom = 10
+	panel.add_theme_stylebox_override("normal", style)
+	panel.add_theme_stylebox_override("focus", style)
+
+
+func _set_card_preview(card_view: Control, visible: bool) -> void:
+	card_view.scale = Vector2(1.12, 1.12) if visible else Vector2.ONE
+	card_view.z_index = 10 if visible else 0
+
+
+func _set_mouse_filter_recursive(node: Control, filter: Control.MouseFilter) -> void:
+	node.mouse_filter = filter
+	for child in node.get_children():
+		if child is Control:
+			_set_mouse_filter_recursive(child, filter)
+
+
+func _resource_name(type: CardData.ResourceType) -> String:
+	match type:
+		CardData.ResourceType.GEMS:
+			return tr("UI_RESOURCE_GEMS")
+		CardData.ResourceType.BEASTS:
+			return tr("UI_RESOURCE_BEASTS")
+		_:
+			return tr("UI_RESOURCE_BRICKS")
+
+
+func _resource_color(type: CardData.ResourceType) -> Color:
+	match type:
+		CardData.ResourceType.GEMS:
+			return Color("7590ff")
+		CardData.ResourceType.BEASTS:
+			return Color("73d982")
+		_:
+			return Color("ef756d")
+
+
+func _rarity_name(rarity: CardData.Rarity) -> String:
+	match rarity:
+		CardData.Rarity.UNCOMMON:
+			return tr("UI_CARD_RARITY_UNCOMMON")
+		CardData.Rarity.RARE:
+			return tr("UI_CARD_RARITY_RARE")
+		_:
+			return tr("UI_CARD_RARITY_COMMON")
 
 
 func _return_to_map() -> void:

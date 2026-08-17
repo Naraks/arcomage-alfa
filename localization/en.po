@@ -1507,6 +1507,10 @@ msgid "UI_REWARD_ARTIFACT_TAG"
 msgstr "Artifact"
 
 #. context: ui
+msgid "UI_REWARD_CARD_HINT"
+msgstr "Hover to preview, press to select"
+
+#. context: ui
 msgid "UI_REWARD_CONFIRM"
 msgstr "Claim"
 
@@ -1519,12 +1523,48 @@ msgid "UI_REWARD_SKIP"
 msgstr "Skip"
 
 #. context: ui
+msgid "UI_REWARD_SKIP_DIALOG_CONFIRM"
+msgstr "Skip reward"
+
+#. context: ui
+msgid "UI_REWARD_SKIP_DIALOG_TEXT"
+msgstr "The reward will be lost. Continue without it?"
+
+#. context: ui
+msgid "UI_REWARD_SKIP_DIALOG_TITLE"
+msgstr "Give up the reward?"
+
+#. context: ui
 msgid "UI_REWARD_SUBTITLE"
 msgstr "Choose one card or artifact."
 
 #. context: ui
 msgid "UI_REWARD_TITLE"
 msgstr "Reward"
+
+#. context: ui
+msgid "UI_CARD_RARITY_COMMON"
+msgstr "Common"
+
+#. context: ui
+msgid "UI_CARD_RARITY_RARE"
+msgstr "Rare"
+
+#. context: ui
+msgid "UI_CARD_RARITY_UNCOMMON"
+msgstr "Uncommon"
+
+#. context: ui
+msgid "UI_RESOURCE_BEASTS"
+msgstr "Beasts"
+
+#. context: ui
+msgid "UI_RESOURCE_BRICKS"
+msgstr "Bricks"
+
+#. context: ui
+msgid "UI_RESOURCE_GEMS"
+msgstr "Gems"
 
 #. context: ui
 msgid "UI_RUN_SUMMARY_ARTIFACTS_COLLECTED"

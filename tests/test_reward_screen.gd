@@ -146,6 +146,52 @@ func test_apply_slot_artifact_records_it_as_collected_in_profile() -> void:
 	screen.free()
 
 
+func test_selection_does_not_apply_card_before_confirmation() -> void:
+	var screen = RewardScreenScript.new()
+	var card := TestFixtures.make_card(3, CardData.ResourceType.BRICKS)
+	screen._slots = [{"kind": "card", "card": card}]
+
+	screen._on_slot_pressed(0)
+
+	assert_true(MatchSettings.run_deck.is_empty())
+	assert_eq(screen._selected_index, 0)
+	screen.free()
+
+
+func test_confirm_selection_adds_selected_card_once() -> void:
+	var screen = RewardScreenScript.new()
+	var card := TestFixtures.make_card(3, CardData.ResourceType.BRICKS)
+	screen._slots = [{"kind": "card", "card": card}]
+	screen._selected_index = 0
+
+	assert_true(screen._confirm_selection())
+	assert_false(screen._confirm_selection())
+
+	assert_eq(MatchSettings.run_deck, [card])
+	screen.free()
+
+
+func test_skip_requires_confirmation_and_does_not_add_reward() -> void:
+	var screen = RewardScreenScript.new()
+	var card := TestFixtures.make_card(2, CardData.ResourceType.GEMS)
+	screen._slots = [{"kind": "card", "card": card}]
+
+	assert_false(screen._is_resolved)
+	assert_true(screen._confirm_skip())
+	assert_false(screen._confirm_skip())
+
+	assert_true(MatchSettings.run_deck.is_empty())
+	screen.free()
+
+
+func test_reward_layout_stacks_options_in_portrait() -> void:
+	var screen = RewardScreenScript.new()
+
+	assert_eq(screen._layout_mode_for_size(Vector2(540, 960)), "portrait")
+	assert_eq(screen._layout_mode_for_size(Vector2(1280, 720)), "wide")
+	screen.free()
+
+
 func test_unlocked_paths_excludes_locked_rare_cards() -> void:
 	var screen = RewardScreenScript.new()
 
