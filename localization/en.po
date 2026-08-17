@@ -1747,6 +1747,54 @@ msgid "UI_STATS_MAX_TOWER_HEIGHT"
 msgstr "Max tower height: %d"
 
 #. context: ui
+msgid "UI_STATS_BEST_RUN_HINT"
+msgstr "Farthest completed run"
+
+#. context: ui
+msgid "UI_STATS_BEST_RUN_RECORD"
+msgstr "Best run"
+
+#. context: ui
+msgid "UI_STATS_BEST_RUN_VALUE"
+msgstr "%d fl."
+
+#. context: ui
+msgid "UI_STATS_COLLECTION_TITLE"
+msgstr "Collection"
+
+#. context: ui
+msgid "UI_STATS_EMPTY_FIRST_RUN"
+msgstr "Complete your first run to begin your history."
+
+#. context: ui
+msgid "UI_STATS_EMPTY_FIRST_WIN"
+msgstr "Your next goal is to claim the first victory."
+
+#. context: ui
+msgid "UI_STATS_HISTORY_TITLE"
+msgstr "Victory history"
+
+#. context: ui
+msgid "UI_STATS_RECORDS_TITLE"
+msgstr "Records"
+
+#. context: ui
+msgid "UI_STATS_TOWER_RECORD"
+msgstr "Highest Tower"
+
+#. context: ui
+msgid "UI_STATS_TOWER_RECORD_HINT"
+msgstr "Greatest height across all matches"
+
+#. context: ui
+msgid "UI_STATS_WINRATE"
+msgstr "Winrate: %d%%"
+
+#. context: ui
+msgid "UI_STATS_WINS_OF_RUNS"
+msgstr "%d wins in %d runs"
+
+#. context: ui
 msgid "UI_STATS_RUNS_COMPLETED"
 msgstr "Runs completed: %d"
 

@@ -16,7 +16,7 @@ func _ready() -> void:
 	var fame_earned := _calculate_fame(floors_passed, elites_defeated, MatchSettings.run_victory)
 
 	ProfileManager.add_fame(fame_earned)
-	ProfileManager.record_run_finished(MatchSettings.run_victory)
+	ProfileManager.record_run_finished(MatchSettings.run_victory, floors_passed)
 
 	_build_ui(floors_passed, elites_defeated, fame_earned)
 
@@ -73,7 +73,11 @@ func _build_ui(floors_passed: int, elites_defeated: int, fame_earned: int) -> vo
 	root_margin.add_child(root_vbox)
 
 	var title := Label.new()
-	title.text = tr("UI_RUN_SUMMARY_BOSS_VICTORY") if MatchSettings.run_victory else tr("UI_RUN_SUMMARY_RUN_OVER")
+	title.text = (
+		tr("UI_RUN_SUMMARY_BOSS_VICTORY")
+		if MatchSettings.run_victory
+		else tr("UI_RUN_SUMMARY_RUN_OVER")
+	)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 30)
 	root_vbox.add_child(title)

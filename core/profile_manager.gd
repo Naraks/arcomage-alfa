@@ -73,6 +73,7 @@ var profile: Dictionary = {
 	"settings": DEFAULT_SETTINGS.duplicate(true),
 	"total_runs": 0,
 	"max_tower_height": 0,
+	"best_run_floors": 0,
 }
 
 
@@ -97,10 +98,11 @@ func add_fame(amount: int) -> void:
 	save_profile()
 
 
-func record_run_finished(victory: bool) -> void:
+func record_run_finished(victory: bool, floors_passed: int = 0) -> void:
 	profile["total_runs"] = profile.get("total_runs", 0) + 1
 	if victory:
 		profile["total_wins"] = profile.get("total_wins", 0) + 1
+	profile["best_run_floors"] = maxi(profile.get("best_run_floors", 0), maxi(0, floors_passed))
 	save_profile()
 
 

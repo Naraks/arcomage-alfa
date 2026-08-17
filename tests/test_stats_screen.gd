@@ -68,3 +68,63 @@ func test_unlocked_artifacts_text_reflects_collected_count() -> void:
 	assert_eq(text, "Собрано артефактов: 1/%d" % RewardScreenScript.ALL_ARTIFACT_PATHS.size())
 
 	screen.free()
+
+
+func test_empty_profile_has_no_winrate_and_offers_first_run_goal() -> void:
+	var screen = StatsScreenScript.new()
+
+	assert_eq(screen._win_summary(), {"wins": 0, "runs": 0, "winrate": -1})
+	assert_eq(screen._empty_goal_text(), "Завершите первый забег, чтобы начать историю.")
+	screen._build_ui()
+	assert_null(screen.find_child("WinrateLabel", true, false))
+
+	screen.free()
+
+
+func test_filled_profile_reports_winrate_records_and_collection_progress() -> void:
+	var screen = StatsScreenScript.new()
+	var rare_paths := screen._rare_card_paths()
+	ProfileManager.profile = {
+		"total_runs": 8,
+		"total_wins": 3,
+		"max_tower_height": 61,
+		"best_run_floors": 12,
+		"unlocked_cards": [rare_paths[0]],
+		"unlocked_artifacts": [RewardScreenScript.ALL_ARTIFACT_PATHS[0]],
+	}
+
+	assert_eq(screen._win_summary(), {"wins": 3, "runs": 8, "winrate": 38})
+	assert_eq(screen._empty_goal_text(), "")
+	assert_eq(screen._collection_progress("unlocked_cards", rare_paths.size()).count, 1)
+	screen._build_ui()
+	var winrate: Label = screen.find_child("WinrateLabel", true, false)
+	assert_not_null(winrate)
+	assert_eq(winrate.text, "Победы: 38%")
+	assert_eq(screen._records_grid.get_child_count(), 2)
+
+	screen.free()
+
+
+func test_unsupported_best_run_metric_is_not_rendered() -> void:
+	var screen = StatsScreenScript.new()
+	ProfileManager.profile = {
+		"total_runs": 1,
+		"total_wins": 0,
+		"max_tower_height": 20,
+		"unlocked_cards": [],
+		"unlocked_artifacts": [],
+	}
+
+	screen._build_ui()
+
+	assert_eq(screen._records_grid.get_child_count(), 1)
+	screen.free()
+
+
+func test_layout_stacks_records_on_mobile() -> void:
+	var screen = StatsScreenScript.new()
+
+	assert_eq(screen._layout_mode_for_size(Vector2(1280, 720)), "desktop")
+	assert_eq(screen._layout_mode_for_size(Vector2(540, 960)), "mobile")
+
+	screen.free()

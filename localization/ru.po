@@ -1747,6 +1747,54 @@ msgid "UI_STATS_MAX_TOWER_HEIGHT"
 msgstr "Максимальная высота башни: %d"
 
 #. context: ui
+msgid "UI_STATS_BEST_RUN_HINT"
+msgstr "Самый дальний завершённый забег"
+
+#. context: ui
+msgid "UI_STATS_BEST_RUN_RECORD"
+msgstr "Лучший забег"
+
+#. context: ui
+msgid "UI_STATS_BEST_RUN_VALUE"
+msgstr "%d эт."
+
+#. context: ui
+msgid "UI_STATS_COLLECTION_TITLE"
+msgstr "Коллекция"
+
+#. context: ui
+msgid "UI_STATS_EMPTY_FIRST_RUN"
+msgstr "Завершите первый забег, чтобы начать историю."
+
+#. context: ui
+msgid "UI_STATS_EMPTY_FIRST_WIN"
+msgstr "Ближайшая цель — одержать первую победу."
+
+#. context: ui
+msgid "UI_STATS_HISTORY_TITLE"
+msgstr "История побед"
+
+#. context: ui
+msgid "UI_STATS_RECORDS_TITLE"
+msgstr "Рекорды"
+
+#. context: ui
+msgid "UI_STATS_TOWER_RECORD"
+msgstr "Максимальная Башня"
+
+#. context: ui
+msgid "UI_STATS_TOWER_RECORD_HINT"
+msgstr "Наибольшая высота за все матчи"
+
+#. context: ui
+msgid "UI_STATS_WINRATE"
+msgstr "Победы: %d%%"
+
+#. context: ui
+msgid "UI_STATS_WINS_OF_RUNS"
+msgstr "%d побед из %d забегов"
+
+#. context: ui
 msgid "UI_STATS_RUNS_COMPLETED"
 msgstr "Завершено забегов: %d"
 

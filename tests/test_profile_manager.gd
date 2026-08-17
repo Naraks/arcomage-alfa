@@ -361,6 +361,16 @@ func test_record_run_finished_handles_missing_keys_in_old_profile() -> void:
 	assert_eq(ProfileManager.profile["total_wins"], 1)
 
 
+func test_record_run_finished_preserves_best_floor_record() -> void:
+	ProfileManager.profile = {"total_runs": 2, "total_wins": 0, "best_run_floors": 7}
+
+	ProfileManager.record_run_finished(false, 11)
+	assert_eq(ProfileManager.profile["best_run_floors"], 11)
+
+	ProfileManager.record_run_finished(false, 4)
+	assert_eq(ProfileManager.profile["best_run_floors"], 11)
+
+
 func test_record_artifact_collected_adds_resource_path() -> void:
 	var artifact: ArtifactData = DWARF_PICKAXE
 	ProfileManager.profile["unlocked_artifacts"] = []

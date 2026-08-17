@@ -1746,6 +1746,54 @@ msgid "UI_STATS_MAX_TOWER_HEIGHT"
 msgstr ""
 
 #. context: ui
+msgid "UI_STATS_BEST_RUN_HINT"
+msgstr ""
+
+#. context: ui
+msgid "UI_STATS_BEST_RUN_RECORD"
+msgstr ""
+
+#. context: ui
+msgid "UI_STATS_BEST_RUN_VALUE"
+msgstr ""
+
+#. context: ui
+msgid "UI_STATS_COLLECTION_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_STATS_EMPTY_FIRST_RUN"
+msgstr ""
+
+#. context: ui
+msgid "UI_STATS_EMPTY_FIRST_WIN"
+msgstr ""
+
+#. context: ui
+msgid "UI_STATS_HISTORY_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_STATS_RECORDS_TITLE"
+msgstr ""
+
+#. context: ui
+msgid "UI_STATS_TOWER_RECORD"
+msgstr ""
+
+#. context: ui
+msgid "UI_STATS_TOWER_RECORD_HINT"
+msgstr ""
+
+#. context: ui
+msgid "UI_STATS_WINRATE"
+msgstr ""
+
+#. context: ui
+msgid "UI_STATS_WINS_OF_RUNS"
+msgstr ""
+
+#. context: ui
 msgid "UI_STATS_RUNS_COMPLETED"
 msgstr ""
 
