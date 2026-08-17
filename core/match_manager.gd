@@ -27,10 +27,10 @@ const STARTER_DECK_CARD_PATHS := [
 	"res://data/cards/bricks_drill.tres",
 	"res://data/cards/bricks_brick_factory.tres",
 	"res://data/cards/gems_novice_mage.tres",
-	"res://data/cards/gems_protection_spell.tres",
+	"res://data/cards/gems_magic_bolt.tres",
 	"res://data/cards/beasts_hunter.tres",
 	"res://data/cards/beasts_hunting_lodge.tres",
-	"res://data/cards/beasts_goblin.tres",
+	"res://data/cards/gems_protective_barrier.tres",
 ]
 
 const STARTING_RUN_GOLD := 20
