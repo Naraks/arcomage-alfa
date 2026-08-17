@@ -1514,10 +1514,6 @@ msgid "UI_REWARD_CONFIRM"
 msgstr ""
 
 #. context: ui
-msgid "UI_REWARD_COST_TAG"
-msgstr ""
-
-#. context: ui
 msgid "UI_REWARD_SKIP"
 msgstr ""
 
@@ -1742,10 +1738,6 @@ msgid "UI_SHOP_TITLE"
 msgstr ""
 
 #. context: ui
-msgid "UI_STATS_MAX_TOWER_HEIGHT"
-msgstr ""
-
-#. context: ui
 msgid "UI_STATS_BEST_RUN_HINT"
 msgstr ""
 
@@ -1794,10 +1786,6 @@ msgid "UI_STATS_WINS_OF_RUNS"
 msgstr ""
 
 #. context: ui
-msgid "UI_STATS_RUNS_COMPLETED"
-msgstr ""
-
-#. context: ui
 msgid "UI_STATS_TITLE"
 msgstr ""
 
@@ -1807,10 +1795,6 @@ msgstr ""
 
 #. context: ui
 msgid "UI_STATS_UNLOCKED_CARDS"
-msgstr ""
-
-#. context: ui
-msgid "UI_STATS_WINS"
 msgstr ""
 
 #. context: ui

@@ -1515,10 +1515,6 @@ msgid "UI_REWARD_CONFIRM"
 msgstr "Claim"
 
 #. context: ui
-msgid "UI_REWARD_COST_TAG"
-msgstr "Cost: %d"
-
-#. context: ui
 msgid "UI_REWARD_SKIP"
 msgstr "Skip"
 
@@ -1743,10 +1739,6 @@ msgid "UI_SHOP_TITLE"
 msgstr "Shop"
 
 #. context: ui
-msgid "UI_STATS_MAX_TOWER_HEIGHT"
-msgstr "Max tower height: %d"
-
-#. context: ui
 msgid "UI_STATS_BEST_RUN_HINT"
 msgstr "Farthest completed run"
 
@@ -1795,10 +1787,6 @@ msgid "UI_STATS_WINS_OF_RUNS"
 msgstr "%d wins in %d runs"
 
 #. context: ui
-msgid "UI_STATS_RUNS_COMPLETED"
-msgstr "Runs completed: %d"
-
-#. context: ui
 msgid "UI_STATS_TITLE"
 msgstr "Stats"
 
@@ -1809,10 +1797,6 @@ msgstr "Artifacts collected: %d/%d"
 #. context: ui
 msgid "UI_STATS_UNLOCKED_CARDS"
 msgstr "Rare cards unlocked: %d/%d"
-
-#. context: ui
-msgid "UI_STATS_WINS"
-msgstr "Wins: %d"
 
 #. context: ui
 msgid "UI_UNLOCKED_SHORT"
