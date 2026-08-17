@@ -149,7 +149,8 @@ func test_apply_slot_artifact_records_it_as_collected_in_profile() -> void:
 func test_selection_does_not_apply_card_before_confirmation() -> void:
 	var screen = RewardScreenScript.new()
 	var card := TestFixtures.make_card(3, CardData.ResourceType.BRICKS)
-	screen._slots = [{"kind": "card", "card": card}]
+	var slots: Array[Dictionary] = [{"kind": "card", "card": card}]
+	screen._slots = slots
 
 	screen._on_slot_pressed(0)
 
@@ -161,7 +162,8 @@ func test_selection_does_not_apply_card_before_confirmation() -> void:
 func test_confirm_selection_adds_selected_card_once() -> void:
 	var screen = RewardScreenScript.new()
 	var card := TestFixtures.make_card(3, CardData.ResourceType.BRICKS)
-	screen._slots = [{"kind": "card", "card": card}]
+	var slots: Array[Dictionary] = [{"kind": "card", "card": card}]
+	screen._slots = slots
 	screen._selected_index = 0
 
 	assert_true(screen._confirm_selection())
@@ -174,7 +176,8 @@ func test_confirm_selection_adds_selected_card_once() -> void:
 func test_skip_requires_confirmation_and_does_not_add_reward() -> void:
 	var screen = RewardScreenScript.new()
 	var card := TestFixtures.make_card(2, CardData.ResourceType.GEMS)
-	screen._slots = [{"kind": "card", "card": card}]
+	var slots: Array[Dictionary] = [{"kind": "card", "card": card}]
+	screen._slots = slots
 
 	assert_false(screen._is_resolved)
 	assert_true(screen._confirm_skip())
